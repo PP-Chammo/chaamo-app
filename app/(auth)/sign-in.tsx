@@ -2,9 +2,8 @@ import { useState } from 'react';
 
 import { Link, router } from 'expo-router';
 import { Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button, Label, TextField } from '@/components/atoms';
+import { Button, Label, ScreenContainer, TextField } from '@/components/atoms';
 import { Header, PhoneInput } from '@/components/molecules';
 import { InputChangeParams } from '@/domains';
 
@@ -34,7 +33,7 @@ const SignInScreen = () => {
   };
 
   return (
-    <SafeAreaView className={classes.container}>
+    <ScreenContainer>
       <Header title="Login" />
       <View className={classes.form}>
         <Label className={classes.title} variant="title">
@@ -63,7 +62,7 @@ const SignInScreen = () => {
         >
           Login
         </Button>
-        <Link className={classes.login} href="/forgot-password">
+        <Link className={classes.login} href="/">
           Forgot Password?
         </Link>
       </View>
@@ -73,12 +72,11 @@ const SignInScreen = () => {
           Sign Up
         </Link>
       </Label>
-    </SafeAreaView>
+    </ScreenContainer>
   );
 };
 
 const classes = {
-  container: 'flex-1 bg-gray-100 dark:bg-gray-900 mx-5',
   form: 'flex-1 mt-[50] gap-3',
   inputContainer: 'gap-6',
   title: 'text-2xl font-bold text-teal-600',

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 import { Text, TouchableOpacity, View } from 'react-native';
@@ -9,7 +9,7 @@ interface HeaderProps {
   title: string;
 }
 
-const Header = ({ title }: HeaderProps) => {
+const Header: React.FC<HeaderProps> = memo(function Header({ title }) {
   const navigation = useNavigation();
 
   return (
@@ -24,7 +24,7 @@ const Header = ({ title }: HeaderProps) => {
       <View className={classes.rightSpace} />
     </View>
   );
-};
+});
 
 const classes = {
   header:
