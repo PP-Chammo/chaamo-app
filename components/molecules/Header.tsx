@@ -1,27 +1,24 @@
 import React from 'react';
 
-import { useNavigation } from '@react-navigation/native';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import { Icon } from '@/components/atoms';
 
 interface HeaderProps {
   title: string;
+  onBackPress?: () => void;
 }
 
-const Header = ({ title }: HeaderProps) => {
-  const navigation = useNavigation();
-
+const Header = ({ title, onBackPress }: HeaderProps) => {
   return (
     <View className={classes.header}>
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        className={classes.backButton}
-      >
-        <Icon name="arrow-left" size={24} color="#222" />
-      </TouchableOpacity>
+      {onBackPress && (
+        <TouchableOpacity onPress={onBackPress} className={classes.backButton}>
+          <Icon name="arrow-left" size={24} color="#222" />
+        </TouchableOpacity>
+      )}
       <Text className={classes.title}>{title}</Text>
-      <View className={classes.rightSpace} />
+      {onBackPress && <View className={classes.rightSpace} />}
     </View>
   );
 };

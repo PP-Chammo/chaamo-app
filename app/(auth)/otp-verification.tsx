@@ -11,7 +11,7 @@ interface OTPVerificationForm {
   otp: string;
 }
 
-const OTPVerification = () => {
+const OTPVerificationScreen = () => {
   const [form, setForm] = useState<OTPVerificationForm>({
     otp: '',
   });
@@ -36,7 +36,7 @@ const OTPVerification = () => {
 
   return (
     <SafeAreaView className={classes.container}>
-      <Header title="OTP" />
+      <Header title="OTP" onBackPress={() => router.back()} />
       <Label className={classes.title} variant="title">
         Phone Number Verification
       </Label>
@@ -61,13 +61,13 @@ const OTPVerification = () => {
 };
 
 const classes = {
-  container: 'flex-1 bg-gray-100 dark:bg-gray-900 mx-5',
-  title: 'text-2xl font-bold text-teal-600 mb-2',
-  description: 'text-gray-500 text-md mb-8',
-  phoneNumber: 'text-gray-500 font-bold',
+  container: 'flex-1 bg-slate-100 dark:bg-slate-900 mx-5',
+  title: 'text-3xl font-bold text-teal-600 mb-2',
+  description: 'text-slate-500 text-lg mb-8',
+  phoneNumber: 'text-slate-500 font-bold',
   sendButton: 'mt-8',
   countdown: 'text-md text-center font-bold mt-6 mb-5',
   link: 'text-slate-500 underline font-medium text-center ',
 };
 
-export default OTPVerification;
+export default OTPVerificationScreen;

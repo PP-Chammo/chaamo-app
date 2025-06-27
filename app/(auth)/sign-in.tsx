@@ -4,8 +4,8 @@ import { Link, router } from 'expo-router';
 import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button, Label, TextField } from '@/components/atoms';
-import { Header, PhoneInput } from '@/components/molecules';
+import { Button, Label } from '@/components/atoms';
+import { Header, PhoneInput, TextField } from '@/components/molecules';
 import { InputChangeParams } from '@/domains';
 
 interface SignInForm {
@@ -78,12 +78,12 @@ const SignInScreen = () => {
 };
 
 const classes = {
-  container: 'flex-1 bg-gray-100 dark:bg-gray-900 mx-5',
+  container: 'flex-1 bg-slate-100 dark:bg-slate-900 mx-5',
   form: 'flex-1 mt-[50] gap-3',
   inputContainer: 'gap-6',
-  title: 'text-2xl font-bold text-teal-600',
-  description: 'text-slate-500 font-medium text-md mb-6',
-  login: 'text-gray-500 text-md text-center underline font-bold',
+  title: 'text-3xl font-bold text-teal-600',
+  description: 'text-slate-500 font-medium text-lg mb-6',
+  login: 'text-slate-500 text-md text-center underline font-bold',
   link: 'text-teal-600 underline font-bold',
   loginButton: 'my-2 ',
   signUp: 'text-slate-500 text-md text-center mb-8',

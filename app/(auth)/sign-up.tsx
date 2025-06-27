@@ -23,7 +23,7 @@ const SignUpScreen = () => {
 
   return (
     <SafeAreaView className={classes.container}>
-      <Header title="Sign Up" />
+      <Header title="Sign Up" onBackPress={() => router.back()} />
       <View className={classes.form}>
         <Label className={classes.title} variant="title">
           Let&apos;s get started!
@@ -62,14 +62,14 @@ const SignUpScreen = () => {
 };
 
 const classes = {
-  container: 'flex-1 bg-gray-100 dark:bg-gray-900 mx-5',
+  container: 'flex-1 bg-slate-100 dark:bg-slate-900 mx-5',
   form: 'flex-1 mt-[50] gap-5',
-  title: 'text-2xl font-bold text-teal-600 mb-2',
-  description: 'text-gray-500 text-md mb-8',
-  login: 'text-gray-500 text-md text-center',
+  title: 'text-3xl font-bold text-teal-600 mb-2',
+  description: 'text-slate-500 text-lg mb-8',
+  login: 'text-slate-500 text-md text-center',
   link: 'text-teal-600 underline font-bold',
   sendButton: 'my-2',
-  terms: 'text-gray-500 text-md mb-12',
+  terms: 'text-slate-500 text-md mb-12',
 };
 
 export default SignUpScreen;
