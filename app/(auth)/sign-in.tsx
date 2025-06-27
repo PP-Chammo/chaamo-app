@@ -4,8 +4,7 @@ import { Link, router } from 'expo-router';
 import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button, Label } from '@/components/atoms';
-import TextField from '@/components/atoms/TextField';
+import { Button, Label, TextField } from '@/components/atoms';
 import { Header, PhoneInput } from '@/components/molecules';
 import { InputChangeParams } from '@/domains';
 
