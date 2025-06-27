@@ -5973,6 +5973,11 @@ react-native-is-edge-to-edge@1.1.7, react-native-is-edge-to-edge@^1.1.6, react-n
   resolved "https://registry.yarnpkg.com/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.1.7.tgz#28947688f9fafd584e73a4f935ea9603bd9b1939"
   integrity sha512-EH6i7E8epJGIcu7KpfXYXiV2JFIYITtq+rVS8uEb+92naMRBdxhTuS8Wn2Q7j9sqyO0B+Xbaaf9VdipIAmGW4w==
 
+react-native-otp-entry@^1.8.5:
+  version "1.8.5"
+  resolved "https://registry.npmjs.org/react-native-otp-entry/-/react-native-otp-entry-1.8.5.tgz#e5893040e1b0540c6febb89b1b29a1729277c1df"
+  integrity sha512-TZNkIuUzZKAAWrC8X/A22ZHJdycLysxUNysrGf0yTmDLRUyf4zLXwVFcDYUcRNe763Hjaf5qvtKGILb6lDGzoA==
+
 react-native-phone-number-input@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/react-native-phone-number-input/-/react-native-phone-number-input-2.1.0.tgz#e9743d391d438d33b91ae3d03482b291b3d20ea5"

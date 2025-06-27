@@ -5,15 +5,15 @@ import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button, Label } from '@/components/atoms';
-import Header from '@/components/atoms/Header';
-import { PhoneInput } from '@/components/molecules';
+import { Header, PhoneInput } from '@/components/molecules';
+import { InputChangeParams } from '@/domains';
 
 const SignUpScreen = () => {
   const [form, setForm] = useState({
     phone: '',
   });
 
-  const handleChange = ({ name, value }: { name: string; value: string }) => {
+  const handleChange = ({ name, value }: InputChangeParams) => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 

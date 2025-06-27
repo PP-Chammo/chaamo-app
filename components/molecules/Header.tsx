@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { Text, TouchableOpacity, View } from 'react-native';
+
+import { Icon } from '@/components/atoms';
 
 interface HeaderProps {
   title: string;
@@ -17,7 +18,7 @@ const Header = ({ title }: HeaderProps) => {
         onPress={() => navigation.goBack()}
         className={classes.backButton}
       >
-        <Ionicons name="arrow-back" size={24} color="#222" />
+        <Icon name="arrow-left" size={24} color="#222" />
       </TouchableOpacity>
       <Text className={classes.title}>{title}</Text>
       <View className={classes.rightSpace} />
