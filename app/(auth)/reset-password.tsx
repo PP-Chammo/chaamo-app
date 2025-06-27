@@ -74,14 +74,10 @@ export default function ResetPasswordScreen() {
 }
 
 const classes = {
-  container: 'flex-1 bg-slate-100 dark:bg-slate-900 mx-5',
   form: 'flex-1 mt-[50] gap-3',
   inputContainer: 'gap-6',
   title: 'text-3xl font-bold text-teal-600',
   description: 'text-slate-500 font-medium text-lg mb-6',
-  login: 'text-slate-500 text-md text-center underline font-bold',
-  link: 'text-teal-600 underline font-bold',
   loginButton: 'my-2 ',
-  signUp: 'text-slate-500 text-md text-center mb-8',
   errorText: 'text-red-500 text-sm',
 };

@@ -22,7 +22,7 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
         <SafeAreaView className={classes.container} style={style} {...props}>
           <StyledGradient
             colors={[getColor('orange-50'), getColor('teal-50')]}
-            className="flex-1 items-center justify-center p-6"
+            className="flex-1 p-6"
           >
             {children}
           </StyledGradient>

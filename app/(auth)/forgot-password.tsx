@@ -7,12 +7,12 @@ import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header, PhoneInput } from '@/components/molecules';
 import { InputChangeParams } from '@/domains';
 
-interface ForgotPassword {
+interface ForgotPasswordForm {
   phone: string;
 }
 
 export default function ForgotPasswordScreen() {
-  const [form, setForm] = useState<ForgotPassword>({
+  const [form, setForm] = useState<ForgotPasswordForm>({
     phone: '',
   });
 
@@ -57,14 +57,9 @@ export default function ForgotPasswordScreen() {
 }
 
 const classes = {
-  container: 'flex-1 bg-slate-100 dark:bg-slate-900 mx-5',
   form: 'flex-1 mt-[50] gap-3',
-  inputContainer: 'gap-6',
   title: 'text-2xl font-bold text-teal-600',
   description: 'text-slate-500 font-medium text-lg mb-6',
-  login: 'text-slate-500 text-md text-center underline font-bold',
-  link: 'text-teal-600 underline font-bold',
   resetButton: 'my-4',
-  signUp: 'text-slate-500 text-md text-center mb-8',
   errorText: 'text-red-500 text-sm',
 };
