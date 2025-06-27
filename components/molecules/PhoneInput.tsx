@@ -17,8 +17,9 @@ const PhoneNumberInput = ({ name, value, onChange }: PhoneNumberInputProps) => {
 
   return (
     <View className={classes.container}>
-      <Label>
-        Phone<Label style={{ color: 'red' }}>*</Label>
+      <Label className={classes.label}>
+        Phone
+        <Label className={classes.required}>*</Label>
       </Label>
       <PhoneInput
         defaultCode="GB"
@@ -44,6 +45,8 @@ const PhoneNumberInput = ({ name, value, onChange }: PhoneNumberInputProps) => {
 
 const classes = {
   container: 'w-full',
+  label: 'text-slate-500 font-medium text-md ml-4',
+  required: 'text-red-500',
 };
 
 // We use StyleSheet instead of classes/nativewind here because the 'react-native-phone-number-input' component
@@ -53,7 +56,7 @@ const classes = {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'transparent',
-    marginTop: 8,
+    marginTop: 3,
     width: '100%',
   },
   textContainer: {

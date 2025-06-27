@@ -1,33 +1,81 @@
-import React from 'react';
+import { useState } from 'react';
 
-import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native';
+import { Link, router } from 'expo-router';
+import { View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button, Label } from '@/components/atoms';
-import { useAuthStore } from '@/hooks/useAuthStore';
+import TextField from '@/components/atoms/TextField';
+import { Header, PhoneInput } from '@/components/molecules';
+import { InputChangeParams } from '@/domains';
 
 const SignInScreen = () => {
-  const { signIn } = useAuthStore();
+  const [form, setForm] = useState({
+    phone: '',
+    password: '',
+  });
+
+  const handleChange = ({ name, value }: InputChangeParams) => {
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleLogin = () => {
+    router.push('/(auth)/otp-verification');
+  };
 
   return (
     <SafeAreaView className={classes.container}>
-      <Label variant="title">Sign In Screen</Label>
-      <Button
-        onPress={() => {
-          signIn();
-          router.push('/(tabs)/home');
-        }}
-      >
-        Home
-      </Button>
-      <Button onPress={() => router.push('/(auth)/sign-up')}>Sign Up</Button>
+      <Header title="Login" />
+      <View className={classes.form}>
+        <Label className={classes.title} variant="title">
+          Welcome Back!
+        </Label>
+        <Label className={classes.description}>
+          Please enter your credentials below to login.
+        </Label>
+        <View className={classes.inputContainer}>
+          <PhoneInput name="phone" value={form.phone} onChange={handleChange} />
+          <TextField
+            label="Password"
+            placeholder="Enter your password"
+            value={form.password}
+            onChange={handleChange}
+            name="password"
+            type="password"
+            required
+          />
+        </View>
+        <Button
+          disabled={!form.phone.length || !form.password}
+          onPress={handleLogin}
+          className={classes.loginButton}
+        >
+          Login
+        </Button>
+        <Link className={classes.login} href="/forgot-password">
+          Forgot Password?
+        </Link>
+      </View>
+      <Label className={classes.signUp}>
+        Don&apos;t have an account?{' '}
+        <Link className={classes.link} href="/sign-up">
+          Sign Up
+        </Link>
+      </Label>
     </SafeAreaView>
   );
 };
 
 const classes = {
-  container:
-    'flex-1 items-center justify-center gap-5 bg-gray-100 dark:bg-gray-900',
+  container: 'flex-1 bg-gray-100 dark:bg-gray-900 mx-5',
+  form: 'flex-1 mt-[50] gap-3',
+  inputContainer: 'gap-6',
+  title: 'text-2xl font-bold text-teal-600',
+  description: 'text-slate-500 font-medium text-md mb-6',
+  login: 'text-gray-500 text-md text-center underline font-bold',
+  link: 'text-teal-600 underline font-bold',
+  loginButton: 'my-2 ',
+  signUp: 'text-slate-500 text-md text-center mb-8',
 };
 
 export default SignInScreen;
