@@ -5,7 +5,11 @@ import { Text, TouchableOpacity, View } from 'react-native';
 
 import { Icon } from '@/components/atoms';
 
-const Header = ({ title = 'Sign Up' }) => {
+interface HeaderProps {
+  title: string;
+}
+
+const Header = ({ title }: HeaderProps) => {
   const navigation = useNavigation();
 
   return (

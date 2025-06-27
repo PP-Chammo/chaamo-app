@@ -4,8 +4,7 @@ import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button, Label } from '@/components/atoms';
-import { OtpInput } from '@/components/molecules';
-import Header from '@/components/molecules/Header';
+import { Header, OtpInput } from '@/components/molecules';
 import { InputChangeParams } from '@/domains';
 
 interface OTPVerificationForm {

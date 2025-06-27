@@ -1,51 +1,39 @@
 import React from 'react';
 
-import { remapProps } from 'nativewind';
-import { View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, View } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
 
-import { Icon, Label } from '@/components/atoms';
-
-type PhoneInputChangeParams = {
-  name: string;
-  value: string;
-};
+import { Label } from '@/components/atoms';
+import { InputChangeParams } from '@/domains';
 
 interface PhoneNumberInputProps {
   name: string;
   value: string;
-  onChange: (params: PhoneInputChangeParams) => void;
+  onChange: ({ name, value }: InputChangeParams) => void;
 }
-
-const StyledPhoneInput = remapProps(PhoneInput, {
-  className: 'containerStyle',
-  textContainerClassName: 'textContainerStyle',
-  textInputClassName: 'textInputStyle',
-  codeTextClassName: 'codeTextStyle',
-  flagButtonClassName: 'flagButtonStyle',
-});
 
 const PhoneNumberInput = ({ name, value, onChange }: PhoneNumberInputProps) => {
   const handleChange = (text: string) => onChange({ name, value: text });
 
   return (
-    <View className="w-full">
+    <View className={classes.container}>
       <Label>
         Phone<Label style={{ color: 'red' }}>*</Label>
       </Label>
-      <StyledPhoneInput
+      <PhoneInput
         defaultCode="GB"
         layout="second"
         value={value}
         onChangeFormattedText={handleChange}
         autoFocus
-        className={classes.container}
-        textContainerClassName={classes.textContainer}
-        textInputClassName={classes.textInput}
-        codeTextClassName={classes.codeText}
-        flagButtonClassName={classes.flagButton}
+        containerStyle={styles.container}
+        textContainerStyle={styles.textContainer}
+        textInputStyle={styles.textInput}
+        codeTextStyle={styles.codeText}
+        flagButtonStyle={styles.flagButton}
         renderDropdownImage={
-          <Icon name="chevron-down" size={18} color="#374151" />
+          <Ionicons name="chevron-down" size={18} color="#374151" />
         }
         countryPickerProps={{
           renderFlagButton: false,
@@ -56,14 +44,59 @@ const PhoneNumberInput = ({ name, value, onChange }: PhoneNumberInputProps) => {
 };
 
 const classes = {
-  container: 'w-full mt-2 bg-transparent',
-  textContainer:
-    'rounded-md bg-white ml-2 border border-gray-200 flex-1 h-[45px] min-h-[45px] max-h-[45px] py-0',
-  textInput:
-    'text-[15px] text-gray-500 pl-2 h-[45px] min-h-[45px] max-h-[45px] py-0',
-  codeText: 'text-[15px] text-gray-700 mr-3',
-  flagButton:
-    'w-[120px] bg-white rounded-md border border-gray-200 h-[45px] min-h-[45px] max-h-[45px] px-3 py-0 items-center justify-center',
+  container: 'w-full',
 };
+
+// We use StyleSheet instead of classes/nativewind here because the 'react-native-phone-number-input' component
+// does not support the 'className' prop or Tailwind/nativewind class utilities. It expects direct style objects
+// via props like 'containerStyle', 'textContainerStyle', etc., which are compatible with React Native's StyleSheet.
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'transparent',
+    marginTop: 8,
+    width: '100%',
+  },
+  textContainer: {
+    borderRadius: 6,
+    backgroundColor: '#fff',
+    marginLeft: 8,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    flex: 1,
+    height: 45,
+    minHeight: 45,
+    maxHeight: 45,
+    paddingVertical: 0,
+  },
+  textInput: {
+    fontSize: 15,
+    color: '#6B7280',
+    paddingLeft: 8,
+    height: 45,
+    minHeight: 45,
+    maxHeight: 45,
+    paddingVertical: 0,
+  },
+  codeText: {
+    fontSize: 15,
+    color: '#374151',
+    marginRight: 12,
+  },
+  flagButton: {
+    width: 120,
+    backgroundColor: '#fff',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    height: 45,
+    minHeight: 45,
+    maxHeight: 45,
+    paddingHorizontal: 12,
+    paddingVertical: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 export default PhoneNumberInput;
