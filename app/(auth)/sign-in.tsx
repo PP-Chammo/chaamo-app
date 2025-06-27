@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { Link, router } from 'expo-router';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button, Label } from '@/components/atoms';
@@ -9,18 +9,29 @@ import TextField from '@/components/atoms/TextField';
 import { Header, PhoneInput } from '@/components/molecules';
 import { InputChangeParams } from '@/domains';
 
+interface SignInForm {
+  phone: string;
+  password: string;
+}
+
 const SignInScreen = () => {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<SignInForm>({
     phone: '',
     password: '',
   });
+  const [errorText, setErrorText] = useState<string>('');
 
   const handleChange = ({ name, value }: InputChangeParams) => {
+    setErrorText('');
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleLogin = () => {
-    router.push('/(auth)/otp-verification');
+    const phone = '+44123456';
+    const password = '123456';
+    if (password !== form.password || phone !== form.phone)
+      return setErrorText('Incorrect number or password');
+    return router.push('/(auth)/otp-verification');
   };
 
   return (
@@ -45,6 +56,7 @@ const SignInScreen = () => {
             required
           />
         </View>
+        {errorText && <Text className={classes.errorText}>{errorText}</Text>}
         <Button
           disabled={!form.phone.length || !form.password}
           onPress={handleLogin}
@@ -76,6 +88,7 @@ const classes = {
   link: 'text-teal-600 underline font-bold',
   loginButton: 'my-2 ',
   signUp: 'text-slate-500 text-md text-center mb-8',
+  errorText: 'text-red-500 text-sm',
 };
 
 export default SignInScreen;
