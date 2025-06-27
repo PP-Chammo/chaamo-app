@@ -15,6 +15,7 @@ interface ButtonProps extends TouchableOpacityProps {
   className?: string;
   textClassName?: string;
   textProps?: TextProps;
+  disabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -24,12 +25,19 @@ const Button: React.FC<ButtonProps> = ({
   className,
   textClassName,
   textProps,
+  disabled = false,
   ...props
 }) => {
   return (
     <TouchableOpacity
+      disabled={disabled}
       activeOpacity={0.6}
-      className={clsx(classes.base, classes.variant[variant], className)}
+      className={clsx(
+        classes.base,
+        classes.variant[variant],
+        className,
+        disabled && classes.disabled,
+      )}
       {...props}
     >
       <Text
@@ -50,6 +58,7 @@ const Button: React.FC<ButtonProps> = ({
 const classes = {
   base: 'rounded-full items-center justify-center',
   textBase: 'text-base text-center',
+  disabled: 'opacity-50',
   variant: {
     primary: 'bg-teal-500',
     secondary: 'bg-gray-200',

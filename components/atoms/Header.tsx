@@ -1,0 +1,36 @@
+import React from 'react';
+
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { Text, TouchableOpacity, View } from 'react-native';
+
+interface HeaderProps {
+  title: string;
+}
+
+const Header = ({ title }: HeaderProps) => {
+  const navigation = useNavigation();
+
+  return (
+    <View className={classes.header}>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        className={classes.backButton}
+      >
+        <Ionicons name="arrow-back" size={24} color="#222" />
+      </TouchableOpacity>
+      <Text className={classes.title}>{title}</Text>
+      <View className={classes.rightSpace} />
+    </View>
+  );
+};
+
+const classes = {
+  header:
+    'flex-row items-center h-[64] bg-transparent border-b-0 justify-between',
+  backButton: 'w-10 items-start justify-center',
+  title: 'flex-1 text-center text-lg font-medium text-gray-800',
+  rightSpace: 'w-10',
+};
+
+export default Header;
