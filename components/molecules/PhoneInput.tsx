@@ -1,10 +1,9 @@
 import React from 'react';
 
-import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
 
-import { Label } from '@/components/atoms';
+import { Icon, Label } from '@/components/atoms';
 import { InputChangeParams } from '@/domains';
 
 interface PhoneNumberInputProps {
@@ -33,7 +32,7 @@ const PhoneNumberInput = ({ name, value, onChange }: PhoneNumberInputProps) => {
         codeTextStyle={styles.codeText}
         flagButtonStyle={styles.flagButton}
         renderDropdownImage={
-          <Ionicons name="chevron-down" size={18} color="#374151" />
+          <Icon name="chevron-down" size={18} color="#374151" />
         }
         countryPickerProps={{
           renderFlagButton: false,
