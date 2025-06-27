@@ -4,7 +4,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { Text, TouchableOpacity, View } from 'react-native';
 
-const Header = ({ title = 'Sign Up' }) => {
+interface HeaderProps {
+  title: string;
+}
+
+const Header = ({ title }: HeaderProps) => {
   const navigation = useNavigation();
 
   return (
