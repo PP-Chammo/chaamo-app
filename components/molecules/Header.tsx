@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Text, TouchableOpacity, View } from 'react-native';
 
-import Icon from '../atoms/Icon';
+import { Icon } from '@/components/atoms';
 
 const Header = ({ title = 'Sign Up' }) => {
   const navigation = useNavigation();
