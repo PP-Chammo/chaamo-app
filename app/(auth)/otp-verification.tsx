@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,7 +11,7 @@ interface OTPVerificationForm {
   otp: string;
 }
 
-const OTPVerificationScreen = () => {
+const OTPVerificationScreen = memo(() => {
   const [form, setForm] = useState<OTPVerificationForm>({
     otp: '',
   });
@@ -58,7 +58,7 @@ const OTPVerificationScreen = () => {
       </Button>
     </SafeAreaView>
   );
-};
+});
 
 const classes = {
   container: 'flex-1 bg-slate-100 dark:bg-slate-900 mx-5',
@@ -69,5 +69,7 @@ const classes = {
   countdown: 'text-md text-center font-bold mt-6 mb-5',
   link: 'text-slate-500 underline font-medium text-center ',
 };
+
+OTPVerificationScreen.displayName = 'OTPVerificationScreen';
 
 export default OTPVerificationScreen;

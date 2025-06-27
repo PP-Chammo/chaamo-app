@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 
 import { Link, router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -13,7 +13,7 @@ interface SignInForm {
   password: string;
 }
 
-const SignInScreen = () => {
+const SignInScreen = memo(() => {
   const [form, setForm] = useState<SignInForm>({
     phone: '',
     password: '',
@@ -75,7 +75,7 @@ const SignInScreen = () => {
       </Label>
     </SafeAreaView>
   );
-};
+});
 
 const classes = {
   container: 'flex-1 bg-slate-100 dark:bg-slate-900 mx-5',
@@ -89,5 +89,7 @@ const classes = {
   signUp: 'text-slate-500 text-md text-center mb-8',
   errorText: 'text-red-500 text-sm',
 };
+
+SignInScreen.displayName = 'SignInScreen';
 
 export default SignInScreen;

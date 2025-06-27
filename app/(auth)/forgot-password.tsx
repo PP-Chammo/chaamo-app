@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -12,7 +12,7 @@ interface ForgotPassword {
   phone: string;
 }
 
-const ForgotPasswordScreen = () => {
+const ForgotPasswordScreen = memo(() => {
   const [form, setForm] = useState<ForgotPassword>({
     phone: '',
   });
@@ -55,7 +55,7 @@ const ForgotPasswordScreen = () => {
       </View>
     </SafeAreaView>
   );
-};
+});
 
 const classes = {
   container: 'flex-1 bg-slate-100 dark:bg-slate-900 mx-5',
@@ -69,5 +69,7 @@ const classes = {
   signUp: 'text-slate-500 text-md text-center mb-8',
   errorText: 'text-red-500 text-sm',
 };
+
+ForgotPasswordScreen.displayName = 'ForgotPasswordScreen';
 
 export default ForgotPasswordScreen;

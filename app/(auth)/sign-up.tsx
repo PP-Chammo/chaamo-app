@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 
 import { Link, router } from 'expo-router';
 import { View } from 'react-native';
@@ -8,7 +8,7 @@ import { Button, Label } from '@/components/atoms';
 import { Header, PhoneInput } from '@/components/molecules';
 import { InputChangeParams } from '@/domains';
 
-const SignUpScreen = () => {
+const SignUpScreen = memo(() => {
   const [form, setForm] = useState({
     phone: '',
   });
@@ -59,7 +59,7 @@ const SignUpScreen = () => {
       </Label>
     </SafeAreaView>
   );
-};
+});
 
 const classes = {
   container: 'flex-1 bg-slate-100 dark:bg-slate-900 mx-5',
@@ -71,5 +71,7 @@ const classes = {
   sendButton: 'my-2',
   terms: 'text-slate-500 text-md mb-12',
 };
+
+SignUpScreen.displayName = 'SignUpScreen';
 
 export default SignUpScreen;
