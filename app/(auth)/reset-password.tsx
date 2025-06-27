@@ -31,7 +31,7 @@ export default function ResetPasswordScreen() {
   };
 
   return (
-    <ScreenContainer>
+    <ScreenContainer className="p-6">
       <Header title="New Password" />
       <View className={classes.form}>
         <Label className={classes.title} variant="title">

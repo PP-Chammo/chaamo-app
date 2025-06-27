@@ -34,7 +34,7 @@ export default function OTPVerificationScreen() {
   };
 
   return (
-    <ScreenContainer>
+    <ScreenContainer className="p-6">
       <Header title="OTP" onBackPress={() => router.back()} />
       <Label className={classes.title} variant="title">
         Phone Number Verification

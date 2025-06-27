@@ -21,7 +21,7 @@ export default function SignUpScreen() {
   };
 
   return (
-    <ScreenContainer>
+    <ScreenContainer className="p-6">
       <Header title="Sign Up" onBackPress={() => router.back()} />
       <View className={classes.form}>
         <Label className={classes.title} variant="title">

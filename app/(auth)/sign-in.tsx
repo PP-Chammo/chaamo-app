@@ -33,7 +33,7 @@ export default function SignInScreen() {
   };
 
   return (
-    <ScreenContainer>
+    <ScreenContainer className="p-6">
       <Header title="Login" />
       <View className={classes.form}>
         <Label className={classes.title} variant="title">

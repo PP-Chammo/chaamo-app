@@ -13,7 +13,7 @@ export default function OTPSuccessScreen() {
   };
 
   return (
-    <ScreenContainer>
+    <ScreenContainer className="p-6">
       <Header title="OTP Verified" />
       <View className={classes.successIconContainer}>
         <OTPSuccessIcon />
