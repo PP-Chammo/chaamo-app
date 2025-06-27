@@ -7,7 +7,7 @@ import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header, PhoneInput } from '@/components/molecules';
 import { InputChangeParams } from '@/domains';
 
-const SignUpScreen = () => {
+export default function SignUpScreen() {
   const [form, setForm] = useState({
     phone: '',
   });
@@ -21,8 +21,8 @@ const SignUpScreen = () => {
   };
 
   return (
-    <ScreenContainer>
-      <Header title="Sign Up" />
+    <ScreenContainer className="p-6">
+      <Header title="Sign Up" onBackPress={() => router.back()} />
       <View className={classes.form}>
         <Label className={classes.title} variant="title">
           Let&apos;s get started!
@@ -58,16 +58,14 @@ const SignUpScreen = () => {
       </Label>
     </ScreenContainer>
   );
-};
+}
 
 const classes = {
   form: 'flex-1 mt-[50] gap-5',
-  title: 'text-2xl font-bold text-teal-600 mb-2',
-  description: 'text-gray-500 text-md mb-8',
-  login: 'text-gray-500 text-md text-center',
+  title: 'text-3xl font-bold text-teal-600 mb-2',
+  description: 'text-slate-500 text-lg mb-8',
+  login: 'text-slate-500 text-md text-center',
   link: 'text-teal-600 underline font-bold',
   sendButton: 'my-2',
-  terms: 'text-gray-500 text-md mb-12',
+  terms: 'text-slate-500 text-md mb-12',
 };
-
-export default SignUpScreen;

@@ -1,5 +1,6 @@
 import { memo } from 'react';
 
+import { clsx } from 'clsx';
 import { LinearGradient } from 'expo-linear-gradient';
 import { cssInterop } from 'nativewind';
 import { SafeAreaView, ViewProps } from 'react-native';
@@ -15,14 +16,14 @@ const StyledGradient = cssInterop(LinearGradient, {
 });
 
 const ScreenContainer: React.FC<ScreenContainerProps> = memo(
-  function ScreenContainer({ children, style, ...props }) {
+  function ScreenContainer({ children, className, style, ...props }) {
     return (
       <>
         <SafeAreaView className={classes.containerTop} />
         <SafeAreaView className={classes.container} style={style} {...props}>
           <StyledGradient
             colors={[getColor('orange-50'), getColor('teal-50')]}
-            className="flex-1 items-center justify-center p-6"
+            className={clsx(classes.container, className)}
           >
             {children}
           </StyledGradient>
