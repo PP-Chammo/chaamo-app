@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { StyleSheet, View } from 'react-native';
 import { OtpInput } from 'react-native-otp-entry';
@@ -13,7 +13,11 @@ interface OTPInputProps {
   name: string;
 }
 
-const OTPInput = ({ error, onChange, name }: OTPInputProps) => {
+const OTPInput: React.FC<OTPInputProps> = memo(function OTPInput({
+  error,
+  onChange,
+  name,
+}) {
   const handleChange = (text: string) => {
     onChange({ name, value: text });
   };
@@ -35,7 +39,7 @@ const OTPInput = ({ error, onChange, name }: OTPInputProps) => {
       )}
     </View>
   );
-};
+});
 
 const classes = {
   error: 'text-red-700 text-md text-center mt-3',

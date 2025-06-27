@@ -1,15 +1,9 @@
-import { View } from 'react-native';
-
-import { Label } from '@/components/atoms';
+import { Label, ScreenContainer } from '@/components/atoms';
 
 export default function ExploreScreen() {
   return (
-    <View className={classes.container}>
+    <ScreenContainer>
       <Label>Explore Screen</Label>
-    </View>
+    </ScreenContainer>
   );
 }
-
-const classes = {
-  container: 'flex-1 items-center justify-center',
-};

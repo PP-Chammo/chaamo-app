@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 
 import { Text, TextInput, TextInputProps, View } from 'react-native';
 
@@ -15,7 +15,7 @@ interface TextFieldProps extends Omit<TextInputProps, 'onChange'> {
   error?: string;
 }
 
-const TextField = ({
+const TextField: React.FC<TextFieldProps> = memo(function TextField({
   label,
   placeholder,
   value,
@@ -25,7 +25,7 @@ const TextField = ({
   name,
   error,
   ...props
-}: TextFieldProps) => {
+}) {
   const [hidePassword, setHidePassword] = useState(true);
 
   const handleChange = (value: string) => {
@@ -59,7 +59,7 @@ const TextField = ({
       {error && <Text className={classes.error}>{error}</Text>}
     </View>
   );
-};
+});
 
 export default TextField;
 

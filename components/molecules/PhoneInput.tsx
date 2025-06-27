@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { StyleSheet, View } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
@@ -6,42 +6,46 @@ import PhoneInput from 'react-native-phone-number-input';
 import { Icon, Label } from '@/components/atoms';
 import { InputChangeParams } from '@/domains';
 
+const PhoneInputLocal = PhoneInput as unknown as React.JSX.ElementType;
+
 interface PhoneNumberInputProps {
   name: string;
   value: string;
   onChange: ({ name, value }: InputChangeParams) => void;
 }
 
-const PhoneNumberInput = ({ name, value, onChange }: PhoneNumberInputProps) => {
-  const handleChange = (text: string) => onChange({ name, value: text });
+const PhoneNumberInput: React.FC<PhoneNumberInputProps> = memo(
+  function PhoneNumberInput({ name, value, onChange }) {
+    const handleChange = (text: string) => onChange({ name, value: text });
 
-  return (
-    <View className={classes.container}>
-      <Label className={classes.label}>
-        Phone
-        <Label className={classes.required}>*</Label>
-      </Label>
-      <PhoneInput
-        defaultCode="GB"
-        layout="second"
-        value={value}
-        onChangeFormattedText={handleChange}
-        autoFocus
-        containerStyle={styles.container}
-        textContainerStyle={styles.textContainer}
-        textInputStyle={styles.textInput}
-        codeTextStyle={styles.codeText}
-        flagButtonStyle={styles.flagButton}
-        renderDropdownImage={
-          <Icon name="chevron-down" size={18} color="#374151" />
-        }
-        countryPickerProps={{
-          renderFlagButton: false,
-        }}
-      />
-    </View>
-  );
-};
+    return (
+      <View className={classes.container}>
+        <Label className={classes.label}>
+          Phone
+          <Label className={classes.required}>*</Label>
+        </Label>
+        <PhoneInputLocal
+          defaultCode="GB"
+          layout="second"
+          value={value}
+          onChangeFormattedText={handleChange}
+          autoFocus
+          containerStyle={styles.container}
+          textContainerStyle={styles.textContainer}
+          textInputStyle={styles.textInput}
+          codeTextStyle={styles.codeText}
+          flagButtonStyle={styles.flagButton}
+          renderDropdownImage={
+            <Icon name="chevron-down" size={18} color="#374151" />
+          }
+          countryPickerProps={{
+            renderFlagButton: false,
+          }}
+        />
+      </View>
+    );
+  },
+);
 
 const classes = {
   container: 'w-full',

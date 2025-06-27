@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 
 import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button, Label } from '@/components/atoms';
+import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header, OtpInput } from '@/components/molecules';
 import { InputChangeParams } from '@/domains';
 
@@ -35,7 +34,7 @@ const OTPVerification = () => {
   };
 
   return (
-    <SafeAreaView className={classes.container}>
+    <ScreenContainer>
       <Header title="OTP" />
       <Label className={classes.title} variant="title">
         Phone Number Verification
@@ -56,12 +55,11 @@ const OTPVerification = () => {
       <Button variant="link" className={classes.link} onPress={handleResendOTP}>
         Resend OTP
       </Button>
-    </SafeAreaView>
+    </ScreenContainer>
   );
 };
 
 const classes = {
-  container: 'flex-1 bg-gray-100 dark:bg-gray-900 mx-5',
   title: 'text-2xl font-bold text-teal-600 mb-2',
   description: 'text-gray-500 text-md mb-8',
   phoneNumber: 'text-gray-500 font-bold',
