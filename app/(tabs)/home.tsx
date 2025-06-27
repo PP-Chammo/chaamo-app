@@ -1,19 +1,13 @@
-import { View } from 'react-native';
-
-import { Button, Label } from '@/components/atoms';
+import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { useAuthStore } from '@/hooks/useAuthStore';
 
 export default function HomeScreen() {
   const { signOut } = useAuthStore();
 
   return (
-    <View className={classes.container}>
+    <ScreenContainer>
       <Label>Welcome! Start building your screen here.</Label>
       <Button onPress={signOut}>Sign Out</Button>
-    </View>
+    </ScreenContainer>
   );
 }
-
-const classes = {
-  container: 'flex-1 items-center justify-center gap-5',
-};

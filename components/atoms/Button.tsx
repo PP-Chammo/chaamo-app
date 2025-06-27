@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { clsx } from 'clsx';
 import {
@@ -18,7 +18,7 @@ interface ButtonProps extends TouchableOpacityProps {
   disabled?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({
+const Button: React.FC<ButtonProps> = memo(function Button({
   variant = 'primary',
   size = 'medium',
   children,
@@ -27,7 +27,7 @@ const Button: React.FC<ButtonProps> = ({
   textProps,
   disabled = false,
   ...props
-}) => {
+}) {
   return (
     <TouchableOpacity
       disabled={disabled}
@@ -53,7 +53,7 @@ const Button: React.FC<ButtonProps> = ({
       </Text>
     </TouchableOpacity>
   );
-};
+});
 
 const classes = {
   base: 'rounded-full items-center justify-center',

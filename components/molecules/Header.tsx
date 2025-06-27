@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { Text, TouchableOpacity, View } from 'react-native';
 
@@ -9,7 +9,10 @@ interface HeaderProps {
   onBackPress?: () => void;
 }
 
-const Header = ({ title, onBackPress }: HeaderProps) => {
+const Header: React.FC<HeaderProps> = memo(function Header({
+  title,
+  onBackPress,
+}) {
   return (
     <View className={classes.header}>
       {onBackPress && (
@@ -21,7 +24,7 @@ const Header = ({ title, onBackPress }: HeaderProps) => {
       {onBackPress && <View className={classes.rightSpace} />}
     </View>
   );
-};
+});
 
 const classes = {
   header:

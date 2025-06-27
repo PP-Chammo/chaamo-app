@@ -1,14 +1,13 @@
-import { memo, useState } from 'react';
+import { useState } from 'react';
 
 import { Link, router } from 'expo-router';
 import { View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button, Label } from '@/components/atoms';
+import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header, PhoneInput } from '@/components/molecules';
 import { InputChangeParams } from '@/domains';
 
-const SignUpScreen = memo(() => {
+export default function SignUpScreen() {
   const [form, setForm] = useState({
     phone: '',
   });
@@ -22,7 +21,7 @@ const SignUpScreen = memo(() => {
   };
 
   return (
-    <SafeAreaView className={classes.container}>
+    <ScreenContainer>
       <Header title="Sign Up" onBackPress={() => router.back()} />
       <View className={classes.form}>
         <Label className={classes.title} variant="title">
@@ -57,12 +56,11 @@ const SignUpScreen = memo(() => {
           Privacy Policy
         </Link>
       </Label>
-    </SafeAreaView>
+    </ScreenContainer>
   );
-});
+}
 
 const classes = {
-  container: 'flex-1 bg-slate-100 dark:bg-slate-900 mx-5',
   form: 'flex-1 mt-[50] gap-5',
   title: 'text-3xl font-bold text-teal-600 mb-2',
   description: 'text-slate-500 text-lg mb-8',
@@ -71,7 +69,3 @@ const classes = {
   sendButton: 'my-2',
   terms: 'text-slate-500 text-md mb-12',
 };
-
-SignUpScreen.displayName = 'SignUpScreen';
-
-export default SignUpScreen;

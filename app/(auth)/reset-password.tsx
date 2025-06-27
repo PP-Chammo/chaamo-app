@@ -1,21 +1,21 @@
 import { useState } from 'react';
 
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { Button, Label, ScreenContainer } from '@/components/atoms';
-import { Header, PhoneInput, TextField } from '@/components/molecules';
+import { Header, TextField } from '@/components/molecules';
 import { InputChangeParams } from '@/domains';
 
-interface SignInForm {
-  phone: string;
-  password: string;
+interface ResetPasswordForm {
+  newPassword: string;
+  confirmNewPassword: string;
 }
 
-export default function SignInScreen() {
-  const [form, setForm] = useState<SignInForm>({
-    phone: '',
-    password: '',
+export default function ResetPasswordScreen() {
+  const [form, setForm] = useState<ResetPasswordForm>({
+    newPassword: '',
+    confirmNewPassword: '',
   });
   const [errorText, setErrorText] = useState<string>('');
 
@@ -24,59 +24,57 @@ export default function SignInScreen() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleLogin = () => {
-    const phone = '+44123456';
-    const password = '123456';
-    if (password !== form.password || phone !== form.phone)
-      return setErrorText('Incorrect number or password');
-    return router.push('/(auth)/otp-verification');
+  const handleReset = () => {
+    if (form.newPassword !== form.confirmNewPassword)
+      return setErrorText('Passwords do not match. Please try again.');
+    return router.push('/(tabs)/home');
   };
 
   return (
     <ScreenContainer>
-      <Header title="Login" />
+      <Header title="New Password" />
       <View className={classes.form}>
         <Label className={classes.title} variant="title">
-          Welcome Back!
+          Reset Your Password
         </Label>
         <Label className={classes.description}>
-          Please enter your credentials below to login.
+          Enter your new password below.
         </Label>
         <View className={classes.inputContainer}>
-          <PhoneInput name="phone" value={form.phone} onChange={handleChange} />
           <TextField
-            label="Password"
-            placeholder="Enter your password"
-            value={form.password}
+            label="New Password"
+            placeholder="Enter New password"
+            value={form.newPassword}
             onChange={handleChange}
-            name="password"
+            name="newPassword"
+            type="password"
+            required
+          />
+          <TextField
+            label="Confirm New Password"
+            placeholder="Enter Confirm New password"
+            value={form.confirmNewPassword}
+            onChange={handleChange}
+            name="confirmNewPassword"
             type="password"
             required
           />
         </View>
         {errorText && <Text className={classes.errorText}>{errorText}</Text>}
         <Button
-          disabled={!form.phone.length || !form.password}
-          onPress={handleLogin}
+          disabled={!form.newPassword || !form.confirmNewPassword}
+          onPress={handleReset}
           className={classes.loginButton}
         >
-          Login
+          Save New Password
         </Button>
-        <Link className={classes.login} href="/forgot-password">
-          Forgot Password?
-        </Link>
       </View>
-      <Label className={classes.signUp}>
-        Don&apos;t have an account?{' '}
-        <Link className={classes.link} href="/sign-up">
-          Sign Up
-        </Link>
-      </Label>
     </ScreenContainer>
   );
 }
 
 const classes = {
+  container: 'flex-1 bg-slate-100 dark:bg-slate-900 mx-5',
   form: 'flex-1 mt-[50] gap-3',
   inputContainer: 'gap-6',
   title: 'text-3xl font-bold text-teal-600',

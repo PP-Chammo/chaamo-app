@@ -1,9 +1,8 @@
-import React, { memo, useState } from 'react';
+import React, { useState } from 'react';
 
 import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button, Label } from '@/components/atoms';
+import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header, OtpInput } from '@/components/molecules';
 import { InputChangeParams } from '@/domains';
 
@@ -11,7 +10,7 @@ interface OTPVerificationForm {
   otp: string;
 }
 
-const OTPVerificationScreen = memo(() => {
+export default function OTPVerificationScreen() {
   const [form, setForm] = useState<OTPVerificationForm>({
     otp: '',
   });
@@ -35,7 +34,7 @@ const OTPVerificationScreen = memo(() => {
   };
 
   return (
-    <SafeAreaView className={classes.container}>
+    <ScreenContainer>
       <Header title="OTP" onBackPress={() => router.back()} />
       <Label className={classes.title} variant="title">
         Phone Number Verification
@@ -56,12 +55,11 @@ const OTPVerificationScreen = memo(() => {
       <Button variant="link" className={classes.link} onPress={handleResendOTP}>
         Resend OTP
       </Button>
-    </SafeAreaView>
+    </ScreenContainer>
   );
-});
+}
 
 const classes = {
-  container: 'flex-1 bg-slate-100 dark:bg-slate-900 mx-5',
   title: 'text-3xl font-bold text-teal-600 mb-2',
   description: 'text-slate-500 text-lg mb-8',
   phoneNumber: 'text-slate-500 font-bold',
@@ -69,7 +67,3 @@ const classes = {
   countdown: 'text-md text-center font-bold mt-6 mb-5',
   link: 'text-slate-500 underline font-medium text-center ',
 };
-
-OTPVerificationScreen.displayName = 'OTPVerificationScreen';
-
-export default OTPVerificationScreen;

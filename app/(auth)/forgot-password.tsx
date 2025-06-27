@@ -1,10 +1,9 @@
-import React, { memo, useState } from 'react';
+import React, { useState } from 'react';
 
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button, Label } from '@/components/atoms';
+import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header, PhoneInput } from '@/components/molecules';
 import { InputChangeParams } from '@/domains';
 
@@ -12,7 +11,7 @@ interface ForgotPassword {
   phone: string;
 }
 
-const ForgotPasswordScreen = memo(() => {
+export default function ForgotPasswordScreen() {
   const [form, setForm] = useState<ForgotPassword>({
     phone: '',
   });
@@ -34,7 +33,7 @@ const ForgotPasswordScreen = memo(() => {
   };
 
   return (
-    <SafeAreaView className={classes.container}>
+    <ScreenContainer>
       <Header title="Forgot Password" onBackPress={() => router.back()} />
       <View className={classes.form}>
         <Label className={classes.title} variant="title">
@@ -53,9 +52,9 @@ const ForgotPasswordScreen = memo(() => {
           Continue
         </Button>
       </View>
-    </SafeAreaView>
+    </ScreenContainer>
   );
-});
+}
 
 const classes = {
   container: 'flex-1 bg-slate-100 dark:bg-slate-900 mx-5',
@@ -69,7 +68,3 @@ const classes = {
   signUp: 'text-slate-500 text-md text-center mb-8',
   errorText: 'text-red-500 text-sm',
 };
-
-ForgotPasswordScreen.displayName = 'ForgotPasswordScreen';
-
-export default ForgotPasswordScreen;

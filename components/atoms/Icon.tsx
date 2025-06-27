@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import * as _Icons from '@expo/vector-icons';
 
 type IconComponentType = React.ComponentType<object>;
@@ -17,13 +19,13 @@ type IconProps<V extends IconVariants> = React.ComponentProps<
   className?: string;
 };
 
-function Icon<V extends IconVariants>({
+const Icon = memo(function Icon<V extends IconVariants>({
   variant = 'MaterialCommunityIcons' as V,
   className,
   ...props
 }: IconProps<V>) {
   const Component = Icons[variant as IconVariants];
   return <Component className={className} {...props} />;
-}
+});
 
 export default Icon;

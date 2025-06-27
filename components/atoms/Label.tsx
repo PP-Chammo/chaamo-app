@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { clsx } from 'clsx';
 import { Text, TextProps } from 'react-native';
@@ -9,19 +9,21 @@ interface LabelProps extends TextProps {
   className?: string;
 }
 
-const Label: React.FC<LabelProps> = ({
+const Label: React.FC<LabelProps> = memo(function Label({
   variant,
   children,
   className = classes.base,
   ...props
-}) => (
-  <Text
-    className={clsx(classes.variant[variant ?? 'default'], className)}
-    {...props}
-  >
-    {children}
-  </Text>
-);
+}) {
+  return (
+    <Text
+      className={clsx(classes.variant[variant ?? 'default'], className)}
+      {...props}
+    >
+      {children}
+    </Text>
+  );
+});
 
 const classes = {
   base: 'text-base text-neutral-900',
