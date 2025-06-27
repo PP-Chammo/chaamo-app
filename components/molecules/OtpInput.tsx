@@ -4,11 +4,12 @@ import { StyleSheet, View } from 'react-native';
 import { OtpInput } from 'react-native-otp-entry';
 
 import { Label } from '@/components/atoms';
+import { InputChangeParams } from '@/domains';
 import { getColor } from '@/utils/getColor';
 
 interface OTPInputProps {
   error: boolean;
-  onChange: ({ name, value }: { name: string; value: string }) => void;
+  onChange: ({ name, value }: InputChangeParams) => void;
   name: string;
 }
 
@@ -40,6 +41,7 @@ const classes = {
   error: 'text-red-700 text-md text-center mt-3',
 };
 
+// We use styles here instead of classes/nativewind because the OtpInput component from 'react-native-otp-entry' expects style objects (StyleSheet or plain JS objects) for its theming props, not className strings. Nativewind classes are not compatible with these style props, so we must use StyleSheet-based styles.
 const styles = StyleSheet.create({
   pinCodeContainer: {
     borderWidth: 1,

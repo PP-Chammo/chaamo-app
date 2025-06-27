@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 interface ButtonProps extends TouchableOpacityProps {
-  variant?: 'primary' | 'secondary' | 'danger';
+  variant?: 'primary' | 'secondary' | 'danger' | 'link';
   size?: 'small' | 'medium' | 'large';
   children: React.ReactNode;
   className?: string;
@@ -63,11 +63,13 @@ const classes = {
     primary: 'bg-teal-500',
     secondary: 'bg-gray-200',
     danger: 'bg-red-600',
+    link: 'bg-transparent',
   },
   textVariant: {
     primary: 'text-white',
     secondary: 'text-teal-500',
     danger: 'text-white',
+    link: 'text-gray-500 underline',
   },
   size: {
     small: 'px-5 py-2.5 text-sm font-semibold',

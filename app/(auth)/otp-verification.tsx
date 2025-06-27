@@ -1,20 +1,25 @@
 import React, { useState } from 'react';
 
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button, Label } from '@/components/atoms';
-import Header from '@/components/atoms/Header';
 import { OtpInput } from '@/components/molecules';
+import Header from '@/components/molecules/Header';
+import { InputChangeParams } from '@/domains';
+
+interface OTPVerificationForm {
+  otp: string;
+}
 
 const OTPVerification = () => {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<OTPVerificationForm>({
     otp: '',
   });
 
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<boolean>(false);
 
-  const handleChange = ({ name, value }: { name: string; value: string }) => {
+  const handleChange = ({ name, value }: InputChangeParams) => {
     setError(false);
     setForm((prev) => ({ ...prev, [name]: value }));
   };
@@ -24,6 +29,10 @@ const OTPVerification = () => {
 
     if (form.otp === otp) return router.push('/(auth)/otp-success');
     return setError(true);
+  };
+
+  const handleResendOTP = () => {
+    console.log('Resend OTP');
   };
 
   return (
@@ -45,9 +54,9 @@ const OTPVerification = () => {
         Verify Now
       </Button>
       <Label className={classes.countdown}>02:00</Label>
-      <Link className={classes.link} href="/sign-up">
+      <Button variant="link" className={classes.link} onPress={handleResendOTP}>
         Resend OTP
-      </Link>
+      </Button>
     </SafeAreaView>
   );
 };
