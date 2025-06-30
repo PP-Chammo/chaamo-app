@@ -4,13 +4,13 @@ import { clsx } from 'clsx';
 import { Pressable, View } from 'react-native';
 
 import { Icon, Label } from '@/components/atoms';
-import { InputChangeParams } from '@/domains';
+import { BooleanChangeParams } from '@/domains';
 import { getColor } from '@/utils/getColor';
 
 interface CheckboxProps {
   label?: string;
   checked: boolean;
-  onChange: ({ name, value }: InputChangeParams) => void;
+  onChange: ({ name, value }: BooleanChangeParams) => void;
   disabled?: boolean;
   name: string;
   children?: React.ReactNode;

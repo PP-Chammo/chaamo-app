@@ -1,9 +1,9 @@
 import { Label, ScreenContainer } from '@/components/atoms';
 
-export default function ExploreScreen() {
+export default function InboxScreen() {
   return (
     <ScreenContainer>
-      <Label>Explore Screen</Label>
+      <Label>Inbox Screen</Label>
     </ScreenContainer>
   );
 }

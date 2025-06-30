@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 
 import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header, PhoneInput, TextField } from '@/components/molecules';
-import { InputChangeParams } from '@/domains';
+import { TextChangeParams } from '@/domains';
 
 interface SignInForm {
   phone: string;
@@ -19,7 +19,7 @@ export default function SignInScreen() {
   });
   const [errorText, setErrorText] = useState<string>('');
 
-  const handleChange = ({ name, value }: InputChangeParams) => {
+  const handleChange = ({ name, value }: TextChangeParams) => {
     setErrorText('');
     setForm((prev) => ({ ...prev, [name]: value }));
   };
