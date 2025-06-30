@@ -78,7 +78,7 @@ export default function PersonalInfoScreen() {
                 onChange={handleChange}
                 value={form.email}
                 required
-                // error={errors['email']}
+                error={errors['email']}
               />
               <PhoneInput
                 name="phone"
@@ -92,7 +92,7 @@ export default function PersonalInfoScreen() {
                 onChange={handleChange}
                 value={form.password}
                 required
-                // type="password"
+                type="password"
                 error={errors['password']}
               />
               <TextField
