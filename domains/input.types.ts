@@ -1,4 +1,4 @@
 export interface InputChangeParams {
   name: string;
-  value: string;
+  value: string | boolean;
 }

@@ -4,6 +4,7 @@ import { Text, TextInput, TextInputProps, View } from 'react-native';
 
 import { Icon } from '@/components/atoms';
 import { InputChangeParams } from '@/domains';
+import { getColor } from '@/utils/getColor';
 
 interface TextFieldProps extends Omit<TextInputProps, 'onChange'> {
   label: string;
@@ -51,7 +52,7 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
             className={classes.eyeIcon}
             name={hidePassword ? 'eye' : 'eye-off'}
             size={24}
-            color="#374151"
+            color={getColor('slate-700')}
             onPress={() => setHidePassword(!hidePassword)}
           />
         )}
