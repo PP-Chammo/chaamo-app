@@ -5,7 +5,7 @@ import { View } from 'react-native';
 
 import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Checkbox, Header, PhoneInput } from '@/components/molecules';
-import { InputChangeParams } from '@/domains';
+import { BooleanChangeParams, TextChangeParams } from '@/domains';
 
 export default function SignUpScreen() {
   const [form, setForm] = useState({
@@ -13,7 +13,10 @@ export default function SignUpScreen() {
     terms: false,
   });
 
-  const handleChange = ({ name, value }: InputChangeParams) => {
+  const handleChange = ({
+    name,
+    value,
+  }: TextChangeParams | BooleanChangeParams) => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 

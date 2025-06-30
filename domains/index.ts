@@ -1,2 +1,1 @@
-import { InputChangeParams } from './input.types';
-export { InputChangeParams };
+export { BooleanChangeParams, TextChangeParams } from './input.types';

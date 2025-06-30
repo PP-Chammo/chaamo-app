@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
 
 import { Icon, Label } from '@/components/atoms';
-import { InputChangeParams } from '@/domains';
+import { TextChangeParams } from '@/domains';
 import { getColor } from '@/utils/getColor';
 
 const PhoneInputLocal = PhoneInput as unknown as React.JSX.ElementType;
@@ -12,7 +12,7 @@ const PhoneInputLocal = PhoneInput as unknown as React.JSX.ElementType;
 interface PhoneNumberInputProps {
   name: string;
   value: string;
-  onChange: ({ name, value }: InputChangeParams) => void;
+  onChange: ({ name, value }: TextChangeParams) => void;
 }
 
 const PhoneNumberInput: React.FC<PhoneNumberInputProps> = memo(

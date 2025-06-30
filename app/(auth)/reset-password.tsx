@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 
 import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header, TextField } from '@/components/molecules';
-import { InputChangeParams } from '@/domains';
+import { TextChangeParams } from '@/domains';
 
 interface ResetPasswordForm {
   newPassword: string;
@@ -19,7 +19,7 @@ export default function ResetPasswordScreen() {
   });
   const [errorText, setErrorText] = useState<string>('');
 
-  const handleChange = ({ name, value }: InputChangeParams) => {
+  const handleChange = ({ name, value }: TextChangeParams) => {
     setErrorText('');
     setForm((prev) => ({ ...prev, [name]: value }));
   };

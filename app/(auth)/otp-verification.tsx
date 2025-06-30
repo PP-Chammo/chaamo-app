@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 
 import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header, OtpInput } from '@/components/molecules';
-import { InputChangeParams } from '@/domains';
+import { TextChangeParams } from '@/domains';
 
 interface OTPVerificationForm {
   otp: string;
@@ -17,7 +17,7 @@ export default function OTPVerificationScreen() {
 
   const [error, setError] = useState<boolean>(false);
 
-  const handleChange = ({ name, value }: InputChangeParams) => {
+  const handleChange = ({ name, value }: TextChangeParams) => {
     setError(false);
     setForm((prev) => ({ ...prev, [name]: value }));
   };
