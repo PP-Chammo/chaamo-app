@@ -4,12 +4,13 @@ import { Link, router } from 'expo-router';
 import { View } from 'react-native';
 
 import { Button, Label, ScreenContainer } from '@/components/atoms';
-import { Header, PhoneInput } from '@/components/molecules';
+import { Checkbox, Header, PhoneInput } from '@/components/molecules';
 import { InputChangeParams } from '@/domains';
 
 export default function SignUpScreen() {
   const [form, setForm] = useState({
     phone: '',
+    terms: false,
   });
 
   const handleChange = ({ name, value }: InputChangeParams) => {
@@ -46,16 +47,23 @@ export default function SignUpScreen() {
           </Link>
         </Label>
       </View>
-      <Label className={classes.terms}>
-        By signing up, you agree to CHAAMO&apos;s{' '}
-        <Link className={classes.link} href="/sign-up">
-          Terms of Service
-        </Link>{' '}
-        and acknowledge you&apos;ve read our{' '}
-        <Link className={classes.link} href="/sign-up">
-          Privacy Policy
-        </Link>
-      </Label>
+      <Checkbox
+        className="mb-12"
+        checked={form.terms}
+        onChange={handleChange}
+        name="terms"
+      >
+        <Label className={classes.terms}>
+          By signing up, you agree to CHAAMO&apos;s{' '}
+          <Link className={classes.link} href="/sign-up">
+            Terms of Service
+          </Link>{' '}
+          and acknowledge you&apos;ve read our{' '}
+          <Link className={classes.link} href="/sign-up">
+            Privacy Policy
+          </Link>
+        </Label>
+      </Checkbox>
     </ScreenContainer>
   );
 }
@@ -67,5 +75,5 @@ const classes = {
   login: 'text-slate-500 text-md text-center',
   link: 'text-teal-600 underline font-bold',
   sendButton: 'my-2',
-  terms: 'text-slate-500 text-md mb-12',
+  terms: 'text-slate-500 text-md ',
 };
