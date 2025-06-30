@@ -39,6 +39,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = memo(
             <Icon name="chevron-down" size={18} color="#374151" />
           }
           countryPickerProps={{
+            countryCodes: ['GB', 'US', 'CA', 'DE', 'FR', 'ES', 'IT', 'AU'],
             renderFlagButton: false,
           }}
         />
