@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 
-import { Text, TextInput, TextInputProps, View } from 'react-native';
+import { Pressable, Text, TextInput, TextInputProps, View } from 'react-native';
 
 import { Icon } from '@/components/atoms';
 import { TextChangeParams } from '@/domains';
@@ -48,13 +48,16 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
           {...props}
         />
         {type === 'password' && (
-          <Icon
+          <Pressable
             className={classes.eyeIcon}
-            name={hidePassword ? 'eye' : 'eye-off'}
-            size={24}
-            color={getColor('slate-700')}
             onPress={() => setHidePassword(!hidePassword)}
-          />
+          >
+            <Icon
+              name={hidePassword ? 'eye' : 'eye-off'}
+              size={24}
+              color={getColor('slate-700')}
+            />
+          </Pressable>
         )}
       </View>
       {error && <Text className={classes.error}>{error}</Text>}
@@ -65,7 +68,7 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
 export default TextField;
 
 const classes = {
-  container: 'gap-2',
+  container: 'gap-2 flex-1',
   label: 'text-slate-500 font-medium text-md ml-4',
   title: 'text-2xl font-bold text-teal-600',
   description: 'text-slate-500 font-medium text-md mb-6',
