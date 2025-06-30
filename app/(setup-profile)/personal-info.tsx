@@ -55,7 +55,7 @@ export default function PersonalInfoScreen() {
       return;
     }
     // TODO: Implement API call to update user info
-    router.push('/(profile)/address');
+    router.push('/(setup-profile)/address');
   };
 
   return (
