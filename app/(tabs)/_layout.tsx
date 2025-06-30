@@ -25,12 +25,42 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="community"
         options={{
-          title: 'Explore',
+          title: 'Community',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <Icon size={28} name="airballoon-outline" color={color} />
+            <Icon size={28} name="account-group-outline" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="sell"
+        options={{
+          title: 'Sell',
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Icon size={28} name="crop-free" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="inbox"
+        options={{
+          title: 'Inbox',
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Icon size={28} name="message-outline" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Icon size={28} name="account-circle-outline" color={color} />
           ),
         }}
       />

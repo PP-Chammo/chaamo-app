@@ -3,7 +3,7 @@ import React, { memo, useState } from 'react';
 import { Pressable, Text, TextInput, TextInputProps, View } from 'react-native';
 
 import { Icon } from '@/components/atoms';
-import { InputChangeParams } from '@/domains';
+import { TextChangeParams } from '@/domains';
 import { getColor } from '@/utils/getColor';
 
 interface TextFieldProps extends Omit<TextInputProps, 'onChange'> {
@@ -12,7 +12,7 @@ interface TextFieldProps extends Omit<TextInputProps, 'onChange'> {
   type?: 'text' | 'password';
   hidePassword?: boolean;
   name: string;
-  onChange: ({ name, value }: InputChangeParams) => void;
+  onChange: ({ name, value }: TextChangeParams) => void;
   error?: string;
 }
 

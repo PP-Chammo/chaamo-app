@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 
 import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header, PhoneInput } from '@/components/molecules';
-import { InputChangeParams } from '@/domains';
+import { TextChangeParams } from '@/domains';
 
 interface ForgotPasswordForm {
   phone: string;
@@ -18,7 +18,7 @@ export default function ForgotPasswordScreen() {
 
   const [errorText, setErrorText] = useState<string>('');
 
-  const handleChange = ({ name, value }: InputChangeParams) => {
+  const handleChange = ({ name, value }: TextChangeParams) => {
     setErrorText('');
     setForm((prev) => ({ ...prev, [name]: value }));
   };

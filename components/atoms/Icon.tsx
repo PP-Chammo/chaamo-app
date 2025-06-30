@@ -21,11 +21,12 @@ type IconProps<V extends IconVariants> = React.ComponentProps<
 
 const Icon = memo(function Icon<V extends IconVariants>({
   variant = 'MaterialCommunityIcons' as V,
+  size = 28,
   className,
   ...props
 }: IconProps<V>) {
   const Component = Icons[variant as IconVariants];
-  return <Component className={className} {...props} />;
+  return <Component className={className} size={size} {...props} />;
 });
 
 export default Icon;

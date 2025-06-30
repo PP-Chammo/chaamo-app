@@ -4,12 +4,12 @@ import { StyleSheet, View } from 'react-native';
 import { OtpInput } from 'react-native-otp-entry';
 
 import { Label } from '@/components/atoms';
-import { InputChangeParams } from '@/domains';
+import { TextChangeParams } from '@/domains';
 import { getColor } from '@/utils/getColor';
 
 interface OTPInputProps {
   error: boolean;
-  onChange: ({ name, value }: InputChangeParams) => void;
+  onChange: ({ name, value }: TextChangeParams) => void;
   name: string;
 }
 
