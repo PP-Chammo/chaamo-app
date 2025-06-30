@@ -5,6 +5,7 @@ import PhoneInput from 'react-native-phone-number-input';
 
 import { Icon, Label } from '@/components/atoms';
 import { InputChangeParams } from '@/domains';
+import { getColor } from '@/utils/getColor';
 
 const PhoneInputLocal = PhoneInput as unknown as React.JSX.ElementType;
 
@@ -36,7 +37,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = memo(
           codeTextStyle={styles.codeText}
           flagButtonStyle={styles.flagButton}
           renderDropdownImage={
-            <Icon name="chevron-down" size={18} color="#374151" />
+            <Icon name="chevron-down" size={18} color={getColor('slate-700')} />
           }
           countryPickerProps={{
             countryCodes: ['GB', 'US', 'CA', 'DE', 'FR', 'ES', 'IT', 'AU'],
@@ -66,10 +67,10 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     borderRadius: 6,
-    backgroundColor: '#fff',
+    backgroundColor: getColor('white'),
     marginLeft: 8,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: getColor('slate-200'),
     flex: 1,
     height: 45,
     minHeight: 45,
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     fontSize: 15,
-    color: '#6B7280',
+    color: getColor('slate-700'),
     paddingLeft: 8,
     height: 45,
     minHeight: 45,
@@ -87,15 +88,15 @@ const styles = StyleSheet.create({
   },
   codeText: {
     fontSize: 15,
-    color: '#374151',
+    color: getColor('slate-700'),
     marginRight: 12,
   },
   flagButton: {
     width: 120,
-    backgroundColor: '#fff',
+    backgroundColor: getColor('white'),
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: getColor('slate-200'),
     height: 45,
     minHeight: 45,
     maxHeight: 45,

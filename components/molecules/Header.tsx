@@ -3,6 +3,7 @@ import React, { memo } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import { Icon } from '@/components/atoms';
+import { getColor } from '@/utils/getColor';
 
 interface HeaderProps {
   title: string;
@@ -17,7 +18,7 @@ const Header: React.FC<HeaderProps> = memo(function Header({
     <View className={classes.header}>
       {onBackPress && (
         <TouchableOpacity onPress={onBackPress} className={classes.backButton}>
-          <Icon name="arrow-left" size={24} color="#222" />
+          <Icon name="arrow-left" size={24} color={getColor('slate-700')} />
         </TouchableOpacity>
       )}
       <Text className={classes.title}>{title}</Text>
