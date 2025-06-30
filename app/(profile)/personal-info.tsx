@@ -5,11 +5,24 @@ import { ScrollView, View } from 'react-native';
 
 import { Button, KeyboardView, ScreenContainer } from '@/components/atoms';
 import { PhoneInput, TextField } from '@/components/molecules';
-import { InputChangeParams } from '@/domains';
-import { validateRequired, ValidationErrors } from '@/utils/validate';
+import { TextChangeParams } from '@/domains';
+import {
+  validateRequired,
+  ValidationErrors,
+  ValidationValues,
+} from '@/utils/validate';
+
+interface Form extends ValidationValues {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+}
 
 export default function PersonalInfoScreen() {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<Form>({
     firstName: '',
     lastName: '',
     email: '',
@@ -18,9 +31,9 @@ export default function PersonalInfoScreen() {
     confirmPassword: '',
   });
 
-  const [errors, setErrors] = useState<ValidationErrors<typeof form>>({});
+  const [errors, setErrors] = useState<ValidationErrors<Form>>({});
 
-  const handleChange = ({ name, value }: InputChangeParams) => {
+  const handleChange = ({ name, value }: TextChangeParams) => {
     setErrors((prev) => {
       delete prev[name as keyof typeof prev];
       return prev;
@@ -29,7 +42,7 @@ export default function PersonalInfoScreen() {
   };
 
   const handleSubmit = () => {
-    const errors = validateRequired<typeof form>(form, [
+    const errors = validateRequired<Form>(form, [
       'firstName',
       'lastName',
       'email',

@@ -1,6 +1,8 @@
+export type ValidationValues = Record<string, string | number>;
+
 export type ValidationErrors<T> = Partial<Record<keyof T, string>>;
 
-export function validateRequired<T extends Record<string, any>>(
+export function validateRequired<T extends ValidationValues>(
   values: T,
   requiredFields: (keyof T)[],
 ): ValidationErrors<T> {
