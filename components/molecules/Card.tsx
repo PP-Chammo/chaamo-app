@@ -9,7 +9,7 @@ import { getColor } from '@/utils/getColor';
 type CardProps = {
   imageUrl: string;
   title: string;
-  marketPrice: string;
+  bidPrice: string;
   currentPrice: string;
   indicator: string;
   onFavoritePress: () => void;
@@ -20,7 +20,7 @@ const Card: React.FC<CardProps> = memo(function CategoryItem({
   imageUrl,
   title,
   currentPrice,
-  marketPrice,
+  bidPrice,
   indicator,
   onFavoritePress,
   featured = false,
@@ -43,7 +43,7 @@ const Card: React.FC<CardProps> = memo(function CategoryItem({
         {title}
       </Label>
       <View className={classes.marketContainer}>
-        <Label className={classes.marketPrice}>{marketPrice}</Label>
+        <Label className={classes.bidPrice}>{bidPrice}</Label>
         <Label
           variant="subtitle"
           className={clsx(classes.indicator, {
@@ -63,7 +63,7 @@ const classes = {
   image:
     'w-36 min-h-[170px] h-auto flex items-center justify-center bg-gray-200 rounded-lg',
   currentPrice: 'text-sm text-teal-500 !font-bold',
-  marketPrice: 'text-xs text-gray-500',
+  bidPrice: 'text-xs text-gray-500',
   title: 'text-sm !text-gray-800',
   marketContainer: 'flex flex-row items-center gap-1.5',
   indicator: 'text-xs text-gray-500',

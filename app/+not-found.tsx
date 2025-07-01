@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { router } from 'expo-router';
 
 import { Label, ScreenContainer } from '@/components/atoms';
 
@@ -6,9 +6,13 @@ export default function NotFoundScreen() {
   return (
     <ScreenContainer>
       <Label variant="title">This screen does not exist.</Label>
-      <Link href="/sign-in">
-        <Label>Go back</Label>
-      </Link>
+      <Label onPress={() => router.back()} className={classes.text}>
+        Go back
+      </Label>
     </ScreenContainer>
   );
 }
+
+const classes = {
+  text: 'text-teal-500',
+};

@@ -13,8 +13,16 @@ const AccountBar = memo(function AccountBar() {
         <Label className="text-xl font-bold">Shireen!</Label>
       </View>
       <View className={classes.rightSpace}>
-        <ButtonIcon name="bell-outline" onPress={() => {}} />
-        <ButtonIcon name="wallet-outline" onPress={() => {}} />
+        <ButtonIcon
+          name="bell"
+          iconVariant="SimpleLineIcons"
+          onPress={() => {}}
+        />
+        <ButtonIcon
+          name="wallet"
+          iconVariant="SimpleLineIcons"
+          onPress={() => {}}
+        />
       </View>
     </Row>
   );

@@ -29,7 +29,7 @@ const classes = {
   base: 'text-base text-neutral-900',
   variant: {
     default: 'text-base text-neutral-900 dark:text-neutral-100',
-    title: 'text-3xl font-bold text-gray-900 dark:text-gray-100',
+    title: 'text-xl font-bold text-gray-900 dark:text-gray-100',
     subtitle: 'text-lg font-semibold text-gray-900 dark:text-gray-100',
   },
 };

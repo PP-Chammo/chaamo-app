@@ -4,11 +4,16 @@ import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import { IDVerificationIcon } from '@/assets/svg';
-import { Icon, Label, ProofIdentity } from '@/components/atoms';
+import {
+  Icon,
+  Label,
+  ProofIdentity,
+  ScreenContainer,
+} from '@/components/atoms';
 
-export default function IdVerificationScreen() {
+export default function ProofIdentityScreen() {
   return (
-    <View className={classes.container}>
+    <ScreenContainer className={classes.container}>
       <View className="items-center justify-center my-12">
         <IDVerificationIcon className={classes.icon} />
       </View>
@@ -39,12 +44,12 @@ export default function IdVerificationScreen() {
         onPress={() => router.push('/')}
         icon={<Icon name="credit-card-outline" size={24} color="black" />}
       />
-    </View>
+    </ScreenContainer>
   );
 }
 
 const classes = {
-  container: 'flex-1 gap-4',
+  container: 'flex-1 gap-4 p-6',
   title: 'text-3xl font-bold text-teal-600',
   description: 'text-slate-500 font-medium text-lg mb-6',
   icon: 'w-10 h-10',
