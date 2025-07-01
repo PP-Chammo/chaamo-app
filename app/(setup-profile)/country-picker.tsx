@@ -1,19 +1,22 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { router } from 'expo-router';
 import { FlatList, Pressable, Text, View } from 'react-native';
 
 import { Icon, ScreenContainer } from '@/components/atoms';
 import { Header, TextField } from '@/components/molecules';
+import { COUNTRIES } from '@/constants/dummy';
 import { useSelectWithScreenStore } from '@/hooks/useSelectWithScreenStore';
 import { getColor } from '@/utils/getColor';
 
-const STATES = ['USA', 'India', 'Canada', 'Australia', 'China', 'Pakistan'];
-
 export default function CountryPickerScreen() {
   const [search, setSearch] = useState('');
-  const filteredStates = STATES.filter((s) =>
-    s.toLowerCase().includes(search.toLowerCase()),
+  const filteredStates = useMemo(
+    () =>
+      COUNTRIES.filter((country) =>
+        country.toLowerCase().includes(search.toLowerCase()),
+      ),
+    [],
   );
 
   const { setSelectedCountry } = useSelectWithScreenStore();

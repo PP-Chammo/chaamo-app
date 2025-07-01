@@ -66,3 +66,14 @@ export const dummyDiscoverPeopleList = [
     imageUrl: 'https://example.com/image3.jpg',
   },
 ];
+
+export const COUNTRIES = [
+  'USA',
+  'India',
+  'Canada',
+  'Australia',
+  'China',
+  'Pakistan',
+];
+
+export const STATES = ['USD', 'Euro', 'Pound', 'PKR', 'CAD', 'AUD'];

@@ -5,10 +5,9 @@ import { FlatList, Pressable, Text, View } from 'react-native';
 
 import { Icon, ScreenContainer } from '@/components/atoms';
 import { Header, TextField } from '@/components/molecules';
+import { STATES } from '@/constants/dummy';
 import { useSelectWithScreenStore } from '@/hooks/useSelectWithScreenStore';
 import { getColor } from '@/utils/getColor';
-
-const STATES = ['USD', 'Euro', 'Pound', 'PKR', 'CAD', 'AUD'];
 
 export default function StatePickerScreen() {
   const [search, setSearch] = useState('');

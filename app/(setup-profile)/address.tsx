@@ -4,8 +4,12 @@ import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import { Button, KeyboardView, ScreenContainer } from '@/components/atoms';
-import { Header, SetupProfileTabs, TextField } from '@/components/molecules';
-import SelectWithScreen from '@/components/molecules/SelectWithScreen';
+import {
+  Header,
+  SelectWithScreen,
+  SetupProfileTabs,
+  TextField,
+} from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
 import { useSelectWithScreenStore } from '@/hooks/useSelectWithScreenStore';
 import {

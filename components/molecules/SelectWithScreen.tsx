@@ -3,9 +3,8 @@ import React, { memo } from 'react';
 import { clsx } from 'clsx';
 import { Text, TextInput, TextInputProps, View } from 'react-native';
 
+import { Icon } from '@/components/atoms';
 import { getColor } from '@/utils/getColor';
-
-import { Icon } from '../atoms';
 
 interface SelectWithScreenProps extends TextInputProps {
   label?: string;
