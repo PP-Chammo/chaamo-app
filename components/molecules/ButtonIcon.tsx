@@ -9,6 +9,7 @@ interface ButtonIconProps {
   name: IconProp['name'];
   onPress: () => void;
   iconSize?: IconProp['size'];
+  iconVariant?: IconProp['variant'];
   color?: IconProp['color'];
   className?: string;
   count?: string | number;
@@ -19,7 +20,8 @@ type IconProp = React.ComponentProps<typeof Icon>;
 const ButtonIcon = memo(function ButtonIcon({
   name,
   onPress,
-  iconSize = 28,
+  iconSize = 24,
+  iconVariant,
   color = 'black',
   className,
   count,
@@ -29,7 +31,7 @@ const ButtonIcon = memo(function ButtonIcon({
       onPress={onPress}
       className={clsx(classes.container, className)}
     >
-      <Icon name={name} size={iconSize} color={color} />
+      <Icon name={name} size={iconSize} color={color} variant={iconVariant} />
       {count && (
         <View className={classes.countContainer}>
           <Label className={classes.countText}>{count}</Label>

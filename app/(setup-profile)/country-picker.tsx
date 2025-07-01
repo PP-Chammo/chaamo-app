@@ -16,7 +16,7 @@ export default function CountryPickerScreen() {
       COUNTRIES.filter((country) =>
         country.toLowerCase().includes(search.toLowerCase()),
       ),
-    [],
+    [search],
   );
 
   const { setSelectedCountry } = useSelectWithScreenStore();

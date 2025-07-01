@@ -11,3 +11,5 @@ export { default as PhoneInput } from './PhoneInput';
 export { default as SelectWithScreen } from './SelectWithScreen';
 export { default as SetupProfileTabs } from './SetupProfileTabs';
 export { default as TextField } from './TextField';
+export { default as CardInfo } from './CardInfo';
+export { default as FilterSection } from './FilterSection';

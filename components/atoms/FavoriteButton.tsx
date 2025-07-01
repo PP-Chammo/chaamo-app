@@ -1,22 +1,28 @@
 import { memo } from 'react';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { clsx } from 'clsx';
 import { TouchableOpacity } from 'react-native';
 
 import { getColor } from '@/utils/getColor';
 
 export interface FavoriteButtonProps {
-  enabled?: boolean;
   onPress: () => void;
+  enabled?: boolean;
+  iconSize?: number;
+  className?: string;
 }
 
 export const FavoriteButton: React.FC<FavoriteButtonProps> = memo(
-  function FavoriteButton({ enabled, onPress }) {
+  function FavoriteButton({ enabled, onPress, iconSize = 16, className }) {
     return (
-      <TouchableOpacity onPress={onPress} className={classes.button}>
+      <TouchableOpacity
+        onPress={onPress}
+        className={clsx(classes.button, className)}
+      >
         <MaterialCommunityIcons
           name={enabled ? 'heart' : 'heart-outline'}
-          size={16}
+          size={iconSize}
           color={getColor(enabled ? 'red-600' : 'black')}
         />
       </TouchableOpacity>

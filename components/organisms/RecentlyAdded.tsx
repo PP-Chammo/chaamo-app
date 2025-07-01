@@ -19,7 +19,7 @@ const RecentlyAdded = memo(function RecentlyAdded() {
             imageUrl={card.imageUrl}
             title={card.title}
             currentPrice={card.currentPrice}
-            marketPrice={card.marketPrice}
+            bidPrice={card.bidPrice}
             indicator={card.indicator}
             onFavoritePress={() => {
               console.log(`Favorite pressed for card ${card.id}`);
