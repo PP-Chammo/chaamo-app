@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
 
+import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-import { ScrollView, View } from 'react-native';
+import { Alert, View } from 'react-native';
 
-import { Button, KeyboardView, ScreenContainer } from '@/components/atoms';
-import { PhoneInput, TextField } from '@/components/molecules';
+import {
+  Avatar,
+  Button,
+  KeyboardView,
+  ScreenContainer,
+} from '@/components/atoms';
+import {
+  Header,
+  PhoneInput,
+  SetupProfileTabs,
+  TextField,
+} from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
 import {
   validateRequired,
@@ -19,6 +30,7 @@ interface Form extends ValidationValues {
   phone: string;
   password: string;
   confirmPassword: string;
+  image: string;
 }
 
 export default function PersonalInfoScreen() {
@@ -29,6 +41,7 @@ export default function PersonalInfoScreen() {
     phone: '',
     password: '',
     confirmPassword: '',
+    image: '',
   });
 
   const [errors, setErrors] = useState<ValidationErrors<Form>>({});
@@ -58,76 +71,95 @@ export default function PersonalInfoScreen() {
     router.push('/(setup-profile)/address');
   };
 
+  const handleImagePick = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (status !== 'granted') {
+      return Alert.alert(
+        'Permission required',
+        'We need permission to access your photos.',
+      );
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 0.8,
+    });
+
+    if (result.canceled || !result.assets.length)
+      return Alert.alert('No image selected');
+
+    const selectedImage = result.assets[0];
+
+    setForm((prev) => ({ ...prev, image: selectedImage.uri }));
+  };
+
   return (
-    <ScreenContainer className="flex-1 pb-24">
-      <KeyboardView>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View className={classes.formContainer}>
-            <View className="gap-4 flex-row w-full">
-              <TextField
-                name="firstName"
-                label="First Name"
-                placeholder="First Name"
-                onChange={handleChange}
-                value={form.firstName}
-                required
-                error={errors['firstName']}
-              />
-              <TextField
-                name="lastName"
-                label="Last Name"
-                placeholder="Last Name"
-                onChange={handleChange}
-                value={form.lastName}
-                required
-                error={errors['lastName']}
-              />
-            </View>
-            <View className="gap-4 flex-1">
-              <TextField
-                name="email"
-                label="Email"
-                placeholder="Email"
-                onChange={handleChange}
-                value={form.email}
-                required
-                error={errors['email']}
-              />
-              <PhoneInput
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-              />
-              <TextField
-                name="password"
-                label="Password"
-                placeholder="Password"
-                onChange={handleChange}
-                value={form.password}
-                required
-                type="password"
-                error={errors['password']}
-              />
-              <TextField
-                name="confirmPassword"
-                label="Confirm Password"
-                placeholder="Confirm Password"
-                onChange={handleChange}
-                value={form.confirmPassword}
-                required
-                type="password"
-                error={errors['confirmPassword']}
-              />
-            </View>
-          </View>
-        </ScrollView>
+    <ScreenContainer className={classes.container}>
+      <Header title="Setting Up Profile" onBackPress={() => router.back()} />
+      <SetupProfileTabs />
+      <KeyboardView className={classes.formContainer}>
+        <Avatar
+          size={120}
+          onPress={handleImagePick}
+          imageUrl={form.image}
+          imageContainerClassName={classes.imageContainer}
+          className={classes.image}
+        />
+        <View className="gap-4 flex-row w-full">
+          <TextField
+            name="firstName"
+            label="First Name"
+            placeholder="First Name"
+            onChange={handleChange}
+            value={form.firstName}
+            required
+            error={errors['firstName']}
+          />
+          <TextField
+            name="lastName"
+            label="Last Name"
+            placeholder="Last Name"
+            onChange={handleChange}
+            value={form.lastName}
+            required
+            error={errors['lastName']}
+          />
+        </View>
+        <View className="gap-4 flex-1">
+          <TextField
+            name="email"
+            label="Email"
+            placeholder="Email"
+            onChange={handleChange}
+            value={form.email}
+            required
+            error={errors['email']}
+          />
+          <PhoneInput name="phone" value={form.phone} onChange={handleChange} />
+          <TextField
+            name="password"
+            label="Password"
+            placeholder="Password"
+            onChange={handleChange}
+            value={form.password}
+            required
+            type="password"
+            error={errors['password']}
+          />
+          <TextField
+            name="confirmPassword"
+            label="Confirm Password"
+            placeholder="Confirm Password"
+            onChange={handleChange}
+            value={form.confirmPassword}
+            required
+            type="password"
+            error={errors['confirmPassword']}
+          />
+        </View>
       </KeyboardView>
-      <Button
-        className={classes.saveButton}
-        variant="primary"
-        size="large"
-        onPress={handleSubmit}
-      >
+      <Button variant="primary" size="large" onPress={handleSubmit}>
         Continue
       </Button>
     </ScreenContainer>
@@ -135,6 +167,8 @@ export default function PersonalInfoScreen() {
 }
 
 const classes = {
-  formContainer: 'flex-1 gap-4 pb-10',
-  saveButton: 'mb-4',
+  container: 'flex-1 p-6',
+  image: 'mb-12',
+  imageContainer: 'p-1',
+  formContainer: 'pb-10 justify-center items-center',
 };

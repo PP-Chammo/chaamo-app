@@ -1,5 +1,6 @@
 import React, { memo, useState } from 'react';
 
+import { clsx } from 'clsx';
 import { Pressable, Text, TextInput, TextInputProps, View } from 'react-native';
 
 import { Icon } from '@/components/atoms';
@@ -7,13 +8,15 @@ import { TextChangeParams } from '@/domains';
 import { getColor } from '@/utils/getColor';
 
 interface TextFieldProps extends Omit<TextInputProps, 'onChange'> {
-  label: string;
+  label?: string;
   required?: boolean;
   type?: 'text' | 'password';
   hidePassword?: boolean;
   name: string;
   onChange: ({ name, value }: TextChangeParams) => void;
   error?: string;
+  leftIcon?: React.ReactNode;
+  inputClassName?: string;
 }
 
 const TextField: React.FC<TextFieldProps> = memo(function TextField({
@@ -25,6 +28,8 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
   onChange,
   name,
   error,
+  leftIcon,
+  inputClassName,
   ...props
 }) {
   const [hidePassword, setHidePassword] = useState(true);
@@ -35,14 +40,23 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
 
   return (
     <View className={classes.container}>
-      <Text className={classes.label}>
-        {label}
-        {required && <Text className={classes.required}>*</Text>}
-      </Text>
+      {label && (
+        <Text className={classes.label}>
+          {label}
+          {required && <Text className={classes.required}>*</Text>}
+        </Text>
+      )}
       <View className={classes.inputContainer}>
+        {leftIcon && (
+          <View className={classes.leftIconContainer}>{leftIcon}</View>
+        )}
         <TextInput
           placeholder={placeholder}
-          className={classes.input}
+          className={clsx(
+            classes.input,
+            inputClassName,
+            leftIcon && classes.inputWithLeftIcon,
+          )}
           onChangeText={handleChange}
           secureTextEntry={type === 'password' && hidePassword}
           {...props}
@@ -79,6 +93,8 @@ const classes = {
   required: 'text-red-500',
   inputContainer: 'relative',
   input: 'rounded-lg border border-slate-200 rounded-md p-4 bg-white h-[48px]',
+  inputWithLeftIcon: 'px-12 py-4',
   eyeIcon: 'absolute right-4 top-1/2 -translate-y-1/2',
   error: 'text-red-500 text-sm',
+  leftIconContainer: 'absolute left-4 translate-y-1/2 z-10',
 };

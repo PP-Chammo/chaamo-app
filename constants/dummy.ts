@@ -53,7 +53,7 @@ export const dummyDiscoverPeopleList = [
   {
     id: '1',
     fullname: 'John Doe',
-    imageUrl: 'https://example.com/image1.jpg',
+    imageUrl: 'https://dummyimage.com/600x400/000/fff',
   },
   {
     id: '2',
@@ -66,3 +66,14 @@ export const dummyDiscoverPeopleList = [
     imageUrl: 'https://example.com/image3.jpg',
   },
 ];
+
+export const COUNTRIES = [
+  'USA',
+  'India',
+  'Canada',
+  'Australia',
+  'China',
+  'Pakistan',
+];
+
+export const STATES = ['USD', 'Euro', 'Pound', 'PKR', 'CAD', 'AUD'];
