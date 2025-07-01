@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 
+import { clsx } from 'clsx';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import { Icon } from '@/components/atoms';
@@ -8,14 +9,16 @@ import { getColor } from '@/utils/getColor';
 interface HeaderProps {
   title: string;
   onBackPress?: () => void;
+  className?: string;
 }
 
 const Header: React.FC<HeaderProps> = memo(function Header({
   title,
   onBackPress,
+  className,
 }) {
   return (
-    <View className={classes.header}>
+    <View className={clsx(classes.header, className)}>
       {onBackPress && (
         <TouchableOpacity onPress={onBackPress} className={classes.backButton}>
           <Icon name="arrow-left" size={24} color={getColor('slate-700')} />

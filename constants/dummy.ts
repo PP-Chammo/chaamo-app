@@ -53,7 +53,7 @@ export const dummyDiscoverPeopleList = [
   {
     id: '1',
     fullname: 'John Doe',
-    imageUrl: 'https://example.com/image1.jpg',
+    imageUrl: 'https://dummyimage.com/600x400/000/fff',
   },
   {
     id: '2',
