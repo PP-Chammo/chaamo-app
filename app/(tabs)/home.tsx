@@ -37,7 +37,12 @@ export default function HomeScreen() {
         <AccountBar />
         <Row className={classes.headerRow}>
           <SearchField value={searchText} onChange={handleChange} />
-          <ButtonIcon name="heart-outline" onPress={() => {}} count="5+" />
+          <ButtonIcon
+            name="heart"
+            iconVariant="SimpleLineIcons"
+            onPress={() => {}}
+            count="5+"
+          />
         </Row>
       </View>
 

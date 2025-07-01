@@ -32,7 +32,7 @@ const Row: React.FC<RowProps> = memo(function Row({
 });
 
 const classes = {
-  container: 'flex-row items-center gap-3',
+  container: 'flex-row items-center gap-1',
   justify: {
     left: 'justify-start',
     center: 'justify-center',

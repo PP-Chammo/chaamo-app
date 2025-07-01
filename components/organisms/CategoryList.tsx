@@ -1,11 +1,18 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 
+import { router } from 'expo-router';
 import { ScrollView } from 'react-native';
 
 import { Category, GroupWithLink } from '@/components/molecules';
 import { categories } from '@/constants/categories';
 
 const CategoryList = memo(function CategoryList() {
+  const handleCtaCards = useCallback(
+    (category: string) =>
+      router.push({ pathname: '/screens/cards', params: { category } }),
+    [],
+  );
+
   return (
     <GroupWithLink title="Categories" onViewAllHref="/screens/categories">
       <ScrollView
@@ -18,6 +25,7 @@ const CategoryList = memo(function CategoryList() {
             key={category.title}
             title={category.title}
             image={category.image}
+            onPress={handleCtaCards}
           />
         ))}
       </ScrollView>

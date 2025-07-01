@@ -6,12 +6,17 @@ import { Text, View } from 'react-native';
 interface TagProps {
   title: string;
   className?: string;
+  textClassName?: string;
 }
 
-const Tag: React.FC<TagProps> = memo(function Badge({ title, className }) {
+const Tag: React.FC<TagProps> = memo(function Badge({
+  title,
+  className,
+  textClassName,
+}) {
   return (
     <View className={clsx(classes.container, className)}>
-      <Text className={classes.title}>{title}</Text>
+      <Text className={clsx(classes.title, textClassName)}>{title}</Text>
     </View>
   );
 });

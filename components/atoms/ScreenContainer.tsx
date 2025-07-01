@@ -3,13 +3,14 @@ import { memo } from 'react';
 import { clsx } from 'clsx';
 import { LinearGradient } from 'expo-linear-gradient';
 import { cssInterop } from 'nativewind';
-import { SafeAreaView, ViewProps } from 'react-native';
+import { SafeAreaView, View, ViewProps } from 'react-native';
 
 import { getColor } from '@/utils/getColor';
 
 interface ScreenContainerProps extends ViewProps {
   children: React.ReactNode;
   classNameTop?: string;
+  classNameBottom?: string;
 }
 
 const StyledGradient = cssInterop(LinearGradient, {
@@ -21,6 +22,7 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
     children,
     className,
     classNameTop,
+    classNameBottom,
     style,
     ...props
   }) {
@@ -28,14 +30,22 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
       <>
         <SafeAreaView className={clsx(classes.containerTop, classNameTop)} />
         <SafeAreaView className={classes.container} style={style} {...props}>
-          <StyledGradient
-            colors={[getColor('orange-50'), getColor('teal-50')]}
-            className={clsx(classes.container, className)}
-          >
-            {children}
-          </StyledGradient>
+          {className?.includes('bg-') ? (
+            <View className={clsx(classes.container, className)} style={style}>
+              {children}
+            </View>
+          ) : (
+            <StyledGradient
+              colors={[getColor('orange-50'), getColor('teal-50')]}
+              className={clsx(classes.container, className)}
+            >
+              {children}
+            </StyledGradient>
+          )}
         </SafeAreaView>
-        <SafeAreaView className={classes.containerBottom} />
+        <SafeAreaView
+          className={clsx(classes.containerBottom, classNameBottom)}
+        />
       </>
     );
   },
