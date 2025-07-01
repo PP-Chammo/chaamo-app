@@ -6,9 +6,13 @@ export default function NotFoundScreen() {
   return (
     <ScreenContainer>
       <Label variant="title">This screen does not exist.</Label>
-      <Label onPress={() => router.back()} style={{ color: 'blue' }}>
+      <Label onPress={() => router.back()} className={classes.text}>
         Go back
       </Label>
     </ScreenContainer>
   );
 }
+
+const classes = {
+  text: 'text-teal-500',
+};
