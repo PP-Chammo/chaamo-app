@@ -10,10 +10,12 @@ import {
   ProofIdentity,
   ScreenContainer,
 } from '@/components/atoms';
+import { Header } from '@/components/molecules';
 
 export default function ProofIdentityScreen() {
   return (
     <ScreenContainer className={classes.container}>
+      <Header title="ID Verification" onBackPress={() => router.back()} />
       <View className="items-center justify-center my-12">
         <IDVerificationIcon className={classes.icon} />
       </View>
@@ -25,7 +27,7 @@ export default function ProofIdentityScreen() {
       </Label>
       <ProofIdentity
         title="ID Card"
-        onPress={() => router.push('/')}
+        onPress={() => router.push('/id-card')}
         icon={<Icon name="badge-account-outline" size={24} color="black" />}
       />
       <ProofIdentity
