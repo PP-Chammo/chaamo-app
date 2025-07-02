@@ -1,8 +1,8 @@
 import { memo } from 'react';
 
-import { clsx } from 'clsx';
 import { Image, View } from 'react-native';
 
+import EBayImage from '@/assets/svg/ebay.svg';
 import { Badge, FavoriteButton, Icon, Label } from '@/components/atoms';
 import { getColor } from '@/utils/getColor';
 
@@ -43,16 +43,13 @@ const Card: React.FC<CardProps> = memo(function CategoryItem({
         {title}
       </Label>
       <View className={classes.marketContainer}>
+        <EBayImage />
         <Label className={classes.bidPrice}>{bidPrice}</Label>
-        <Label
-          variant="subtitle"
-          className={clsx(classes.indicator, {
-            'text-red-500': indicator === 'down',
-            'text-teal-500': indicator === 'up',
-          })}
-        >
-          {indicator}
-        </Label>
+        <Icon
+          name={indicator === 'up' ? 'trending-up' : 'trending-down'}
+          color={getColor(indicator === 'up' ? 'teal-600' : 'red-600')}
+          size={16}
+        />
       </View>
     </View>
   );
@@ -66,7 +63,6 @@ const classes = {
   bidPrice: 'text-xs text-gray-500',
   title: 'text-sm !text-gray-800',
   marketContainer: 'flex flex-row items-center gap-1.5',
-  indicator: 'text-xs text-gray-500',
 };
 
 export default Card;

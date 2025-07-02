@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 
+import { router } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { ScrollView, View } from 'react-native';
 
@@ -31,12 +32,24 @@ export default function HomeScreen() {
     [],
   );
 
+  const handlePressSearch = useCallback(() => {
+    router.push({
+      pathname: '/screens/search',
+      params: { focus: 'true', search: searchText },
+    });
+  }, [searchText]);
+
   return (
     <ScreenContainer classNameTop={classes.containerTop}>
       <View className={classes.headerContainer}>
         <AccountBar />
         <Row className={classes.headerRow}>
-          <SearchField value={searchText} onChange={handleChange} />
+          <SearchField
+            editable={false}
+            value={searchText}
+            onChange={handleChange}
+            onPress={handlePressSearch}
+          />
           <ButtonIcon
             name="heart"
             iconVariant="SimpleLineIcons"

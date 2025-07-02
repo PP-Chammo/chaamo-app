@@ -8,7 +8,9 @@ import { Icon, Label, Row } from '@/components/atoms';
 
 interface GroupWithLinkProps {
   title: string;
-  onViewAllHref: React.ComponentProps<typeof Link>['href'];
+  titleLink?: string;
+  onViewAllHref?: React.ComponentProps<typeof Link>['href'];
+  onPress?: () => void;
   children: React.ReactNode;
   iconName?: string;
   iconColor?: string;
@@ -25,7 +27,9 @@ cssInterop(ScrollView, {
 const GroupWithLink: React.FC<GroupWithLinkProps> = memo(
   function GroupWithLink({
     title,
+    titleLink = 'View all',
     onViewAllHref,
+    onPress,
     children,
     iconName,
     iconColor = 'black',
@@ -36,14 +40,20 @@ const GroupWithLink: React.FC<GroupWithLinkProps> = memo(
       <View className={className}>
         <Row between className={classes.headerContainer}>
           <View className={classes.titleContainer}>
-            <Label variant="subtitle">{title}</Label>
+            <Label className={classes.title}>{title}</Label>
             {iconName && (
               <Icon name={iconName} color={iconColor} size={iconSize} />
             )}
           </View>
-          <Link href={onViewAllHref} className={classes.viewAllText}>
-            View all
-          </Link>
+          {onViewAllHref ? (
+            <Link href={onViewAllHref} className={classes.viewAllText}>
+              {titleLink}
+            </Link>
+          ) : (
+            <Label className={classes.viewAllText} onPress={onPress}>
+              {titleLink}
+            </Label>
+          )}
         </Row>
         <View className={classes.container}>{children}</View>
       </View>
@@ -54,7 +64,8 @@ const GroupWithLink: React.FC<GroupWithLinkProps> = memo(
 const classes = {
   headerContainer: 'px-5 pt-5',
   titleContainer: 'flex flex-row items-center gap-2',
-  viewAllText: 'text-teal-500 font-bold',
+  title: 'font-semibold',
+  viewAllText: 'text-teal-500 font-semibold',
   container: 'flex flex-row gap-5',
 };
 
