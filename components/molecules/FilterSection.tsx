@@ -6,11 +6,11 @@ import { Button, Label, Row } from '@/components/atoms';
 
 interface FilterSectionProps {
   resultCount?: number;
-  category?: string;
+  query?: string;
 }
 
 const FilterSection: React.FC<FilterSectionProps> = memo(
-  function FilterSection({ resultCount = 0, category }) {
+  function FilterSection({ resultCount = 0, query }) {
     return (
       <View>
         <Row className={classes.filterContainer}>
@@ -33,11 +33,11 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
             Location
           </Button>
         </Row>
-        {category && (
+        {query && (
           <Row className={classes.filterTextContainer}>
             <Label className={classes.filterPlaceholder}>Showing:</Label>
             <Label className={classes.resultText}>
-              {resultCount} results for {category}
+              {resultCount} results for {query}
             </Label>
           </Row>
         )}
@@ -49,7 +49,7 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
 const classes = {
   filterContainer: 'px-5 py-3',
   filterButton: '!px-4 !py-2',
-  filterTextContainer: 'px-5 py-3 !gap-1',
+  filterTextContainer: 'px-5 pt-1 pb-4 !gap-1',
   filterPlaceholder: 'font-light text-gray-500',
   resultText: 'font-semibold',
 };
