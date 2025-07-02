@@ -1,30 +1,26 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { router } from 'expo-router';
-import { Dimensions, Image, Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 
 import { Button, ScreenContainer, UploadInstruction } from '@/components/atoms';
 import { Header } from '@/components/molecules';
+import { FRAME_HEIGHT, FRAME_WIDTH } from '@/constants/setup-profile';
 import { useImageCapturedStore } from '@/hooks/useImageCapturedStore';
 import { imageCapturedStore } from '@/stores/imageCapturedStore';
-
-const { width } = Dimensions.get('window');
-const FRAME_WIDTH = width * 0.85;
-const FRAME_HEIGHT = FRAME_WIDTH * 0.6;
 
 export default function IDCardCapturedScreen() {
   const { uri, setImageCaptured } = useImageCapturedStore();
 
-  const handleRetake = () => {
+  const handleRetake = useCallback(() => {
     setImageCaptured(imageCapturedStore);
     router.push('/id-card');
-  };
+  }, [setImageCaptured]);
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     // TODO: Implement submit logic save image to storage and send to backend
-    console.log('submit');
     router.push('/id-card-progress');
-  };
+  }, []);
 
   return (
     <ScreenContainer className={classes.container}>

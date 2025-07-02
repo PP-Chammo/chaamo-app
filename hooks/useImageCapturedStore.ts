@@ -14,6 +14,6 @@ export const useImageCapturedStore = create<ImageCapturedState>((set) => ({
   ...imageCapturedStore,
   setImageCaptured: (image: ImageCapturedStore) => {
     set(image);
-    router.push('/(setup-profile)/(proof-identity)/id-card-captured');
+    router.push('/(setup-profile)/(upload-identity)/id-card-captured');
   },
 }));
