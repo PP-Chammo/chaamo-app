@@ -1,9 +1,16 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 
 import { router, useLocalSearchParams } from 'expo-router';
-import { FlatList } from 'react-native';
+import { FlatList, View } from 'react-native';
 
-import { Row, ScreenContainer, SearchField } from '@/components/atoms';
+import {
+  Button,
+  Icon,
+  Label,
+  Row,
+  ScreenContainer,
+  SearchField,
+} from '@/components/atoms';
 import { ButtonIcon, CardInfo, FilterSection } from '@/components/molecules';
 import { dummyAuctionCardList, dummyFeaturedCardList } from '@/constants/dummy';
 import { TextChangeParams } from '@/domains';
@@ -21,6 +28,14 @@ export default function CardsScreen() {
     [],
   );
 
+  const handleCtaBack = useCallback(() => router.back(), []);
+
+  useLayoutEffect(() => {
+    if (typeof query?.search === 'string') {
+      setSearchText(query.search);
+    }
+  }, [query?.search]);
+
   return (
     <ScreenContainer classNameTop={classes.containerTop}>
       <Row className={classes.headerContainer}>
@@ -32,26 +47,45 @@ export default function CardsScreen() {
         />
         <SearchField value={searchText} onChange={handleChange} />
       </Row>
-      <FilterSection
-        resultCount={dummyAuctionCardList.length}
-        category={query?.category as string}
-      />
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        data={dummyFeaturedCardList}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <CardInfo
-            imageUrl={item.imageUrl}
-            title={item.title}
-            bidPrice={item.bidPrice}
-            currentPrice={item.currentPrice}
-            indicator={item.indicator}
-            onFavoritePress={() => console.log('Favorite pressed')}
+
+      {dummyFeaturedCardList?.length > 0 ? (
+        <>
+          <FilterSection
+            resultCount={dummyAuctionCardList.length}
+            query={(query?.category ?? query?.search) as string}
           />
-        )}
-        contentContainerClassName={classes.contentContainer}
-      />
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={dummyFeaturedCardList}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <CardInfo
+                imageUrl={item.imageUrl}
+                title={item.title}
+                bidPrice={item.bidPrice}
+                currentPrice={item.currentPrice}
+                indicator={item.indicator}
+                onFavoritePress={() => console.log('Favorite pressed')}
+              />
+            )}
+            contentContainerClassName={classes.contentContainer}
+          />
+        </>
+      ) : (
+        <View className={classes.notFoundContainer}>
+          <Icon
+            name="dizzy"
+            variant="FontAwesome6"
+            color={getColor('teal-500')}
+            size={120}
+            className={classes.notFoundIcon}
+          />
+          <Label>Uh-oh! We couldn`t find that</Label>
+          <Button onPress={handleCtaBack} variant="primary-light">
+            Lets try using different keywords
+          </Button>
+        </View>
+      )}
     </ScreenContainer>
   );
 }
@@ -65,4 +99,6 @@ const classes = {
   filterPlaceholder: 'font-light text-gray-500',
   resultText: 'font-semibold',
   contentContainer: 'gap-3',
+  notFoundContainer: 'flex flex-col items-center gap-5 pt-28',
+  notFoundIcon: 'opacity-20',
 };

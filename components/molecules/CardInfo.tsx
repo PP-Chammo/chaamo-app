@@ -1,6 +1,5 @@
 import { memo } from 'react';
 
-import { clsx } from 'clsx';
 import { Image, TouchableOpacity, View } from 'react-native';
 
 import EBayLogo from '@/assets/svg/ebay.svg';
@@ -57,15 +56,11 @@ const CardInfo: React.FC<CardInfoProps> = memo(function CategoryItem({
             <Row>
               <Label className={classes.text}>Price Value:</Label>
               <Label className={classes.textBold}>{currentPrice}</Label>
-              <Label
-                variant="subtitle"
-                className={clsx(classes.indicator, {
-                  'text-red-500': indicator === 'down',
-                  'text-teal-500': indicator === 'up',
-                })}
-              >
-                {indicator}
-              </Label>
+              <Icon
+                name={indicator === 'up' ? 'trending-up' : 'trending-down'}
+                color={getColor(indicator === 'up' ? 'teal-600' : 'red-600')}
+                size={16}
+              />
             </Row>
           </View>
           <View className={classes.bidContainer}>
@@ -91,7 +86,6 @@ const classes = {
   textBold: 'text-sm font-semibold',
   rowDate: 'gap-2',
   currentPrice: 'text-sm text-teal-500 !font-bold',
-  indicator: 'text-xs text-gray-500',
   tag: '!text-xs',
   bidContainer: 'flex flex-col items-end',
   textBidPrice: 'text-base font-semibold text-teal-600',
