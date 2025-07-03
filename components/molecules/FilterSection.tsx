@@ -1,5 +1,6 @@
 import { memo } from 'react';
 
+import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import { Button, Label, Row } from '@/components/atoms';
@@ -15,6 +16,7 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
       <View>
         <Row className={classes.filterContainer}>
           <Button
+            onPress={() => router.push('/screens/advanced-filter')}
             variant="primary-light"
             size="small"
             icon="sliders"
@@ -47,8 +49,8 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
 );
 
 const classes = {
-  filterContainer: 'px-5 py-3',
-  filterButton: '!px-4 !py-2',
+  filterContainer: 'px-5 py-3 gap-2',
+  filterButton: '!px-4',
   filterTextContainer: 'px-5 pt-1 pb-4 !gap-1',
   filterPlaceholder: 'font-light text-gray-500',
   resultText: 'font-semibold',

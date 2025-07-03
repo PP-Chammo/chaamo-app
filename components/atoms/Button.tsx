@@ -71,7 +71,7 @@ const Button: React.FC<ButtonProps> = memo(function Button({
   return (
     <TouchableOpacity
       disabled={disabled}
-      activeOpacity={0.6}
+      activeOpacity={0.5}
       className={clsx(
         classes.base,
         classes.size[size],
@@ -125,7 +125,7 @@ const classes = {
     link: 'text-gray-500 underline',
   },
   size: {
-    small: 'px-5 py-2.5',
+    small: 'px-5 min-h-9',
     medium: 'px-6 py-3.5 min-w-28',
     large: 'px-10 py-4',
   },

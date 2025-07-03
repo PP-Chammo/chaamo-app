@@ -1,58 +1,38 @@
-import { useCallback, useLayoutEffect, useState } from 'react';
+import { useCallback } from 'react';
 
 import { router, useLocalSearchParams } from 'expo-router';
 import { FlatList, View } from 'react-native';
 
-import {
-  Button,
-  Icon,
-  Label,
-  Row,
-  ScreenContainer,
-  SearchField,
-} from '@/components/atoms';
-import { ButtonIcon, CardInfo, FilterSection } from '@/components/molecules';
+import { Button, Icon, Label, ScreenContainer } from '@/components/atoms';
+import { CardInfo, FilterSection, HeaderSearch } from '@/components/molecules';
 import { dummyAuctionCardList, dummyFeaturedCardList } from '@/constants/dummy';
 import { TextChangeParams } from '@/domains';
+import { useSearchStore } from '@/hooks/useSearchStore';
 import { getColor } from '@/utils/getColor';
 
 export default function CardsScreen() {
-  const query = useLocalSearchParams();
-
-  const [searchText, setSearchText] = useState('');
+  const params = useLocalSearchParams();
+  const { setSearch, query } = useSearchStore();
 
   const handleChange = useCallback(
-    () =>
-      ({ value }: TextChangeParams) =>
-        setSearchText(value),
-    [],
+    ({ value }: TextChangeParams) => setSearch('query', value.trim()),
+    [setSearch],
   );
 
   const handleCtaBack = useCallback(() => router.back(), []);
 
-  useLayoutEffect(() => {
-    if (typeof query?.search === 'string') {
-      setSearchText(query.search);
-    }
-  }, [query?.search]);
-
   return (
     <ScreenContainer classNameTop={classes.containerTop}>
-      <Row className={classes.headerContainer}>
-        <ButtonIcon
-          name="arrow-left"
-          onPress={() => router.back()}
-          iconSize={24}
-          color={getColor('teal-500')}
-        />
-        <SearchField value={searchText} onChange={handleChange} />
-      </Row>
-
+      <HeaderSearch
+        value={query}
+        onChange={handleChange}
+        onBackPress={handleCtaBack}
+      />
       {dummyFeaturedCardList?.length > 0 ? (
         <>
           <FilterSection
             resultCount={dummyAuctionCardList.length}
-            query={(query?.category ?? query?.search) as string}
+            query={(params?.category ?? params?.search) as string}
           />
           <FlatList
             showsVerticalScrollIndicator={false}
@@ -92,7 +72,6 @@ export default function CardsScreen() {
 
 const classes = {
   containerTop: 'bg-white',
-  headerContainer: 'bg-white pl-2 pr-5 py-5',
   filterContainer: 'px-5 py-3',
   filterButton: '!px-4 !py-2',
   filterTextContainer: 'px-5 py-3 !gap-1',
