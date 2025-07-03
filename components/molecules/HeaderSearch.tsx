@@ -1,20 +1,25 @@
 import React, { memo } from 'react';
 
 import { clsx } from 'clsx';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
-import { Icon } from '@/components/atoms';
+import { Icon, SearchField } from '@/components/atoms';
+import { TextChangeParams } from '@/domains';
 import { getColor } from '@/utils/getColor';
 
 interface HeaderProps {
-  title: string;
+  value: string;
+  onChange: (value: TextChangeParams) => void;
   onBackPress?: () => void;
+  onSubmit?: () => void;
   className?: string;
 }
 
 const Header: React.FC<HeaderProps> = memo(function Header({
-  title,
+  value,
+  onChange,
   onBackPress,
+  onSubmit,
   className,
 }) {
   return (
@@ -24,17 +29,16 @@ const Header: React.FC<HeaderProps> = memo(function Header({
           <Icon name="arrow-left" size={24} color={getColor('slate-700')} />
         </TouchableOpacity>
       )}
-      <Text className={classes.title}>{title}</Text>
-      {onBackPress && <View className={classes.rightSpace} />}
+      <SearchField value={value} onChange={onChange} onSubmit={onSubmit} />
     </View>
   );
 });
 
 const classes = {
   header:
-    'flex-row items-center h-20 bg-transparent border-b-0 justify-between',
+    'bg-white flex flex-row items-cente justify-between gap-2 border-b-0 pl-4 pr-5 py-5',
   backButton: 'w-10 items-start justify-center',
-  title: 'flex-1 text-center text-lg font-semibold text-gray-800',
+  title: 'flex-1 text-center text-lg font-medium text-gray-800',
   rightSpace: 'w-10',
 };
 
