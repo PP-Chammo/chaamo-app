@@ -13,3 +13,4 @@ export { default as Row } from './Row';
 export { default as ScreenContainer } from './ScreenContainer';
 export { default as SearchField } from './SearchField';
 export { default as Tag } from './Tag';
+export { default as UploadInstruction } from './UploadInstruction';

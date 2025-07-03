@@ -1,17 +1,19 @@
 import { router } from 'expo-router';
 import { create } from 'zustand';
 
-export interface SelectWithScreenStore {
-  selectedCountry: string;
-  selectedState: string;
+import {
+  selectWithScreenStore,
+  SelectWithScreenStore,
+} from '@/stores/selectWithScreenStore';
+
+export interface SelectWithScreenState extends SelectWithScreenStore {
   setSelectedCountry: (country: string) => void;
   setSelectedState: (state: string) => void;
 }
 
-export const useSelectWithScreenStore = create<SelectWithScreenStore>(
+export const useSelectWithScreenStore = create<SelectWithScreenState>(
   (set) => ({
-    selectedCountry: '',
-    selectedState: '',
+    ...selectWithScreenStore,
     setSelectedCountry: (country: string) => {
       set({ selectedCountry: country });
       router.replace('/(setup-profile)/address');

@@ -2,10 +2,9 @@ import React, { memo } from 'react';
 
 import { ScrollView } from 'react-native';
 
+import { FavoriteButton } from '@/components/atoms';
 import { Card, GroupWithLink } from '@/components/molecules';
 import { dummyFeaturedCardList } from '@/constants/dummy';
-
-import { FavoriteButton } from '../atoms';
 
 const FeaturedList = memo(function FeaturedList() {
   return (
