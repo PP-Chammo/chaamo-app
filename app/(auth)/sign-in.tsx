@@ -77,7 +77,7 @@ export default function SignInScreen() {
 }
 
 const classes = {
-  form: 'flex-1 mt-[50] gap-3',
+  form: 'flex-1 mt-[50px] gap-3',
   inputContainer: 'gap-6',
   title: 'text-3xl font-bold text-teal-600',
   description: 'text-slate-500 font-medium text-lg mb-6',

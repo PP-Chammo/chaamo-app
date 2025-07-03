@@ -1,5 +1,5 @@
 import { Redirect } from 'expo-router';
 
 export default function StartPage() {
-  return <Redirect href="/(auth)/sign-in" />;
+  return <Redirect href="/(tabs)/(profile)/portfolio" />;
 }

@@ -1,19 +1,21 @@
 import { memo } from 'react';
 
+import { clsx } from 'clsx';
 import { Image, View } from 'react-native';
 
 import EBayImage from '@/assets/svg/ebay.svg';
-import { Badge, FavoriteButton, Icon, Label } from '@/components/atoms';
+import { Badge, Icon, Label } from '@/components/atoms';
 import { getColor } from '@/utils/getColor';
 
 type CardProps = {
   imageUrl: string;
   title: string;
   bidPrice: string;
-  currentPrice: string;
+  currentPrice?: string;
   indicator: string;
-  onFavoritePress: () => void;
   featured?: boolean;
+  rightIcon?: React.ReactNode;
+  mode?: 'normal' | 'full' | 'half';
 };
 
 const Card: React.FC<CardProps> = memo(function CategoryItem({
@@ -22,23 +24,29 @@ const Card: React.FC<CardProps> = memo(function CategoryItem({
   currentPrice,
   bidPrice,
   indicator,
-  onFavoritePress,
   featured = false,
+  rightIcon,
+  mode = 'normal',
 }) {
   return (
-    <View className={classes.container}>
+    <View className={clsx(classes.container[mode])}>
       {featured && <Badge />}
-      <FavoriteButton onPress={onFavoritePress} />
+      {rightIcon}
       {imageUrl ? (
-        <Image source={{ uri: imageUrl }} className={classes.image} />
+        <Image
+          source={{ uri: imageUrl }}
+          className={clsx(classes.image[mode])}
+        />
       ) : (
-        <View className={classes.image}>
+        <View className={clsx(classes.image[mode])}>
           <Icon name="cards-outline" size={40} color={getColor('red-100')} />
         </View>
       )}
-      <Label variant="subtitle" className={classes.currentPrice}>
-        {currentPrice}
-      </Label>
+      {currentPrice && (
+        <Label variant="subtitle" className={classes.currentPrice}>
+          {currentPrice}
+        </Label>
+      )}
       <Label variant="subtitle" className={classes.title}>
         {title}
       </Label>
@@ -56,9 +64,16 @@ const Card: React.FC<CardProps> = memo(function CategoryItem({
 });
 
 const classes = {
-  container: 'flex flex-col gap-2',
-  image:
-    'w-36 min-h-[170px] h-auto flex items-center justify-center bg-gray-200 rounded-lg',
+  container: {
+    normal: 'flex flex-col gap-2',
+    full: 'flex-1 flex flex-col gap-2',
+    half: 'w-1/2 flex flex-col gap-2',
+  },
+  image: {
+    normal: 'w-36 min-h-[170px] h-auto  bg-gray-200 rounded-lg',
+    full: 'w-full min-h-[170px] h-auto  bg-gray-200 rounded-lg',
+    half: 'w-full min-h-[170px] h-auto  bg-gray-200 rounded-lg',
+  },
   currentPrice: 'text-sm text-teal-500 !font-bold',
   bidPrice: 'text-xs text-gray-500',
   title: 'text-sm !text-gray-800',

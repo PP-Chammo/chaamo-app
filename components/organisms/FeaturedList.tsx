@@ -5,6 +5,8 @@ import { ScrollView } from 'react-native';
 import { Card, GroupWithLink } from '@/components/molecules';
 import { dummyFeaturedCardList } from '@/constants/dummy';
 
+import { FavoriteButton } from '../atoms';
+
 const FeaturedList = memo(function FeaturedList() {
   return (
     <GroupWithLink title="Featured" onViewAllHref="/screens/featured">
@@ -22,9 +24,13 @@ const FeaturedList = memo(function FeaturedList() {
             currentPrice={card.currentPrice}
             bidPrice={card.bidPrice}
             indicator={card.indicator}
-            onFavoritePress={() => {
-              console.log(`Favorite pressed for card ${card.id}`);
-            }}
+            rightIcon={
+              <FavoriteButton
+                onPress={() => {
+                  console.log(`Favorite pressed for card ${card.id}`);
+                }}
+              />
+            }
           />
         ))}
       </ScrollView>

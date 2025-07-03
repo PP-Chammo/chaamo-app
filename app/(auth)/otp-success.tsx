@@ -9,7 +9,7 @@ import { Header } from '@/components/molecules';
 
 export default function OTPSuccessScreen() {
   const handleNext = () => {
-    router.push('/(auth)/otp-success');
+    router.push('/(tabs)/home');
   };
 
   return (
