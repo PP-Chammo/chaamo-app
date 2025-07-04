@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 
 import { ScrollView } from 'react-native';
 
+import { FavoriteButton } from '@/components/atoms';
 import { Card, GroupWithLink } from '@/components/molecules';
 import { dummyFeaturedCardList } from '@/constants/dummy';
 
@@ -22,9 +23,13 @@ const FeaturedList = memo(function FeaturedList() {
             currentPrice={card.currentPrice}
             bidPrice={card.bidPrice}
             indicator={card.indicator}
-            onFavoritePress={() => {
-              console.log(`Favorite pressed for card ${card.id}`);
-            }}
+            rightIcon={
+              <FavoriteButton
+                onPress={() => {
+                  console.log(`Favorite pressed for card ${card.id}`);
+                }}
+              />
+            }
           />
         ))}
       </ScrollView>
