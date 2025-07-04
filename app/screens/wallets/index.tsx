@@ -42,7 +42,11 @@ export default function WalletScreen() {
 
       <View className={classes.withdrawContainer}>
         <Label className={classes.withdrawTitle}>Withdraw Methods</Label>
-        <Button variant="primary-light" className={classes.addMethodButton}>
+        <Button
+          variant="primary-light"
+          className={classes.addMethodButton}
+          onPress={() => router.push('/screens/wallets/add-bank-account')}
+        >
           Add a method
         </Button>
         <View className={classes.bankAccountsContainer}>
