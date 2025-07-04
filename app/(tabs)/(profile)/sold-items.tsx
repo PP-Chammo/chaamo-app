@@ -1,7 +1,7 @@
 import { remapProps } from 'nativewind';
 import { FlatList } from 'react-native';
 
-import { BidButton } from '@/components/atoms';
+import { Boost } from '@/components/atoms';
 import { Card } from '@/components/molecules';
 import { dummyFeaturedCardList } from '@/constants/dummy';
 import { CardItem } from '@/domains/card-item.types';
@@ -32,13 +32,7 @@ export default function SoldItemsScreen() {
             title={cardItem.title}
             bidPrice={cardItem.bidPrice || ''}
             indicator={cardItem.indicator}
-            rightIcon={
-              <BidButton
-                onPress={() => {
-                  console.log(`Favorite pressed for card ${cardItem.id}`);
-                }}
-              />
-            }
+            rightIcon={<Boost boosted={cardItem.boosted} />}
             mode={shouldNotBeFullWidth ? 'half' : 'full'}
           />
         );

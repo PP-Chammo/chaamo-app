@@ -7,6 +7,7 @@ export const dummyFeaturedCardList = [
     bidPrice: '$70.00',
     market: 'eBay',
     indicator: 'down',
+    boosted: true,
   },
   {
     id: '2',
@@ -16,6 +17,7 @@ export const dummyFeaturedCardList = [
     bidPrice: '$70.00',
     market: 'eBay',
     indicator: 'up',
+    boosted: false,
   },
   {
     id: '3',
@@ -25,6 +27,7 @@ export const dummyFeaturedCardList = [
     bidPrice: '$70.00',
     market: 'eBay',
     indicator: 'down',
+    boosted: false,
   },
 ];
 
