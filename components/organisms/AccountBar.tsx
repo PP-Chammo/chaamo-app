@@ -1,5 +1,6 @@
 import { memo } from 'react';
 
+import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import { Label, Row } from '@/components/atoms';
@@ -21,7 +22,7 @@ const AccountBar = memo(function AccountBar() {
         <ButtonIcon
           name="wallet"
           iconVariant="SimpleLineIcons"
-          onPress={() => {}}
+          onPress={() => router.push('/screens/wallets')}
         />
       </View>
     </Row>
