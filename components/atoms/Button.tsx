@@ -19,7 +19,8 @@ interface ButtonProps extends TouchableOpacityProps {
     | 'secondary'
     | 'danger'
     | 'light'
-    | 'link';
+    | 'link'
+    | 'ghost';
   size?: 'small' | 'medium' | 'large';
   children: React.ReactNode;
   className?: string;
@@ -27,6 +28,8 @@ interface ButtonProps extends TouchableOpacityProps {
   textProps?: TextProps;
   disabled?: boolean;
   icon?: IconProp['name'];
+  iconSize?: IconProp['size'];
+  iconColor?: IconProp['color'];
   iconVariant?: IconProp['variant'];
 }
 
@@ -41,10 +44,12 @@ const Button: React.FC<ButtonProps> = memo(function Button({
   textProps,
   disabled = false,
   icon,
+  iconSize,
+  iconColor,
   iconVariant,
   ...props
 }) {
-  const iconSize = useMemo(() => {
+  const iconSizeBase = useMemo(() => {
     switch (size) {
       case 'small':
         return 16;
@@ -55,13 +60,15 @@ const Button: React.FC<ButtonProps> = memo(function Button({
     }
   }, [size]);
 
-  const iconColor = useMemo(() => {
+  const iconColorBase = useMemo(() => {
     switch (variant) {
       case 'link':
         return getColor('gray-600');
       case 'primary-light':
         return getColor('teal-600');
       case 'light':
+        return getColor('gray-600');
+      case 'ghost':
         return getColor('gray-600');
       default:
         return getColor('white');
@@ -84,9 +91,9 @@ const Button: React.FC<ButtonProps> = memo(function Button({
       {icon && (
         <Icon
           name={icon}
-          size={iconSize}
+          size={iconSize ?? iconSizeBase}
           variant={iconVariant}
-          color={iconColor}
+          color={iconColor ?? iconColorBase}
         />
       )}
       <Text
@@ -115,6 +122,12 @@ const classes = {
     danger: 'bg-red-600',
     light: 'bg-white border border-gray-300',
     link: 'bg-transparent',
+    ghost: 'bg-transparent',
+  },
+  size: {
+    small: 'px-5 min-h-9',
+    medium: 'px-6 py-3.5 min-w-28',
+    large: 'px-10 py-4',
   },
   textVariant: {
     primary: 'text-white',
@@ -123,15 +136,11 @@ const classes = {
     danger: 'text-white',
     light: 'text-gray-600',
     link: 'text-gray-500 underline',
-  },
-  size: {
-    small: 'px-5 min-h-9',
-    medium: 'px-6 py-3.5 min-w-28',
-    large: 'px-10 py-4',
+    ghost: 'text-gray-500',
   },
   textSize: {
     small: 'text-sm font-semibold',
-    medium: 'text-base font-bold min-w-28',
+    medium: 'text-base font-bold',
     large: 'text-lg font-bold',
   },
 };

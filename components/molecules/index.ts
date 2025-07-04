@@ -19,3 +19,5 @@ export { default as FilterPriceRangeInput } from './FilterPriceRangeInput';
 export { default as FilterConditionInput } from './FilterConditionInput';
 export { default as FilterAdPropertiesInput } from './FilterAdPropertiesInput';
 export { default as FilterTags } from './FilterTags';
+export { default as EventCard } from './EventCard';
+export { default as PostCard } from './PostCard';
