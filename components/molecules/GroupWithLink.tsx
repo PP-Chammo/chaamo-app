@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 
 import { Link } from 'expo-router';
 import { cssInterop } from 'nativewind';
@@ -16,6 +16,7 @@ interface GroupWithLinkProps {
   iconColor?: string;
   iconSize?: number;
   className?: string;
+  noLink?: boolean;
 }
 
 cssInterop(ScrollView, {
@@ -35,7 +36,22 @@ const GroupWithLink: React.FC<GroupWithLinkProps> = memo(
     iconColor = 'black',
     iconSize = 24,
     className,
+    noLink = false,
   }) {
+    const renderLink = useCallback(
+      () =>
+        onViewAllHref ? (
+          <Link href={onViewAllHref} className={classes.viewAllText}>
+            {titleLink}
+          </Link>
+        ) : (
+          <Label className={classes.viewAllText} onPress={onPress}>
+            {titleLink}
+          </Label>
+        ),
+      [onPress, onViewAllHref, titleLink],
+    );
+
     return (
       <View className={className}>
         <Row between className={classes.headerContainer}>
@@ -45,15 +61,7 @@ const GroupWithLink: React.FC<GroupWithLinkProps> = memo(
               <Icon name={iconName} color={iconColor} size={iconSize} />
             )}
           </View>
-          {onViewAllHref ? (
-            <Link href={onViewAllHref} className={classes.viewAllText}>
-              {titleLink}
-            </Link>
-          ) : (
-            <Label className={classes.viewAllText} onPress={onPress}>
-              {titleLink}
-            </Label>
-          )}
+          {!noLink && renderLink()}
         </Row>
         <View className={classes.container}>{children}</View>
       </View>
