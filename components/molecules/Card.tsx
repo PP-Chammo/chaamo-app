@@ -14,7 +14,7 @@ type CardProps = {
   currentPrice?: string;
   indicator: string;
   featured?: boolean;
-  rightIcon?: React.ReactNode;
+  rightComponent?: React.ReactNode;
   mode?: 'normal' | 'full' | 'half';
 };
 
@@ -25,13 +25,13 @@ const Card: React.FC<CardProps> = memo(function CategoryItem({
   bidPrice,
   indicator,
   featured = false,
-  rightIcon,
+  rightComponent,
   mode = 'normal',
 }) {
   return (
     <View className={clsx(classes.container[mode])}>
       {featured && <Badge />}
-      {rightIcon}
+      {rightComponent}
       {imageUrl ? (
         <Image
           source={{ uri: imageUrl }}
@@ -78,6 +78,7 @@ const classes = {
   bidPrice: 'text-xs text-gray-500',
   title: 'text-sm !text-gray-800',
   marketContainer: 'flex flex-row items-center gap-1.5',
+  rightIcon: 'absolute top-2 right-2 z-10',
 };
 
 export default Card;
