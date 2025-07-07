@@ -1,11 +1,22 @@
+import { useState } from 'react';
+
 import { BlurView } from 'expo-blur';
 import { Link, router } from 'expo-router';
-import { Image, ImageBackground, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Image, ImageBackground, SafeAreaView, View } from 'react-native';
 
 import { Button, Label } from '@/components/atoms';
+import { Checkbox } from '@/components/molecules';
+import { BooleanChangeParams } from '@/domains/input.types';
 
 export default function OnboardingScreen() {
+  const [form, setForm] = useState({
+    terms: false,
+  });
+
+  const handleChange = ({ name, value }: BooleanChangeParams) => {
+    setForm({ ...form, [name]: value });
+  };
+
   return (
     <SafeAreaView className="flex-1">
       <ImageBackground
@@ -17,8 +28,6 @@ export default function OnboardingScreen() {
             intensity={100}
             tint="light"
             style={{
-              borderTopLeftRadius: 32,
-              borderTopRightRadius: 32,
               overflow: 'hidden',
               padding: 24,
               backgroundColor: 'rgba(255,255,255,0.25)',
@@ -40,26 +49,37 @@ export default function OnboardingScreen() {
               </Label>
             </View>
             <View className="gap-5">
-              <Button onPress={() => router.push('/(auth)/sign-up')}>
+              <Button
+                disabled={!form.terms}
+                onPress={() => router.push('/(auth)/sign-up')}
+              >
                 Signup
               </Button>
               <Button
+                disabled={!form.terms}
                 onPress={() => router.push('/(auth)/sign-in')}
                 variant="primary-light"
               >
                 Login
               </Button>
             </View>
-            <Label className={classes.terms}>
-              By signing up, you agree to CHAAMO&apos;s{' '}
-              <Link className={classes.link} href="/sign-up">
-                Terms of Service
-              </Link>{' '}
-              and acknowledge you&apos;ve read our{' '}
-              <Link className={classes.link} href="/sign-up">
-                Privacy Policy
-              </Link>
-            </Label>
+            <Checkbox
+              className="mt-10"
+              checked={form.terms}
+              onChange={handleChange}
+              name="terms"
+            >
+              <Label className={classes.terms}>
+                By signing up, you agree to CHAAMO&apos;s{' '}
+                <Link className={classes.link} href="/sign-up">
+                  Terms of Service
+                </Link>{' '}
+                and acknowledge you&apos;ve read our{' '}
+                <Link className={classes.link} href="/sign-up">
+                  Privacy Policy
+                </Link>
+              </Label>
+            </Checkbox>
           </BlurView>
         </View>
       </ImageBackground>
@@ -69,5 +89,5 @@ export default function OnboardingScreen() {
 
 const classes = {
   link: 'text-teal-600 underline font-bold',
-  terms: 'text-slate-500 text-md mt-10',
+  terms: 'text-slate-500 text-md',
 };
