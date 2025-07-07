@@ -58,11 +58,17 @@ export default function SignUpScreen() {
       >
         <Label className={classes.terms}>
           By signing up, you agree to CHAAMO&apos;s{' '}
-          <Link className={classes.link} href="/sign-up">
+          <Link
+            className={classes.link}
+            href="https://chaamo.com/terms-of-service"
+          >
             Terms of Service
           </Link>{' '}
           and acknowledge you&apos;ve read our{' '}
-          <Link className={classes.link} href="/sign-up">
+          <Link
+            className={classes.link}
+            href="https://chaamo.com/privacy-policy"
+          >
             Privacy Policy
           </Link>
         </Label>

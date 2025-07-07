@@ -6,4 +6,5 @@ export type CardItem = {
   bidPrice?: string;
   market: string;
   indicator: string;
+  boosted?: boolean;
 };
