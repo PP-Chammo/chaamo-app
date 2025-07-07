@@ -32,7 +32,7 @@ export default function PortfolioScreen() {
             title={cardItem.title}
             bidPrice={cardItem.bidPrice || ''}
             indicator={cardItem.indicator}
-            rightIcon={<Boost boosted={cardItem.boosted} />}
+            rightComponent={<Boost boosted={cardItem.boosted} />}
             mode={shouldNotBeFullWidth ? 'half' : 'full'}
           />
         );

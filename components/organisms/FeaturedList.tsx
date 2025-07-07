@@ -23,7 +23,7 @@ const FeaturedList = memo(function FeaturedList() {
             currentPrice={card.currentPrice}
             bidPrice={card.bidPrice}
             indicator={card.indicator}
-            rightIcon={
+            rightComponent={
               <FavoriteButton
                 onPress={() => {
                   console.log(`Favorite pressed for card ${card.id}`);

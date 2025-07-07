@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 
 import { ScrollView } from 'react-native';
 
+import { FavoriteButton } from '@/components/atoms';
 import { Card, GroupWithLink } from '@/components/molecules';
 import { dummyFeaturedCardList } from '@/constants/dummy';
 
@@ -15,15 +16,20 @@ const RecentlyAdded = memo(function RecentlyAdded() {
       >
         {dummyFeaturedCardList.map((card) => (
           <Card
+            featured
             key={card.id}
             imageUrl={card.imageUrl}
             title={card.title}
             currentPrice={card.currentPrice}
             bidPrice={card.bidPrice}
             indicator={card.indicator}
-            onFavoritePress={() => {
-              console.log(`Favorite pressed for card ${card.id}`);
-            }}
+            rightComponent={
+              <FavoriteButton
+                onPress={() => {
+                  console.log(`Favorite pressed for card ${card.id}`);
+                }}
+              />
+            }
           />
         ))}
       </ScrollView>
