@@ -25,4 +25,5 @@ export { default as Review } from './Review';
 export { default as SelectWithScreen } from './SelectWithScreen';
 export { default as SetupProfileTabs } from './SetupProfileTabs';
 export { default as TabView } from './TabView';
+export { default as TextArea } from './TextArea';
 export { default as TextField } from './TextField';
