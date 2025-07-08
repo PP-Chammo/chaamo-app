@@ -13,8 +13,7 @@ import {
 } from '@/components/atoms';
 import { Header, TextField } from '@/components/molecules';
 import { dummyChatMessages } from '@/constants/dummy';
-import { FlatData } from '@/domains';
-import { TextChangeParams } from '@/domains/input.types';
+import { FlatData, TextChangeParams } from '@/domains';
 import {
   DateGroupedMessages,
   GroupedMessage,
