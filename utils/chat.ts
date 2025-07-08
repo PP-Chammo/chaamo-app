@@ -23,19 +23,24 @@ export interface DateGroupedMessages {
 export const groupMessagesByDateAndSender = (
   messages: ChatMessage[],
 ): DateGroupedMessages[] => {
-  if (messages.length === 0) return [];
+  if (!messages.length) {
+    return [];
+  }
 
   // Group messages by date
   const dateMap: Record<string, ChatMessage[]> = {};
-  messages.forEach((msg) => {
+
+  for (let msg of messages) {
     const dateKey = format(new Date(msg.time), 'yyyy-MM-dd');
     if (!dateMap[dateKey]) dateMap[dateKey] = [];
     dateMap[dateKey].push(msg);
-  });
+  }
 
   //   For each date, group consecutive messages by sender
   const result: DateGroupedMessages[] = [];
-  Object.entries(dateMap).forEach(([date, msgs]) => {
+  for (const date in dateMap) {
+    if (!Object.prototype.hasOwnProperty.call(dateMap, date)) continue;
+    const msgs = dateMap[date];
     const groups: GroupedMessage[] = [];
     let currentGroup: ChatMessage[] = [msgs[0]];
 
@@ -64,7 +69,7 @@ export const groupMessagesByDateAndSender = (
       });
     }
     result.push({ date, groups });
-  });
+  }
 
   // Sort by date ascending
   result.sort(
