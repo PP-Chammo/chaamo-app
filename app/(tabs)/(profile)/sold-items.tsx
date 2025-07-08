@@ -4,7 +4,7 @@ import { FlatList } from 'react-native';
 import { Boost } from '@/components/atoms';
 import { Card } from '@/components/molecules';
 import { dummyFeaturedCardList } from '@/constants/dummy';
-import { CardItem } from '@/domains/card-item.types';
+import { CardItem } from '@/domains';
 
 const CustomizedFlatList = remapProps(FlatList, {
   columnWrapperClassName: 'columnWrapperStyle',

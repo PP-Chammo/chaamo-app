@@ -15,6 +15,7 @@ export { default as FilterTags } from './FilterTags';
 export { default as GroupWithLink } from './GroupWithLink';
 export { default as Header } from './Header';
 export { default as HeaderSearch } from './HeaderSearch';
+export { default as NotificationListItem } from './NotificationListItem';
 export { default as OtpInput } from './OtpInput';
 export { default as People } from './People';
 export { default as PhoneInput } from './PhoneInput';

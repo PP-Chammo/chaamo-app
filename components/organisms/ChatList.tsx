@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import React, { memo } from 'react';
 
 import { FlatList } from 'react-native';
 
@@ -9,7 +9,7 @@ interface ChatListProps {
   onPress: (id: number, name: string) => void;
 }
 
-const ChatList = memo(function ChatList({ onPress }: ChatListProps) {
+const ChatList: React.FC<ChatListProps> = memo(function ChatList({ onPress }) {
   return (
     <FlatList
       data={dummyChatList}
@@ -19,7 +19,7 @@ const ChatList = memo(function ChatList({ onPress }: ChatListProps) {
         <ChatListItem
           name={item.name}
           message={item.message}
-          time={new Date(item.time)}
+          time={item.time}
           unreadCount={item.unreadCount}
           imageUrl={item.imageUrl}
           onPress={() => onPress(item.id, item.name)}

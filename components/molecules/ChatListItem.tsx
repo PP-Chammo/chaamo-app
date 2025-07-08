@@ -9,7 +9,7 @@ import { formatTime } from '@/utils/date';
 interface ChatListItemProps {
   name: string;
   message: string;
-  time: Date;
+  time: string;
   unreadCount: number;
   imageUrl: string;
   onPress: () => void;
