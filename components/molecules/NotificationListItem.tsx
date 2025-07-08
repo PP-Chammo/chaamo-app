@@ -1,5 +1,6 @@
 import { memo } from 'react';
 
+import { formatDistanceToNow } from 'date-fns';
 import { TouchableOpacity, View } from 'react-native';
 
 import { Icon, Label } from '@/components/atoms';
@@ -14,15 +15,27 @@ export interface NotificationCardProps {
 
 const NotificationCard: React.FC<NotificationCardProps> = memo(
   function NotificationCard({ category, message, date }) {
+    let time = formatDistanceToNow(new Date(date), {
+      addSuffix: true,
+      includeSeconds: true,
+    });
+    time = time.replace(/\babout\s+/i, '');
+
+    const icon =
+      category === 'Order Shipped'
+        ? 'truck-outline'
+        : category === 'New Bid'
+          ? 'cart-outline'
+          : 'clock-outline';
     return (
       <TouchableOpacity className={classes.container}>
         <View className={classes.iconContainer}>
-          <Icon name="truck-outline" size={24} color={getColor('teal-600')} />
+          <Icon name={icon} size={24} color={getColor('teal-600')} />
         </View>
         <View className={classes.contentContainer}>
           <View className={classes.categoryContainer}>
             <Label variant="subtitle">{category}</Label>
-            <Label className={classes.time}>1h</Label>
+            <Label className={classes.time}>{time}</Label>
           </View>
           <Label className={classes.message}>{message}</Label>
         </View>
