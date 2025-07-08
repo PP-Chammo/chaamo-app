@@ -1,4 +1,3 @@
-import { Stack } from 'expo-router';
 import { View } from 'react-native';
 
 import {
@@ -10,8 +9,14 @@ import {
   ProfileStat,
   ScreenContainer,
 } from '@/components/atoms';
-import { Header, ProfileTabs } from '@/components/molecules';
+import { Header, TabView } from '@/components/molecules';
+import { profileTabs } from '@/constants/tabs';
 import { getColor } from '@/utils/getColor';
+
+import AboutProfileScreen from './about';
+import PortfolioProfileScreen from './portfolio';
+import ReviewsProfileScreen from './reviews';
+import SoldItemsProfileScreen from './sold-items';
 
 export default function ProfileLayout() {
   return (
@@ -52,15 +57,16 @@ export default function ProfileLayout() {
       </View>
 
       <Button icon="pencil-outline">Edit Profile</Button>
-      <ProfileTabs className="mt-10 mb-5" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: {
-            backgroundColor: getColor('transparent'),
-          },
-        }}
-      />
+      <TabView
+        className={classes.tabView}
+        contentClassName="mt-5"
+        tabs={profileTabs}
+      >
+        <PortfolioProfileScreen />
+        <SoldItemsProfileScreen />
+        <AboutProfileScreen />
+        <ReviewsProfileScreen />
+      </TabView>
     </ScreenContainer>
   );
 }
@@ -76,4 +82,5 @@ const classes = {
   portfolioValue: 'text-teal-600 font-bold',
   portfolioValueIconContainer: 'border border-teal-600 rounded-full',
   profileStatsContainer: 'flex-row justify-between mx-12 my-8',
+  tabView: 'mt-10',
 };
