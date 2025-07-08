@@ -7,19 +7,21 @@ import { Icon } from '@/components/atoms';
 import { getColor } from '@/utils/getColor';
 
 interface HeaderProps {
-  title: string;
+  title?: string;
   onBackPress?: () => void;
   onRightPress?: () => void;
   className?: string;
   iconRight?: IconProp['name'];
   iconRightColor?: IconProp['color'];
   iconRightSize?: IconProp['size'];
+  leftComponent?: React.ReactNode;
 }
 
 type IconProp = React.ComponentProps<typeof Icon>;
 
 const Header: React.FC<HeaderProps> = memo(function Header({
   title,
+  leftComponent,
   onBackPress,
   onRightPress,
   className,
@@ -37,6 +39,7 @@ const Header: React.FC<HeaderProps> = memo(function Header({
           <Icon name="arrow-left" size={24} color={getColor('slate-700')} />
         </TouchableOpacity>
       )}
+      {leftComponent}
       <Text className={classes.title}>{title}</Text>
       {onRightPress && (
         <View className={classes.buttonContainerRight}>

@@ -153,3 +153,186 @@ export const dummyPosts = [
     likes: 4,
   },
 ];
+
+export const dummyChatList = [
+  {
+    id: 1,
+    name: 'John Doe',
+    message: 'Hello, how are you?',
+    time: '2025-07-08T12:00:00Z',
+    unreadCount: 5,
+    imageUrl: '',
+  },
+  {
+    id: 2,
+    name: 'Jane Smith',
+    message: 'Hello, how are you?',
+    time: '2025-07-07T14:30:00Z',
+    unreadCount: 0,
+    imageUrl: '',
+  },
+];
+
+export const dummyChatMessages = [
+  {
+    id: 1,
+    message: 'Hey! How are you doing?',
+    time: '2025-01-15T09:30:00Z',
+    sender: 'Shireen Walker',
+    receiver: 'John Doe',
+  },
+  {
+    id: 2,
+    message: "Hi Shireen! I'm doing great, thanks for asking. How about you?",
+    time: '2025-01-15T09:32:00Z',
+    sender: 'John Doe',
+    receiver: 'Shireen Walker',
+  },
+  {
+    id: 3,
+    message:
+      'Pretty good! Just got back from the card show. Found some amazing deals!',
+    time: '2025-01-15T09:35:00Z',
+    sender: 'Shireen Walker',
+    receiver: 'John Doe',
+  },
+  {
+    id: 4,
+    message: 'That sounds awesome! What did you pick up?',
+    time: '2025-01-15T09:37:00Z',
+    sender: 'John Doe',
+    receiver: 'Shireen Walker',
+  },
+  {
+    id: 5,
+    message:
+      'Got a few Pokemon cards and some vintage baseball cards. The prices were incredible!',
+    time: '2025-01-15T09:40:00Z',
+    sender: 'Shireen Walker',
+    receiver: 'John Doe',
+  },
+  {
+    id: 6,
+    message: "Nice! Any specific cards you're excited about?",
+    time: '2025-01-15T09:42:00Z',
+    sender: 'John Doe',
+    receiver: 'Shireen Walker',
+  },
+  {
+    id: 7,
+    message:
+      "Yeah! Found a Charizard in really good condition for only $50. Couldn't believe it!",
+    time: '2025-01-15T09:45:00Z',
+    sender: 'Shireen Walker',
+    receiver: 'John Doe',
+  },
+  {
+    id: 8,
+    message: "Wow, that's a steal! You should definitely get it graded.",
+    time: '2025-01-15T09:47:00Z',
+    sender: 'John Doe',
+    receiver: 'Shireen Walker',
+  },
+  {
+    id: 9,
+    message:
+      "That's exactly what I was thinking! Planning to send it off next week.",
+    time: '2025-01-15T09:50:00Z',
+    sender: 'Shireen Walker',
+    receiver: 'John Doe',
+  },
+  {
+    id: 10,
+    message:
+      'Perfect timing! I heard PSA is running a special promotion this month.',
+    time: '2025-01-15T09:52:00Z',
+    sender: 'John Doe',
+    receiver: 'Shireen Walker',
+  },
+  {
+    id: 11,
+    message: "Really? I'll have to check that out. Thanks for the tip!",
+    time: '2025-01-15T09:55:00Z',
+    sender: 'Shireen Walker',
+    receiver: 'John Doe',
+  },
+  {
+    id: 12,
+    message: 'No problem! Let me know how the grading goes.',
+    time: '2025-01-15T09:57:00Z',
+    sender: 'John Doe',
+    receiver: 'Shireen Walker',
+  },
+  {
+    id: 13,
+    message:
+      'Will do! By the way, are you going to the London Card Show next month?',
+    time: '2025-01-15T10:00:00Z',
+    sender: 'Shireen Walker',
+    receiver: 'John Doe',
+  },
+  {
+    id: 14,
+    message: "I'm thinking about it! Have you been before?",
+    time: '2025-01-15T10:03:00Z',
+    sender: 'John Doe',
+    receiver: 'Shireen Walker',
+  },
+  {
+    id: 15,
+    message:
+      "Yes, it's fantastic! Great vendors and amazing deals. You should definitely come!",
+    time: '2025-01-15T10:05:00Z',
+    sender: 'Shireen Walker',
+    receiver: 'John Doe',
+  },
+  {
+    id: 16,
+    message: 'Sounds like a plan! Maybe we can meet up there.',
+    time: '2025-01-15T10:08:00Z',
+    sender: 'John Doe',
+    receiver: 'Shireen Walker',
+  },
+  {
+    id: 17,
+    message: "Absolutely! That would be great. I'll send you the details.",
+    time: '2025-01-15T10:10:00Z',
+    sender: 'Shireen Walker',
+    receiver: 'John Doe',
+  },
+  {
+    id: 18,
+    message: 'Perfect! Looking forward to it.',
+    time: '2025-01-15T10:12:00Z',
+    sender: 'John Doe',
+    receiver: 'Shireen Walker',
+  },
+  {
+    id: 19,
+    message: 'Same here! Talk to you later!',
+    time: '2025-01-15T10:15:00Z',
+    sender: 'Shireen Walker',
+    receiver: 'John Doe',
+  },
+  {
+    id: 111,
+    message: 'Same here! Talk to you later!',
+    time: '2025-01-15T10:15:00Z',
+    sender: 'Shireen Walker',
+    receiver: 'John Doe',
+  },
+  {
+    id: 20,
+    message: 'Okay! 👋',
+    time: '2025-01-15T10:16:00Z',
+    sender: 'John Doe',
+    receiver: 'Shireen Walker',
+  },
+  {
+    id: 21,
+    message: 'Take care! 👋',
+    time: '2025-01-15T10:16:00Z',
+    sender: 'John Doe',
+    receiver: 'Shireen Walker',
+  },
+];

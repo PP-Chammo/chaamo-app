@@ -4,7 +4,7 @@ import { clsx } from 'clsx';
 import { Href, useRouter, useSegments } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 
-import { setupProfileTabs } from '@/constants/profiles';
+import { setupProfileTabs } from '@/constants/tabs';
 
 const SetupProfileTabs = memo(function SetupProfileTabs() {
   const router = useRouter();

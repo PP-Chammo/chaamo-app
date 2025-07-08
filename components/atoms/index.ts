@@ -3,6 +3,7 @@ export { default as Badge } from './Badge';
 export { default as BankAccount } from './BankAccount';
 export { default as Boost } from './Boost';
 export { default as Button } from './Button';
+export { default as ChatMessage } from './ChatMessage';
 export { default as Divider } from './Divider';
 export { default as FavoriteButton } from './FavoriteButton';
 export { default as Icon } from './Icon';

@@ -1,9 +1,9 @@
 import { Label, ScreenContainer } from '@/components/atoms';
 
-export default function InboxScreen() {
+export default function BuyingInboxScreen() {
   return (
     <ScreenContainer>
-      <Label>Inbox Screen</Label>
+      <Label>Buying Screen</Label>
     </ScreenContainer>
   );
 }
