@@ -13,6 +13,7 @@ import {
 } from '@/components/atoms';
 import { Header, TextField } from '@/components/molecules';
 import { dummyChatMessages } from '@/constants/dummy';
+import { FlatData } from '@/domains';
 import { TextChangeParams } from '@/domains/input.types';
 import {
   DateGroupedMessages,
@@ -20,17 +21,6 @@ import {
   groupMessagesByDateAndSender,
 } from '@/utils/chat';
 import { getColor } from '@/utils/getColor';
-
-type FlatData =
-  | {
-      type: 'date';
-      date: string;
-    }
-  | {
-      type: 'group';
-      group: GroupedMessage;
-      date: string;
-    };
 
 export default function ChatScreen() {
   const { name } = useLocalSearchParams();
@@ -41,7 +31,7 @@ export default function ChatScreen() {
   const groupedByDate: DateGroupedMessages[] =
     groupMessagesByDateAndSender(dummyChatMessages);
 
-  const flatData: FlatData[] = [];
+  const flatData: FlatData<GroupedMessage>[] = [];
   groupedByDate.forEach((dateGroup) => {
     flatData.push({ type: 'date', date: dateGroup.date });
     dateGroup.groups.forEach((group) => {
@@ -70,7 +60,7 @@ export default function ChatScreen() {
           if (item.type === 'date') return `date-${item.date}`;
           return `group-${item.group.id}`;
         }}
-        className="bg-white/50"
+        className={classes.flatList}
         contentContainerClassName={classes.contentContainer}
         renderItem={({ item }) => {
           if (item.type === 'date') {
@@ -105,14 +95,14 @@ export default function ChatScreen() {
           );
         }}
       />
-      <View className={classes.messageInputContainer}>
+      <View className={classes.bottomContainer}>
         <Icon
           variant="FontAwesome6"
           name="add"
           size={24}
           color={getColor('slate-500')}
         />
-        <View className="flex-1">
+        <View className={classes.messageInputContainer}>
           <TextField
             className={classes.messageInput}
             name="message"
@@ -134,7 +124,9 @@ const classes = {
   messageOtherContent: 'flex-row items-start gap-2',
   messagesGroup: 'gap-1',
   contentContainer: 'mx-6',
-  messageInputContainer: 'flex-row gap-4 items-center px-4 py-6 bg-white',
+  bottomContainer: 'flex-row gap-4 items-center px-4 py-6 bg-white',
   messageInput: 'bg-teal-50 border border-slate-200 rounded-xl',
   dateText: 'text-center text-slate-500 my-5',
+  flatList: 'bg-white/50',
+  messageInputContainer: 'flex-1',
 };

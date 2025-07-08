@@ -17,7 +17,7 @@ const AccountBar = memo(function AccountBar() {
         <ButtonIcon
           name="bell"
           iconVariant="SimpleLineIcons"
-          onPress={() => {}}
+          onPress={() => router.push('/screens/notifications')}
         />
         <ButtonIcon
           name="wallet"

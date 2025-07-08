@@ -336,3 +336,62 @@ export const dummyChatMessages = [
     receiver: 'Shireen Walker',
   },
 ];
+
+export const dummyNotifications = [
+  {
+    id: 1,
+    category: 'Order Shipped',
+    message:
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    date: '2025-06-10T09:00:00Z',
+  },
+  {
+    id: 2,
+    category: 'New Bid',
+    message:
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    date: '2025-06-10T10:00:00Z',
+  },
+  {
+    id: 3,
+    category: 'Bid Ending',
+    message:
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    date: '2025-06-10T11:00:00Z',
+  },
+  {
+    id: 4,
+    category: 'New Bid',
+    message:
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    date: '2025-06-09T15:00:00Z',
+  },
+  {
+    id: 5,
+    category: 'Order Shipped',
+    message:
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    date: '2025-06-09T16:00:00Z',
+  },
+  {
+    id: 6,
+    category: 'Bid Ending',
+    message:
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    date: '2025-06-08T18:00:00Z',
+  },
+  {
+    id: 7,
+    category: 'Bid Ending',
+    message:
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    date: '2025-07-07T18:00:00Z',
+  },
+  {
+    id: 8,
+    category: 'Bid Ending',
+    message:
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    date: '2025-07-08T06:00:00Z',
+  },
+];

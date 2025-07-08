@@ -54,6 +54,7 @@ const Header: React.FC<HeaderProps> = memo(function Header({
           </TouchableOpacity>
         </View>
       )}
+      {onBackPress && !onRightPress && <View className={classes.rightSpace} />}
     </View>
   );
 });
@@ -64,6 +65,7 @@ const classes = {
   buttonContainerLeft: 'w-10 h-10 items-start justify-center',
   buttonContainerRight: 'w-10 h-10 items-end justify-center',
   title: 'flex-1 text-center text-lg font-semibold text-gray-800',
+  rightSpace: 'w-10 h-10 items-end justify-center',
 };
 
 export default Header;
