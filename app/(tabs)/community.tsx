@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { router } from 'expo-router';
-import { ScrollView, FlatList } from 'react-native';
+import { FlatList, ScrollView } from 'react-native';
 
 import { ScreenContainer } from '@/components/atoms';
 import {
@@ -24,7 +24,7 @@ export default function CommunityScreen() {
         iconRight="plus-circle"
         iconRightColor={getColor('teal-600')}
         iconRightSize={28}
-        onRightPress={() => {}}
+        onRightPress={() => router.push('/screens/new-post')}
         className={classes.header}
       />
       <ScrollView
