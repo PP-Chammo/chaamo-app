@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 
+import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import { GroupWithLink, People } from '@/components/molecules';
@@ -16,6 +17,9 @@ const PeopleList = memo(function PeopleList() {
             fullname={card.fullname}
             onFollowPress={() => {
               console.log(`Favorite pressed for card ${card.id}`);
+            }}
+            onPress={() => {
+              router.push('/screens/public-profile');
             }}
           />
         ))}

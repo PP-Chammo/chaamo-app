@@ -10,7 +10,7 @@ const CustomizedFlatList = remapProps(FlatList, {
   columnWrapperClassName: 'columnWrapperStyle',
 });
 
-export default function SoldItemsScreen() {
+export default function Portfolio() {
   return (
     <CustomizedFlatList
       data={dummyFeaturedCardList}

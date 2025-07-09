@@ -11,15 +11,16 @@ import {
   ScreenContainer,
 } from '@/components/atoms';
 import { Header, TabView } from '@/components/molecules';
+import {
+  AboutProfile,
+  PortfolioProfile,
+  ReviewsProfile,
+  SoldItemsProfile,
+} from '@/components/organisms';
 import { profileTabs } from '@/constants/tabs';
 import { getColor } from '@/utils/getColor';
 
-import AboutProfileScreen from './about';
-import PortfolioProfileScreen from './portfolio';
-import ReviewsProfileScreen from './reviews';
-import SoldItemsProfileScreen from './sold-items';
-
-export default function ProfileLayout() {
+export default function ProfileScreen() {
   return (
     <ScreenContainer className={classes.container}>
       <Header
@@ -73,10 +74,10 @@ export default function ProfileLayout() {
         Edit Profile
       </Button>
       <TabView className={classes.tabView} tabs={profileTabs}>
-        <PortfolioProfileScreen />
-        <SoldItemsProfileScreen />
-        <AboutProfileScreen />
-        <ReviewsProfileScreen />
+        <PortfolioProfile />
+        <SoldItemsProfile />
+        <AboutProfile />
+        <ReviewsProfile />
       </TabView>
     </ScreenContainer>
   );
