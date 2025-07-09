@@ -56,9 +56,17 @@ export default function ProfileLayout() {
       <View className={classes.profileStatsContainer}>
         <ProfileStat title="Listing" value="5" />
         <Divider />
-        <ProfileStat title="Followers" value="8" />
+        <ProfileStat
+          title="Followers"
+          value="8"
+          onPress={() => router.push('/screens/followers')}
+        />
         <Divider />
-        <ProfileStat title="Following" value="51" />
+        <ProfileStat
+          title="Following"
+          value="51"
+          onPress={() => router.push('/screens/followings')}
+        />
       </View>
 
       <Button icon="pencil-outline" className={classes.editProfileButton}>

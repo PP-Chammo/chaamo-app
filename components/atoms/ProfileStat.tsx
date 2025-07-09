@@ -1,24 +1,26 @@
 import { memo } from 'react';
 
 import { clsx } from 'clsx';
-import { Text, View } from 'react-native';
+import { Pressable, Text } from 'react-native';
 
 interface ProfileStatProps {
   title: string;
   value: string;
   className?: string;
+  onPress?: () => void;
 }
 
 const ProfileStat: React.FC<ProfileStatProps> = memo(function ProfileStat({
   title,
   value,
   className,
+  onPress,
 }) {
   return (
-    <View className={clsx(classes.container, className)}>
+    <Pressable onPress={onPress} className={clsx(classes.container, className)}>
       <Text className={classes.value}>{value}</Text>
       <Text className={classes.title}>{title}</Text>
-    </View>
+    </Pressable>
   );
 });
 
