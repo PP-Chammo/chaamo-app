@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 
 import { Dimensions, Modal, TouchableOpacity, View } from 'react-native';
 
@@ -19,7 +19,7 @@ const ContextMenu: React.FC<ContextMenuProps> = memo(function ContextMenu({
   const menuWidth = 160;
   const menuHeight = 120;
 
-  const calculatePosition = () => {
+  const calculatePosition = useCallback(() => {
     return new Promise<{ x: number; y: number }>((resolve) => {
       triggerRef.current?.measure(
         (
@@ -45,7 +45,7 @@ const ContextMenu: React.FC<ContextMenuProps> = memo(function ContextMenu({
         },
       );
     });
-  };
+  }, [triggerRef, menuWidth, menuHeight, screenWidth, screenHeight]);
 
   const [menuPosition, setMenuPosition] = React.useState({ x: 0, y: 0 });
 
@@ -53,7 +53,7 @@ const ContextMenu: React.FC<ContextMenuProps> = memo(function ContextMenu({
     if (visible) {
       calculatePosition().then(setMenuPosition);
     }
-  }, [visible]);
+  }, [visible, calculatePosition]);
 
   return (
     <Modal

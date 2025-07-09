@@ -2,9 +2,14 @@ import React, { memo, useCallback, useRef, useState } from 'react';
 
 import { Alert, TouchableOpacity, View } from 'react-native';
 
-import { Avatar, Button, Icon, Label, Row } from '@/components/atoms';
-
-import ContextMenu from './ContextMenu';
+import {
+  Avatar,
+  Button,
+  ContextMenu,
+  Icon,
+  Label,
+  Row,
+} from '@/components/atoms';
 
 interface FollowListItemProps {
   name: string;
@@ -72,7 +77,7 @@ const FollowListItem: React.FC<FollowListItemProps> = memo(
 const classes = {
   row: 'gap-3',
   blockMenu: 'flex-row items-center py-2 px-3 gap-2',
-  blockText: 'text-red-600 text-sm',
+  blockText: '!text-red-600 text-sm',
 };
 
 export default FollowListItem;

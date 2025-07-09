@@ -12,7 +12,7 @@ const FollowList: React.FC<FollowListProps> = memo(function FollowList() {
     <FlatList
       data={dummyFollowingList}
       keyExtractor={(item) => item.id.toString()}
-      contentContainerClassName="gap-6"
+      contentContainerClassName={classes.contentContainer}
       renderItem={({ item }) => (
         <FollowListItem
           name={item.name}
@@ -24,5 +24,9 @@ const FollowList: React.FC<FollowListProps> = memo(function FollowList() {
     />
   );
 });
+
+const classes = {
+  contentContainer: 'gap-6',
+};
 
 export default FollowList;
