@@ -58,8 +58,8 @@ export default function CategoriesScreen() {
 const classes = {
   containerTop: 'bg-white',
   containerBottom: '!bg-gray-50',
-  header: 'px-5 bg-white',
+  header: 'bg-white',
   headerCategory: 'py-5',
-  list: 'pt-5',
-  contentContainer: 'px-5',
+  list: 'pt-4.5',
+  contentContainer: 'px-4.5',
 };

@@ -42,5 +42,5 @@ export default function PortfolioScreen() {
 }
 
 const classes = {
-  columnWrapper: 'gap-8 my-5 px-5',
+  columnWrapper: 'gap-6 p-4.5',
 };

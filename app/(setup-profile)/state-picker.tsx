@@ -23,11 +23,7 @@ export default function StatePickerScreen() {
 
   return (
     <ScreenContainer>
-      <Header
-        className={classes.header}
-        title="Select State"
-        onBackPress={() => router.back()}
-      />
+      <Header title="Select State" onBackPress={() => router.back()} />
       <View className={classes.searchContainer}>
         <TextField
           name="search"
@@ -58,8 +54,7 @@ export default function StatePickerScreen() {
 }
 
 const classes = {
-  header: 'm-6',
-  searchContainer: 'px-6 bg-slate-100/50',
+  searchContainer: 'px-.5 bg-slate-100/50',
   stateItem: 'p-4 border-b border-gray-200',
-  listContainer: 'mx-6 mt-20',
+  listContainer: 'mx-4.5 mt-20',
 };

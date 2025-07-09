@@ -45,8 +45,8 @@ const TabView: React.FC<TabViewProps> = memo(function TabView({
   );
 
   return (
-    <View className={clsx(classes.container, className)}>
-      <View className={classes.tabscontainer}>
+    <View className={classes.container}>
+      <View className={clsx(classes.tabscontainer, className)}>
         {tabs.map((tab, index) => {
           const isActive = activeTab === index;
 

@@ -65,5 +65,5 @@ const classes = {
   containerTop: 'bg-white',
   container: 'gap-4',
   header: 'bg-white',
-  containerEvents: 'flex flex-row gap-3 px-5',
+  containerEvents: 'flex flex-row gap-3 px-4.5',
 };

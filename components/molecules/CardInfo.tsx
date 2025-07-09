@@ -74,7 +74,7 @@ const CardInfo: React.FC<CardInfoProps> = memo(function CategoryItem({
 });
 
 const classes = {
-  container: 'flex flex-row gap-3 mx-5 p-3 bg-white shadow rounded-lg',
+  container: 'flex flex-row gap-3 mx-4.5 p-3 bg-white shadow rounded-lg',
   image:
     'w-28 min-h-40 h-auto flex items-center justify-center bg-gray-200 rounded-lg',
   contentContainer: 'flex-1 justify-between',

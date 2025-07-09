@@ -31,7 +31,7 @@ export default function ResetPasswordScreen() {
   };
 
   return (
-    <ScreenContainer className="p-6">
+    <ScreenContainer>
       <Header title="New Password" />
       <View className={classes.form}>
         <Label className={classes.title} variant="title">
@@ -74,7 +74,7 @@ export default function ResetPasswordScreen() {
 }
 
 const classes = {
-  form: 'flex-1 mt-[50] gap-3',
+  form: 'flex-1 mt-[50] gap-3 mx-4.5',
   inputContainer: 'gap-6',
   title: 'text-3xl font-bold text-teal-600',
   description: 'text-slate-500 font-medium text-lg mb-6',

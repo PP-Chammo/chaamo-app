@@ -36,6 +36,6 @@ export default function AdvancedFilterScreen() {
 
 const classes = {
   containerTop: 'bg-white',
-  header: 'bg-white px-5',
-  fitlerContainer: 'flex flex-col gap-8 px-5 py-3 border-t border-gray-200',
+  header: 'bg-white',
+  fitlerContainer: 'flex flex-col gap-8 px-4.5 py-3 border-t border-gray-200',
 };

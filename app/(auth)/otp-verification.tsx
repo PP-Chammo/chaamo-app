@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { router } from 'expo-router';
+import { View } from 'react-native';
 
 import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header, OtpInput } from '@/components/molecules';
@@ -34,27 +35,33 @@ export default function OTPVerificationScreen() {
   };
 
   return (
-    <ScreenContainer className="p-6">
+    <ScreenContainer>
       <Header title="OTP" onBackPress={() => router.back()} />
-      <Label className={classes.title} variant="title">
-        Phone Number Verification
-      </Label>
-      <Label className={classes.description}>
-        Please enter the OTP. We&apos;ve just send to{' '}
-        <Label className={classes.phoneNumber}>12** ****90</Label>
-      </Label>
-      <OtpInput error={error} onChange={handleChange} name="otp" />
-      <Button
-        disabled={form.otp.length !== 6}
-        onPress={handleVerification}
-        className={classes.sendButton}
-      >
-        Verify Now
-      </Button>
-      <Label className={classes.countdown}>02:00</Label>
-      <Button variant="link" className={classes.link} onPress={handleResendOTP}>
-        Resend OTP
-      </Button>
+      <View className={classes.container}>
+        <Label className={classes.title} variant="title">
+          Phone Number Verification
+        </Label>
+        <Label className={classes.description}>
+          Please enter the OTP. We&apos;ve just send to{' '}
+          <Label className={classes.phoneNumber}>12** ****90</Label>
+        </Label>
+        <OtpInput error={error} onChange={handleChange} name="otp" />
+        <Button
+          disabled={form.otp.length !== 6}
+          onPress={handleVerification}
+          className={classes.sendButton}
+        >
+          Verify Now
+        </Button>
+        <Label className={classes.countdown}>02:00</Label>
+        <Button
+          variant="link"
+          className={classes.link}
+          onPress={handleResendOTP}
+        >
+          Resend OTP
+        </Button>
+      </View>
     </ScreenContainer>
   );
 }
@@ -66,4 +73,5 @@ const classes = {
   sendButton: 'mt-8',
   countdown: 'text-md text-center font-bold mt-6 mb-5',
   link: 'text-slate-500 underline font-medium text-center ',
+  container: 'flex-1 px-4.5',
 };

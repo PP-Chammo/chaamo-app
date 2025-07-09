@@ -38,9 +38,9 @@ const RecentlyAdded = memo(function RecentlyAdded() {
 });
 
 const classes = {
-  titleContainer: 'px-5 pt-5',
+  titleContainer: 'px-4.5 pt-5',
   viewAllText: 'text-teal-500 font-bold',
-  container: 'flex flex-row p-5 gap-5',
+  container: 'flex flex-row p-4.5 gap-5',
 };
 
 export default RecentlyAdded;

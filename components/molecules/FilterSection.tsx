@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { router } from 'expo-router';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { Button, Label, Row } from '@/components/atoms';
 
@@ -14,7 +14,11 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
   function FilterSection({ resultCount = 0, query }) {
     return (
       <View>
-        <Row className={classes.filterContainer}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerClassName={classes.filterContainer}
+        >
           <Button
             onPress={() => router.push('/screens/advanced-filter')}
             variant="primary-light"
@@ -34,7 +38,7 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
           <Button variant="light" size="small" className={classes.filterButton}>
             Location
           </Button>
-        </Row>
+        </ScrollView>
         {query && (
           <Row className={classes.filterTextContainer}>
             <Label className={classes.filterPlaceholder}>Showing:</Label>
@@ -49,9 +53,9 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
 );
 
 const classes = {
-  filterContainer: 'px-5 py-3 gap-2',
+  filterContainer: 'px-4.5 py-3 gap-2',
   filterButton: '!px-4',
-  filterTextContainer: 'px-5 pt-1 pb-4 !gap-1',
+  filterTextContainer: 'px-4.5 pt-1 pb-4 !gap-1',
   filterPlaceholder: 'font-light text-gray-500',
   resultText: 'font-semibold',
 };

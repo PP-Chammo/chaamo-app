@@ -30,7 +30,7 @@ const AccountBar = memo(function AccountBar() {
 });
 
 const classes = {
-  container: 'w-full px-5',
+  container: 'w-full px-4.5',
   leftSpace: 'flex flex-row gap-1',
   rightSpace: 'flex flex-row gap-5',
 };

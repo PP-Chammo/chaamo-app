@@ -61,7 +61,7 @@ export default function ProfileLayout() {
         <ProfileStat title="Following" value="51" />
       </View>
 
-      <Button icon="pencil-outline" className={classes.button}>
+      <Button icon="pencil-outline" className={classes.editProfileButton}>
         Edit Profile
       </Button>
       <TabView className={classes.tabView} tabs={profileTabs}>
@@ -76,7 +76,7 @@ export default function ProfileLayout() {
 
 const classes = {
   container: 'flex-1',
-  profileContainer: 'flex-row gap-5 mt-2 items-center px-5',
+  profileContainer: 'flex-row gap-5 mt-2 px-4.5 items-center',
   avatarImageContainer: 'border-2 border-white',
   profileInfoContainer: 'gap-2',
   profileName: 'text-3xl font-bold',
@@ -86,6 +86,5 @@ const classes = {
   portfolioValueIconContainer: 'border border-teal-600 rounded-full',
   profileStatsContainer: 'flex-row justify-between mx-12 my-8',
   tabView: 'mt-10',
-  button: 'mx-5',
-  tabViewContent: 'px-5',
+  editProfileButton: 'mx-4.5',
 };

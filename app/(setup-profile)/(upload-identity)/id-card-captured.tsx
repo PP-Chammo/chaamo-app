@@ -57,11 +57,11 @@ export default function IDCardCapturedScreen() {
 }
 
 const classes = {
-  container: 'flex-1 p-6',
+  container: 'flex-1',
   title: 'text-slate-600 text-3xl font-bold my-8',
   instructionText: 'text-slate-600 text-sm',
   image: 'w-full my-10 rounded-lg self-center',
-  content: 'flex-1',
+  content: 'flex-1 px-4.5',
   button: 'flex-1',
-  buttonContainer: 'flex-row gap-4 justify-between mb-5',
+  buttonContainer: 'flex-row gap-4 justify-between mb-5 p-4.5',
 };
