@@ -5,8 +5,7 @@ import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 
 import { Button, Label, ScreenContainer } from '@/components/atoms';
-import { Header, TextField } from '@/components/molecules';
-import RadioInput from '@/components/molecules/RadioInput';
+import { Header, TextField, RadioInput } from '@/components/molecules';
 import { reportOptions } from '@/constants/reportOptions';
 
 export default function ReportScreen() {
