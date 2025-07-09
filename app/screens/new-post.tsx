@@ -2,9 +2,9 @@ import React, { useCallback, useState } from 'react';
 
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-import { Alert, Image, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, TouchableOpacity, View } from 'react-native';
 
-import { Icon, KeyboardView, ScreenContainer } from '@/components/atoms';
+import { Icon, KeyboardView, Label, ScreenContainer } from '@/components/atoms';
 import { Header, TextArea } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
 import { getColor } from '@/utils/getColor';
@@ -57,7 +57,7 @@ export default function NewPostScreen() {
       <Header title="Add New Post" onBackPress={() => router.back()} />
 
       <View className={classes.container}>
-        <Text className={classes.title}>What’s on your mind?</Text>
+        <Label className={classes.title}>What’s on your mind?</Label>
         {form.imageUrl && (
           <View className={classes.imageContainer}>
             <Image
