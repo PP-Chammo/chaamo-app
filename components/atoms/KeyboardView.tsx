@@ -19,7 +19,7 @@ const KeyboardView: React.FC<KeyboardViewProps> = ({
   return (
     <KeyboardAvoidingView
       behavior="position"
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 75} // adjust as needed for your header
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 75}
       {...props}
     >
       {children}
