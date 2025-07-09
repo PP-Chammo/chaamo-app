@@ -55,25 +55,24 @@ export default function NewPostScreen() {
   return (
     <ScreenContainer>
       <Header title="Add New Post" onBackPress={() => router.back()} />
-
       <View className={classes.container}>
         <Label className={classes.title}>What’s on your mind?</Label>
-        {!!form.imageUrl && (
-          <View className={classes.imageContainer}>
-            <Image
-              source={{ uri: form.imageUrl }}
-              className={classes.image}
-              resizeMode="cover"
-            />
-            <TouchableOpacity
-              className={classes.closeIcon}
-              onPress={handleRemoveImage}
-            >
-              <Icon name="close" size={20} color={getColor('slate-700')} />
-            </TouchableOpacity>
-          </View>
-        )}
         <KeyboardView>
+          {!!form.imageUrl && (
+            <View className={classes.imageContainer}>
+              <Image
+                source={{ uri: form.imageUrl }}
+                className={classes.image}
+                resizeMode="cover"
+              />
+              <TouchableOpacity
+                className={classes.closeIcon}
+                onPress={handleRemoveImage}
+              >
+                <Icon name="close" size={20} color={getColor('slate-700')} />
+              </TouchableOpacity>
+            </View>
+          )}
           <TextArea
             name="description"
             onChange={handleChange}
@@ -93,7 +92,7 @@ export default function NewPostScreen() {
 
 const classes = {
   title: 'text-teal-600 text-xl font-medium',
-  container: 'mx-4.5 gap-8',
+  container: 'flex-1 mx-4.5 gap-8',
   image: 'w-full h-72 rounded-2xl',
   attachment: 'bg-teal-600 rounded-full p-3 absolute bottom-16 right-6',
   imageContainer: 'relative',

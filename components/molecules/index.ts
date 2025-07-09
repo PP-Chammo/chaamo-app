@@ -21,6 +21,7 @@ export { default as OtpInput } from './OtpInput';
 export { default as People } from './People';
 export { default as PhoneInput } from './PhoneInput';
 export { default as PostCard } from './PostCard';
+export { default as RadioInput } from './RadioInput';
 export { default as Rating } from './Rating';
 export { default as Review } from './Review';
 export { default as SelectWithScreen } from './SelectWithScreen';

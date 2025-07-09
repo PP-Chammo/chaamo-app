@@ -82,7 +82,7 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
 export default TextField;
 
 const classes = {
-  container: 'gap-2',
+  container: 'flex-1 gap-2',
   label: 'text-slate-500 font-medium text-md ml-4',
   title: 'text-2xl font-bold text-teal-600',
   description: 'text-slate-500 font-medium text-md mb-6',
@@ -92,7 +92,8 @@ const classes = {
   signUp: 'text-slate-500 text-md text-center mb-8',
   required: 'text-red-500',
   inputContainer: 'relative',
-  input: 'rounded-lg border border-slate-200 rounded-lg p-4 bg-white h-[48px]',
+  input:
+    'rounded-lg border border-slate-200 text-gray-700 rounded-lg p-4 bg-white h-[48px]',
   inputWithLeftIcon: 'px-12 py-4',
   eyeIcon: 'absolute right-4 top-1/2 -translate-y-1/2',
   error: 'text-red-500 text-sm',
