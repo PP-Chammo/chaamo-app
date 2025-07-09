@@ -3,6 +3,7 @@ export { default as AuctionList } from './AuctionList';
 export { default as CategoryList } from './CategoryList';
 export { default as ChatList } from './ChatList';
 export { default as FeaturedList } from './FeaturedList';
+export { default as FollowList } from './FollowList';
 export { default as NotificationList } from './NotificationList';
 export { default as PeopleList } from './PeopleList';
 export { default as RecentlyAdded } from './RecentlyAdded';
