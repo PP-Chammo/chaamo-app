@@ -3,7 +3,14 @@ import { memo } from 'react';
 import { clsx } from 'clsx';
 import { LinearGradient } from 'expo-linear-gradient';
 import { cssInterop } from 'nativewind';
-import { SafeAreaView, View, ViewProps } from 'react-native';
+import {
+  Keyboard,
+  Pressable,
+  SafeAreaView,
+  TouchableWithoutFeedback,
+  View,
+  ViewProps,
+} from 'react-native';
 
 import { getColor } from '@/utils/getColor';
 
@@ -31,16 +38,23 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
         <SafeAreaView className={clsx(classes.containerTop, classNameTop)} />
         <SafeAreaView className={classes.container} style={style} {...props}>
           {className?.includes('bg-') ? (
-            <View className={clsx(classes.container, className)} style={style}>
-              {children}
-            </View>
+            <Pressable onPress={Keyboard.dismiss}>
+              <View
+                className={clsx(classes.container, className)}
+                style={style}
+              >
+                {children}
+              </View>
+            </Pressable>
           ) : (
-            <StyledGradient
-              colors={[getColor('orange-50'), getColor('teal-50')]}
-              className={clsx(classes.container, className)}
-            >
-              {children}
-            </StyledGradient>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <StyledGradient
+                colors={[getColor('orange-50'), getColor('teal-50')]}
+                className={clsx(classes.container, className)}
+              >
+                {children}
+              </StyledGradient>
+            </TouchableWithoutFeedback>
           )}
         </SafeAreaView>
         <SafeAreaView

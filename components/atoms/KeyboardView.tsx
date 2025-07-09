@@ -1,7 +1,10 @@
 import React from 'react';
 
-import { KeyboardAvoidingViewProps } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {
+  KeyboardAvoidingView,
+  KeyboardAvoidingViewProps,
+  Platform,
+} from 'react-native';
 
 interface KeyboardViewProps extends KeyboardAvoidingViewProps {
   children: React.ReactNode;
@@ -14,18 +17,14 @@ const KeyboardView: React.FC<KeyboardViewProps> = ({
   ...props
 }) => {
   return (
-    <KeyboardAwareScrollView
-      showsVerticalScrollIndicator={false}
-      keyboardShouldPersistTaps="handled"
-      contentContainerClassName={classes.container}
+    <KeyboardAvoidingView
+      behavior="position"
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 75} // adjust as needed for your header
+      {...props}
     >
       {children}
-    </KeyboardAwareScrollView>
+    </KeyboardAvoidingView>
   );
-};
-
-const classes = {
-  container: '',
 };
 
 export default KeyboardView;
