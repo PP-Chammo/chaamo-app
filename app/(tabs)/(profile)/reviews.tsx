@@ -7,7 +7,7 @@ export default function ReviewsScreen() {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      className={classes.container}
+      contentContainerClassName={classes.container}
     >
       <View className={classes.reviewContainer}>
         <Rating value={4.8} />
@@ -45,11 +45,12 @@ export default function ReviewsScreen() {
 }
 
 const classes = {
-  container: 'flex-1',
-  reviewContainer: 'bg-white items-center justify-between gap-2 p-5',
+  container: 'my-5 px-5',
+  reviewContainer:
+    'bg-white items-center justify-between gap-2 p-5 border border-teal-100 rounded-lg',
   outstandingText: 'text-sm text-slate-500',
   reviewHeader: 'flex flex-row items-center justify-between my-5',
   reviewHeaderRight:
-    'bg-white flex-row items-center gap-2 py-1 px-4 rounded-lg',
+    'bg-white flex-row items-center gap-2 py-1 px-4 border border-teal-100 rounded-full',
   reviewList: 'gap-5 mb-5',
 };

@@ -42,5 +42,5 @@ export default function SoldItemsScreen() {
 }
 
 const classes = {
-  columnWrapper: 'gap-8 mb-5',
+  columnWrapper: 'gap-8 my-5 px-5',
 };

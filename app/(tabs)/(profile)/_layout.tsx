@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import {
@@ -21,7 +22,11 @@ import SoldItemsProfileScreen from './sold-items';
 export default function ProfileLayout() {
   return (
     <ScreenContainer className={classes.container}>
-      <Header title="Profile" />
+      <Header
+        title="Profile"
+        iconRight="menu"
+        onRightPress={() => router.push('/screens/settings')}
+      />
       <View className={classes.profileContainer}>
         <Avatar
           size={80}
@@ -56,12 +61,10 @@ export default function ProfileLayout() {
         <ProfileStat title="Following" value="51" />
       </View>
 
-      <Button icon="pencil-outline">Edit Profile</Button>
-      <TabView
-        className={classes.tabView}
-        contentClassName="mt-5"
-        tabs={profileTabs}
-      >
+      <Button icon="pencil-outline" className={classes.button}>
+        Edit Profile
+      </Button>
+      <TabView className={classes.tabView} tabs={profileTabs}>
         <PortfolioProfileScreen />
         <SoldItemsProfileScreen />
         <AboutProfileScreen />
@@ -72,8 +75,8 @@ export default function ProfileLayout() {
 }
 
 const classes = {
-  container: 'flex-1 px-6',
-  profileContainer: 'flex-row gap-5 mt-2 items-center',
+  container: 'flex-1',
+  profileContainer: 'flex-row gap-5 mt-2 items-center px-5',
   avatarImageContainer: 'border-2 border-white',
   profileInfoContainer: 'gap-2',
   profileName: 'text-3xl font-bold',
@@ -83,4 +86,6 @@ const classes = {
   portfolioValueIconContainer: 'border border-teal-600 rounded-full',
   profileStatsContainer: 'flex-row justify-between mx-12 my-8',
   tabView: 'mt-10',
+  button: 'mx-5',
+  tabViewContent: 'px-5',
 };

@@ -27,3 +27,5 @@ export { default as SetupProfileTabs } from './SetupProfileTabs';
 export { default as TabView } from './TabView';
 export { default as TextArea } from './TextArea';
 export { default as TextField } from './TextField';
+export { default as SettingItem } from './SettingItem';
+export { default as SwitchInput } from './SwitchInput';
