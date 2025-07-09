@@ -30,7 +30,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = memo(
           layout="second"
           value={value}
           onChangeFormattedText={handleChange}
-          autoFocus
+          autoFocus={false}
           containerStyle={styles.container}
           textContainerStyle={styles.textContainer}
           textInputStyle={styles.textInput}
