@@ -58,7 +58,7 @@ export default function NewPostScreen() {
 
       <View className={classes.container}>
         <Label className={classes.title}>What’s on your mind?</Label>
-        {form.imageUrl && (
+        {!!form.imageUrl && (
           <View className={classes.imageContainer}>
             <Image
               source={{ uri: form.imageUrl }}
@@ -93,7 +93,7 @@ export default function NewPostScreen() {
 
 const classes = {
   title: 'text-teal-600 text-xl font-medium',
-  container: 'flex-1 mx-6 gap-8',
+  container: 'mx-4.5 gap-8',
   image: 'w-full h-72 rounded-2xl',
   attachment: 'bg-teal-600 rounded-full p-3 absolute bottom-16 right-6',
   imageContainer: 'relative',

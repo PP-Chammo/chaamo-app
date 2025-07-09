@@ -25,7 +25,7 @@ export default function SignUpScreen() {
   };
 
   return (
-    <ScreenContainer className="p-6">
+    <ScreenContainer>
       <Header title="Sign Up" onBackPress={() => router.back()} />
       <View className={classes.form}>
         <Label className={classes.title} variant="title">
@@ -51,7 +51,7 @@ export default function SignUpScreen() {
         </Label>
       </View>
       <Checkbox
-        className="mb-12"
+        className="mb-12 px-4.5"
         checked={form.terms}
         onChange={handleChange}
         name="terms"
@@ -78,7 +78,7 @@ export default function SignUpScreen() {
 }
 
 const classes = {
-  form: 'flex-1 mt-[50] gap-5',
+  form: 'flex-1 mt-[50] gap-5 px-4.5',
   title: 'text-3xl font-bold text-teal-600 mb-2',
   description: 'text-slate-500 text-lg mb-8',
   login: 'text-slate-500 text-md text-center',

@@ -38,8 +38,8 @@ const AuctionList = memo(function AuctionList() {
 
 const classes = {
   container: 'bg-white',
-  scrollContainer: 'flex flex-row p-5 gap-5',
-  titleContainer: 'px-5 pt-5',
+  scrollContainer: 'flex flex-row p-4.5 gap-5',
+  titleContainer: 'px-4.5 pt-5',
   viewAllText: 'text-teal-500 font-bold',
 };
 

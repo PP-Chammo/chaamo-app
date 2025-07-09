@@ -43,7 +43,7 @@ export default function ChatScreen() {
   };
 
   return (
-    <ScreenContainer>
+    <ScreenContainer classNameTop={classes.containerTop}>
       <Header
         leftComponent={
           <View className={classes.leftComponent}>
@@ -52,6 +52,7 @@ export default function ChatScreen() {
           </View>
         }
         onBackPress={() => router.back()}
+        className={classes.header}
       />
       <FlatList
         data={flatData}
@@ -128,4 +129,6 @@ const classes = {
   dateText: 'text-center text-slate-500 my-5',
   flatList: 'bg-white/50',
   messageInputContainer: 'flex-1',
+  header: 'bg-white',
+  containerTop: 'bg-white',
 };

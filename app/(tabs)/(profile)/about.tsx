@@ -4,10 +4,7 @@ import { Icon, Label, ProfileStat } from '@/components/atoms';
 
 export default function AboutScreen() {
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      contentContainerClassName={classes.container}
-    >
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View className={classes.contentContainer}>
         <View className={classes.statContainer}>
           <ProfileStat
@@ -38,9 +35,8 @@ export default function AboutScreen() {
 }
 
 const classes = {
-  container: 'px-5 my-5',
-  contentContainer: 'flex-1',
-  statContainer: 'flex flex-row justify-between m-1.5 gap-3',
+  contentContainer: 'flex-1 px-4.5 py-3',
+  statContainer: 'flex flex-row justify-between my-1.5 gap-3',
   stat: 'bg-white flex-1 p-5 rounded-lg shadow border border-gray-100',
   locationContainer: 'mt-5',
   locationValueContainer: 'flex flex-row gap-1',

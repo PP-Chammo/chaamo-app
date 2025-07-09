@@ -22,7 +22,7 @@ const NotificationList: React.FC<NotificationListProps> = memo(
           if (item.type === 'date') return `date-${item.date}`;
           return `group-${item.group.id}`;
         }}
-        contentContainerClassName="gap-5 mx-6 pb-5"
+        contentContainerClassName="gap-5 mx-4.5 pb-4.5"
         renderItem={({ item }) => {
           if (item.type === 'date') {
             return (

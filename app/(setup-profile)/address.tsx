@@ -74,77 +74,85 @@ export default function AddressScreen() {
   }, [selectedCountry, selectedState]);
 
   return (
-    <ScreenContainer className={classes.container}>
+    <ScreenContainer>
       <Header title="Setting Up Profile" onBackPress={() => router.back()} />
-      <SetupProfileTabs />
-      <KeyboardView>
-        <View className={classes.formContainer}>
-          <View className="gap-4 flex-1">
-            <TextField
-              name="addressLine1"
-              label="Address Line 1"
-              placeholder="Address Line 1"
-              onChange={handleChange}
-              value={form.addressLine1}
-              required
-              error={errors['addressLine1']}
-            />
-            <TextField
-              name="addressLine2"
-              label="Address Line 2"
-              placeholder="Address Line 2"
-              onChange={handleChange}
-              value={form.addressLine2}
-              error={errors['addressLine2']}
-            />
+      <View className={classes.container}>
+        <SetupProfileTabs />
+        <KeyboardView>
+          <View className={classes.formContainer}>
+            <View className="gap-4 flex-1 py-4.5">
+              <TextField
+                name="addressLine1"
+                label="Address Line 1"
+                placeholder="Address Line 1"
+                onChange={handleChange}
+                value={form.addressLine1}
+                required
+                error={errors['addressLine1']}
+              />
+              <TextField
+                name="addressLine2"
+                label="Address Line 2"
+                placeholder="Address Line 2"
+                onChange={handleChange}
+                value={form.addressLine2}
+                error={errors['addressLine2']}
+              />
+            </View>
+            <View className="gap-4 flex-row w-full">
+              <TextField
+                name="city"
+                label="City"
+                placeholder="City"
+                onChange={handleChange}
+                value={form.city}
+                required
+                error={errors['city']}
+              />
+              <SelectWithScreen
+                label="State"
+                onPress={() => router.push('/(setup-profile)/state-picker')}
+                error={errors['state']}
+                placeholder="--Select--"
+                value={form.state}
+              />
+            </View>
+            <View className="gap-4 flex-1">
+              <SelectWithScreen
+                label="Country"
+                onPress={() => router.push('/(setup-profile)/country-picker')}
+                error={errors['country']}
+                placeholder="--Select--"
+                value={form.country}
+              />
+              <TextField
+                name="postalCode"
+                label="PostalCode"
+                placeholder="PostalCode"
+                onChange={handleChange}
+                value={form.postalCode}
+                required
+                error={errors['postalCode']}
+              />
+            </View>
           </View>
-          <View className="gap-4 flex-row w-full">
-            <TextField
-              name="city"
-              label="City"
-              placeholder="City"
-              onChange={handleChange}
-              value={form.city}
-              required
-              error={errors['city']}
-            />
-            <SelectWithScreen
-              label="State"
-              onPress={() => router.push('/(setup-profile)/state-picker')}
-              error={errors['state']}
-              placeholder="--Select--"
-              value={form.state}
-            />
-          </View>
-          <View className="gap-4 flex-1">
-            <SelectWithScreen
-              label="Country"
-              onPress={() => router.push('/(setup-profile)/country-picker')}
-              error={errors['country']}
-              placeholder="--Select--"
-              value={form.country}
-            />
-            <TextField
-              name="postalCode"
-              label="PostalCode"
-              placeholder="PostalCode"
-              onChange={handleChange}
-              value={form.postalCode}
-              required
-              error={errors['postalCode']}
-            />
-          </View>
-        </View>
-      </KeyboardView>
-      <Button variant="primary" size="large" onPress={handleSubmit}>
-        Continue
-      </Button>
+        </KeyboardView>
+        <Button
+          variant="primary"
+          size="large"
+          onPress={handleSubmit}
+          className={classes.button}
+        >
+          Continue
+        </Button>
+      </View>
     </ScreenContainer>
   );
 }
 
 const classes = {
-  container: 'p-6',
   statePicker: 'border-1 border-gray-200 rounded-8 p-12 mt-8',
   formContainer: 'pb-10 flex gap-4',
+  container: 'flex-1 p-4.5',
+  button: 'my-4.5',
 };

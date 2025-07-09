@@ -108,7 +108,8 @@ const classes = {
   greetingText: 'text-[28px] font-medium mt-2',
   logoText: 'text-[30px] text-yellow-600',
   blurView: 'p-4 z-20',
-  termsContainer: 'my-5 bg-teal-100 border border-teal-400 p-5 rounded-xl',
+  termsContainer:
+    'my-5 bg-teal-100 border border-teal-400 py-3 px-2 rounded-xl',
   footer: 'h-56 w-full absolute bottom-0 z-0 bg-white',
   bottomBlurView: 'absolute bottom-56 h-56 left-0 right-0 z-0',
 };

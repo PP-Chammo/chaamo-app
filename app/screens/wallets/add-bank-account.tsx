@@ -109,10 +109,10 @@ export default function AddBankAccountScreen() {
 }
 
 const classes = {
-  container: 'flex-1 p-5 mb-5',
+  container: 'flex-1 p-4.5',
   title: 'text-slate-500',
   form: 'flex-1 gap-4 mt-5',
   terms: 'text-slate-500',
-  buttonContainer: 'flex-row gap-4 justify-between mt-5',
+  buttonContainer: 'flex-row gap-4 justify-between my-4.5',
   button: 'flex-1',
 };

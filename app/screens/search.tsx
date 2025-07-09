@@ -116,9 +116,9 @@ export default function CardsScreen() {
 
 const classes = {
   containerTop: 'bg-white',
-  filterContainer: 'px-5 py-3',
+  filterContainer: 'px-4.5 py-3',
   filterButton: '!px-4 !py-2',
-  filterTextContainer: 'px-5 py-3 !gap-1',
+  filterTextContainer: 'px-4.5 py-3 !gap-1',
   filterPlaceholder: 'font-light text-gray-500',
   resultText: 'font-semibold',
   contentContainer: 'gap-3',

@@ -46,7 +46,7 @@ export default function IDCardScreen() {
           Camera permission is required to continue.
         </Text>
         <TouchableOpacity
-          className="bg-cyan-500 px-6 py-3 rounded-lg"
+          className="bg-cyan-500 px-4.5 py-3 rounded-lg"
           onPress={requestCameraPermission}
         >
           <Text className="text-white font-bold">Request Permission</Text>
@@ -104,7 +104,7 @@ export default function IDCardScreen() {
 const classes = {
   title: 'text-white text-3xl font-bold mb-8',
   camera: 'flex-1',
-  overlay: 'absolute inset-0 mx-6 mt-24 mb-10',
+  overlay: 'absolute inset-0 mx-4.5 mt-24 mb-10',
   instructionText: 'text-white text-base',
   uploadInstruction: 'bottom-20',
   frameContainer: 'flex-1 justify-center items-center',

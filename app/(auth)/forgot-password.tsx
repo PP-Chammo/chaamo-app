@@ -33,7 +33,7 @@ export default function ForgotPasswordScreen() {
   };
 
   return (
-    <ScreenContainer className="p-6">
+    <ScreenContainer>
       <Header title="Forgot Password" onBackPress={() => router.back()} />
       <View className={classes.form}>
         <Label className={classes.title} variant="title">
@@ -57,7 +57,7 @@ export default function ForgotPasswordScreen() {
 }
 
 const classes = {
-  form: 'flex-1 mt-[50] gap-3',
+  form: 'flex-1 mt-[50] gap-3 px-4.5',
   title: 'text-2xl font-bold text-teal-600',
   description: 'text-slate-500 font-medium text-lg mb-6',
   resetButton: 'my-4',

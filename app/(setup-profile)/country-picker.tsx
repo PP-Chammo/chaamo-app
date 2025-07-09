@@ -27,11 +27,7 @@ export default function CountryPickerScreen() {
 
   return (
     <ScreenContainer>
-      <Header
-        className={classes.header}
-        title="Select Country"
-        onBackPress={() => router.back()}
-      />
+      <Header title="Select Country" onBackPress={() => router.back()} />
       <View className={classes.searchContainer}>
         <TextField
           name="search"
@@ -62,8 +58,7 @@ export default function CountryPickerScreen() {
 }
 
 const classes = {
-  header: 'm-6',
-  searchContainer: 'px-6 bg-slate-100/50',
+  searchContainer: 'px-4.5',
   stateItem: 'p-4 border-b border-gray-200',
-  listContainer: 'mx-6 mt-20',
+  listContainer: 'mx-4.5 mt-20',
 };

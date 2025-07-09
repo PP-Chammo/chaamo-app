@@ -33,7 +33,7 @@ export default function SignInScreen() {
   };
 
   return (
-    <ScreenContainer className="p-6">
+    <ScreenContainer>
       <Header title="Login" onBackPress={() => router.back()} />
       <View className={classes.form}>
         <Label className={classes.title} variant="title">
@@ -77,11 +77,11 @@ export default function SignInScreen() {
 }
 
 const classes = {
-  form: 'flex-1 mt-[50px] gap-3',
+  form: 'flex-1 mt-[50px] gap-3 px-4.5',
   inputContainer: 'gap-6',
   title: 'text-3xl font-bold text-teal-600',
   description: 'text-slate-500 font-medium text-lg mb-6',
-  login: 'text-slate-500 text-md text-center underline font-bold',
+  login: 'text-slate-500 text-md text-center underline font-bold self-center',
   link: 'text-teal-600 underline font-bold',
   loginButton: 'my-2 ',
   signUp: 'text-slate-500 text-md text-center mb-8',
