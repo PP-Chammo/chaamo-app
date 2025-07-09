@@ -4,7 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { Alert, Image, TouchableOpacity, View } from 'react-native';
 
-import { Icon, Label, ScreenContainer } from '@/components/atoms';
+import { Icon, KeyboardView, Label, ScreenContainer } from '@/components/atoms';
 import { Header, TextArea } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
 import { getColor } from '@/utils/getColor';
@@ -55,6 +55,7 @@ export default function NewPostScreen() {
   return (
     <ScreenContainer>
       <Header title="Add New Post" onBackPress={() => router.back()} />
+
       <View className={classes.container}>
         <Label className={classes.title}>What’s on your mind?</Label>
         {form.imageUrl && (
@@ -72,11 +73,13 @@ export default function NewPostScreen() {
             </TouchableOpacity>
           </View>
         )}
-        <TextArea
-          name="description"
-          onChange={handleChange}
-          label="Description"
-        />
+        <KeyboardView>
+          <TextArea
+            name="description"
+            onChange={handleChange}
+            label="Description"
+          />
+        </KeyboardView>
       </View>
       <TouchableOpacity
         className={classes.attachment}
@@ -90,7 +93,7 @@ export default function NewPostScreen() {
 
 const classes = {
   title: 'text-teal-600 text-xl font-medium',
-  container: 'mx-6 gap-8',
+  container: 'flex-1 mx-6 gap-8',
   image: 'w-full h-72 rounded-2xl',
   attachment: 'bg-teal-600 rounded-full p-3 absolute bottom-16 right-6',
   imageContainer: 'relative',

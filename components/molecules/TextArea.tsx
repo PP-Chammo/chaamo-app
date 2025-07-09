@@ -28,16 +28,14 @@ const TextArea: React.FC<TextAreaProps> = memo(function TextArea({
   return (
     <View className={classes.container}>
       {label && <Text className={classes.label}>{label}</Text>}
-      <View className={classes.inputContainer}>
-        <TextInput
-          multiline
-          placeholder={placeholder}
-          textAlignVertical="top"
-          className={clsx(classes.input, inputClassName)}
-          onChangeText={handleChange}
-          {...props}
-        />
-      </View>
+      <TextInput
+        multiline
+        placeholder={placeholder}
+        textAlignVertical="top"
+        className={clsx(classes.input, inputClassName)}
+        onChangeText={handleChange}
+        {...props}
+      />
     </View>
   );
 });
