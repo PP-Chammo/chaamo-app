@@ -100,7 +100,7 @@ export default function PersonalInfoScreen() {
       <Header title="Setting Up Profile" onBackPress={() => router.back()} />
       <View className={classes.container}>
         <SetupProfileTabs />
-        <KeyboardView>
+        <KeyboardView contentContainerClassName={classes.contentContainer}>
           <Avatar
             size={120}
             onPress={handleImagePick}
@@ -128,42 +128,36 @@ export default function PersonalInfoScreen() {
               error={errors['lastName']}
             />
           </Row>
-          <View className="gap-4">
-            <TextField
-              name="email"
-              label="Email"
-              placeholder="Email"
-              onChange={handleChange}
-              value={form.email}
-              required
-              error={errors['email']}
-            />
-            <PhoneInput
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-            />
-            <TextField
-              name="password"
-              label="Password"
-              placeholder="Password"
-              onChange={handleChange}
-              value={form.password}
-              required
-              type="password"
-              error={errors['password']}
-            />
-            <TextField
-              name="confirmPassword"
-              label="Confirm Password"
-              placeholder="Confirm Password"
-              onChange={handleChange}
-              value={form.confirmPassword}
-              required
-              type="password"
-              error={errors['confirmPassword']}
-            />
-          </View>
+          <TextField
+            name="email"
+            label="Email"
+            placeholder="Email"
+            onChange={handleChange}
+            value={form.email}
+            required
+            error={errors['email']}
+          />
+          <PhoneInput name="phone" value={form.phone} onChange={handleChange} />
+          <TextField
+            name="password"
+            label="Password"
+            placeholder="Password"
+            onChange={handleChange}
+            value={form.password}
+            required
+            type="password"
+            error={errors['password']}
+          />
+          <TextField
+            name="confirmPassword"
+            label="Confirm Password"
+            placeholder="Confirm Password"
+            onChange={handleChange}
+            value={form.confirmPassword}
+            required
+            type="password"
+            error={errors['confirmPassword']}
+          />
           <Button
             className={classes.button}
             variant="primary"
@@ -182,4 +176,5 @@ const classes = {
   image: 'mb-12',
   imageContainer: 'p-1',
   button: 'mt-5',
+  contentContainer: 'gap-4',
 };

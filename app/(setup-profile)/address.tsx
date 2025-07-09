@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
-import { Button, KeyboardView, ScreenContainer } from '@/components/atoms';
+import { Button, KeyboardView, Row, ScreenContainer } from '@/components/atoms';
 import {
   Header,
   SelectWithScreen,
@@ -96,7 +96,7 @@ export default function AddressScreen() {
             value={form.addressLine2}
             error={errors['addressLine2']}
           />
-          <View className="gap-4 flex-row w-full">
+          <Row>
             <TextField
               name="city"
               label="City"
@@ -113,25 +113,23 @@ export default function AddressScreen() {
               placeholder="--Select--"
               value={form.state}
             />
-          </View>
-          <View className="gap-4 flex-1">
-            <SelectWithScreen
-              label="Country"
-              onPress={() => router.push('/(setup-profile)/country-picker')}
-              error={errors['country']}
-              placeholder="--Select--"
-              value={form.country}
-            />
-            <TextField
-              name="postalCode"
-              label="Postal Code"
-              placeholder="Postal Code"
-              onChange={handleChange}
-              value={form.postalCode}
-              required
-              error={errors['postalCode']}
-            />
-          </View>
+          </Row>
+          <SelectWithScreen
+            label="Country"
+            onPress={() => router.push('/(setup-profile)/country-picker')}
+            error={errors['country']}
+            placeholder="--Select--"
+            value={form.country}
+          />
+          <TextField
+            name="postalCode"
+            label="Postal Code"
+            placeholder="Postal Code"
+            onChange={handleChange}
+            value={form.postalCode}
+            required
+            error={errors['postalCode']}
+          />
           <Button
             variant="primary"
             size="large"
