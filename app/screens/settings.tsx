@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 
-import { ScreenContainer, Label, Divider } from '@/components/atoms';
+import { Divider, Label, ScreenContainer } from '@/components/atoms';
 import { Header, SettingItem } from '@/components/molecules';
 import { getColor } from '@/utils/getColor';
 
@@ -37,7 +37,7 @@ export default function SettingsScreen() {
             iconName="currency-usd"
             title="Currency"
             value="USD"
-            onPress={() => {}}
+            onPress={() => router.push('/screens/change-currency')}
           />
           <Divider position="horizontal" className={classes.divider} />
           <SettingItem
