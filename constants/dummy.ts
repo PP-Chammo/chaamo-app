@@ -70,6 +70,39 @@ export const dummyDiscoverPeopleList = [
   },
 ];
 
+export const dummyPortfolioCardList = [
+  {
+    id: '1',
+    imageUrl: 'https://example.com/image1.jpg',
+    title: 'Elly De La Cruz 1',
+    currentPrice: '$200.00',
+    bidPrice: '$70.00',
+    market: 'eBay',
+    indicator: 'down',
+    boosted: true,
+  },
+  {
+    id: '2',
+    imageUrl: 'https://example.com/image1.jpg',
+    title: 'Elly De La Cruz 2',
+    currentPrice: '$200.00',
+    bidPrice: '$70.00',
+    market: 'eBay',
+    indicator: 'up',
+    boosted: false,
+  },
+  {
+    id: '3',
+    imageUrl: 'https://example.com/image1.jpg',
+    title: 'Elly De La Cruz 3',
+    currentPrice: '$200.00',
+    bidPrice: '$70.00',
+    market: 'eBay',
+    indicator: 'down',
+    boosted: false,
+  },
+];
+
 export const COUNTRIES = [
   'USA',
   'India',
@@ -396,6 +429,34 @@ export const dummyNotifications = [
   },
 ];
 
+export const dummyPortfolioValueData = {
+  raw: {
+    7: [30, 25, 28, 20, 45, 32, 27],
+    14: [22, 28, 25, 30, 27, 35, 40, 38, 32, 30, 25, 28, 20, 45],
+    30: [
+      20, 22, 25, 28, 30, 32, 35, 38, 40, 42, 45, 47, 50, 52, 55, 57, 60, 62,
+      65, 67, 70, 72, 75, 77, 80, 82, 85, 87, 90, 92,
+    ],
+    90: Array.from(
+      { length: 90 },
+      (_, i) =>
+        40 + Math.round(Math.sin(i / 7) * 10) + Math.floor(Math.random() * 5),
+    ),
+  },
+  graded: {
+    7: [18, 22, 20, 25, 28, 24, 26],
+    14: [15, 18, 20, 22, 25, 28, 24, 26, 29, 31, 33, 35, 37, 39],
+    30: [
+      10, 12, 15, 18, 20, 22, 25, 28, 24, 26, 29, 31, 33, 35, 37, 39, 41, 43,
+      45, 47, 49, 51, 53, 55, 57, 59, 61, 63, 65, 67,
+    ],
+    90: Array.from(
+      { length: 90 },
+      (_, i) =>
+        20 + Math.round(Math.cos(i / 8) * 8) + Math.floor(Math.random() * 4),
+    ),
+  },
+};
 export const dummyFollowingList = [
   {
     id: 1,

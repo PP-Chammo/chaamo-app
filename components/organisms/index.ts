@@ -11,4 +11,5 @@ export { default as PortfolioProfile } from './PortfolioProfile';
 export { default as RecentlyAdded } from './RecentlyAdded';
 export { default as ReviewsProfile } from './ReviewsProfile';
 export { default as SearchHistories } from './SearchHistories';
+export { default as PortfolioList } from './PortfolioList';
 export { default as SoldItemsProfile } from './SoldItemsProfile';

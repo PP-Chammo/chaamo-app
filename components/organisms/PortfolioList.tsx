@@ -4,17 +4,22 @@ import { ScrollView } from 'react-native';
 
 import { FavoriteButton } from '@/components/atoms';
 import { Card, GroupWithLink } from '@/components/molecules';
-import { dummyFeaturedCardList } from '@/constants/dummy';
+import { dummyPortfolioCardList } from '@/constants/dummy';
 
-const RecentlyAdded = memo(function RecentlyAdded() {
+const PortfolioList = memo(function PortfolioList() {
   return (
-    <GroupWithLink title="Recently Added" onViewAllHref="/screens/recent-list">
+    <GroupWithLink
+      title="Top 3 Collections"
+      titleLink="View portfolio"
+      onViewAllHref="/screens/portfolio-list"
+      className={classes.headerContainer}
+    >
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerClassName={classes.container}
       >
-        {dummyFeaturedCardList.map((card) => (
+        {dummyPortfolioCardList.map((card) => (
           <Card
             key={card.id}
             imageUrl={card.imageUrl}
@@ -37,9 +42,10 @@ const RecentlyAdded = memo(function RecentlyAdded() {
 });
 
 const classes = {
+  headerContainer: 'pt-5',
   titleContainer: 'px-4.5 pt-5',
   viewAllText: 'text-teal-500 font-bold',
   container: 'flex flex-row p-4.5 gap-5',
 };
 
-export default RecentlyAdded;
+export default PortfolioList;
