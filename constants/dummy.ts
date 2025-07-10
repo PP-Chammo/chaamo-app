@@ -112,7 +112,16 @@ export const COUNTRIES = [
   'Pakistan',
 ];
 
-export const STATES = ['USD', 'Euro', 'Pound', 'PKR', 'CAD', 'AUD'];
+export const CURRENCIES = ['USD', 'Euro', 'Pound', 'PKR', 'CAD', 'AUD'];
+
+export const STATES = [
+  'California',
+  'New York',
+  'Texas',
+  'Florida',
+  'Illinois',
+  'Ohio',
+];
 
 export const dummyEvents = [
   {

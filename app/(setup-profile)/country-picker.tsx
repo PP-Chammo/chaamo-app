@@ -1,25 +1,15 @@
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 
 import { router } from 'expo-router';
-import { FlatList, Pressable, Text, View } from 'react-native';
 
-import { Icon, ScreenContainer } from '@/components/atoms';
-import { Header, TextField } from '@/components/molecules';
+import { ScreenContainer } from '@/components/atoms';
+import { Header } from '@/components/molecules';
+import { SelectableList } from '@/components/organisms';
 import { COUNTRIES } from '@/constants/dummy';
 import { useSelectWithScreenStore } from '@/hooks/useSelectWithScreenStore';
-import { getColor } from '@/utils/getColor';
 
 export default function CountryPickerScreen() {
-  const [search, setSearch] = useState('');
-  const filteredStates = useMemo(
-    () =>
-      COUNTRIES.filter((country) =>
-        country.toLowerCase().includes(search.toLowerCase()),
-      ),
-    [search],
-  );
-
-  const { setSelectedCountry } = useSelectWithScreenStore();
+  const { selectedCountry, setSelectedCountry } = useSelectWithScreenStore();
 
   const handleSelectCountry = (country: string) => {
     setSelectedCountry(country);
@@ -28,37 +18,11 @@ export default function CountryPickerScreen() {
   return (
     <ScreenContainer>
       <Header title="Select Country" onBackPress={() => router.back()} />
-      <View className={classes.searchContainer}>
-        <TextField
-          name="search"
-          placeholder="Search"
-          value={search}
-          onChange={({ value }) => setSearch(value)}
-          leftIcon={
-            <Icon name="magnify" size={24} color={getColor('slate-700')} />
-          }
-        />
-      </View>
-      <View className={classes.listContainer}>
-        <FlatList
-          data={filteredStates}
-          keyExtractor={(item) => item}
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() => handleSelectCountry(item)}
-              className={classes.stateItem}
-            >
-              <Text>{item}</Text>
-            </Pressable>
-          )}
-        />
-      </View>
+      <SelectableList
+        value={selectedCountry}
+        data={COUNTRIES}
+        onSelect={handleSelectCountry}
+      />
     </ScreenContainer>
   );
 }
-
-const classes = {
-  searchContainer: 'px-4.5',
-  stateItem: 'p-4 border-b border-gray-200',
-  listContainer: 'mx-4.5 mt-20',
-};
