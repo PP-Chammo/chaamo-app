@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { Avatar, Button, Label } from '@/components/atoms';
 
@@ -8,15 +8,17 @@ interface PeopleProps {
   fullname: string;
   imageUrl?: string;
   onFollowPress: () => void;
+  onPress: () => void;
 }
 
 const People: React.FC<PeopleProps> = memo(function Badge({
   fullname,
   imageUrl,
   onFollowPress,
+  onPress,
 }) {
   return (
-    <View className={classes.container}>
+    <Pressable onPress={onPress} className={classes.container}>
       <View className={classes.imageContainer}>
         <Avatar imageUrl={imageUrl} size={50} />
         <Label variant="subtitle" className={classes.fullname}>
@@ -26,7 +28,7 @@ const People: React.FC<PeopleProps> = memo(function Badge({
       <Button size="small" onPress={onFollowPress}>
         Follow
       </Button>
-    </View>
+    </Pressable>
   );
 });
 

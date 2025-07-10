@@ -29,6 +29,7 @@ const FollowListItem: React.FC<FollowListItemProps> = memo(
   }) {
     const [isContextMenuVisible, setIsContextMenuVisible] =
       useState<boolean>(false);
+
     const dotsRef = useRef<View>(null);
 
     const handleContextMenuPress = useCallback(() => {
