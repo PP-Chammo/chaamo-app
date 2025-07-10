@@ -11,8 +11,8 @@ export default function WishlistScreen() {
   return (
     <ScreenContainer>
       <Header title="Wishlist" onBackPress={() => router.back()} />
-      <View className="p-4.5">
-        <Label variant="title" className="text-slate-800 !text-sm my-4.5">
+      <View className={classes.container}>
+        <Label variant="title" className={classes.title}>
           {dummyWishList.length} saved items
         </Label>
         <FlatList
@@ -28,4 +28,6 @@ export default function WishlistScreen() {
 
 const classes = {
   contentContainer: 'gap-6',
+  container: 'p-4.5',
+  title: 'text-slate-800 !text-sm my-4.5',
 };
