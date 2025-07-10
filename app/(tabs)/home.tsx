@@ -59,7 +59,10 @@ export default function HomeScreen() {
         </Row>
       </View>
 
-      <ScrollView contentContainerClassName="gap-5">
+      <ScrollView
+        contentContainerClassName="gap-5"
+        showsVerticalScrollIndicator={false}
+      >
         <CategoryList />
         <FeaturedList />
         <AuctionList />
@@ -73,5 +76,5 @@ export default function HomeScreen() {
 const classes = {
   containerTop: '!bg-white',
   headerContainer: 'bg-white gap-3 py-5 border-b border-gray-100',
-  headerRow: 'px-4.5',
+  headerRow: 'px-5',
 };
