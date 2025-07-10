@@ -53,7 +53,7 @@ export default function HomeScreen() {
           <ButtonIcon
             name="heart"
             iconVariant="SimpleLineIcons"
-            onPress={() => {}}
+            onPress={() => router.push('/screens/wishlist')}
             count="5+"
           />
         </Row>
