@@ -7,6 +7,7 @@ interface ContextMenuProps {
   onClose: () => void;
   triggerRef: React.RefObject<View | null>;
   children: React.ReactNode;
+  menuHeight?: number;
 }
 
 const ContextMenu: React.FC<ContextMenuProps> = memo(function ContextMenu({
@@ -14,10 +15,10 @@ const ContextMenu: React.FC<ContextMenuProps> = memo(function ContextMenu({
   onClose,
   triggerRef,
   children,
+  menuHeight = 50,
 }) {
   const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
-  const menuWidth = 160;
-  const menuHeight = 120;
+  const menuWidth = 216;
 
   const calculatePosition = useMemo(() => {
     return () => {
@@ -33,7 +34,7 @@ const ContextMenu: React.FC<ContextMenuProps> = memo(function ContextMenu({
           ) => {
             // Calculate position to ensure menu stays within screen bounds
             let menuX = pageX + width - menuWidth;
-            let menuY = pageY + height - 50;
+            let menuY = pageY + height - menuHeight;
 
             // Adjust if menu would go off screen
             if (menuX < 20) menuX = 20;
@@ -85,7 +86,7 @@ const ContextMenu: React.FC<ContextMenuProps> = memo(function ContextMenu({
 
 const classes = {
   overlay: 'flex-1',
-  menu: 'absolute bg-white rounded-lg p-2 min-w-[160px] shadow-lg border-2 border-slate-100',
+  menu: 'absolute bg-white rounded-lg p-3 min-w-[216px] shadow-lg border-2 border-slate-100 gap-3',
 };
 
 export default ContextMenu;

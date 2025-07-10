@@ -2,7 +2,7 @@ import { ScrollView, Text, View } from 'react-native';
 
 import { Icon, Label, ProfileStat } from '@/components/atoms';
 
-export default function AboutScreen() {
+export default function AboutProfile() {
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View className={classes.contentContainer}>

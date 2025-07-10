@@ -1,3 +1,4 @@
+export { default as AboutProfile } from './AboutProfile';
 export { default as AccountBar } from './AccountBar';
 export { default as AuctionList } from './AuctionList';
 export { default as CategoryList } from './CategoryList';
@@ -6,6 +7,9 @@ export { default as FeaturedList } from './FeaturedList';
 export { default as FollowList } from './FollowList';
 export { default as NotificationList } from './NotificationList';
 export { default as PeopleList } from './PeopleList';
+export { default as PortfolioProfile } from './PortfolioProfile';
 export { default as RecentlyAdded } from './RecentlyAdded';
+export { default as ReviewsProfile } from './ReviewsProfile';
 export { default as SearchHistories } from './SearchHistories';
 export { default as PortfolioList } from './PortfolioList';
+export { default as SoldItemsProfile } from './SoldItemsProfile';

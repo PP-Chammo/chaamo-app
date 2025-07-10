@@ -15,6 +15,7 @@ interface HeaderProps {
   iconRightColor?: IconProp['color'];
   iconRightSize?: IconProp['size'];
   leftComponent?: React.ReactNode;
+  rightRef?: React.RefObject<View | null>;
 }
 
 type IconProp = React.ComponentProps<typeof Icon>;
@@ -28,6 +29,7 @@ const Header: React.FC<HeaderProps> = memo(function Header({
   iconRight,
   iconRightColor,
   iconRightSize,
+  rightRef,
 }) {
   return (
     <View className={clsx(classes.header, className)}>
@@ -43,7 +45,7 @@ const Header: React.FC<HeaderProps> = memo(function Header({
       <Text className={classes.title}>{title}</Text>
       {onRightPress && (
         <View className={classes.buttonContainerRight}>
-          <TouchableOpacity onPress={onRightPress}>
+          <TouchableOpacity onPress={onRightPress} ref={rightRef}>
             {iconRight && (
               <Icon
                 name={iconRight}

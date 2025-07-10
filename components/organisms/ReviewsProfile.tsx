@@ -3,7 +3,7 @@ import { ScrollView, View } from 'react-native';
 import { Icon, Label } from '@/components/atoms';
 import { Rating, Review } from '@/components/molecules';
 
-export default function ReviewsScreen() {
+export default function ReviewsProfile() {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
