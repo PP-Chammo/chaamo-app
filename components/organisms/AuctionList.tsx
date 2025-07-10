@@ -14,6 +14,7 @@ const AuctionList = memo(function AuctionList() {
       iconName="access-point"
       iconColor={getColor('red-500')}
       className={classes.container}
+      headerClassName={classes.headerContainer}
     >
       <ScrollView
         horizontal
@@ -37,6 +38,7 @@ const AuctionList = memo(function AuctionList() {
 });
 
 const classes = {
+  headerContainer: 'pt-5',
   container: 'bg-white',
   scrollContainer: 'flex flex-row p-4.5 gap-5',
   titleContainer: 'px-4.5 pt-5',

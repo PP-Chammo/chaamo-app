@@ -7,6 +7,7 @@ export { default as FeaturedList } from './FeaturedList';
 export { default as FollowList } from './FollowList';
 export { default as NotificationList } from './NotificationList';
 export { default as PeopleList } from './PeopleList';
+export { default as PortfolioList } from './PortfolioList';
 export { default as PortfolioProfile } from './PortfolioProfile';
 export { default as RecentlyAdded } from './RecentlyAdded';
 export { default as ReviewsProfile } from './ReviewsProfile';

@@ -5,9 +5,7 @@ import { FlatList } from 'react-native';
 import { FollowListItem } from '@/components/molecules';
 import { dummyFollowingList } from '@/constants/dummy';
 
-interface FollowListProps {}
-
-const FollowList: React.FC<FollowListProps> = memo(function FollowList() {
+const FollowList = memo(function FollowList() {
   return (
     <FlatList
       data={dummyFollowingList}
