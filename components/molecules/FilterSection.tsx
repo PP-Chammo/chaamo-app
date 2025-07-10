@@ -29,13 +29,28 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
           >
             Filters
           </Button>
-          <Button variant="light" size="small" className={classes.filterButton}>
+          <Button
+            variant="light"
+            size="small"
+            className={classes.filterButton}
+            rightIcon="close"
+          >
             Price
           </Button>
-          <Button variant="light" size="small" className={classes.filterButton}>
+          <Button
+            variant="light"
+            size="small"
+            className={classes.filterButton}
+            rightIcon="close"
+          >
             Condition
           </Button>
-          <Button variant="light" size="small" className={classes.filterButton}>
+          <Button
+            variant="light"
+            size="small"
+            className={classes.filterButton}
+            rightIcon="close"
+          >
             Location
           </Button>
         </ScrollView>
@@ -54,7 +69,7 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
 
 const classes = {
   filterContainer: 'px-4.5 py-3 gap-2',
-  filterButton: '!px-4',
+  filterButton: '!px-3',
   filterTextContainer: 'px-4.5 pt-1 pb-4 !gap-1',
   filterPlaceholder: 'font-light text-gray-500',
   resultText: 'font-semibold',

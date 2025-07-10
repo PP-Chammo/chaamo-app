@@ -19,7 +19,10 @@ cssInterop(FlatList, {
 
 export default function CategoriesScreen() {
   const handleCtaCards = useCallback((query: string) => {
-    router.push({ pathname: '/screens/cards', params: { category: query } });
+    router.push({
+      pathname: '/screens/product-list',
+      params: { category: query },
+    });
   }, []);
 
   return (
