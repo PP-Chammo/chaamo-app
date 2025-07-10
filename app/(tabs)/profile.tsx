@@ -25,7 +25,7 @@ export default function ProfileScreen() {
     <ScreenContainer className={classes.container}>
       <Header
         title="Profile"
-        iconRight="menu"
+        rightIcon="menu"
         onRightPress={() => router.push('/screens/settings')}
       />
       <View className={classes.profileContainer}>

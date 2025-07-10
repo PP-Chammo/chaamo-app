@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 
+import { router } from 'expo-router';
 import { ScrollView } from 'react-native';
 
 import { FavoriteButton } from '@/components/atoms';
@@ -34,6 +35,7 @@ const PortfolioList = memo(function PortfolioList() {
                 }}
               />
             }
+            onPress={() => router.push('/screens/portfolio-detail')}
           />
         ))}
       </ScrollView>
