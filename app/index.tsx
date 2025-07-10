@@ -24,7 +24,7 @@ export default function StartPage() {
   }, [isDevelopment]);
 
   if (isDevelopment) {
-    return <Redirect href="/(tabs)/community" />;
+    return <Redirect href="/home" />;
   }
 
   return (

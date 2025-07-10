@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 import {
   Avatar,
@@ -36,19 +36,24 @@ export default function ProfileLayout() {
           <Label variant="title" className={classes.profileName}>
             John Doe
           </Label>
-          <View className={classes.portfolioValueContainer}>
+          <View className={classes.portfolioContainer}>
             <Label className={classes.portfolioValueLabel}>
               Portfolio Value:
             </Label>
-            <Label className={classes.portfolioValue}>$2000</Label>
-            <View className={classes.portfolioValueIconContainer}>
-              <Icon
-                name="arrow-up-right"
-                size={16}
-                color={getColor('teal-600')}
-                variant="Feather"
-              />
-            </View>
+            <TouchableOpacity
+              onPress={() => router.push('/screens/portfolio-value')}
+              className={classes.portfolioValueContainer}
+            >
+              <Label className={classes.portfolioValue}>$2000</Label>
+              <View className={classes.portfolioValueIconContainer}>
+                <Icon
+                  name="arrow-up-right"
+                  size={16}
+                  color={getColor('teal-600')}
+                  variant="Feather"
+                />
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -80,9 +85,10 @@ const classes = {
   avatarImageContainer: 'border-2 border-white',
   profileInfoContainer: 'gap-2',
   profileName: 'text-3xl font-bold',
+  portfolioContainer: 'flex-row items-center gap-1',
   portfolioValueContainer: 'flex-row items-center gap-1',
   portfolioValueLabel: 'flex-row items-center text-md text-slate-500',
-  portfolioValue: 'text-teal-600 font-bold',
+  portfolioValue: '!text-teal-600 font-bold',
   portfolioValueIconContainer: 'border border-teal-600 rounded-full',
   profileStatsContainer: 'flex-row justify-between mx-12 my-8',
   tabView: 'mt-10',

@@ -7,3 +7,4 @@ export { default as NotificationList } from './NotificationList';
 export { default as PeopleList } from './PeopleList';
 export { default as RecentlyAdded } from './RecentlyAdded';
 export { default as SearchHistories } from './SearchHistories';
+export { default as PortfolioList } from './PortfolioList';

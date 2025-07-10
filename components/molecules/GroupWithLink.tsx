@@ -1,5 +1,6 @@
 import { memo, useCallback } from 'react';
 
+import { clsx } from 'clsx';
 import { Link } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { ScrollView, View } from 'react-native';
@@ -16,6 +17,7 @@ interface GroupWithLinkProps {
   iconColor?: string;
   iconSize?: number;
   className?: string;
+  headerClassName?: string;
   noLink?: boolean;
 }
 
@@ -36,6 +38,7 @@ const GroupWithLink: React.FC<GroupWithLinkProps> = memo(
     iconColor = 'black',
     iconSize = 24,
     className,
+    headerClassName,
     noLink = false,
   }) {
     const renderLink = useCallback(
@@ -54,7 +57,7 @@ const GroupWithLink: React.FC<GroupWithLinkProps> = memo(
 
     return (
       <View className={className}>
-        <Row between className={classes.headerContainer}>
+        <Row between className={clsx(classes.headerContainer, headerClassName)}>
           <View className={classes.titleContainer}>
             <Label className={classes.title}>{title}</Label>
             {iconName && (
@@ -70,7 +73,7 @@ const GroupWithLink: React.FC<GroupWithLinkProps> = memo(
 );
 
 const classes = {
-  headerContainer: 'px-5 pt-5',
+  headerContainer: 'px-4.5',
   titleContainer: 'flex flex-row items-center gap-2',
   title: 'font-semibold',
   viewAllText: 'text-teal-500 font-semibold',
