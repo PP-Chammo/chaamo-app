@@ -563,3 +563,18 @@ export const dummyBlockedAccounts = [
     imageUrl: 'https://example.com/image3.jpg',
   },
 ];
+
+export const dummyPortoflioDetail = {
+  id: 1,
+  imageUrl: 'https://picsum.photos/200/300',
+  title: 'Malfegor - Magic the Gathering',
+  creator: 'Elly De La Cruz 1',
+  year: '2023',
+  currentPrice: '$200.00',
+  bidPrice: '$70.00',
+  market: 'eBay',
+  indicator: 'up',
+  date: '2025-07-08T18:00:00Z',
+  description:
+    'Change description to: 2024 Topps Five Star Elly De La Cruz Gold Auto',
+};

@@ -11,9 +11,9 @@ interface HeaderProps {
   onBackPress?: () => void;
   onRightPress?: () => void;
   className?: string;
-  iconRight?: IconProp['name'];
-  iconRightColor?: IconProp['color'];
-  iconRightSize?: IconProp['size'];
+  rightIcon?: IconProp['name'];
+  rightIconColor?: IconProp['color'];
+  rightIconSize?: IconProp['size'];
   leftComponent?: React.ReactNode;
   rightRef?: React.RefObject<View | null>;
 }
@@ -26,9 +26,9 @@ const Header: React.FC<HeaderProps> = memo(function Header({
   onBackPress,
   onRightPress,
   className,
-  iconRight,
-  iconRightColor,
-  iconRightSize,
+  rightIcon,
+  rightIconColor,
+  rightIconSize,
   rightRef,
 }) {
   return (
@@ -46,11 +46,11 @@ const Header: React.FC<HeaderProps> = memo(function Header({
       {onRightPress && (
         <View className={classes.buttonContainerRight}>
           <TouchableOpacity onPress={onRightPress} ref={rightRef}>
-            {iconRight && (
+            {rightIcon && (
               <Icon
-                name={iconRight}
-                size={iconRightSize ?? 24}
-                color={iconRightColor}
+                name={rightIcon}
+                size={rightIconSize ?? 24}
+                color={rightIconColor}
               />
             )}
           </TouchableOpacity>

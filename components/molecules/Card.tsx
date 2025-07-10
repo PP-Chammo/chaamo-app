@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { clsx } from 'clsx';
-import { Image, View } from 'react-native';
+import { Image, TouchableOpacity, View } from 'react-native';
 
 import EBayImage from '@/assets/svg/ebay.svg';
 import { Badge, Icon, Label } from '@/components/atoms';
@@ -16,6 +16,7 @@ type CardProps = {
   featured?: boolean;
   rightComponent?: React.ReactNode;
   mode?: 'normal' | 'full' | 'half';
+  onPress?: () => void;
 };
 
 const Card: React.FC<CardProps> = memo(function CategoryItem({
@@ -27,9 +28,14 @@ const Card: React.FC<CardProps> = memo(function CategoryItem({
   featured = false,
   rightComponent,
   mode = 'normal',
+  onPress,
 }) {
   return (
-    <View className={clsx(classes.container[mode])}>
+    <TouchableOpacity
+      activeOpacity={0.8}
+      className={clsx(classes.container[mode])}
+      onPress={onPress}
+    >
       {featured && <Badge />}
       {rightComponent}
       {imageUrl ? (
@@ -59,7 +65,7 @@ const Card: React.FC<CardProps> = memo(function CategoryItem({
           size={16}
         />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 });
 

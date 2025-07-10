@@ -21,9 +21,9 @@ export default function CommunityScreen() {
       <Header
         title="Community"
         onBackPress={() => router.back()}
-        iconRight="plus-circle"
-        iconRightColor={getColor('teal-600')}
-        iconRightSize={28}
+        rightIcon="plus-circle"
+        rightIconColor={getColor('teal-600')}
+        rightIconSize={28}
         onRightPress={() => router.push('/screens/new-post')}
         className={classes.header}
       />

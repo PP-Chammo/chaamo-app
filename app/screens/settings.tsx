@@ -121,5 +121,5 @@ const classes = {
   sectionHeader: 'px-4 pt-3 text-xs text-slate-600 !font-light',
   deleteButton: 'mt-8 mx-4',
   logoutButton: 'mt-2 mx-4 mb-8',
-  divider: 'bg-gray-100',
+  divider: '!bg-slate-100',
 };

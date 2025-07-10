@@ -50,7 +50,7 @@ export default function PublicProfileScreen() {
     <>
       <ScreenContainer className={classes.container}>
         <Header
-          iconRight="dots-vertical"
+          rightIcon="dots-vertical"
           onBackPress={() => router.back()}
           onRightPress={handleContextMenuPress}
           rightRef={dotsRef}
