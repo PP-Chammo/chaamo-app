@@ -7,7 +7,7 @@ import { Icon, SearchField } from '@/components/atoms';
 import { TextChangeParams } from '@/domains';
 import { getColor } from '@/utils/getColor';
 
-interface HeaderProps {
+interface HeaderSearchProps {
   value: string;
   onChange: (value: TextChangeParams) => void;
   onBackPress?: () => void;
@@ -15,7 +15,7 @@ interface HeaderProps {
   className?: string;
 }
 
-const Header: React.FC<HeaderProps> = memo(function Header({
+const HeaderSearch: React.FC<HeaderSearchProps> = memo(function HeaderSearch({
   value,
   onChange,
   onBackPress,
@@ -42,4 +42,4 @@ const classes = {
   rightSpace: 'w-10',
 };
 
-export default Header;
+export default HeaderSearch;

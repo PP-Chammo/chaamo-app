@@ -545,3 +545,21 @@ export const dummyWishList = [
     date: '2025-07-08T18:00:00Z',
   },
 ];
+
+export const dummyBlockedAccounts = [
+  {
+    id: 1,
+    name: 'John Doe',
+    imageUrl: 'https://dummyimage.com/600x400/000/fff',
+  },
+  {
+    id: 2,
+    name: 'Jane Smith',
+    imageUrl: 'https://example.com/image2.jpg',
+  },
+  {
+    id: 3,
+    name: 'Alice Johnson',
+    imageUrl: 'https://example.com/image3.jpg',
+  },
+];

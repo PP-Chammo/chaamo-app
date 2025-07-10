@@ -44,7 +44,7 @@ export default function SettingsScreen() {
             iconName="block-helper"
             title="Block"
             value="0"
-            onPress={() => {}}
+            onPress={() => router.push('/screens/blocked-accounts')}
           />
           <Divider position="horizontal" className={classes.divider} />
           <SettingItem

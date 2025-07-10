@@ -1,4 +1,5 @@
 export { default as AuctionCard } from './AuctionCard';
+export { default as BlockListItem } from './BlockListItem';
 export { default as ButtonIcon } from './ButtonIcon';
 export { default as Card } from './Card';
 export { default as CardInfo } from './CardInfo';
