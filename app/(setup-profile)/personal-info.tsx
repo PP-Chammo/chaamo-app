@@ -8,6 +8,7 @@ import {
   Avatar,
   Button,
   KeyboardView,
+  Row,
   ScreenContainer,
 } from '@/components/atoms';
 import {
@@ -95,38 +96,38 @@ export default function PersonalInfoScreen() {
   };
 
   return (
-    <ScreenContainer className={classes.container}>
+    <ScreenContainer>
       <Header title="Setting Up Profile" onBackPress={() => router.back()} />
-      <SetupProfileTabs />
-      <KeyboardView className={classes.formContainer}>
-        <Avatar
-          size={120}
-          onPress={handleImagePick}
-          imageUrl={form.image}
-          imageContainerClassName={classes.imageContainer}
-          className={classes.image}
-        />
-        <View className="gap-4 flex-row w-full">
-          <TextField
-            name="firstName"
-            label="First Name"
-            placeholder="First Name"
-            onChange={handleChange}
-            value={form.firstName}
-            required
-            error={errors['firstName']}
+      <View className={classes.container}>
+        <SetupProfileTabs />
+        <KeyboardView contentContainerClassName={classes.contentContainer}>
+          <Avatar
+            size={120}
+            onPress={handleImagePick}
+            imageUrl={form.image}
+            imageContainerClassName={classes.imageContainer}
+            className={classes.image}
           />
-          <TextField
-            name="lastName"
-            label="Last Name"
-            placeholder="Last Name"
-            onChange={handleChange}
-            value={form.lastName}
-            required
-            error={errors['lastName']}
-          />
-        </View>
-        <View className="gap-4 flex-1">
+          <Row>
+            <TextField
+              name="firstName"
+              label="First Name"
+              placeholder="First Name"
+              onChange={handleChange}
+              value={form.firstName}
+              required
+              error={errors['firstName']}
+            />
+            <TextField
+              name="lastName"
+              label="Last Name"
+              placeholder="Last Name"
+              onChange={handleChange}
+              value={form.lastName}
+              required
+              error={errors['lastName']}
+            />
+          </Row>
           <TextField
             name="email"
             label="Email"
@@ -157,18 +158,23 @@ export default function PersonalInfoScreen() {
             type="password"
             error={errors['confirmPassword']}
           />
-        </View>
-      </KeyboardView>
-      <Button variant="primary" size="large" onPress={handleSubmit}>
-        Continue
-      </Button>
+          <Button
+            className={classes.button}
+            variant="primary"
+            onPress={handleSubmit}
+          >
+            Continue
+          </Button>
+        </KeyboardView>
+      </View>
     </ScreenContainer>
   );
 }
 
 const classes = {
-  container: 'flex-1 p-6',
+  container: 'flex-1 px-4.5',
   image: 'mb-12',
   imageContainer: 'p-1',
-  formContainer: 'pb-10 justify-center items-center',
+  button: 'mt-5',
+  contentContainer: 'gap-4',
 };

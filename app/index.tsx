@@ -24,7 +24,7 @@ export default function StartPage() {
   }, [isDevelopment]);
 
   if (isDevelopment) {
-    return <Redirect href="/home" />;
+    return <Redirect href="/(tabs)/home" />;
   }
 
   return (

@@ -457,3 +457,67 @@ export const dummyPortfolioValueData = {
     ),
   },
 };
+export const dummyFollowingList = [
+  {
+    id: 1,
+    name: 'John Doe',
+    imageUrl: 'https://dummyimage.com/600x400/000/fff',
+    isFollowing: false,
+  },
+  {
+    id: 2,
+    name: 'Jane Smith',
+    imageUrl: 'https://example.com/image2.jpg',
+    isFollowing: false,
+  },
+  {
+    id: 3,
+    name: 'Alice Johnson',
+    imageUrl: 'https://example.com/image3.jpg',
+    isFollowing: false,
+  },
+  {
+    id: 4,
+    name: 'Bob Williams',
+    imageUrl: 'https://dummyimage.com/600x400/111/eee',
+    isFollowing: false,
+  },
+  {
+    id: 5,
+    name: 'Charlie Brown',
+    imageUrl: 'https://dummyimage.com/600x400/222/ddd',
+    isFollowing: false,
+  },
+];
+export const dummyFollowersList = [
+  {
+    id: 1,
+    name: 'John Doe',
+    imageUrl: 'https://dummyimage.com/600x400/000/fff',
+    isFollowing: true,
+  },
+  {
+    id: 2,
+    name: 'Jane Smith',
+    imageUrl: 'https://example.com/image2.jpg',
+    isFollowing: true,
+  },
+  {
+    id: 3,
+    name: 'Alice Johnson',
+    imageUrl: 'https://example.com/image3.jpg',
+    isFollowing: true,
+  },
+  {
+    id: 4,
+    name: 'Bob Williams',
+    imageUrl: 'https://dummyimage.com/600x400/111/eee',
+    isFollowing: true,
+  },
+  {
+    id: 5,
+    name: 'Charlie Brown',
+    imageUrl: 'https://dummyimage.com/600x400/222/ddd',
+    isFollowing: true,
+  },
+];
