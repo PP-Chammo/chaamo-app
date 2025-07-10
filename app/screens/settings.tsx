@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 
-import { ScreenContainer, Label, Divider } from '@/components/atoms';
+import { Divider, Label, ScreenContainer } from '@/components/atoms';
 import { Header, SettingItem } from '@/components/molecules';
 import { getColor } from '@/utils/getColor';
 
@@ -44,7 +44,7 @@ export default function SettingsScreen() {
             iconName="block-helper"
             title="Block"
             value="0"
-            onPress={() => {}}
+            onPress={() => router.push('/screens/blocked-accounts')}
           />
           <Divider position="horizontal" className={classes.divider} />
           <SettingItem

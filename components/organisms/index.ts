@@ -1,6 +1,7 @@
 export { default as AboutProfile } from './AboutProfile';
 export { default as AccountBar } from './AccountBar';
 export { default as AuctionList } from './AuctionList';
+export { default as BlockList } from './BlockList';
 export { default as CategoryList } from './CategoryList';
 export { default as ChatList } from './ChatList';
 export { default as FeaturedList } from './FeaturedList';
