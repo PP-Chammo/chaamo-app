@@ -4,12 +4,13 @@ import { WebView } from 'react-native-webview';
 
 import { Label, ScreenContainer } from '@/components/atoms';
 import { Header, TabView } from '@/components/molecules';
+import { privacyPolicyTabs } from '@/constants/tabs';
 
 export default function PrivacyPolicyScreen() {
   return (
     <ScreenContainer>
       <Header title="Privacy Policy" onBackPress={router.back} />
-      <TabView tabs={['Privacy Policy', 'Terms of Service', 'HMRC Guidelines']}>
+      <TabView tabs={privacyPolicyTabs}>
         <WebView
           source={{ uri: 'https://chaamo.com/privacy-policy#content' }}
         />
