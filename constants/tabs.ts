@@ -20,3 +20,9 @@ export const productListTabs = [
   },
   'Fixed Price',
 ];
+
+export const privacyPolicyTabs = [
+  'Privacy Policy',
+  'Terms of Service',
+  'HMRC Guidelines',
+];
