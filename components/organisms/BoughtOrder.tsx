@@ -1,21 +1,32 @@
-import { memo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 
-import { View } from 'react-native';
+import { FlatList, View } from 'react-native';
 
 import { EmptyOrders } from '@/assets/svg';
 import { FilterTabs, Label } from '@/components/atoms';
-import { BOUGHT_TABS_FILTER } from '@/constants/tabs';
+import { OrderItem, type OrderStatus } from '@/components/molecules';
+import { dummyOrders } from '@/constants/dummy';
+import { ORDER_TABS_FILTER } from '@/constants/tabs';
 
 const BoughtOrder = memo(function BoughtOrder() {
-  const [selectedFilter, setSelectedFilter] = useState<string>('completed');
-  return (
-    <View className={classes.container}>
-      <FilterTabs
-        tabs={BOUGHT_TABS_FILTER}
-        className={classes.tabs}
-        selected={selectedFilter}
-        onChange={(value) => setSelectedFilter(value as string)}
-      />
+  const [selectedFilter, setSelectedFilter] = useState<string>('progress');
+
+  const _renderOrders = useMemo(() => {
+    const _DATA = dummyOrders.filter((item) => item.status === selectedFilter);
+
+    if (_DATA.length)
+      return (
+        <FlatList
+          data={_DATA}
+          contentContainerClassName={classes.content}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <OrderItem {...item} status={item.status as OrderStatus} />
+          )}
+        />
+      );
+
+    return (
       <View className={classes.emptyOrders}>
         <EmptyOrders />
         <Label className={classes.emptyOrdersTitle}>No Orders Yet</Label>
@@ -23,12 +34,24 @@ const BoughtOrder = memo(function BoughtOrder() {
           when you sell something it will be listed here.
         </Label>
       </View>
+    );
+  }, [selectedFilter]);
+  return (
+    <View className={classes.container}>
+      <FilterTabs
+        tabs={ORDER_TABS_FILTER}
+        className={classes.tabs}
+        selected={selectedFilter}
+        onChange={(value) => setSelectedFilter(value as string)}
+      />
+      {_renderOrders}
     </View>
   );
 });
 
 const classes = {
   container: 'px-4.5',
+  content: 'mt-10',
   tabs: 'mt-4.5',
   emptyOrders: 'items-center mt-24',
   emptyOrdersTitle: '!text-2xl font-bold text-teal-600',
