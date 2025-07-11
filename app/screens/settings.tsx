@@ -78,7 +78,7 @@ export default function SettingsScreen() {
             <SettingItem
               iconName="credit-card-outline"
               title="Payment & Subscription"
-              onPress={() => {}}
+              onPress={() => router.push('/screens/subscriptions')}
             />
             <Divider position="horizontal" className={classes.divider} />
             <SettingItem

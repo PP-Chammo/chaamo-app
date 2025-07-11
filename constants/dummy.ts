@@ -596,3 +596,17 @@ export const dummyAuctionDetail = {
   description:
     'Change description to: 2024 Topps Five Star Elly De La Cruz Gold Auto',
 };
+
+export const dummyPlans = [
+  {
+    id: 1,
+    name: 'gold',
+    price: '12.88',
+    benefits: [
+      'Unlimited History',
+      'Full Advance Valuation',
+      'Unlimited cards & sealed products',
+      'Unlimited alerts',
+    ],
+  },
+];
