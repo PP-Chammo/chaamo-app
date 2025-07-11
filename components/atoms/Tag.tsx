@@ -23,7 +23,7 @@ const Tag: React.FC<TagProps> = memo(function Badge({
 
 const classes = {
   container: 'bg-teal-100/50 py-1 px-1.5 self-start rounded',
-  title: 'text-sm text-teal-600',
+  title: 'text-xs text-teal-600',
 };
 
 export default Tag;

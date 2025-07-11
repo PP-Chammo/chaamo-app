@@ -1,39 +1,38 @@
 import React, { memo } from 'react';
 
-import { ScrollView } from 'react-native';
+import { router } from 'expo-router';
 
-import { AuctionCard, GroupWithLink } from '@/components/molecules';
+import { AuctionCard, ListContainer } from '@/components/molecules';
 import { dummyAuctionCardList } from '@/constants/dummy';
 import { getColor } from '@/utils/getColor';
 
 const AuctionList = memo(function AuctionList() {
   return (
-    <GroupWithLink
+    <ListContainer
       title="Auction"
-      onViewAllHref="/screens/auction"
-      iconName="access-point"
+      onViewAllHref="/screens/product-list"
+      icon="access-point"
       iconColor={getColor('red-500')}
       className={classes.container}
       headerClassName={classes.headerContainer}
+      data={dummyAuctionCardList}
     >
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerClassName={classes.scrollContainer}
-      >
-        {dummyAuctionCardList.map((card) => (
-          <AuctionCard
-            key={card.id}
-            imageUrl={card.imageUrl}
-            title={card.title}
-            price={card.price}
-            onFavoritePress={() => {
-              console.log(`Favorite pressed for card ${card.id}`);
-            }}
-          />
-        ))}
-      </ScrollView>
-    </GroupWithLink>
+      {(card: (typeof dummyAuctionCardList)[number]) => (
+        <AuctionCard
+          key={card.id}
+          id={card.id}
+          imageUrl={card.imageUrl}
+          title={card.title}
+          price={card.price}
+          rightIcon="heart-outline"
+          rightIconSize={18}
+          onPress={() => router.push('/screens/auction-detail')}
+          onRightIconPress={() => {
+            console.log(`Favorite pressed for card ${card.id}`);
+          }}
+        />
+      )}
+    </ListContainer>
   );
 });
 

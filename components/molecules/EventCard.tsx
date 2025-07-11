@@ -40,7 +40,7 @@ const EventCard: React.FC<EventCardProps> = memo(function EventCard({
 });
 
 const classes = {
-  eventCard: 'w-44 rounded-lg shadow pt-4 gap-1.5',
+  eventCard: 'w-44 rounded-lg shadow gap-1.5',
   eventImage: 'w-full h-28 bg-gray-300 rounded-lg',
   eventDetails: 'p-1 gap-1',
   eventTitle: 'text-sm font-semibold',

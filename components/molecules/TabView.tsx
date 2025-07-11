@@ -25,9 +25,10 @@ interface TabViewProps {
 
 type Tab = {
   title: string;
-  icon?: string;
-  iconColor?: string;
-  iconSize?: number;
+  icon: React.ComponentProps<typeof Icon>['name'];
+  iconVariant?: React.ComponentProps<typeof Icon>['variant'];
+  iconColor?: React.ComponentProps<typeof Icon>['color'];
+  iconSize?: React.ComponentProps<typeof Icon>['size'];
 };
 
 const TabView: React.FC<TabViewProps> = memo(function TabView({
@@ -78,6 +79,7 @@ const TabView: React.FC<TabViewProps> = memo(function TabView({
                 {typeof tab === 'object' && tab?.icon && (
                   <Icon
                     name={tab.icon}
+                    variant={tab.iconVariant}
                     color={tab.iconColor}
                     size={tab.iconSize}
                   />

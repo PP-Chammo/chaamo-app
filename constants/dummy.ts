@@ -3,30 +3,33 @@ export const dummyFeaturedCardList = [
     id: '1',
     imageUrl: 'https://example.com/image1.jpg',
     title: 'Elly De La Cruz 1',
-    currentPrice: '$200.00',
-    bidPrice: '$70.00',
-    market: 'eBay',
+    price: '$200.00',
+    marketPrice: '$70.00',
+    marketType: 'eBay',
     indicator: 'down',
+    date: '2025-03-08T18:00:00Z',
     boosted: true,
   },
   {
     id: '2',
     imageUrl: 'https://example.com/image1.jpg',
     title: 'Elly De La Cruz 2',
-    currentPrice: '$200.00',
-    bidPrice: '$70.00',
-    market: 'eBay',
+    price: '$200.00',
+    marketPrice: '$70.00',
+    marketType: 'eBay',
     indicator: 'up',
+    date: '2025-03-08T18:00:00Z',
     boosted: false,
   },
   {
     id: '3',
     imageUrl: 'https://example.com/image1.jpg',
     title: 'Elly De La Cruz 3',
-    currentPrice: '$200.00',
-    bidPrice: '$70.00',
-    market: 'eBay',
+    price: '$200.00',
+    marketPrice: '$70.00',
+    marketType: 'eBay',
     indicator: 'down',
+    date: '2025-03-08T18:00:00Z',
     boosted: false,
   },
 ];
@@ -128,21 +131,21 @@ export const dummyEvents = [
     title: 'The London Card Show',
     date: '2 Nov 2025',
     location: 'TBA',
-    image: undefined,
+    imageUrl: undefined,
     // image: require('@/assets/events/london-card-show.png'),
   },
   {
     title: 'Card Con',
     date: '29 March 2025',
     location: 'TBA',
-    image: undefined,
+    imageUrl: undefined,
     // image: require('@/assets/events/card-con.png'),a
   },
   {
     title: 'The London Show',
     date: '30 March 2025',
     location: 'TBA',
-    image: undefined,
+    imageUrl: undefined,
     // image: require('@/assets/events/card-con.png'),a
   },
 ];
@@ -565,6 +568,21 @@ export const dummyBlockedAccounts = [
 ];
 
 export const dummyPortoflioDetail = {
+  id: 1,
+  imageUrl: 'https://picsum.photos/200/300',
+  title: 'Malfegor - Magic the Gathering',
+  creator: 'Elly De La Cruz 1',
+  year: '2023',
+  currentPrice: '$200.00',
+  bidPrice: '$70.00',
+  market: 'eBay',
+  indicator: 'up',
+  date: '2025-07-08T18:00:00Z',
+  description:
+    'Change description to: 2024 Topps Five Star Elly De La Cruz Gold Auto',
+};
+
+export const dummyAuctionDetail = {
   id: 1,
   imageUrl: 'https://picsum.photos/200/300',
   title: 'Malfegor - Magic the Gathering',

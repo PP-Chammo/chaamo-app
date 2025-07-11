@@ -1,46 +1,35 @@
 import React, { memo } from 'react';
 
-import { ScrollView } from 'react-native';
-
-import { FavoriteButton } from '@/components/atoms';
-import { Card, GroupWithLink } from '@/components/molecules';
+import { CommonCard, ListContainer } from '@/components/molecules';
 import { dummyFeaturedCardList } from '@/constants/dummy';
 
 const FeaturedList = memo(function FeaturedList() {
   return (
-    <GroupWithLink title="Featured" onViewAllHref="/screens/featured">
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerClassName={classes.container}
-      >
-        {dummyFeaturedCardList.map((card) => (
-          <Card
-            featured
-            key={card.id}
-            imageUrl={card.imageUrl}
-            title={card.title}
-            currentPrice={card.currentPrice}
-            bidPrice={card.bidPrice}
-            indicator={card.indicator}
-            rightComponent={
-              <FavoriteButton
-                onPress={() => {
-                  console.log(`Favorite pressed for card ${card.id}`);
-                }}
-              />
-            }
-          />
-        ))}
-      </ScrollView>
-    </GroupWithLink>
+    <ListContainer
+      title="Featured"
+      onViewAllHref="/screens/product-list"
+      data={dummyFeaturedCardList}
+    >
+      {(card: (typeof dummyFeaturedCardList)[number]) => (
+        <CommonCard
+          featured
+          key={card.id}
+          id={card.id}
+          imageUrl={card.imageUrl}
+          title={card.title}
+          price={card.price}
+          marketPrice={card.marketPrice}
+          marketType={card.marketType}
+          indicator={card.indicator}
+          rightIcon="heart-outline"
+          rightIconSize={18}
+          onRightIconPress={() => {
+            console.log(`Favorite pressed for card ${card.id}`);
+          }}
+        />
+      )}
+    </ListContainer>
   );
 });
-
-const classes = {
-  titleContainer: 'px-4.5 pt-5',
-  viewAllText: 'text-teal-500 font-bold',
-  container: 'flex flex-row p-4.5 gap-5',
-};
 
 export default FeaturedList;

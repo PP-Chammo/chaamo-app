@@ -1,9 +1,8 @@
 import React, { memo, useCallback } from 'react';
 
 import { router } from 'expo-router';
-import { ScrollView } from 'react-native';
 
-import { Category, GroupWithLink } from '@/components/molecules';
+import { Category, ListContainer } from '@/components/molecules';
 import { categories } from '@/constants/categories';
 
 const CategoryList = memo(function CategoryList() {
@@ -14,33 +13,21 @@ const CategoryList = memo(function CategoryList() {
   );
 
   return (
-    <GroupWithLink
+    <ListContainer
       title="Categories"
       onViewAllHref="/screens/categories"
-      className={classes.titleContainer}
+      data={categories}
     >
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerClassName={classes.container}
-      >
-        {categories.map((category) => (
-          <Category
-            key={category.title}
-            title={category.title}
-            image={category.image}
-            onPress={handleCtaCards}
-          />
-        ))}
-      </ScrollView>
-    </GroupWithLink>
+      {(category: (typeof categories)[number]) => (
+        <Category
+          key={category.title}
+          title={category.title}
+          image={category.image}
+          onPress={handleCtaCards}
+        />
+      )}
+    </ListContainer>
   );
 });
-
-const classes = {
-  titleContainer: 'pt-5',
-  viewAllText: 'text-teal-500 font-bold',
-  container: 'flex flex-row p-4.5 gap-5',
-};
 
 export default CategoryList;
