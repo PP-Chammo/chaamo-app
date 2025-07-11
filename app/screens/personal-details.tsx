@@ -85,13 +85,6 @@ export default function PersonalDetailsScreen() {
       <Header title="Personal Details" onBackPress={() => router.back()} />
       <KeyboardView>
         <View className={classes.container}>
-          <TextField
-            label="First Name"
-            value={form.firstName}
-            onChange={handleChange}
-            name="firstName"
-            className={classes.input}
-          />
           <Row between>
             <TextField
               label="First Name"

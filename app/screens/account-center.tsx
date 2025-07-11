@@ -15,7 +15,7 @@ export default function AccountCenter() {
         <TouchableOpacity
           onPress={() => router.push('/screens/change-password')}
         >
-          <Row between className="p-4.5">
+          <Row between className={classes.row}>
             <Label>Change Password</Label>
             <Icon
               name="chevron-right"
@@ -28,7 +28,7 @@ export default function AccountCenter() {
         <TouchableOpacity
           onPress={() => router.push('/screens/personal-details')}
         >
-          <Row between className="p-4.5">
+          <Row between className={classes.row}>
             <Label>Personal Details</Label>
             <Icon
               name="chevron-right"
@@ -44,4 +44,5 @@ export default function AccountCenter() {
 
 const classes = {
   container: 'bg-white shadow-lg',
+  row: 'p-4.5',
 };
