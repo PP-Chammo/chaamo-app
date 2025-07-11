@@ -10,6 +10,7 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "lint:fix": "expo lint --fix",
+    "prettier": "prettier .",
     "prettier:fix": "prettier --write .",
     "tsc": "tsc --noEmit",
     "precheck": "npm run lint:fix && npm run prettier:fix && npm run tsc",

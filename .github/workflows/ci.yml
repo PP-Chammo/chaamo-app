@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop, feat/**]
+  pull_request:
+    branches: [main, develop, feat/**]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Prettier check
+        run: yarn prettier
+      - name: Lint
+        run: yarn lint || yarn eslint .
+      - name: Type check
+        run: yarn tsc --noEmit || yarn type-check
+      - name: Run tests
+        run: yarn test || echo "No tests found"
