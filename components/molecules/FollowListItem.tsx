@@ -44,7 +44,7 @@ const FollowListItem: React.FC<FollowListItemProps> = memo(
       Alert.alert('Blocked', 'User Blocked');
       onBlock?.();
       handleCloseContextMenu();
-    }, [onBlock]);
+    }, [handleCloseContextMenu, onBlock]);
 
     return (
       <>
