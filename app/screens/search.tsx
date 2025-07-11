@@ -57,7 +57,7 @@ export default function CardsScreen() {
       if (!historyList.includes(trimmedQuery)) {
         appendStorage<string>('searchHistories', trimmedQuery);
       }
-      router.push('/screens/cards');
+      router.push('/screens/product-list');
     },
     [appendStorage, historyList, query, setSearch],
   );
