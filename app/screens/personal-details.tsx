@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
 import { router } from 'expo-router';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 
 import { Button, KeyboardView, Row, ScreenContainer } from '@/components/atoms';
 import {
   Header,
+  PhoneInput,
   SelectWithScreen,
-  SetupProfileTabs,
   TextField,
 } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
@@ -19,27 +19,34 @@ import {
 } from '@/utils/validate';
 
 interface Form extends ValidationValues {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  address: string;
   city: string;
   state: string;
   country: string;
   postalCode: string;
-  addressLine1: string;
-  addressLine2: string;
 }
 
-export default function AddressScreen() {
-  const [form, setForm] = useState<Form>({
-    city: '',
-    state: '',
-    country: '',
-    postalCode: '',
-    addressLine1: '',
-    addressLine2: '',
-  });
+const initialForm = {
+  firstName: '',
+  lastName: '',
+  phone: '',
+  email: '',
+  address: '',
+  city: '',
+  state: '',
+  country: '',
+  postalCode: '',
+};
+
+export default function PersonalDetailsScreen() {
+  const [form, setForm] = useState<Form>(initialForm);
+  const [errors, setErrors] = useState<ValidationErrors<Form>>({});
 
   const { selectedCountry, selectedState } = useSelectWithScreenStore();
-
-  const [errors, setErrors] = useState<ValidationErrors<Form>>({});
 
   const handleChange = ({ name, value }: TextChangeParams) => {
     setErrors((prev) => {
@@ -51,18 +58,18 @@ export default function AddressScreen() {
 
   const handleSubmit = () => {
     const errors = validateRequired<Form>(form, [
-      'addressLine1',
       'city',
       'state',
       'country',
       'postalCode',
     ]);
+
     if (Object.keys(errors).length > 0) {
       setErrors(errors);
       return;
     }
-    // TODO: Implement API call to update address
-    router.push('/(setup-profile)/(upload-identity)/proof-identity');
+
+    return Alert.alert('Success', 'Personal details updated successfully');
   };
 
   useEffect(() => {
@@ -75,34 +82,52 @@ export default function AddressScreen() {
 
   return (
     <ScreenContainer>
-      <Header title="Setting Up Profile" onBackPress={() => router.back()} />
-      <View className={classes.container}>
-        <SetupProfileTabs />
-        <KeyboardView>
+      <Header title="Personal Details" onBackPress={() => router.back()} />
+      <KeyboardView>
+        <View className={classes.container}>
           <TextField
-            name="addressLine1"
-            label="Address Line 1"
-            placeholder="Address Line 1"
+            label="First Name"
+            value={form.firstName}
             onChange={handleChange}
-            value={form.addressLine1}
-            required
-            error={errors['addressLine1']}
+            name="firstName"
+            className={classes.input}
           />
-          <TextField
-            name="addressLine2"
-            label="Address Line 2"
-            placeholder="Address Line 2"
-            onChange={handleChange}
-            value={form.addressLine2}
-            error={errors['addressLine2']}
-          />
-          <Row>
+          <Row between>
             <TextField
-              name="city"
-              label="City"
-              placeholder="City"
+              label="First Name"
+              value={form.firstName}
               onChange={handleChange}
+              name="firstName"
+              className={classes.input}
+            />
+            <TextField
+              label="Last Name"
+              value={form.lastName}
+              onChange={handleChange}
+              name="lastName"
+              className={classes.input}
+            />
+          </Row>
+          <PhoneInput name="phone" value={form.phone} onChange={handleChange} />
+          <TextField
+            label="Email"
+            value={form.email}
+            onChange={handleChange}
+            name="email"
+          />
+          <TextField
+            label="Address"
+            value={form.address}
+            onChange={handleChange}
+            name="address"
+          />
+          <Row between>
+            <TextField
+              label="City"
               value={form.city}
+              onChange={handleChange}
+              name="city"
+              className={classes.input}
               required
               error={errors['city']}
             />
@@ -112,6 +137,7 @@ export default function AddressScreen() {
               error={errors['state']}
               placeholder="--Select--"
               value={form.state}
+              required
             />
           </Row>
           <SelectWithScreen
@@ -120,34 +146,28 @@ export default function AddressScreen() {
             error={errors['country']}
             placeholder="--Select--"
             value={form.country}
+            required
           />
           <TextField
-            name="postalCode"
             label="Postal Code"
-            placeholder="Postal Code"
-            onChange={handleChange}
             value={form.postalCode}
+            onChange={handleChange}
+            name="postalCode"
             required
             error={errors['postalCode']}
           />
-          <Button
-            variant="primary"
-            size="large"
-            onPress={handleSubmit}
-            className={classes.button}
-          >
-            Continue
-          </Button>
-        </KeyboardView>
-      </View>
+        </View>
+      </KeyboardView>
+      <Button onPress={handleSubmit} className={classes.button}>
+        Save Changes
+      </Button>
     </ScreenContainer>
   );
 }
 
 const classes = {
-  container: 'flex-1 p-4.5',
-  keyboardViewContent: 'flex-grow gap-3 pb-20',
-  statePicker: 'border-1 border-gray-200 rounded-8 p-12 mt-8',
-  formContainer: 'pb-10 flex gap-4',
-  button: 'mt-5',
+  container: 'flex-1 p-4.5 gap-4',
+  login: 'text-slate-500 text-md underline font-bold',
+  button: 'my-10 mx-4.5',
+  input: 'flex-1',
 };

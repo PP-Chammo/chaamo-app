@@ -28,9 +28,9 @@ const Label: React.FC<LabelProps> = memo(function Label({
 const classes = {
   base: 'text-base text-neutral-600',
   variant: {
-    default: 'text-base text-neutral-600 dark:text-neutral-100',
-    title: 'text-xl font-bold text-gray-600 dark:text-gray-100',
-    subtitle: 'text-lg font-semibold text-gray-600 dark:text-gray-100',
+    default: 'text-base text-neutral-600 dark:text-neutral-600',
+    title: 'text-xl font-bold text-gray-600 dark:text-gray-600',
+    subtitle: 'text-lg font-semibold text-gray-600 dark:text-gray-600',
   },
 };
 

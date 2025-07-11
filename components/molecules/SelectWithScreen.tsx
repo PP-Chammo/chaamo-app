@@ -25,6 +25,7 @@ const SelectWithScreen: React.FC<SelectWithScreenProps> = memo(
     leftIcon,
     inputClassName,
     placeholder,
+    onChange,
     ...props
   }) {
     return (

@@ -1,10 +1,10 @@
-import { router } from 'expo-router';
 import { create } from 'zustand';
 
 import {
   selectWithScreenStore,
   SelectWithScreenStore,
 } from '@/stores/selectWithScreenStore';
+import { router } from 'expo-router';
 
 export interface SelectWithScreenState extends SelectWithScreenStore {
   setSelectedCountry: (country: string) => void;
@@ -16,11 +16,11 @@ export const useSelectWithScreenStore = create<SelectWithScreenState>(
     ...selectWithScreenStore,
     setSelectedCountry: (country: string) => {
       set({ selectedCountry: country });
-      router.replace('/(setup-profile)/address');
+      router.back();
     },
     setSelectedState: (state: string) => {
       set({ selectedState: state });
-      router.replace('/(setup-profile)/address');
+      router.back();
     },
   }),
 );
