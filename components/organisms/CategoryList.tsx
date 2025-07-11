@@ -9,12 +9,16 @@ import { categories } from '@/constants/categories';
 const CategoryList = memo(function CategoryList() {
   const handleCtaCards = useCallback(
     (category: string) =>
-      router.push({ pathname: '/screens/cards', params: { category } }),
+      router.push({ pathname: '/screens/product-list', params: { category } }),
     [],
   );
 
   return (
-    <GroupWithLink title="Categories" onViewAllHref="/screens/categories">
+    <GroupWithLink
+      title="Categories"
+      onViewAllHref="/screens/categories"
+      className={classes.titleContainer}
+    >
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -34,7 +38,7 @@ const CategoryList = memo(function CategoryList() {
 });
 
 const classes = {
-  titleContainer: 'px-4.5 pt-5',
+  titleContainer: 'pt-5',
   viewAllText: 'text-teal-500 font-bold',
   container: 'flex flex-row p-4.5 gap-5',
 };

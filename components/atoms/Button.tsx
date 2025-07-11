@@ -31,6 +31,10 @@ interface ButtonProps extends TouchableOpacityProps {
   iconSize?: IconProp['size'];
   iconColor?: IconProp['color'];
   iconVariant?: IconProp['variant'];
+  rightIcon?: IconProp['name'];
+  rightIconSize?: IconProp['size'];
+  rightIconColor?: IconProp['color'];
+  rightIconVariant?: IconProp['variant'];
 }
 
 type IconProp = React.ComponentProps<typeof Icon>;
@@ -47,6 +51,10 @@ const Button: React.FC<ButtonProps> = memo(function Button({
   iconSize,
   iconColor,
   iconVariant,
+  rightIcon,
+  rightIconSize,
+  rightIconColor,
+  rightIconVariant,
   ...props
 }) {
   const iconSizeBase = useMemo(() => {
@@ -107,12 +115,20 @@ const Button: React.FC<ButtonProps> = memo(function Button({
       >
         {children}
       </Text>
+      {rightIcon && (
+        <Icon
+          name={rightIcon}
+          size={rightIconSize ?? iconSizeBase}
+          variant={rightIconVariant}
+          color={rightIconColor ?? iconColorBase}
+        />
+      )}
     </TouchableOpacity>
   );
 });
 
 const classes = {
-  base: 'rounded-full flex flex-row items-center justify-center gap-2',
+  base: 'rounded-full flex flex-row items-center justify-center gap-1.5',
   textBase: 'text-base text-center',
   disabled: 'opacity-50',
   variant: {
@@ -126,7 +142,7 @@ const classes = {
   },
   size: {
     small: 'px-5 min-h-9',
-    medium: 'px-6 py-3.5 min-w-28',
+    medium: 'px-6 py-3.5 min-w-24',
     large: 'px-10 py-4',
   },
   textVariant: {

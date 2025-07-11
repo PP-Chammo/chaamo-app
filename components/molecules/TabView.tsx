@@ -7,6 +7,8 @@ import PagerView, {
   PagerViewOnPageSelectedEvent,
 } from 'react-native-pager-view';
 
+import { Icon, Row } from '@/components/atoms';
+
 cssInterop(PagerView, {
   className: {
     target: 'style',
@@ -17,9 +19,16 @@ interface TabViewProps {
   className?: string;
   contentClassName?: string;
   initialPage?: number;
-  tabs: string[];
+  tabs: (string | Tab)[];
   children: React.ReactNode;
 }
+
+type Tab = {
+  title: string;
+  icon?: string;
+  iconColor?: string;
+  iconSize?: number;
+};
 
 const TabView: React.FC<TabViewProps> = memo(function TabView({
   className,
@@ -50,19 +59,30 @@ const TabView: React.FC<TabViewProps> = memo(function TabView({
         {tabs.map((tab, index) => {
           const isActive = activeTab === index;
 
+          const tabTitle = typeof tab === 'string' ? tab : tab.title;
+
           return (
             <Pressable
-              key={tab}
+              key={tabTitle}
               className="flex-1 items-center"
               onPress={() => handleTabPress(index)}
             >
-              <Text
-                className={clsx(
-                  classes.tabTitle[isActive ? 'active' : 'inactive'],
+              <Row className={classes.tabRow}>
+                <Text
+                  className={clsx(
+                    classes.tabTitle[isActive ? 'active' : 'inactive'],
+                  )}
+                >
+                  {tabTitle}
+                </Text>
+                {typeof tab === 'object' && tab?.icon && (
+                  <Icon
+                    name={tab.icon}
+                    color={tab.iconColor}
+                    size={tab.iconSize}
+                  />
                 )}
-              >
-                {tab}
-              </Text>
+              </Row>
               <View
                 className={clsx(
                   classes.tabIndicator[isActive ? 'active' : 'inactive'],
@@ -87,9 +107,10 @@ const TabView: React.FC<TabViewProps> = memo(function TabView({
 const classes = {
   container: 'flex-1',
   tabscontainer: 'flex-row justify-between border-b border-slate-200',
+  tabRow: 'py-2',
   tabTitle: {
-    active: 'text-slate-800 font-semibold mb-2',
-    inactive: 'text-slate-500 font-medium mb-2',
+    active: 'text-slate-800 font-semibold',
+    inactive: 'text-slate-500 font-medium',
   },
   tabIndicator: {
     active: 'h-0.5 bg-teal-500 w-full rounded-full',
