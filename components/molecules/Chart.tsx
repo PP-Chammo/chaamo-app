@@ -7,7 +7,7 @@ import { TouchableOpacity, View } from 'react-native';
 import { Defs, Line, LinearGradient, Stop } from 'react-native-svg';
 import { AreaChart } from 'react-native-svg-charts';
 
-import { FilterTabs, Label } from '@/components/atoms';
+import { FilterTabs, FilterValue, Label } from '@/components/atoms';
 import { PERIODS_TABS_FILTER } from '@/constants/tabs';
 import { getColor } from '@/utils/getColor';
 
@@ -30,10 +30,12 @@ const CHART_HEIGHT = 142;
 
 const Chart = memo(function Chart({ data }: ChartProps) {
   const [selectedTab, setSelectedTab] = useState<string>('Raw');
-  const [selectedPeriod, setSelectedPeriod] = useState<number>(7);
+  const [selectedPeriod, setSelectedPeriod] = useState<FilterValue>(7);
 
   const chartData =
-    data[selectedTab.toLowerCase() as 'raw' | 'graded'][selectedPeriod] || [];
+    data[selectedTab.toLowerCase() as 'raw' | 'graded'][
+      Number(selectedPeriod)
+    ] || [];
   const best = chartData.length ? Math.max(...chartData) : 0;
   const today = chartData.length ? chartData[chartData.length - 1] : 0;
 
@@ -101,7 +103,7 @@ const Chart = memo(function Chart({ data }: ChartProps) {
       <FilterTabs
         tabs={PERIODS_TABS_FILTER}
         selected={selectedPeriod}
-        onChange={(value) => setSelectedPeriod(value as number)}
+        onChange={setSelectedPeriod}
       />
       <View className={classes.chartContainer}>
         <View className={classes.xAxisContainer} pointerEvents="none">

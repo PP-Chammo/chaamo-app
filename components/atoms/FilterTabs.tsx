@@ -3,7 +3,7 @@ import { memo } from 'react';
 import { clsx } from 'clsx';
 import { ScrollView, Text, TouchableOpacity } from 'react-native';
 
-type FilterValue = string | number;
+export type FilterValue = number | string;
 
 interface Tab {
   label: string;
@@ -36,7 +36,7 @@ const FilterTabs = memo(function FilterTabs({
             [classes.tabActive]: selected === tab.value,
             [classes.tab]: selected !== tab.value,
           })}
-          onPress={() => onChange(tab.value)}
+          onPress={() => onChange(tab.value as typeof selected)}
           activeOpacity={0.8}
         >
           <Text

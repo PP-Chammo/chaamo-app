@@ -6,7 +6,7 @@ export { default as Button } from './Button';
 export { default as ChatMessage } from './ChatMessage';
 export { default as ContextMenu } from './ContextMenu';
 export { default as Divider } from './Divider';
-export { default as FilterTabs } from './FilterTabs';
+export { default as FilterTabs, type FilterValue } from './FilterTabs';
 export { default as Icon } from './Icon';
 export { default as KeyboardView } from './KeyboardView';
 export { default as Label } from './Label';

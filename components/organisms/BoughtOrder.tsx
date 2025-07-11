@@ -3,13 +3,13 @@ import { memo, useMemo, useState } from 'react';
 import { FlatList, View } from 'react-native';
 
 import { EmptyOrders } from '@/assets/svg';
-import { FilterTabs, Label } from '@/components/atoms';
+import { FilterTabs, FilterValue, Label } from '@/components/atoms';
 import { OrderItem, type OrderStatus } from '@/components/molecules';
 import { dummyOrders } from '@/constants/dummy';
 import { ORDER_TABS_FILTER } from '@/constants/tabs';
 
 const BoughtOrder = memo(function BoughtOrder() {
-  const [selectedFilter, setSelectedFilter] = useState<string>('progress');
+  const [selectedFilter, setSelectedFilter] = useState<FilterValue>('progress');
 
   const _renderOrders = useMemo(() => {
     const _DATA = dummyOrders.filter((item) => item.status === selectedFilter);
@@ -42,7 +42,7 @@ const BoughtOrder = memo(function BoughtOrder() {
         tabs={ORDER_TABS_FILTER}
         className={classes.tabs}
         selected={selectedFilter}
-        onChange={(value) => setSelectedFilter(value as string)}
+        onChange={setSelectedFilter}
       />
       {_renderOrders}
     </View>
