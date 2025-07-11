@@ -65,7 +65,7 @@ const SelectableList: React.FC<SelectableListProps> = memo(
 
 const classes = {
   searchContainer: 'px-4.5',
-  listContainer: 'px-4.5 mt-20 bg-white',
+  listContainer: 'px-4.5 mt-4.5 bg-white',
   stateItem: 'border-b border-gray-200 p-4.5',
   listContentContainer: 'gap-2.5',
 };

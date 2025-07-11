@@ -30,8 +30,12 @@ export default function StartPage() {
   return (
     <Image
       source={require('@/assets/images/splash-screen.gif')}
-      className="w-full h-full"
+      className={classes.image}
       contentFit="contain"
     />
   );
 }
+
+const classes = {
+  image: 'w-full h-full',
+};

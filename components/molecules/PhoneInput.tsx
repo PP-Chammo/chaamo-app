@@ -13,17 +13,18 @@ interface PhoneNumberInputProps {
   name: string;
   value: string;
   onChange: ({ name, value }: TextChangeParams) => void;
+  required?: boolean;
 }
 
 const PhoneNumberInput: React.FC<PhoneNumberInputProps> = memo(
-  function PhoneNumberInput({ name, value, onChange }) {
+  function PhoneNumberInput({ name, value, onChange, required }) {
     const handleChange = (text: string) => onChange({ name, value: text });
 
     return (
       <View className={classes.container}>
         <Label className={classes.label}>
           Phone
-          <Label className={classes.required}>*</Label>
+          {required && <Label className={classes.required}>*</Label>}
         </Label>
         <PhoneInputLocal
           defaultCode="GB"

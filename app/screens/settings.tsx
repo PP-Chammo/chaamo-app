@@ -25,7 +25,7 @@ export default function SettingsScreen() {
             iconName="account-circle-outline"
             title="Account Center"
             subtitle="Password, security, personal details"
-            onPress={() => {}}
+            onPress={() => router.push('/screens/account-center')}
           />
         </View>
 

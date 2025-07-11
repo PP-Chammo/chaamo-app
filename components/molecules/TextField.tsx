@@ -17,6 +17,7 @@ interface TextFieldProps extends Omit<TextInputProps, 'onChange'> {
   error?: string;
   leftIcon?: React.ReactNode;
   inputClassName?: string;
+  className?: string;
 }
 
 const TextField: React.FC<TextFieldProps> = memo(function TextField({
@@ -30,6 +31,7 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
   error,
   leftIcon,
   inputClassName,
+  className,
   ...props
 }) {
   const [hidePassword, setHidePassword] = useState(true);
@@ -39,7 +41,7 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
   };
 
   return (
-    <View className={classes.container}>
+    <View className={clsx(classes.container, className)}>
       {label && (
         <Text className={classes.label}>
           {label}
@@ -82,7 +84,7 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
 export default TextField;
 
 const classes = {
-  container: 'flex-1 gap-2',
+  container: 'gap-2',
   label: 'text-slate-500 font-medium text-md ml-4',
   title: 'text-2xl font-bold text-teal-600',
   description: 'text-slate-500 font-medium text-md mb-6',

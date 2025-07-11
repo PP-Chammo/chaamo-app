@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { clsx } from 'clsx';
-import { cssInterop } from 'nativewind';
 import { Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
@@ -25,15 +24,6 @@ const KeyboardView: React.FC<KeyboardViewProps> = ({
   className,
   ...props
 }) => {
-  cssInterop(KeyboardAwareScrollView, {
-    className: {
-      target: 'style',
-    },
-    contentContainerClassName: {
-      target: 'contentContainerStyle',
-    },
-  });
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAwareScrollView

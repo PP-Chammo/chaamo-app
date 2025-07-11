@@ -8,7 +8,7 @@ import { Header } from '@/components/molecules';
 import { SelectableList } from '@/components/organisms';
 import { CURRENCIES } from '@/constants/dummy';
 
-export default function ChangeCurrency() {
+export default function ChangeCurrencyScreen() {
   const [selectedCurrency, setSelectedCurrency] = useState<string>('');
 
   const handleSaveChanges = useCallback(() => {
