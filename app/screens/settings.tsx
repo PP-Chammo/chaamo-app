@@ -85,7 +85,7 @@ export default function SettingsScreen() {
           <SettingItem
             iconName="phone-outline"
             title="Contact Us"
-            onPress={() => {}}
+            onPress={() => router.push('/screens/contact-us')}
           />
           <Divider position="horizontal" className={classes.divider} />
           <SettingItem
