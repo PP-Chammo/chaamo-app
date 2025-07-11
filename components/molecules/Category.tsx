@@ -63,7 +63,7 @@ const CategoryItem: React.FC<CategoryProps> = memo(function CategoryItem({
 });
 
 const classes = {
-  container: 'flex flex-row items-center gap-2 py-2',
+  container: 'flex flex-row items-center gap-2',
   logoContainer: 'flex flex-col gap-2 items-center',
   horizontalContainer: '!justify-between',
   horizontalLogo: '!flex-row items-center gap-2',

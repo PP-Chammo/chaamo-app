@@ -1,29 +1,48 @@
 import { memo } from 'react';
 
-import { Image, View } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Image, TouchableOpacity, View } from 'react-native';
 
-import { Badge, FavoriteButton, Icon, Label, Tag } from '@/components/atoms';
+import { Icon, Label, Tag } from '@/components/atoms';
+import { AuctionCardType } from '@/types/card';
 import { getColor } from '@/utils/getColor';
 
-type AuctionCardProps = {
-  imageUrl: string;
-  title: string;
-  price: string;
-  onFavoritePress: () => void;
-  featured?: boolean;
-};
+interface AuctionCardProps extends AuctionCardType {
+  onPress?: () => void;
+  onRightIconPress?: () => void;
+  rightIcon?: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
+  rightIconSize?: React.ComponentProps<typeof MaterialCommunityIcons>['size'];
+  rightIconColor?: React.ComponentProps<typeof MaterialCommunityIcons>['color'];
+}
 
 const AuctionCard: React.FC<AuctionCardProps> = memo(function CategoryItem({
   imageUrl,
   title,
   price,
-  onFavoritePress,
-  featured = false,
+  onPress,
+  onRightIconPress,
+  rightIcon,
+  rightIconSize,
+  rightIconColor,
 }) {
   return (
-    <View className={classes.container}>
-      {featured && <Badge />}
-      <FavoriteButton onPress={onFavoritePress} />
+    <TouchableOpacity
+      activeOpacity={0.8}
+      onPress={onPress}
+      className={classes.container}
+    >
+      {onRightIconPress && (
+        <TouchableOpacity
+          onPress={onRightIconPress}
+          className={classes.rightIconButton}
+        >
+          <MaterialCommunityIcons
+            name={rightIcon}
+            size={rightIconSize}
+            color={rightIconColor}
+          />
+        </TouchableOpacity>
+      )}
       {imageUrl ? (
         <Image source={{ uri: imageUrl }} className={classes.image} />
       ) : (
@@ -38,7 +57,7 @@ const AuctionCard: React.FC<AuctionCardProps> = memo(function CategoryItem({
       <Label variant="subtitle" className={classes.price}>
         {price}
       </Label>
-    </View>
+    </TouchableOpacity>
   );
 });
 
@@ -50,6 +69,8 @@ const classes = {
   price: 'text-sm !text-gray-800',
   marketContainer: 'flex flex-row items-center gap-1.5',
   indicator: 'text-xs text-gray-500',
+  rightIconButton:
+    'absolute top-2 right-2 z-10 w-8 h-8 bg-white rounded-full items-center justify-center',
 };
 
 export default AuctionCard;

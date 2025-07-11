@@ -46,7 +46,7 @@ const Avatar = memo(function Avatar({
               <MaterialCommunityIcons
                 name="pencil"
                 size={24}
-                color={getColor('slate-600')}
+                color={getColor('slate-700')}
                 className={classes.modifyIcon}
               />
             )}
@@ -58,7 +58,7 @@ const Avatar = memo(function Avatar({
               <MaterialCommunityIcons
                 name="plus"
                 size={24}
-                color={getColor('slate-600')}
+                color={getColor('slate-700')}
                 className={classes.modifyIcon}
               />
             )}

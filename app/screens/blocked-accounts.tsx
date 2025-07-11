@@ -32,9 +32,9 @@ export default function BlockedAccounts() {
       <Header
         title="Blocked Accounts"
         onBackPress={() => router.back()}
-        iconRight="plus-circle"
-        iconRightColor={getColor('teal-600')}
-        iconRightSize={28}
+        rightIcon="plus-circle"
+        rightIconColor={getColor('teal-600')}
+        rightIconSize={28}
         onRightPress={() => router.push('/screens/block-accounts')}
       />
       <View className={classes.container}>{renderBlockedAccounts}</View>

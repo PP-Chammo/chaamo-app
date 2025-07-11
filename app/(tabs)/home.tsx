@@ -12,7 +12,7 @@ import {
   CategoryList,
   FeaturedList,
   PeopleList,
-  RecentlyAdded,
+  RecentlyAddedList,
 } from '@/components/organisms';
 import { TextChangeParams } from '@/domains';
 
@@ -60,14 +60,14 @@ export default function HomeScreen() {
       </View>
 
       <ScrollView
-        contentContainerClassName="gap-5"
+        contentContainerClassName={classes.contentContainer}
         showsVerticalScrollIndicator={false}
       >
         <CategoryList />
         <FeaturedList />
         <AuctionList />
         <PeopleList />
-        <RecentlyAdded />
+        <RecentlyAddedList />
       </ScrollView>
     </ScreenContainer>
   );
@@ -77,4 +77,6 @@ const classes = {
   containerTop: '!bg-white',
   headerContainer: 'bg-white gap-3 py-5 border-b border-gray-100',
   headerRow: 'px-5',
+  contentContainer: 'py-4.5 gap-5',
+  auctionList: 'bg-white py-4.5',
 };

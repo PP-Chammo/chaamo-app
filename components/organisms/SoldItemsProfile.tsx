@@ -2,38 +2,39 @@ import { remapProps } from 'nativewind';
 import { FlatList } from 'react-native';
 
 import { Boost } from '@/components/atoms';
-import { Card } from '@/components/molecules';
+import { CommonCard } from '@/components/molecules';
 import { dummyFeaturedCardList } from '@/constants/dummy';
-import { CardItem } from '@/domains';
 
-const CustomizedFlatList = remapProps(FlatList, {
+const FlatListRemapped = remapProps(FlatList, {
+  contentContainerClassName: 'contentContainerStyle',
   columnWrapperClassName: 'columnWrapperStyle',
-});
+}) as typeof FlatList;
 
 export default function SoldItems() {
   return (
-    <CustomizedFlatList
+    <FlatListRemapped
       data={dummyFeaturedCardList}
       keyExtractor={(_, index) => index.toString()}
       numColumns={2}
       horizontal={false}
       showsVerticalScrollIndicator={false}
+      contentContainerClassName={classes.contentContainer}
       columnWrapperClassName={classes.columnWrapper}
       renderItem={({ item, index }) => {
-        const cardItem = item as CardItem;
         const isLast = index === dummyFeaturedCardList.length - 1;
         const isOdd = dummyFeaturedCardList.length % 2 !== 0;
         const shouldNotBeFullWidth = isLast && isOdd;
-
         return (
-          <Card
-            key={cardItem.id}
-            imageUrl={cardItem.imageUrl}
-            title={cardItem.title}
-            bidPrice={cardItem.bidPrice || ''}
-            indicator={cardItem.indicator}
-            rightComponent={<Boost boosted={cardItem.boosted} />}
-            mode={shouldNotBeFullWidth ? 'half' : 'full'}
+          <CommonCard
+            key={item.id}
+            id={item.id}
+            imageUrl={item.imageUrl}
+            title={item.title}
+            marketPrice={item.marketPrice}
+            marketType={item.marketType}
+            indicator={item.indicator}
+            rightComponent={<Boost boosted={item.boosted} />}
+            className={shouldNotBeFullWidth ? classes.lastCard : classes.card}
           />
         );
       }}
@@ -42,5 +43,8 @@ export default function SoldItems() {
 }
 
 const classes = {
-  columnWrapper: 'gap-6 p-4.5',
+  contentContainer: '!p-4.5 !gap-4.5',
+  columnWrapper: '!gap-4.5',
+  lastCard: 'flex-[0.5] mr-6',
+  card: 'flex-1',
 };

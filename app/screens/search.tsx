@@ -5,7 +5,7 @@ import { TextInput } from 'react-native';
 
 import { ScreenContainer } from '@/components/atoms';
 import { HeaderSearch } from '@/components/molecules';
-import { SearchHistories } from '@/components/organisms';
+import { SearchHistoryList } from '@/components/organisms';
 import { TextChangeParams } from '@/domains';
 import { useSearchStore } from '@/hooks/useSearchStore';
 import { useStorage } from '@/hooks/useStorage';
@@ -104,7 +104,7 @@ export default function CardsScreen() {
         onBackPress={handleCtaBack}
         onSubmit={handleSubmitSearch}
       />
-      <SearchHistories
+      <SearchHistoryList
         list={historyList}
         onRemovePress={handleClear}
         onClearAllPress={handleClearAll}

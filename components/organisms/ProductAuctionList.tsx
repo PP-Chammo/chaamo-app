@@ -1,9 +1,10 @@
 import { memo } from 'react';
 
+import { router } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { FlatList } from 'react-native';
 
-import { CardInfo } from '@/components/molecules';
+import { AuctionItem } from '@/components/molecules';
 import { dummyFeaturedCardList } from '@/constants/dummy';
 
 cssInterop(FlatList, {
@@ -12,20 +13,29 @@ cssInterop(FlatList, {
   },
 });
 
-const ProductAuctionList = memo(function AllCards() {
+const ProductAuctionList = memo(function ProductAuctionList() {
   return (
     <FlatList
       showsVerticalScrollIndicator={false}
       data={dummyFeaturedCardList}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
-        <CardInfo
+        <AuctionItem
           imageUrl={item.imageUrl}
           title={item.title}
-          bidPrice={item.bidPrice}
-          currentPrice={item.currentPrice}
+          subtitle={item.title}
+          price={item.price}
+          date={item.date}
+          marketPrice={item.marketPrice}
+          marketType={item.marketType}
           indicator={item.indicator}
-          onFavoritePress={() => console.log('Favorite pressed')}
+          rightIcon="heart-outline"
+          className="bg-red-200"
+          rightIconSize={18}
+          onPress={() => router.push('/screens/auction-detail')}
+          onRightIconPress={() => {
+            console.log(`Favorite pressed for card ${item.id}`);
+          }}
         />
       )}
       contentContainerClassName={classes.contentContainer}

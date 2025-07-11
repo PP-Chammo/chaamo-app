@@ -6,7 +6,6 @@ export { default as Button } from './Button';
 export { default as ChatMessage } from './ChatMessage';
 export { default as ContextMenu } from './ContextMenu';
 export { default as Divider } from './Divider';
-export { default as FavoriteButton } from './FavoriteButton';
 export { default as Icon } from './Icon';
 export { default as KeyboardView } from './KeyboardView';
 export { default as Label } from './Label';

@@ -3,9 +3,16 @@ import { cssInterop } from 'nativewind';
 import { ScrollView, View } from 'react-native';
 
 import { Icon, Label, Row, ScreenContainer } from '@/components/atoms';
-import { Chart, Header } from '@/components/molecules';
-import { PortfolioList } from '@/components/organisms';
-import { dummyPortfolioValueData } from '@/constants/dummy';
+import {
+  Chart,
+  CommonCard,
+  Header,
+  ListContainer,
+} from '@/components/molecules';
+import {
+  dummyFeaturedCardList,
+  dummyPortfolioValueData,
+} from '@/constants/dummy';
 import { getColor } from '@/utils/getColor';
 
 cssInterop(ScrollView, {
@@ -62,7 +69,28 @@ export default function PortfolioValueScreen() {
             </View>
           </Row>
         </View>
-        <PortfolioList />
+        <ListContainer
+          title="Recently Added"
+          onViewAllHref="/screens/product-list"
+          data={dummyFeaturedCardList}
+        >
+          {(featured: (typeof dummyFeaturedCardList)[number]) => (
+            <CommonCard
+              id={featured.id}
+              key={featured.id}
+              imageUrl={featured.imageUrl}
+              title={featured.title}
+              price={featured.price}
+              marketPrice={featured.marketPrice}
+              marketType={featured.marketType}
+              indicator={featured.indicator}
+              rightIcon="heart-outline"
+              onRightIconPress={() => {
+                console.log(`Favorite pressed for card ${featured.id}`);
+              }}
+            />
+          )}
+        </ListContainer>
         <View className={classes.chartContainer}>
           <Chart data={dummyPortfolioValueData} />
         </View>

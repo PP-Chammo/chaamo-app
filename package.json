@@ -12,6 +12,7 @@
     "lint:fix": "expo lint --fix",
     "prettier:fix": "prettier --write .",
     "tsc": "tsc --noEmit",
+    "precheck": "npm run lint:fix && npm run prettier:fix && npm run tsc",
     "prepare": "husky"
   },
   "dependencies": {
