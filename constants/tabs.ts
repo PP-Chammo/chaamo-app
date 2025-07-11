@@ -26,3 +26,23 @@ export const privacyPolicyTabs = [
   'Terms of Service',
   'HMRC Guidelines',
 ];
+
+export const ORDER_TABS = ['Sold', 'Bought'];
+
+export const PERIODS_TABS_FILTER = [
+  { label: '7 days', value: 7 },
+  { label: '14 days', value: 14 },
+  { label: '30 days', value: 30 },
+  { label: '90 days', value: 90 },
+];
+
+export const SOLD_TABS_FILTER = [
+  { label: 'In Progress', value: 'progress' },
+  { label: 'Completed', value: 'completed' },
+  { label: 'Cancelled', value: 'cancelled' },
+];
+
+export const BOUGHT_TABS_FILTER = [
+  { label: 'Completed', value: 'completed' },
+  { label: 'Cancelled', value: 'cancelled' },
+];
