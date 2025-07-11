@@ -107,7 +107,7 @@ export default function SettingsScreen() {
             <SettingItem
               iconName="shield-lock-outline"
               title="Privacy Policy"
-              onPress={() => {}}
+              onPress={() => router.push('/screens/privacy-policy')}
             />
           </View>
 
