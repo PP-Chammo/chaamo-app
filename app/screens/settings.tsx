@@ -163,8 +163,6 @@ const classes = {
   header: 'bg-white',
   sectionContainer: 'bg-white',
   sectionHeader: 'px-4 pt-3 text-xs text-slate-600 !font-light',
-  deleteButton: 'mt-8 mx-4',
-  logoutButton: 'mt-2 mx-4 mb-8',
   divider: '!bg-slate-100',
   deleteAccountModal: 'mx-14 items-center pt-5',
   deleteAccountModalTitle: 'text-lg font-bold text-slate-900',
@@ -172,5 +170,4 @@ const classes = {
     'text-md text-slate-600 text-center mx-16 mt-4 mb-8',
   deleteAccountModalButton: 'text-red-500',
   deleteAccountModalButtonText: 'text-red-700',
-  deleteAccountModalButtonContainer: 'h-12',
 };

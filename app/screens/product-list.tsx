@@ -48,7 +48,6 @@ export default function ProductListScreen() {
 
 const classes = {
   containerTop: 'bg-white',
-  contentContainer: 'gap-3',
   tabView: 'mt-2 mx-4.5',
   tabViewContainer: 'flex-1',
 };

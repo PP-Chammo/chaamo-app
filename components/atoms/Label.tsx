@@ -12,7 +12,7 @@ interface LabelProps extends TextProps {
 const Label: React.FC<LabelProps> = memo(function Label({
   variant,
   children,
-  className = classes.base,
+  className,
   ...props
 }) {
   return (
@@ -26,7 +26,6 @@ const Label: React.FC<LabelProps> = memo(function Label({
 });
 
 const classes = {
-  base: 'text-base text-neutral-600',
   variant: {
     default: 'text-base text-neutral-600 dark:text-neutral-600',
     title: 'text-xl font-bold text-gray-600 dark:text-gray-600',

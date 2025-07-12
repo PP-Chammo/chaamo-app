@@ -155,7 +155,6 @@ const classes = {
   text: 'text-sm !text-gray-700',
   textBold: 'text-sm font-semibold',
   rowDate: 'gap-2',
-  currentPrice: 'text-sm text-teal-500 !font-bold',
   tag: '!text-xs',
   bidContainer: 'flex flex-col items-end',
   textBidPrice: 'text-base font-semibold text-teal-600',

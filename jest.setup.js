@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 // Mock Expo modules
 jest.mock('expo-router', () => ({
   useRouter: () => ({
@@ -233,3 +234,23 @@ jest.mock('d3-shape', () => ({
     y1: () => ({}),
   }),
 }));
+
+// Suppress console.error for React state updates in tests
+const originalError = console.error;
+beforeAll(() => {
+  console.error = (...args) => {
+    // Suppress React state update warnings in tests
+    if (
+      typeof args[0] === 'string' &&
+      args[0].includes('An update to') &&
+      args[0].includes('inside a test was not wrapped in act')
+    ) {
+      return;
+    }
+    originalError.call(console, ...args);
+  };
+});
+
+afterAll(() => {
+  console.error = originalError;
+});

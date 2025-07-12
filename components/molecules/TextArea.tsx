@@ -45,6 +45,5 @@ export default TextArea;
 const classes = {
   container: 'gap-2',
   label: 'text-slate-500 font-medium text-md ml-4',
-  inputContainer: 'relative',
   input: 'rounded-lg border border-slate-200 rounded-md px-4 bg-white min-h-24',
 };

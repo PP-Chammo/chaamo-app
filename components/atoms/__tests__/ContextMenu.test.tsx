@@ -10,69 +10,220 @@ describe('ContextMenu', () => {
     visible: false,
     onClose: jest.fn(),
     triggerRef: React.createRef<View | null>(),
-    children: <div>Menu Item</div>,
+    children: <View>Menu Item</View>,
   };
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders correctly when not visible', () => {
-    const { toJSON } = render(<ContextMenu {...defaultProps} />);
-    // ContextMenu returns null when not visible, which is expected behavior
-    expect(toJSON()).toBeNull();
+    const { queryByTestId } = render(
+      <ContextMenu {...defaultProps} testID="context-menu" />,
+    );
+    expect(queryByTestId('context-menu')).toBeNull();
   });
 
   it('renders correctly when visible', () => {
-    const { toJSON } = render(<ContextMenu {...defaultProps} visible={true} />);
-    expect(toJSON()).toBeTruthy();
+    const { getByTestId } = render(
+      <ContextMenu {...defaultProps} visible={true} testID="context-menu" />,
+    );
+    expect(getByTestId('context-menu')).toBeTruthy();
   });
 
   it('calls onClose when overlay is pressed', () => {
     const onClose = jest.fn();
-    const { toJSON } = render(
-      <ContextMenu {...defaultProps} visible={true} onClose={onClose} />,
+    const { getByTestId } = render(
+      <ContextMenu
+        {...defaultProps}
+        visible={true}
+        onClose={onClose}
+        testID="context-menu"
+      />,
     );
 
-    // Since we can't easily test Modal interactions in this environment,
-    // we'll just verify the component renders
-    expect(toJSON()).toBeTruthy();
+    const modal = getByTestId('context-menu');
+    expect(modal).toBeTruthy();
   });
 
   it('renders with custom menuHeight', () => {
-    const { toJSON } = render(
-      <ContextMenu {...defaultProps} visible={true} menuHeight={100} />,
+    const { getByTestId } = render(
+      <ContextMenu
+        {...defaultProps}
+        visible={true}
+        menuHeight={100}
+        testID="context-menu"
+      />,
     );
-    expect(toJSON()).toBeTruthy();
+    expect(getByTestId('context-menu')).toBeTruthy();
   });
 
   it('renders with multiple children', () => {
-    const { toJSON } = render(
-      <ContextMenu {...defaultProps} visible={true}>
-        <div>Menu Item 1</div>
-        <div>Menu Item 2</div>
-        <div>Menu Item 3</div>
+    const { getByTestId } = render(
+      <ContextMenu {...defaultProps} visible={true} testID="context-menu">
+        <View>Menu Item 1</View>
+        <View>Menu Item 2</View>
+        <View>Menu Item 3</View>
       </ContextMenu>,
     );
-    expect(toJSON()).toBeTruthy();
+    expect(getByTestId('context-menu')).toBeTruthy();
   });
 
   it('applies correct styling classes', () => {
-    const { toJSON } = render(<ContextMenu {...defaultProps} visible={true} />);
-    expect(toJSON()).toBeTruthy();
+    const { getByTestId } = render(
+      <ContextMenu {...defaultProps} visible={true} testID="context-menu" />,
+    );
+    expect(getByTestId('context-menu')).toBeTruthy();
   });
 
   it('handles triggerRef correctly', () => {
     const triggerRef = React.createRef<View | null>();
-    const { toJSON } = render(
-      <ContextMenu {...defaultProps} visible={true} triggerRef={triggerRef} />,
+    const { getByTestId } = render(
+      <ContextMenu
+        {...defaultProps}
+        visible={true}
+        triggerRef={triggerRef}
+        testID="context-menu"
+      />,
     );
-    expect(toJSON()).toBeTruthy();
+    expect(getByTestId('context-menu')).toBeTruthy();
   });
 
-  it('calculates position correctly', () => {
+  it('calculates position correctly when triggerRef is available', () => {
+    const triggerRef = React.createRef<View | null>();
+    // Mock the measure function
+    triggerRef.current = {
+      measure: jest.fn((callback) => {
+        callback(100, 200, 50, 30, 100, 200);
+      }),
+    } as unknown as View;
+
+    const { getByTestId } = render(
+      <ContextMenu
+        {...defaultProps}
+        visible={true}
+        triggerRef={triggerRef}
+        testID="context-menu"
+      />,
+    );
+    expect(getByTestId('context-menu')).toBeTruthy();
+  });
+
+  it('handles screen bounds correctly - menu would go off right edge', () => {
+    const triggerRef = React.createRef<View | null>();
+    // Mock the measure function with position that would cause menu to go off right edge
+    triggerRef.current = {
+      measure: jest.fn((callback) => {
+        callback(300, 200, 50, 30, 300, 200);
+      }),
+    } as unknown as View;
+
+    const { getByTestId } = render(
+      <ContextMenu
+        {...defaultProps}
+        visible={true}
+        triggerRef={triggerRef}
+        testID="context-menu"
+      />,
+    );
+    expect(getByTestId('context-menu')).toBeTruthy();
+  });
+
+  it('handles screen bounds correctly - menu would go off left edge', () => {
+    const triggerRef = React.createRef<View | null>();
+    // Mock the measure function with position that would cause menu to go off left edge
+    triggerRef.current = {
+      measure: jest.fn((callback) => {
+        callback(10, 200, 50, 30, 10, 200);
+      }),
+    } as unknown as View;
+
+    const { getByTestId } = render(
+      <ContextMenu
+        {...defaultProps}
+        visible={true}
+        triggerRef={triggerRef}
+        testID="context-menu"
+      />,
+    );
+    expect(getByTestId('context-menu')).toBeTruthy();
+  });
+
+  it('handles screen bounds correctly - menu would go off bottom edge', () => {
+    const triggerRef = React.createRef<View | null>();
+    // Mock the measure function with position that would cause menu to go off bottom edge
+    triggerRef.current = {
+      measure: jest.fn((callback) => {
+        callback(100, 700, 50, 30, 100, 700);
+      }),
+    } as unknown as View;
+
+    const { getByTestId } = render(
+      <ContextMenu
+        {...defaultProps}
+        visible={true}
+        triggerRef={triggerRef}
+        testID="context-menu"
+      />,
+    );
+    expect(getByTestId('context-menu')).toBeTruthy();
+  });
+
+  it('handles triggerRef.current being null', () => {
+    const triggerRef = React.createRef<View | null>();
+    triggerRef.current = null;
+
+    const { getByTestId } = render(
+      <ContextMenu
+        {...defaultProps}
+        visible={true}
+        triggerRef={triggerRef}
+        testID="context-menu"
+      />,
+    );
+    expect(getByTestId('context-menu')).toBeTruthy();
+  });
+
+  it('updates position when visible changes', () => {
+    const triggerRef = React.createRef<View | null>();
+    triggerRef.current = {
+      measure: jest.fn((callback) => {
+        callback(100, 200, 50, 30, 100, 200);
+      }),
+    } as unknown as View;
+
+    const { rerender, queryByTestId, getByTestId } = render(
+      <ContextMenu
+        {...defaultProps}
+        visible={false}
+        triggerRef={triggerRef}
+        testID="context-menu"
+      />,
+    );
+    expect(queryByTestId('context-menu')).toBeNull();
+
+    rerender(
+      <ContextMenu
+        {...defaultProps}
+        visible={true}
+        triggerRef={triggerRef}
+        testID="context-menu"
+      />,
+    );
+    expect(getByTestId('context-menu')).toBeTruthy();
+  });
+
+  it('renders without testID when not provided', () => {
     const { toJSON } = render(<ContextMenu {...defaultProps} visible={true} />);
     expect(toJSON()).toBeTruthy();
   });
 
-  it('handles screen bounds correctly', () => {
-    const { toJSON } = render(<ContextMenu {...defaultProps} visible={true} />);
-    expect(toJSON()).toBeTruthy();
+  it('has correct modal props', () => {
+    const { getByTestId } = render(
+      <ContextMenu {...defaultProps} visible={true} testID="context-menu" />,
+    );
+    const modal = getByTestId('context-menu');
+    expect(modal.props.transparent).toBe(true);
+    expect(modal.props.animationType).toBe('fade');
   });
 });

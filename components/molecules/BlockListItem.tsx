@@ -30,8 +30,6 @@ const BlockListItem: React.FC<BlockListItemProps> = ({
 
 const classes = {
   row: 'gap-3',
-  blockMenu: 'flex-row items-center py-2 px-3 gap-2',
-  blockText: '!text-red-600 text-sm',
 };
 
 export default BlockListItem;

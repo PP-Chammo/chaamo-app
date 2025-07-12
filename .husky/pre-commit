@@ -1,1 +1,6 @@
-npm run lint:fix && npm run prettier:fix && npm test && npm run test:coverage && git add .
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npm run lint
+npm run typecheck
+npm run test:ci

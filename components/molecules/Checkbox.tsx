@@ -15,6 +15,7 @@ interface CheckboxProps {
   name: string;
   children?: React.ReactNode;
   className?: string;
+  testID?: string;
 }
 
 const Checkbox: React.FC<CheckboxProps> = memo(function Checkbox({
@@ -25,9 +26,11 @@ const Checkbox: React.FC<CheckboxProps> = memo(function Checkbox({
   name,
   children,
   className,
+  testID,
 }) {
   return (
     <Pressable
+      testID={testID}
       className={clsx(classes.container, className)}
       onPress={() => !disabled && onChange({ name, value: !checked })}
       disabled={disabled}

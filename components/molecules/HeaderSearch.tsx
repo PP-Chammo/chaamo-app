@@ -47,8 +47,6 @@ const classes = {
   header:
     'bg-white flex flex-row items-cente justify-between gap-2 border-b-0 pl-4 pr-5 py-5',
   backButton: 'w-10 items-start justify-center',
-  title: 'flex-1 text-center text-lg font-medium text-gray-800',
-  rightSpace: 'w-10',
 };
 
 export default HeaderSearch;

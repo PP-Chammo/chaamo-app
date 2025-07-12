@@ -73,7 +73,5 @@ const classes = {
     'bg-white rounded-lg px-4 py-6 mt-8 shadow border border-slate-100',
   withdrawTitle: 'text-slate-600 text-lg',
   addMethodButton: 'mt-4 bg-transparent',
-  withdrawAmountContainer: 'flex-row items-center gap-2',
-  withdrawAmount: 'text-slate-600 text-2xl font-bold',
   bankAccountsContainer: 'mt-8',
 };

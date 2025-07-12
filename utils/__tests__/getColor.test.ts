@@ -1,6 +1,7 @@
 import { getColor } from '../getColor';
 
 jest.mock('tailwindcss/resolveConfig', () => jest.fn());
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const resolveConfig = require('tailwindcss/resolveConfig');
 
 const mockColors = {
