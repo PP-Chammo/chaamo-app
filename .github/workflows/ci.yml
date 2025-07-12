@@ -16,15 +16,13 @@ jobs:
         with:
           node-version: 20
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Prettier check
-        run: yarn prettier
+        run: npm ci
       - name: Lint
-        run: yarn lint || yarn eslint .
+        run: npm run lint
       - name: Type check
-        run: yarn tsc --noEmit || yarn type-check
+        run: npm run typecheck
       - name: Run tests
-        run: yarn test
+        run: npm run test:ci
       - name: Output coverage report
         if: always()
         run: |
