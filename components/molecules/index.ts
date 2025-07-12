@@ -34,6 +34,7 @@ export { default as Review } from './Review';
 export { default as SelectWithScreen } from './SelectWithScreen';
 export { default as SettingItem } from './SettingItem';
 export { default as SetupProfileTabs } from './SetupProfileTabs';
+export { default as SubscriptionCard } from './SubscriptionCard';
 export { default as SwitchInput } from './SwitchInput';
 export { default as TabView } from './TabView';
 export { default as TextArea } from './TextArea';
