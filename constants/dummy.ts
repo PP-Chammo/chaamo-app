@@ -610,3 +610,30 @@ export const dummyPlans = [
     ],
   },
 ];
+
+export const dummyOrders = [
+  {
+    id: 1,
+    imageUrl:
+      'https://www.shutterstock.com/image-photo/closeup-portrait-fluffy-purebred-cat-600nw-2447243735.jpg',
+    title: 'Lamine Yamal',
+    price: '1,282',
+    status: 'progress',
+  },
+  {
+    id: 2,
+    imageUrl:
+      'https://www.shutterstock.com/image-photo/closeup-portrait-fluffy-purebred-cat-600nw-2447243735.jpg',
+    title: 'Lamine Yamal',
+    price: '1,282',
+    status: 'completed',
+  },
+  {
+    id: 3,
+    imageUrl:
+      'https://www.shutterstock.com/image-photo/closeup-portrait-fluffy-purebred-cat-600nw-2447243735.jpg',
+    title: 'Lamine Yamal',
+    price: '1,282',
+    status: 'cancelled',
+  },
+];
