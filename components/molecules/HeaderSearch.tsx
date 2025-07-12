@@ -23,13 +23,22 @@ const HeaderSearch: React.FC<HeaderSearchProps> = memo(function HeaderSearch({
   className,
 }) {
   return (
-    <View className={clsx(classes.header, className)}>
+    <View testID="header-search" className={clsx(classes.header, className)}>
       {onBackPress && (
-        <TouchableOpacity onPress={onBackPress} className={classes.backButton}>
+        <TouchableOpacity
+          testID="back-button"
+          onPress={onBackPress}
+          className={classes.backButton}
+        >
           <Icon name="arrow-left" size={24} color={getColor('slate-700')} />
         </TouchableOpacity>
       )}
-      <SearchField value={value} onChange={onChange} onSubmit={onSubmit} />
+      <SearchField
+        testID="search-field"
+        value={value}
+        onChange={onChange}
+        onSubmit={onSubmit}
+      />
     </View>
   );
 });

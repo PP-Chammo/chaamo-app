@@ -27,12 +27,14 @@ const AuctionCard: React.FC<AuctionCardProps> = memo(function CategoryItem({
 }) {
   return (
     <TouchableOpacity
+      testID="auction-card"
       activeOpacity={0.8}
       onPress={onPress}
       className={classes.container}
     >
       {onRightIconPress && (
         <TouchableOpacity
+          testID="right-icon-button"
           onPress={onRightIconPress}
           className={classes.rightIconButton}
         >
@@ -44,17 +46,29 @@ const AuctionCard: React.FC<AuctionCardProps> = memo(function CategoryItem({
         </TouchableOpacity>
       )}
       {imageUrl ? (
-        <Image source={{ uri: imageUrl }} className={classes.image} />
+        <Image
+          testID="auction-image"
+          source={{ uri: imageUrl }}
+          className={classes.image}
+        />
       ) : (
-        <View className={classes.image}>
+        <View testID="auction-image-placeholder" className={classes.image}>
           <Icon name="cards-outline" size={40} color={getColor('red-100')} />
         </View>
       )}
-      <Label variant="subtitle" className={classes.title}>
+      <Label
+        variant="subtitle"
+        className={classes.title}
+        testID="auction-title"
+      >
         {title}
       </Label>
       <Tag title="Highest Bid" />
-      <Label variant="subtitle" className={classes.price}>
+      <Label
+        variant="subtitle"
+        className={classes.price}
+        testID="auction-price"
+      >
         {price}
       </Label>
     </TouchableOpacity>

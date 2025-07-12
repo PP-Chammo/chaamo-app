@@ -15,6 +15,7 @@ cssInterop(FlatList, {
 const ProductCardList = memo(function AllCards() {
   return (
     <FlatList
+      testID="product-card-list"
       showsVerticalScrollIndicator={false}
       data={dummyFeaturedCardList}
       keyExtractor={(item) => item.id}

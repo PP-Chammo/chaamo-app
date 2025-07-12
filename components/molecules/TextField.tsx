@@ -41,7 +41,10 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
   };
 
   return (
-    <View className={clsx(classes.container, className)}>
+    <View
+      testID="text-field-container"
+      className={clsx(classes.container, className)}
+    >
       {label && (
         <Text className={classes.label}>
           {label}
@@ -53,6 +56,7 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
           <View className={classes.leftIconContainer}>{leftIcon}</View>
         )}
         <TextInput
+          testID="text-input"
           placeholder={placeholder}
           className={clsx(
             classes.input,
@@ -65,6 +69,7 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
         />
         {type === 'password' && (
           <Pressable
+            testID="eye-icon"
             className={classes.eyeIcon}
             onPress={() => setHidePassword(!hidePassword)}
           >

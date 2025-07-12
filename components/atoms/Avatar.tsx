@@ -12,6 +12,7 @@ interface AvatarProps {
   imageUrl?: string;
   imageContainerClassName?: string;
   onPress?: () => void;
+  testID?: string;
 }
 
 const Avatar = memo(function Avatar({
@@ -20,11 +21,13 @@ const Avatar = memo(function Avatar({
   imageContainerClassName,
   imageUrl,
   onPress,
+  testID,
 }: AvatarProps) {
   const [imageError, setImageError] = useState(false);
 
   return (
     <TouchableOpacity
+      testID={testID}
       onPress={onPress}
       className={className}
       disabled={!onPress}

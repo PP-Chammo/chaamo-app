@@ -17,6 +17,7 @@ const NotificationList: React.FC<NotificationListProps> = memo(
   function NotificationList({ onPress, notifications }) {
     return (
       <FlatList
+        testID="notification-list"
         data={notifications}
         keyExtractor={(item) => {
           if (item.type === 'date') return `date-${item.date}`;

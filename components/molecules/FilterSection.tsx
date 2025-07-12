@@ -13,13 +13,15 @@ interface FilterSectionProps {
 const FilterSection: React.FC<FilterSectionProps> = memo(
   function FilterSection({ resultCount = 0, query }) {
     return (
-      <View>
+      <View testID="filter-section">
         <ScrollView
+          testID="filter-scroll-view"
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerClassName={classes.filterContainer}
         >
           <Button
+            testID="filter-advanced-button"
             onPress={() => router.push('/screens/advanced-filter')}
             variant="primary-light"
             size="small"
@@ -30,6 +32,7 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
             Filters
           </Button>
           <Button
+            testID="filter-price-button"
             variant="light"
             size="small"
             className={classes.filterButton}
@@ -38,6 +41,7 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
             Price
           </Button>
           <Button
+            testID="filter-condition-button"
             variant="light"
             size="small"
             className={classes.filterButton}
@@ -46,6 +50,7 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
             Condition
           </Button>
           <Button
+            testID="filter-location-button"
             variant="light"
             size="small"
             className={classes.filterButton}
@@ -57,7 +62,7 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
         {query && (
           <Row className={classes.filterTextContainer}>
             <Label className={classes.filterPlaceholder}>Showing:</Label>
-            <Label className={classes.resultText}>
+            <Label className={classes.resultText} testID="filter-result-text">
               {resultCount} results for {query}
             </Label>
           </Row>

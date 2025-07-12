@@ -8,12 +8,12 @@ import { ButtonIcon } from '@/components/molecules';
 
 const AccountBar = memo(function AccountBar() {
   return (
-    <Row between className={classes.container}>
-      <View className={classes.leftSpace}>
+    <Row testID="account-bar" between className={classes.container}>
+      <View testID="account-bar-left" className={classes.leftSpace}>
         <Label className="text-xl">👋 Hi</Label>
         <Label className="text-xl font-bold">Shireen!</Label>
       </View>
-      <View className={classes.rightSpace}>
+      <View testID="account-bar-right" className={classes.rightSpace}>
         <ButtonIcon
           name="bell"
           iconVariant="SimpleLineIcons"

@@ -19,11 +19,21 @@ interface SearchFieldProps extends Omit<TextInputProps, 'onChange'> {
   onSubmit?: () => void;
   className?: string;
   inputClassName?: string;
+  testID?: string;
 }
 
 const SearchField = forwardRef<TextInput, SearchFieldProps>(
   function SearchField(
-    { value, onChange, onPress, onSubmit, className, inputClassName, ...props },
+    {
+      value,
+      onChange,
+      onPress,
+      onSubmit,
+      className,
+      inputClassName,
+      testID,
+      ...props
+    },
     ref,
   ) {
     const handleChange = useCallback(
@@ -38,7 +48,7 @@ const SearchField = forwardRef<TextInput, SearchFieldProps>(
     }, [onChange]);
 
     return (
-      <View className={clsx(classes.container, className)}>
+      <View testID={testID} className={clsx(classes.container, className)}>
         <TextInput
           ref={ref}
           value={value}

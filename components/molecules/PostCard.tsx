@@ -40,7 +40,7 @@ const PostCard: React.FC<PostCardProps> = memo(function PostCard({
   }, []);
 
   return (
-    <View key={post.id} className={classes.postCard}>
+    <View testID="post-card" key={post.id} className={classes.postCard}>
       <Row className={classes.postHeader}>
         <View className={classes.containerLeft}>
           <View className={classes.avatar} />
@@ -55,6 +55,7 @@ const PostCard: React.FC<PostCardProps> = memo(function PostCard({
           </View>
         </View>
         <TouchableOpacity
+          testID="post-context-menu"
           onPress={onContextPress}
           className={classes.containerPostMenu}
         >
@@ -69,6 +70,7 @@ const PostCard: React.FC<PostCardProps> = memo(function PostCard({
       <Label className={classes.postText}>{post.text}</Label>
       <Row className={classes.postActions}>
         <Button
+          testID="comment-button"
           variant="ghost"
           size="small"
           onPress={onCommentPress}
@@ -81,6 +83,7 @@ const PostCard: React.FC<PostCardProps> = memo(function PostCard({
           Comment
         </Button>
         <Button
+          testID="like-button"
           variant="ghost"
           size="small"
           onPress={onLikePress}

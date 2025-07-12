@@ -20,7 +20,7 @@ const FilterLocationInput: React.FC<FilterLocationInputProps> = memo(
     }, []);
 
     return (
-      <Row className={classes.rowContainer}>
+      <Row testID="filter-location-input" className={classes.rowContainer}>
         <Icon
           name="location-pin"
           variant="SimpleLineIcons"
@@ -28,13 +28,14 @@ const FilterLocationInput: React.FC<FilterLocationInputProps> = memo(
           color={getColor('gray-600')}
         />
         <TouchableOpacity
+          testID="filter-location-button"
           onPress={handleOpen}
           className={classes.input}
           activeOpacity={0.7}
         >
           <View>
             <Label className={classes.label}>Location</Label>
-            {!!value && <Label>{value}</Label>}
+            {!!value && <Label testID="filter-location-value">{value}</Label>}
           </View>
           <Icon
             name={open ? 'chevron-up' : 'chevron-down'}

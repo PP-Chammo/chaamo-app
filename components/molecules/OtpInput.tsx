@@ -23,7 +23,7 @@ const OTPInput: React.FC<OTPInputProps> = memo(function OTPInput({
   };
 
   return (
-    <View>
+    <View testID="otp-input">
       <OtpInput
         numberOfDigits={6}
         onTextChange={handleChange}

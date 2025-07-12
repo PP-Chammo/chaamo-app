@@ -50,6 +50,7 @@ const AuctionItem: React.FC<AuctionItemProps> = memo(function AuctionItem({
     () =>
       onRightIconPress && (
         <TouchableOpacity
+          testID="right-icon-button"
           onPress={onRightIconPress}
           className={classes.rightIconButton}
         >
@@ -72,28 +73,39 @@ const AuctionItem: React.FC<AuctionItemProps> = memo(function AuctionItem({
 
   return (
     <TouchableOpacity
+      testID="auction-item"
       activeOpacity={0.8}
       onPress={onPress}
       className={clsx(classes.container, className)}
     >
       {imageUrl ? (
-        <Image source={{ uri: imageUrl }} className={classes.image} />
+        <Image
+          testID="auction-item-image"
+          source={{ uri: imageUrl }}
+          className={classes.image}
+        />
       ) : (
-        <View className={classes.image}>
+        <View testID="auction-item-image-placeholder" className={classes.image}>
           <Icon name="cards-outline" size={40} color={getColor('red-100')} />
         </View>
       )}
       <View className={classes.contentContainer}>
         <View className={classes.topContainer}>
           <Row className={classes.titleContainer}>
-            <Label className={classes.title}>{title}</Label>
+            <Label className={classes.title} testID="auction-item-title">
+              {title}
+            </Label>
             {rightComponent ?? renderRightIcon()}
           </Row>
           <View className={classes.dateContainer}>
-            {subtitle && <Label className={classes.text}>{subtitle}</Label>}
+            {subtitle && (
+              <Label className={classes.text} testID="auction-item-subtitle">
+                {subtitle}
+              </Label>
+            )}
             <Row className={classes.rowDate}>
               <Icon name="calendar" variant="SimpleLineIcons" size={14} />
-              <Label className={classes.text}>
+              <Label className={classes.text} testID="auction-item-date">
                 {formatDistanceToNow(new Date(date), { addSuffix: true })}
               </Label>
             </Row>
@@ -104,7 +116,9 @@ const AuctionItem: React.FC<AuctionItemProps> = memo(function AuctionItem({
             {marketType === 'eBay' && <EBayLogo />}
             <Row>
               <Label className={classes.text}>Price Value:</Label>
-              <Label className={classes.textBold}>{price}</Label>
+              <Label className={classes.textBold} testID="auction-item-price">
+                {price}
+              </Label>
               <Icon
                 name={indicator === 'up' ? 'trending-up' : 'trending-down'}
                 color={getColor(indicator === 'up' ? 'teal-600' : 'red-600')}
@@ -114,7 +128,12 @@ const AuctionItem: React.FC<AuctionItemProps> = memo(function AuctionItem({
           </View>
           <View className={classes.bidContainer}>
             <Tag title="Highest Bid" textClassName={classes.tag} />
-            <Label className={classes.textBidPrice}>{marketPrice}</Label>
+            <Label
+              className={classes.textBidPrice}
+              testID="auction-item-market-price"
+            >
+              {marketPrice}
+            </Label>
           </View>
         </Row>
       </View>

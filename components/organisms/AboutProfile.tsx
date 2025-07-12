@@ -4,7 +4,7 @@ import { Icon, Label, ProfileStat } from '@/components/atoms';
 
 export default function AboutProfile() {
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <ScrollView testID="about-profile" showsVerticalScrollIndicator={false}>
       <View className={classes.contentContainer}>
         <View className={classes.statContainer}>
           <ProfileStat
@@ -22,7 +22,12 @@ export default function AboutProfile() {
         <View className={classes.locationContainer}>
           <Label>Location</Label>
           <View className={classes.locationValueContainer}>
-            <Icon name="map-marker-outline" size={18} color="black" />
+            <Icon
+              name="map-marker-outline"
+              size={18}
+              color="black"
+              testID="location-icon"
+            />
             <Label>London, UK</Label>
           </View>
         </View>

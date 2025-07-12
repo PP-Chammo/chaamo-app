@@ -18,20 +18,38 @@ const EventCard: React.FC<EventCardProps> = memo(function EventCard({
   imageUrl,
 }) {
   return (
-    <TouchableOpacity activeOpacity={0.5} className={classes.eventCard}>
+    <TouchableOpacity
+      testID="event-card"
+      activeOpacity={0.5}
+      className={classes.eventCard}
+    >
       {imageUrl ? (
-        <Image source={{ uri: imageUrl }} className={classes.eventImage} />
+        <Image
+          testID="event-image"
+          source={{ uri: imageUrl }}
+          className={classes.eventImage}
+        />
       ) : (
-        <View className={classes.eventImage} />
+        <View testID="event-placeholder" className={classes.eventImage} />
       )}
       <View className={classes.eventDetails}>
         <Label className={classes.eventTitle}>{title}</Label>
         <Row className={classes.rowLabel}>
-          <Icon name="calendar" variant="SimpleLineIcons" size={10} />
+          <Icon
+            testID="calendar-icon"
+            name="calendar"
+            variant="SimpleLineIcons"
+            size={10}
+          />
           <Label className={classes.eventDate}>{date}</Label>
         </Row>
         <Row className={classes.rowLabel}>
-          <Icon name="location-pin" variant="SimpleLineIcons" size={10} />
+          <Icon
+            testID="location-icon"
+            name="location-pin"
+            variant="SimpleLineIcons"
+            size={10}
+          />
           <Label className={classes.eventLocation}>{location}</Label>
         </Row>
       </View>

@@ -40,3 +40,6 @@ app-example
 
 # Do not ignore .github for workflows
 !.github/
+
+# coverage reports
+coverage/

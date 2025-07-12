@@ -32,9 +32,10 @@ const Header: React.FC<HeaderProps> = memo(function Header({
   rightRef,
 }) {
   return (
-    <View className={clsx(classes.header, className)}>
+    <View testID="header" className={clsx(classes.header, className)}>
       {onBackPress && (
         <TouchableOpacity
+          testID="back-button"
           onPress={onBackPress}
           className={classes.buttonContainerLeft}
         >
@@ -45,7 +46,11 @@ const Header: React.FC<HeaderProps> = memo(function Header({
       <Text className={classes.title}>{title}</Text>
       {onRightPress && (
         <View className={classes.buttonContainerRight}>
-          <TouchableOpacity onPress={onRightPress} ref={rightRef}>
+          <TouchableOpacity
+            testID="right-button"
+            onPress={onRightPress}
+            ref={rightRef}
+          >
             {rightIcon && (
               <Icon
                 name={rightIcon}

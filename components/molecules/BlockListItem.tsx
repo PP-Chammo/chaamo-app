@@ -16,9 +16,9 @@ const BlockListItem: React.FC<BlockListItemProps> = ({
   onPress,
 }) => {
   return (
-    <Row between>
+    <Row testID="block-list-item" between>
       <Row className={classes.row}>
-        <Avatar imageUrl={imageUrl} size={50} />
+        <Avatar testID="avatar" imageUrl={imageUrl} size={50} />
         <Label>{name}</Label>
       </Row>
       <Row className={classes.row}>

@@ -20,9 +20,13 @@ const People: React.FC<PeopleProps> = memo(function Badge({
   onViewProfilePress,
 }) {
   return (
-    <Pressable onPress={onPress} className={classes.container}>
+    <Pressable
+      testID="people-item"
+      onPress={onPress}
+      className={classes.container}
+    >
       <View className={classes.imageContainer}>
-        <Avatar imageUrl={imageUrl} size={50} />
+        <Avatar testID="avatar" imageUrl={imageUrl} size={50} />
         <View>
           <Label variant="subtitle" className={classes.fullname}>
             {fullname}
@@ -35,7 +39,7 @@ const People: React.FC<PeopleProps> = memo(function Badge({
         </View>
       </View>
       {onFollowPress && (
-        <Button size="small" onPress={onFollowPress}>
+        <Button size="small" onPress={onFollowPress} testID="follow-button">
           Follow
         </Button>
       )}

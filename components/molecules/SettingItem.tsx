@@ -26,7 +26,11 @@ const SettingItem: React.FC<SettingsListItemProps> = memo(
     onPress,
   }: SettingsListItemProps) {
     return (
-      <TouchableOpacity className={classes.itemTouchable} onPress={onPress}>
+      <TouchableOpacity
+        testID="setting-item"
+        className={classes.itemTouchable}
+        onPress={onPress}
+      >
         <Row between className={classes.itemRow}>
           <Row className="gap-3">
             <Icon
@@ -46,6 +50,7 @@ const SettingItem: React.FC<SettingsListItemProps> = memo(
             {value && <Label className={classes.valueText}>{value}</Label>}
             {onPress && (
               <Icon
+                testID="chevron-icon"
                 name="chevron-right"
                 size={24}
                 variant="MaterialCommunityIcons"

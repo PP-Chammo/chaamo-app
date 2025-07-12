@@ -36,9 +36,14 @@ const FilterTags = memo(function FilterTags() {
   }, [adProperties, condition, location, priceRange, query]);
 
   return (
-    <Row className={classes.container}>
+    <Row testID="filter-tags" className={classes.container}>
       {filters.map((filter) => (
-        <Button key={filter} size="small" variant="light">
+        <Button
+          key={filter}
+          testID={`filter-tag-${filter}`}
+          size="small"
+          variant="light"
+        >
           {filter}
         </Button>
       ))}

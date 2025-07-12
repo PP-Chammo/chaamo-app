@@ -24,4 +24,12 @@ jobs:
       - name: Type check
         run: yarn tsc --noEmit || yarn type-check
       - name: Run tests
-        run: yarn test || echo "No tests found"
+        run: yarn test
+      - name: Output coverage report
+        if: always()
+        run: |
+          if [ -f coverage/lcov-report/index.html ]; then
+            echo "Coverage report generated at coverage/lcov-report/index.html"
+          else
+            echo "No coverage report found."
+          fi

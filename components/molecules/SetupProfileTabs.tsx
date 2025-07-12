@@ -12,7 +12,10 @@ const SetupProfileTabs = memo(function SetupProfileTabs() {
   const activeRoute = segments[segments.length - 1];
 
   return (
-    <View className="flex-row justify-between my-4.5 gap-8">
+    <View
+      testID="setup-profile-tabs"
+      className="flex-row justify-between my-4.5 gap-8"
+    >
       {setupProfileTabs.map((tab, idx) => {
         const isActive = activeRoute === tab.route;
         const isPrevious =
@@ -33,13 +36,20 @@ const SetupProfileTabs = memo(function SetupProfileTabs() {
           // for development purposes, it's should not clickable
           <Pressable
             key={tab.route}
+            testID={`tab-${tab.route}`}
             className="flex-1 items-center"
             onPress={() => router.push(`/${tab.route}` as Href)}
           >
-            <Text className={clsx(classes.TabTitle[tabState()])}>
+            <Text
+              testID={`tab-title-${tab.route}`}
+              className={clsx(classes.TabTitle[tabState()])}
+            >
               {tab.title}
             </Text>
-            <View className={clsx(classes.TabIndicator[tabState()])} />
+            <View
+              testID={`tab-indicator-${tab.route}`}
+              className={clsx(classes.TabIndicator[tabState()])}
+            />
           </Pressable>
         );
       })}
