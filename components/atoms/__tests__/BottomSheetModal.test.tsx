@@ -6,7 +6,14 @@ import {
   waitFor,
   screen,
 } from '@testing-library/react-native';
-import { Text, Animated, Platform, Keyboard, PanResponder, PanResponderInstance } from 'react-native';
+import {
+  Text,
+  Animated,
+  Platform,
+  Keyboard,
+  PanResponder,
+  PanResponderInstance,
+} from 'react-native';
 
 import BottomSheetModal from '../BottomSheetModal';
 
@@ -170,7 +177,8 @@ describe('BottomSheetModal', () => {
     jest.spyOn(PanResponder, 'create').mockImplementation((config: any) => {
       // Store the config handlers in our mockPanHandlers
       if (config.onMoveShouldSetPanResponder) {
-        mockPanHandlers.onMoveShouldSetPanResponder = config.onMoveShouldSetPanResponder;
+        mockPanHandlers.onMoveShouldSetPanResponder =
+          config.onMoveShouldSetPanResponder;
       }
       if (config.onPanResponderRelease) {
         mockPanHandlers.onPanResponderRelease = config.onPanResponderRelease;
