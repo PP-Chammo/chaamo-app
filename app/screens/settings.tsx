@@ -84,7 +84,7 @@ export default function SettingsScreen() {
             <SettingItem
               iconName="clipboard-list-outline"
               title="My Orders"
-              onPress={() => {}}
+              onPress={() => router.push('/screens/orders')}
             />
           </View>
 

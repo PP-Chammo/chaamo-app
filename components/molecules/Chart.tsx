@@ -3,11 +3,12 @@ import React, { memo, useMemo, useState } from 'react';
 import { clsx } from 'clsx';
 import * as shape from 'd3-shape';
 import { cssInterop } from 'nativewind';
-import { View, TouchableOpacity } from 'react-native';
-import { Defs, LinearGradient, Stop, Line } from 'react-native-svg';
+import { TouchableOpacity, View } from 'react-native';
+import { Defs, Line, LinearGradient, Stop } from 'react-native-svg';
 import { AreaChart } from 'react-native-svg-charts';
 
-import { Label } from '@/components/atoms';
+import { FilterTabs, FilterValue, Label } from '@/components/atoms';
+import { PERIODS_TABS_FILTER } from '@/constants/tabs';
 import { getColor } from '@/utils/getColor';
 
 cssInterop(AreaChart, {
@@ -15,13 +16,6 @@ cssInterop(AreaChart, {
     target: 'style',
   },
 });
-
-const PERIODS = [
-  { label: '7 days', value: 7 },
-  { label: '14 days', value: 14 },
-  { label: '30 days', value: 30 },
-  { label: '90 days', value: 90 },
-];
 
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -35,11 +29,13 @@ interface ChartProps {
 const CHART_HEIGHT = 142;
 
 const Chart = memo(function Chart({ data }: ChartProps) {
-  const [selectedTab, setSelectedTab] = useState('Raw');
-  const [selectedPeriod, setSelectedPeriod] = useState(7);
+  const [selectedTab, setSelectedTab] = useState<string>('Raw');
+  const [selectedPeriod, setSelectedPeriod] = useState<FilterValue>(7);
 
   const chartData =
-    data[selectedTab.toLowerCase() as 'raw' | 'graded'][selectedPeriod] || [];
+    data[selectedTab.toLowerCase() as 'raw' | 'graded'][
+      Number(selectedPeriod)
+    ] || [];
   const best = chartData.length ? Math.max(...chartData) : 0;
   const today = chartData.length ? chartData[chartData.length - 1] : 0;
 
@@ -104,28 +100,11 @@ const Chart = memo(function Chart({ data }: ChartProps) {
           </Label>
         </TouchableOpacity>
       </View>
-      <View className={classes.periodContainer}>
-        {PERIODS.map((period) => (
-          <TouchableOpacity
-            key={period.value}
-            className={clsx({
-              [classes.periodActive]: selectedPeriod === period.value,
-              [classes.period]: selectedPeriod !== period.value,
-            })}
-            onPress={() => setSelectedPeriod(period.value)}
-            activeOpacity={0.8}
-          >
-            <Label
-              className={clsx({
-                [classes.periodLabelActive]: selectedPeriod === period.value,
-                [classes.periodLabel]: selectedPeriod !== period.value,
-              })}
-            >
-              {period.label}
-            </Label>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <FilterTabs
+        tabs={PERIODS_TABS_FILTER}
+        selected={selectedPeriod}
+        onChange={setSelectedPeriod}
+      />
       <View className={classes.chartContainer}>
         <View className={classes.xAxisContainer} pointerEvents="none">
           {xLabels.map((d, i) => (
