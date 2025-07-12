@@ -29,7 +29,7 @@ const SelectWithScreen: React.FC<SelectWithScreenProps> = memo(
     ...props
   }) {
     return (
-      <View className={classes.container}>
+      <View testID="select-with-screen" className={classes.container}>
         {label && (
           <Text className={classes.label}>
             {label}
@@ -37,7 +37,16 @@ const SelectWithScreen: React.FC<SelectWithScreenProps> = memo(
           </Text>
         )}
         <View className={classes.inputContainer}>
+          {leftIcon && (
+            <View
+              testID="left-icon-container"
+              className={classes.leftIconContainer}
+            >
+              {leftIcon}
+            </View>
+          )}
           <TextInput
+            testID="select-input"
             className={clsx(
               classes.input,
               inputClassName,
@@ -48,7 +57,7 @@ const SelectWithScreen: React.FC<SelectWithScreenProps> = memo(
             {...props}
           />
 
-          <View className={classes.leftIconContainer}>
+          <View className={classes.rightIconContainer}>
             <Icon name="chevron-down" size={24} color={getColor('slate-700')} />
           </View>
         </View>
@@ -69,5 +78,6 @@ const classes = {
   inputWithLeftIcon: 'px-12 py-4',
   eyeIcon: 'absolute right-4 top-1/2 -translate-y-1/2',
   error: 'text-red-500 text-sm',
-  leftIconContainer: 'absolute right-4 translate-y-1/2 z-10',
+  leftIconContainer: 'absolute left-4 translate-y-1/2 z-10',
+  rightIconContainer: 'absolute right-4 translate-y-1/2 z-10',
 };

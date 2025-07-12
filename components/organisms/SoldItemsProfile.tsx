@@ -13,6 +13,7 @@ const FlatListRemapped = remapProps(FlatList, {
 export default function SoldItems() {
   return (
     <FlatListRemapped
+      testID="sold-items-profile-list"
       data={dummyFeaturedCardList}
       keyExtractor={(_, index) => index.toString()}
       numColumns={2}

@@ -19,16 +19,21 @@ const Review: React.FC<ReviewProps> = memo(function Review({
   comment,
 }) {
   return (
-    <View className={classes.container}>
+    <View testID="review-item" className={classes.container}>
       <View className={classes.header}>
         <View className={classes.imageContainer}>
-          <Avatar imageUrl={imageUrl} size={50} />
+          <Avatar testID="avatar" imageUrl={imageUrl} size={50} />
           <Label variant="subtitle" className={classes.name}>
             {name}
           </Label>
         </View>
         <View className={classes.ratingContainer}>
-          <Icon name="star" size={16} color={getColor('amber-500')} />
+          <Icon
+            testID="star-icon"
+            name="star"
+            size={16}
+            color={getColor('amber-500')}
+          />
           <Label>{rating}</Label>
         </View>
       </View>

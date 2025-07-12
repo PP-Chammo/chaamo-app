@@ -12,6 +12,7 @@ const FlatListRemapped = remapProps(FlatList, {
 export default function Portfolio() {
   return (
     <FlatListRemapped
+      testID="portfolio-profile-list"
       data={dummyFeaturedCardList}
       keyExtractor={(_, index) => index.toString()}
       numColumns={2}

@@ -63,9 +63,10 @@ const Chart = memo(function Chart({ data }: ChartProps) {
   }
 
   return (
-    <View className={classes.card}>
+    <View testID="chart" className={classes.card}>
       <View className={classes.tabContainer}>
         <TouchableOpacity
+          testID="raw-tab"
           className={clsx({
             [classes.tabActive]: selectedTab === 'Raw',
             [classes.tab]: selectedTab !== 'Raw',
@@ -82,6 +83,7 @@ const Chart = memo(function Chart({ data }: ChartProps) {
           </Label>
         </TouchableOpacity>
         <TouchableOpacity
+          testID="graded-tab"
           className={clsx({
             [classes.tabActive]: selectedTab === 'Graded',
             [classes.tab]: selectedTab !== 'Graded',
@@ -104,8 +106,9 @@ const Chart = memo(function Chart({ data }: ChartProps) {
         tabs={PERIODS_TABS_FILTER}
         selected={selectedPeriod}
         onChange={setSelectedPeriod}
+        getTabTestID={(tab) => `period-${tab.value}`}
       />
-      <View className={classes.chartContainer}>
+      <View className={classes.chartContainer} testID="chart-container">
         <View className={classes.xAxisContainer} pointerEvents="none">
           {xLabels.map((d, i) => (
             <View
@@ -122,6 +125,7 @@ const Chart = memo(function Chart({ data }: ChartProps) {
         </View>
         <View className={classes.areaChartContainer}>
           <AreaChart
+            testID="area-chart"
             style={{ height: CHART_HEIGHT }}
             className={classes.chart}
             data={chartData}
@@ -162,14 +166,18 @@ const Chart = memo(function Chart({ data }: ChartProps) {
           </AreaChart>
         </View>
       </View>
-      <View className={classes.statsContainer}>
+      <View testID="stats-container" className={classes.statsContainer}>
         <View className={classes.statItem}>
           <Label className={classes.statLabel}>Best</Label>
           <Label className={classes.statLabelBolder}>Today</Label>
         </View>
         <View className={classes.statItem}>
-          <Label className={classes.statValue}>${best.toFixed(2)}</Label>
-          <Label className={classes.statValueBolder}>${today.toFixed(2)}</Label>
+          <Label className={classes.statValue} testID="best-value">
+            ${best.toFixed(2)}
+          </Label>
+          <Label className={classes.statValueBolder} testID="today-value">
+            ${today.toFixed(2)}
+          </Label>
         </View>
       </View>
     </View>

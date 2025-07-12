@@ -48,6 +48,7 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
     () =>
       onRightIconPress && (
         <TouchableOpacity
+          testID="right-icon-button"
           onPress={onRightIconPress}
           className={classes.rightIconButton}
         >
@@ -70,27 +71,38 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
 
   return (
     <TouchableOpacity
+      testID="card-item"
       activeOpacity={0.8}
       className={clsx(classes.container, className)}
     >
       {imageUrl ? (
-        <Image source={{ uri: imageUrl }} className={classes.image} />
+        <Image
+          testID="card-item-image"
+          source={{ uri: imageUrl }}
+          className={classes.image}
+        />
       ) : (
-        <View className={classes.image}>
+        <View testID="card-item-image-placeholder" className={classes.image}>
           <Icon name="cards-outline" size={40} color={getColor('red-100')} />
         </View>
       )}
       <View className={classes.contentContainer}>
         <View className={classes.topContainer}>
           <Row className={classes.titleContainer}>
-            <Label className={classes.title}>{title}</Label>
+            <Label className={classes.title} testID="card-item-title">
+              {title}
+            </Label>
             {rightComponent ?? renderRightIcon()}
           </Row>
           <View className={classes.dateContainer}>
-            {subtitle && <Label className={classes.text}>{subtitle}</Label>}
+            {subtitle && (
+              <Label className={classes.text} testID="card-item-subtitle">
+                {subtitle}
+              </Label>
+            )}
             <Row className={classes.rowDate}>
               <Icon name="calendar" variant="SimpleLineIcons" size={14} />
-              <Label className={classes.text}>
+              <Label className={classes.text} testID="card-item-date">
                 {formatDistanceToNow(new Date(date), { addSuffix: true })}
               </Label>
             </Row>
@@ -101,7 +113,9 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
             {marketType === 'eBay' && <EBayLogo />}
             <Row>
               <Label className={classes.text}>Price Value:</Label>
-              <Label className={classes.textBold}>{price}</Label>
+              <Label className={classes.textBold} testID="card-item-price">
+                {price}
+              </Label>
               <Icon
                 name={indicator === 'up' ? 'trending-up' : 'trending-down'}
                 color={getColor(indicator === 'up' ? 'teal-600' : 'red-600')}
@@ -110,7 +124,12 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
             </Row>
           </View>
           <View className={classes.bidContainer}>
-            <Label className={classes.textBidPrice}>{marketPrice}</Label>
+            <Label
+              className={classes.textBidPrice}
+              testID="card-item-market-price"
+            >
+              {marketPrice}
+            </Label>
           </View>
         </Row>
       </View>

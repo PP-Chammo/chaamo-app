@@ -13,25 +13,23 @@ interface FilterPriceRangeInputProps {
 
 const FilterPriceRangeInput: React.FC<FilterPriceRangeInputProps> = memo(
   function FilterLocationInput({ value, onChange }) {
-    const [minPrice, maxPrice] = useMemo(
-      () => value.split(',').map((item) => item.trim()),
-      [value],
-    );
+    const [minPrice, maxPrice] = useMemo(() => {
+      if (!value) return ['', ''];
+      const [min, max] = value.split(',');
+      return [min || '', max || ''];
+    }, [value]);
 
     const handleChange = (index: number) => (text: string) => {
-      const newValue = [...value];
-      newValue[index] = text;
-      if (index === 0 && !newValue[1]) {
-        newValue[1] = 'Any';
-      }
-      if (index === 1 && !newValue[0]) {
-        newValue[0] = '0';
-      }
-      onChange('priceRange', newValue.join(','));
+      let newMin = minPrice;
+      let newMax = maxPrice;
+      if (index === 0) newMin = text;
+      if (index === 1) newMax = text;
+      const joined = `${newMin},${newMax}`;
+      onChange('priceRange', joined);
     };
 
     return (
-      <View className={classes.container}>
+      <View testID="filter-price-range-input" className={classes.container}>
         <Row className={classes.labelContainer}>
           <Icon
             name="dollar-sign"
@@ -43,6 +41,7 @@ const FilterPriceRangeInput: React.FC<FilterPriceRangeInputProps> = memo(
         </Row>
         <Row className={classes.inputContainer}>
           <TextInput
+            testID="filter-price-min-input"
             value={minPrice}
             placeholder="0"
             onChangeText={handleChange(0)}
@@ -50,6 +49,7 @@ const FilterPriceRangeInput: React.FC<FilterPriceRangeInputProps> = memo(
           />
           <Label>to</Label>
           <TextInput
+            testID="filter-price-max-input"
             value={maxPrice}
             placeholder="Any"
             onChangeText={handleChange(1)}

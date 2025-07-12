@@ -10,9 +10,10 @@ export interface BoostProps {
   boosted?: boolean;
 }
 
-export const Boost: React.FC<BoostProps> = memo(function Boost({ boosted }) {
+const Boost: React.FC<BoostProps> = memo(function Boost({ boosted }) {
   return (
     <View
+      testID="boost"
       className={clsx(
         classes.container,
         classes[boosted ? 'boosted' : 'unboosted'],

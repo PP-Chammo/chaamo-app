@@ -14,7 +14,7 @@ export interface NotificationCardProps {
 }
 
 const NotificationCard: React.FC<NotificationCardProps> = memo(
-  function NotificationCard({ category, message, date }) {
+  function NotificationCard({ category, message, date, onPress }) {
     let time = formatDistanceToNow(new Date(date), {
       addSuffix: true,
       includeSeconds: true,
@@ -28,7 +28,11 @@ const NotificationCard: React.FC<NotificationCardProps> = memo(
           ? 'cart-outline'
           : 'clock-outline';
     return (
-      <TouchableOpacity className={classes.container}>
+      <TouchableOpacity
+        testID="notification-list-item"
+        onPress={onPress}
+        className={classes.container}
+      >
         <View className={classes.iconContainer}>
           <Icon name={icon} size={24} color={getColor('teal-600')} />
         </View>

@@ -21,12 +21,13 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = memo(
     const handleChange = (text: string) => onChange({ name, value: text });
 
     return (
-      <View className={classes.container}>
+      <View testID="phone-input-container" className={classes.container}>
         <Label className={classes.label}>
           Phone
           {required && <Label className={classes.required}>*</Label>}
         </Label>
         <PhoneInputLocal
+          testID="phone-input-field"
           defaultCode="GB"
           layout="second"
           value={value}

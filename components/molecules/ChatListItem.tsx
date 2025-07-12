@@ -28,6 +28,7 @@ const ChatListItem: React.FC<ChatListItemProps> = memo(function ChatListItem({
 
   return (
     <Pressable
+      testID="chat-list-item"
       onPress={onPress}
       className={clsx(classes.container.base, containerClassName)}
     >

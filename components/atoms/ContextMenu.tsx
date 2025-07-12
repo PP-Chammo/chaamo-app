@@ -8,6 +8,7 @@ interface ContextMenuProps {
   triggerRef: React.RefObject<View | null>;
   children: React.ReactNode;
   menuHeight?: number;
+  testID?: string;
 }
 
 const ContextMenu: React.FC<ContextMenuProps> = memo(function ContextMenu({
@@ -16,6 +17,7 @@ const ContextMenu: React.FC<ContextMenuProps> = memo(function ContextMenu({
   triggerRef,
   children,
   menuHeight = 50,
+  testID,
 }) {
   const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
   const menuWidth = 216;
@@ -60,6 +62,7 @@ const ContextMenu: React.FC<ContextMenuProps> = memo(function ContextMenu({
 
   return (
     <Modal
+      testID={testID}
       visible={visible}
       transparent
       animationType="fade"

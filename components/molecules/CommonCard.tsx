@@ -48,6 +48,7 @@ const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
     () =>
       onRightIconPress && (
         <TouchableOpacity
+          testID="right-icon-button"
           onPress={onRightIconPress}
           className={classes.rightIconButton}
         >
@@ -63,6 +64,7 @@ const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
 
   return (
     <TouchableOpacity
+      testID="common-card"
       activeOpacity={0.8}
       className={clsx(classes.container, className)}
       onPress={onPress}
@@ -70,18 +72,33 @@ const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
       {featured && <Badge />}
       {rightComponent ?? renderRightIcon()}
       {imageUrl ? (
-        <Image source={{ uri: imageUrl }} className={clsx(classes.image)} />
+        <Image
+          testID="common-card-image"
+          source={{ uri: imageUrl }}
+          className={clsx(classes.image)}
+        />
       ) : (
-        <View className={clsx(classes.image)}>
+        <View
+          testID="common-card-image-placeholder"
+          className={clsx(classes.image)}
+        >
           <Icon name="cards-outline" size={40} color={getColor('red-100')} />
         </View>
       )}
       {!!price && (
-        <Label variant="subtitle" className={classes.price}>
+        <Label
+          variant="subtitle"
+          className={classes.price}
+          testID="common-card-price"
+        >
           {price}
         </Label>
       )}
-      <Label variant="subtitle" className={classes.title}>
+      <Label
+        variant="subtitle"
+        className={classes.title}
+        testID="common-card-title"
+      >
         {title}
       </Label>
       <View className={classes.marketContainer}>
@@ -90,6 +107,7 @@ const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
           className={clsx(classes.marketPrice, {
             '!font-bold !text-xs': !price,
           })}
+          testID="common-card-market-price"
         >
           {marketPrice}
         </Label>

@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 
 import { clsx } from 'clsx';
 import { Link } from 'expo-router';
@@ -67,7 +67,10 @@ function ListContainer<T>({
   );
 
   return (
-    <View className={clsx(classes.container, className)}>
+    <View
+      testID="list-container"
+      className={clsx(classes.container, className)}
+    >
       <Row between className={clsx(classes.headerContainer, headerClassName)}>
         <View className={classes.titleContainer}>
           <Label className={classes.title}>{title}</Label>
@@ -82,7 +85,13 @@ function ListContainer<T>({
             contentContainerClassName,
           )}
         >
-          {data.map((item, index) => children(item as T, index))}
+          {data.map((item, index) => {
+            const element = children(item as T, index);
+            if (React.isValidElement(element) && element.key == null) {
+              return React.cloneElement(element, { key: index });
+            }
+            return element;
+          })}
         </View>
       ) : (
         <FlatList

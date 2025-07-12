@@ -27,9 +27,10 @@ const WishListItem: React.FC<WishListItemProps> = memo(function WishListItem({
   date,
 }) {
   return (
-    <Row className={classes.container}>
+    <Row testID="wish-list-item" className={classes.container}>
       <View className={classes.imageContainer}>
         <Image
+          testID="wish-list-item-image"
           source={{ uri: imageUrl }}
           className={classes.image}
           resizeMode="cover"
@@ -37,12 +38,21 @@ const WishListItem: React.FC<WishListItemProps> = memo(function WishListItem({
       </View>
       <View className={classes.contentContainer}>
         <Row between>
-          <Label className={classes.titleText}>{title}</Label>
+          <Label className={classes.titleText} testID="wish-list-item-title">
+            {title}
+          </Label>
           <Icon name="heart" color={getColor('red-600')} size={16} />
         </Row>
         <Row className={classes.creatorContainer}>
-          <Label className={classes.yearText}>{year}</Label>
-          <Label className={classes.creatorText}>{creator}</Label>
+          <Label className={classes.yearText} testID="wish-list-item-year">
+            {year}
+          </Label>
+          <Label
+            className={classes.creatorText}
+            testID="wish-list-item-creator"
+          >
+            {creator}
+          </Label>
         </Row>
         <Row className={classes.dateContainer}>
           <Icon
@@ -50,7 +60,7 @@ const WishListItem: React.FC<WishListItemProps> = memo(function WishListItem({
             color={getColor('slate-500')}
             size={14}
           />
-          <Label className={classes.dateText}>
+          <Label className={classes.dateText} testID="wish-list-item-date">
             {formatDistance(new Date(date), new Date(), { addSuffix: true })}
           </Label>
         </Row>
@@ -60,13 +70,23 @@ const WishListItem: React.FC<WishListItemProps> = memo(function WishListItem({
             <EBayImage />
             <Row>
               <Label className={classes.priceLabel}>Price Value: </Label>
-              <Label className={classes.priceValue}>{currentPrice}</Label>
+              <Label
+                className={classes.priceValue}
+                testID="wish-list-item-current-price"
+              >
+                {currentPrice}
+              </Label>
               <Icon name="trending-up" color={getColor('teal-600')} size={16} />
             </Row>
           </View>
           <View className={classes.bidContainer}>
             <Label className={classes.bidLabel}>Highest Bid</Label>
-            <Label className={classes.bidPrice}>{bidPrice}</Label>
+            <Label
+              className={classes.bidPrice}
+              testID="wish-list-item-bid-price"
+            >
+              {bidPrice}
+            </Label>
           </View>
         </Row>
       </View>

@@ -1,1 +1,1 @@
-npm run lint:fix && npm run prettier:fix && git add .
+npm run lint:fix && npm run prettier:fix && npm test && npm run test:coverage && git add .

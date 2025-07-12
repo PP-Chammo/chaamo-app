@@ -6,6 +6,7 @@ import { Rating, Review } from '@/components/molecules';
 export default function ReviewsProfile() {
   return (
     <ScrollView
+      testID="reviews-profile-scroll"
       showsVerticalScrollIndicator={false}
       contentContainerClassName={classes.contentContainer}
     >

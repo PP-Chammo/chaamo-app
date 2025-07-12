@@ -16,6 +16,7 @@ const BlockList: React.FC<BlockListProps> = memo(function BlockList({
 }) {
   return (
     <FlatList
+      testID="block-list"
       data={data}
       keyExtractor={(item) => item.id.toString()}
       contentContainerClassName={classes.contentContainer}

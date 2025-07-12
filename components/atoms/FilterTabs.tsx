@@ -15,6 +15,7 @@ interface FilterTabsProps {
   className?: string;
   onChange: (value: FilterValue) => void;
   selected: FilterValue;
+  getTabTestID?: (tab: Tab) => string | undefined;
 }
 
 const FilterTabs = memo(function FilterTabs({
@@ -22,6 +23,7 @@ const FilterTabs = memo(function FilterTabs({
   className,
   selected,
   onChange,
+  getTabTestID,
 }: FilterTabsProps) {
   return (
     <ScrollView
@@ -32,6 +34,7 @@ const FilterTabs = memo(function FilterTabs({
       {tabs.map((tab) => (
         <TouchableOpacity
           key={tab.value}
+          testID={getTabTestID ? getTabTestID(tab) : undefined}
           className={clsx({
             [classes.tabActive]: selected === tab.value,
             [classes.tab]: selected !== tab.value,

@@ -2,9 +2,8 @@ import { memo } from 'react';
 
 import { TouchableOpacity } from 'react-native';
 
-import { Label, Icon, Row } from '@/components/atoms';
+import { Label, Row } from '@/components/atoms';
 import { ListContainer, ListContainerDirection } from '@/components/molecules';
-import { getColor } from '@/utils/getColor';
 
 interface SearchHistoriesProps {
   list?: string[];
@@ -40,7 +39,7 @@ const SearchHistories: React.FC<SearchHistoriesProps> = memo(
               <Label className={classes.itemText}>{item}</Label>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => onRemovePress(item)}>
-              <Icon name="close" size={20} color={getColor('slate-600')} />
+              <Label>×</Label>
             </TouchableOpacity>
           </Row>
         )}

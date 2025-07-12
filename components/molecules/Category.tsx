@@ -24,6 +24,7 @@ const CategoryItem: React.FC<CategoryProps> = memo(function CategoryItem({
 
   return (
     <TouchableOpacity
+      testID="category-item"
       onPress={() => onPress && onPress(title)}
       className={clsx(
         classes.container,
@@ -42,6 +43,7 @@ const CategoryItem: React.FC<CategoryProps> = memo(function CategoryItem({
             <SvgImage />
           ) : (
             <Icon
+              testID="default-icon"
               name="cards-outliner"
               size={40}
               color={getColor('gray-400')}
@@ -52,6 +54,7 @@ const CategoryItem: React.FC<CategoryProps> = memo(function CategoryItem({
       </View>
       {horizontal && (
         <Icon
+          testID="chevron-icon"
           name="chevron-right"
           size={20}
           color={getColor('gray-400')}

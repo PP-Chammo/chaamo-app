@@ -22,10 +22,15 @@ const FilterAdPropertiesInput: React.FC<FilterAdPropertiesInputProps> = memo(
     const handleToggleValue = useCallback(
       (value: string) => () => {
         if (splittedValues.includes(value)) {
-          const newValues = splittedValues.filter((item) => item !== value);
+          const newValues = splittedValues.filter(
+            (item) => item !== value && item !== '',
+          );
           onChange('adProperties', newValues.join(','));
         } else {
-          const newValues = [...splittedValues, value];
+          const newValues = [
+            ...splittedValues.filter((item) => item !== ''),
+            value,
+          ];
           onChange('adProperties', newValues.join(','));
         }
       },
@@ -33,7 +38,7 @@ const FilterAdPropertiesInput: React.FC<FilterAdPropertiesInputProps> = memo(
     );
 
     return (
-      <View className={classes.container}>
+      <View testID="filter-ad-properties-input" className={classes.container}>
         <Row className={classes.labelContainer}>
           <Icon
             name="megaphone-outline"
@@ -47,6 +52,7 @@ const FilterAdPropertiesInput: React.FC<FilterAdPropertiesInputProps> = memo(
           {adProperties.map((adProperty) => (
             <TouchableOpacity
               key={adProperty.value}
+              testID={`filter-ad-property-button-${adProperty.value}`}
               onPress={handleToggleValue(adProperty.value)}
               activeOpacity={0.5}
               className={classes.filterButton}
@@ -58,7 +64,12 @@ const FilterAdPropertiesInput: React.FC<FilterAdPropertiesInputProps> = memo(
                   size={20}
                 />
               )}
-              <Label className={classes.text}>{adProperty.label}</Label>
+              <Label
+                className={classes.text}
+                testID={`filter-ad-property-label-${adProperty.value}`}
+              >
+                {adProperty.label}
+              </Label>
             </TouchableOpacity>
           ))}
         </Row>

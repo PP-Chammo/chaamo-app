@@ -22,10 +22,15 @@ const FilterConditionInput: React.FC<FilterConditionInputProps> = memo(
     const handleToggleValue = useCallback(
       (value: string) => () => {
         if (splittedValues.includes(value)) {
-          const newValues = splittedValues.filter((item) => item !== value);
+          const newValues = splittedValues.filter(
+            (item) => item !== value && item !== '',
+          );
           onChange('condition', newValues.join(','));
         } else {
-          const newValues = [...splittedValues, value];
+          const newValues = [
+            ...splittedValues.filter((item) => item !== ''),
+            value,
+          ];
           onChange('condition', newValues.join(','));
         }
       },
@@ -33,7 +38,7 @@ const FilterConditionInput: React.FC<FilterConditionInputProps> = memo(
     );
 
     return (
-      <View className={classes.container}>
+      <View testID="filter-condition-input" className={classes.container}>
         <Row className={classes.labelContainer}>
           <Icon
             name="check-decagram-outline"
@@ -46,6 +51,7 @@ const FilterConditionInput: React.FC<FilterConditionInputProps> = memo(
           {conditions.map((condition) => (
             <TouchableOpacity
               key={condition.value}
+              testID={`filter-condition-button-${condition.value}`}
               onPress={handleToggleValue(condition.value)}
               activeOpacity={0.5}
               className={classes.filterButton}
@@ -57,7 +63,12 @@ const FilterConditionInput: React.FC<FilterConditionInputProps> = memo(
                   size={20}
                 />
               )}
-              <Label className={classes.text}>{condition.label}</Label>
+              <Label
+                className={classes.text}
+                testID={`filter-condition-label-${condition.value}`}
+              >
+                {condition.label}
+              </Label>
             </TouchableOpacity>
           ))}
         </Row>

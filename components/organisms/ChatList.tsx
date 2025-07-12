@@ -12,6 +12,7 @@ interface ChatListProps {
 const ChatList: React.FC<ChatListProps> = memo(function ChatList({ onPress }) {
   return (
     <FlatList
+      testID="chat-list"
       data={dummyChatList}
       keyExtractor={(item) => item.id.toString()}
       contentContainerClassName="gap-1"
