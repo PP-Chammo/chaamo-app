@@ -10,6 +10,7 @@ export { default as FeaturedList } from './FeaturedList';
 export { default as FollowList } from './FollowList';
 export { default as ListedByList } from './ListedByList';
 export { default as NotificationList } from './NotificationList';
+export { default as PaymentForm } from './PaymentForm';
 export { default as PeopleList } from './PeopleList';
 export { default as PortfolioProfile } from './PortfolioProfile';
 export { default as ProductAuctionList } from './ProductAuctionList';
