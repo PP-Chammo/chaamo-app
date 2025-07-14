@@ -73,7 +73,7 @@ const Button: React.FC<ButtonProps> = memo(function Button({
       case 'link':
         return getColor('gray-600');
       case 'primary-light':
-        return getColor('teal-600');
+        return getColor('primary-500');
       case 'light':
         return getColor('gray-600');
       case 'ghost':
@@ -132,8 +132,8 @@ const classes = {
   textBase: 'text-base text-center',
   disabled: 'opacity-50',
   variant: {
-    primary: 'bg-teal-500',
-    'primary-light': 'bg-teal-100/40 border border-teal-500',
+    primary: 'bg-primary-500',
+    'primary-light': 'bg-primary-100/40 border border-primary-500',
     secondary: 'bg-gray-200',
     danger: 'bg-red-600',
     light: 'border border-gray-300',
@@ -147,8 +147,8 @@ const classes = {
   },
   textVariant: {
     primary: 'text-white',
-    'primary-light': 'text-teal-600',
-    secondary: 'text-teal-500',
+    'primary-light': 'text-primary-500',
+    secondary: 'text-primary-500',
     danger: 'text-white',
     light: 'text-gray-600',
     link: 'text-gray-500 underline',

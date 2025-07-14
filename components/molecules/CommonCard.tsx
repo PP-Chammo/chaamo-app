@@ -113,7 +113,7 @@ const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
         </Label>
         <Icon
           name={indicator === 'up' ? 'trending-up' : 'trending-down'}
-          color={getColor(indicator === 'up' ? 'teal-600' : 'red-600')}
+          color={getColor(indicator === 'up' ? 'primary-500' : 'red-600')}
           size={16}
         />
       </View>
@@ -126,7 +126,7 @@ export default CommonCard;
 const classes = {
   container: 'w-36 flex flex-col gap-2',
   image: 'w-full h-[170px] h-auto  bg-gray-200 rounded-lg',
-  price: 'text-sm text-teal-500 !font-bold',
+  price: 'text-sm text-primary-500 !font-bold',
   marketPrice: 'text-xs text-gray-500',
   title: 'text-sm !text-gray-800',
   marketContainer: 'flex flex-row items-center gap-1.5',

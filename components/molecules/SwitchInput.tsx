@@ -25,7 +25,10 @@ const SwitchInput: React.FC<SwitchInputProps> = memo(function SwitchInput({
         value={value}
         onValueChange={onValueChange}
         disabled={disabled}
-        trackColor={{ true: getColor('teal-600'), false: getColor('gray-200') }}
+        trackColor={{
+          true: getColor('primary-500'),
+          false: getColor('gray-200'),
+        }}
         thumbColor={value ? getColor('white') : getColor('gray-600')}
       />
     </Row>

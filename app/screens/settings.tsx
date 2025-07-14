@@ -78,7 +78,7 @@ export default function SettingsScreen() {
             <SettingItem
               iconName="credit-card-outline"
               title="Payment & Subscription"
-              onPress={() => router.push('/screens/subscriptions')}
+              onPress={() => router.push('/screens/plans')}
             />
             <Divider position="horizontal" className={classes.divider} />
             <SettingItem
@@ -120,7 +120,7 @@ export default function SettingsScreen() {
             />
             <SettingItem
               iconName="logout"
-              iconColor={getColor('teal-500')}
+              iconColor={getColor('primary-500')}
               title="Log out"
             />
           </View>

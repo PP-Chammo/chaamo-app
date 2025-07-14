@@ -10,7 +10,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarStyle: { backgroundColor: getColor('gray-50') },
-        tabBarActiveTintColor: getColor('teal-500'),
+        tabBarActiveTintColor: getColor('primary-500'),
         tabBarInactiveTintColor: getColor('gray-400'),
       }}
     >

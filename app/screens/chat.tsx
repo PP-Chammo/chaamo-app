@@ -125,7 +125,7 @@ const classes = {
   messagesGroup: 'gap-1',
   contentContainer: 'mx-6',
   bottomContainer: 'flex-row gap-4 items-center px-4 py-6 bg-white',
-  messageInput: 'bg-teal-50 border border-slate-200 rounded-xl',
+  messageInput: 'bg-primary-50 border border-slate-200 rounded-xl',
   dateText: 'text-center text-slate-500 my-5',
   flatList: 'bg-white/50',
   messageInputContainer: 'flex-1',

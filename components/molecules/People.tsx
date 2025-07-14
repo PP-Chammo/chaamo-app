@@ -51,7 +51,7 @@ const classes = {
   container: 'w-full flex flex-row justify-between items-center',
   imageContainer: 'flex flex-row items-center gap-3',
   fullname: '!text-gray-700',
-  viewProfile: 'text-teal-600 underline',
+  viewProfile: 'text-primary-500 underline',
 };
 
 export default People;

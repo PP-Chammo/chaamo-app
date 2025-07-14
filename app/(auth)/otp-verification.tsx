@@ -67,7 +67,7 @@ export default function OTPVerificationScreen() {
 }
 
 const classes = {
-  title: 'text-3xl font-bold text-teal-600 mb-2',
+  title: 'text-3xl font-bold text-primary-500 mb-2',
   description: 'text-slate-500 text-lg mb-8',
   phoneNumber: 'text-slate-500 font-bold',
   sendButton: 'mt-8',

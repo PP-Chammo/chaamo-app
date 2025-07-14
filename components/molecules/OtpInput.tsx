@@ -60,12 +60,12 @@ const styles = StyleSheet.create({
   },
   focusStick: {
     borderWidth: 1,
-    borderColor: getColor('teal-700'),
+    borderColor: getColor('primary-700'),
     height: 16,
   },
   focusedPinCodeContainer: {
     borderWidth: 1,
-    borderColor: getColor('teal-600'),
+    borderColor: getColor('primary-500'),
   },
 });
 

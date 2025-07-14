@@ -58,7 +58,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
 const classes = {
   cardInfoWrapper: 'px-4.5',
   priceRow: 'flex-row items-center justify-between',
-  price: 'text-teal-600 text-xl font-bold',
+  price: 'text-primary-500 text-xl font-bold',
   dateRow: 'gap-1.5',
   date: 'text-sm text-gray-400',
   name: 'text-lg font-semibold mt-1',

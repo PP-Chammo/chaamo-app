@@ -76,7 +76,7 @@ export default function ResetPasswordScreen() {
 const classes = {
   form: 'flex-1 mt-[50] gap-3 mx-4.5',
   inputContainer: 'gap-6',
-  title: 'text-3xl font-bold text-teal-600',
+  title: 'text-3xl font-bold text-primary-500',
   description: 'text-slate-500 font-medium text-lg mb-6',
   loginButton: 'my-2 ',
   errorText: 'text-red-500 text-sm',

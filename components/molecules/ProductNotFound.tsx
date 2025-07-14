@@ -12,7 +12,7 @@ const ProductNotFound = memo(function ProductNotFound() {
       <Icon
         name="dizzy"
         variant="FontAwesome6"
-        color={getColor('teal-500')}
+        color={getColor('primary-500')}
         size={120}
         className={classes.notFoundIcon}
       />

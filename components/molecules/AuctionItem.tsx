@@ -121,7 +121,7 @@ const AuctionItem: React.FC<AuctionItemProps> = memo(function AuctionItem({
               </Label>
               <Icon
                 name={indicator === 'up' ? 'trending-up' : 'trending-down'}
-                color={getColor(indicator === 'up' ? 'teal-600' : 'red-600')}
+                color={getColor(indicator === 'up' ? 'primary-500' : 'red-600')}
                 size={16}
               />
             </Row>
@@ -157,7 +157,7 @@ const classes = {
   rowDate: 'gap-2',
   tag: '!text-xs',
   bidContainer: 'flex flex-col items-end',
-  textBidPrice: 'text-base font-semibold text-teal-600',
+  textBidPrice: 'text-base font-semibold text-primary-500',
 };
 
 export default AuctionItem;

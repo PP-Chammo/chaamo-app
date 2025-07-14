@@ -58,7 +58,7 @@ const ChatListItem: React.FC<ChatListItemProps> = memo(function ChatListItem({
 const classes = {
   container: {
     base: 'flex-row justify-between px-5 py-3',
-    unread: 'bg-teal-100/50',
+    unread: 'bg-primary-100/50',
   },
   leftContainer: 'flex-row items-center gap-5',
   avatarContainer: 'relative',
@@ -70,7 +70,7 @@ const classes = {
   message: 'text-slate-500',
   time: 'text-slate-500',
   unreadCountContainer:
-    'bg-teal-600 rounded-full w-6 h-6 items-center justify-center',
+    'bg-primary-500 rounded-full w-6 h-6 items-center justify-center',
   unreadCount: 'text-white text-sm',
 };
 

@@ -17,6 +17,6 @@ export default function NotFoundScreen() {
 }
 
 const classes = {
-  text: 'text-teal-500',
+  text: 'text-primary-500',
   container: 'flex-1 justify-center items-center',
 };

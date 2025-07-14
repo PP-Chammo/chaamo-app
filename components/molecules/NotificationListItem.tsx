@@ -34,7 +34,7 @@ const NotificationCard: React.FC<NotificationCardProps> = memo(
         className={classes.container}
       >
         <View className={classes.iconContainer}>
-          <Icon name={icon} size={24} color={getColor('teal-600')} />
+          <Icon name={icon} size={24} color={getColor('primary-500')} />
         </View>
         <View className={classes.contentContainer}>
           <View className={classes.categoryContainer}>
@@ -50,7 +50,7 @@ const NotificationCard: React.FC<NotificationCardProps> = memo(
 
 const classes = {
   container: 'flex-row items-center gap-3',
-  iconContainer: 'bg-teal-100/30 rounded-full p-2',
+  iconContainer: 'bg-primary-100/30 rounded-full p-2',
   contentContainer: 'flex-1',
   categoryContainer: 'flex flex-row justify-between',
   time: 'text-slate-400',

@@ -154,7 +154,7 @@ export default function AuctionDetailScreen() {
 }
 
 const classes = {
-  containerBottom: 'bg-teal-600',
+  containerBottom: 'bg-primary-500',
   header: '!bg-transparent',
   scrollView: 'gap-4.5 pb-32',
   cardInfoWrapper: 'px-4.5',
@@ -162,7 +162,7 @@ const classes = {
   cardImage:
     'w-56 h-80 rounded-xl border border-gray-200 bg-gray-200 items-center justify-center',
   priceRow: 'flex-row items-center justify-between',
-  price: 'text-teal-600 text-xl font-bold',
+  price: 'text-primary-500 text-xl font-bold',
   date: 'text-sm text-gray-400',
   name: 'text-lg font-semibold mt-1',
   ebayRow: 'flex-row items-center mt-1 gap-1',
@@ -183,12 +183,12 @@ const classes = {
   bidButton: 'border border-white rounded-full !min-w-40 !py-2',
   bidText: 'text-white',
   bottomBar:
-    'z-10 absolute left-0 right-0 bottom-0 flex-row items-center px-8 py-5 bg-teal-600 z-50',
+    'z-10 absolute left-0 right-0 bottom-0 flex-row items-center px-8 py-5 bg-primary-500 z-50',
   bottomBarLeft: 'flex-1 justify-center',
   highestBidLabel: 'text-white text-lg font-semibold',
   highestBidValue: 'text-white text-2xl font-bold mt-1',
   timeBarInner:
     'absolute -top-7 left-0 right-0 bg-amber-50 py-1 flex flex-row justify-center items-center rounded-t-xl',
   timeText: 'text-sm font-bold',
-  bottomSheet: 'bg-teal-600',
+  bottomSheet: 'bg-primary-500',
 };

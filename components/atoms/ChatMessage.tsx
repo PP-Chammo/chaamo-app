@@ -17,7 +17,8 @@ const ChatMessage: React.FC<ChatMessageProps> = memo(function ChatMessage({
 });
 
 const classes = {
-  container: 'w-[80%] bg-teal-50 px-5 py-3 border border-slate-100 rounded-lg',
+  container:
+    'w-[80%] bg-primary-50 px-5 py-3 border border-slate-100 rounded-lg',
   message: 'text-slate-600',
 };
 

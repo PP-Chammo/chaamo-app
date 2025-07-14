@@ -50,7 +50,7 @@ export default function ProfileScreen() {
                 <Icon
                   name="arrow-up-right"
                   size={16}
-                  color={getColor('teal-600')}
+                  color={getColor('primary-500')}
                   variant="Feather"
                 />
               </View>
@@ -97,8 +97,8 @@ const classes = {
   portfolioContainer: 'flex-row items-center gap-1',
   portfolioValueContainer: 'flex-row items-center gap-1',
   portfolioValueLabel: 'flex-row items-center text-md text-slate-500',
-  portfolioValue: '!text-teal-600 font-bold',
-  portfolioValueIconContainer: 'border border-teal-600 rounded-full',
+  portfolioValue: '!text-primary-500 font-bold',
+  portfolioValueIconContainer: 'border border-primary-500 rounded-full',
   profileStatsContainer: 'flex-row justify-between mx-12 my-8',
   tabView: 'mt-10',
   editProfileButton: 'mx-4.5',

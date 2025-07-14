@@ -1,36 +1,20 @@
 import { router } from 'expo-router';
-import { FlatList, View } from 'react-native';
+import { View } from 'react-native';
 
-import { Button, ScreenContainer } from '@/components/atoms';
-import { Header, SubscriptionCard } from '@/components/molecules';
-import { dummyPlans } from '@/constants/dummy';
+import { ScreenContainer, SubscriptionCard } from '@/components/atoms';
+import { Header } from '@/components/molecules';
 
-export default function SubscriptionScreen() {
-  const handleBuySubscription = () => {
-    router.push('/screens/card-details');
-  };
-
+export default function SubscriptionsScreen() {
   return (
     <ScreenContainer>
-      <Header title="Premium Plan" onBackPress={router.back} />
+      <Header title="Payment and Subscription" onBackPress={router.back} />
       <View className={classes.container}>
-        <FlatList
-          data={dummyPlans}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerClassName={classes.contentContainer}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => <SubscriptionCard {...item} />}
-        />
+        <SubscriptionCard />
       </View>
-      <Button className={classes.button} onPress={handleBuySubscription}>
-        Buy Subscription
-      </Button>
     </ScreenContainer>
   );
 }
 
 const classes = {
-  container: 'flex-1 px-10',
-  contentContainer: 'gap-10 pb-12',
-  button: 'mb-10 mx-4.5',
+  container: 'p-4.5',
 };
