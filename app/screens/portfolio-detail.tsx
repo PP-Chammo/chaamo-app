@@ -149,7 +149,7 @@ const classes = {
   cardImage:
     'w-56 h-80 rounded-xl border border-gray-200 bg-gray-200 items-center justify-center',
   priceRow: 'mt-4 flex-row items-center justify-between',
-  price: 'text-teal-600 text-xl font-bold',
+  price: 'text-primary-500 text-xl font-bold',
   date: 'text-xs text-gray-400',
   name: 'text-lg font-semibold mt-1',
   ebayRow: 'flex-row items-center mt-1 gap-1',

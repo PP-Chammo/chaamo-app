@@ -27,7 +27,7 @@ const RadioInput = memo(function RadioInput({
       <Icon
         name={selected ? 'circle-slice-8' : 'circle-outline'}
         size={24}
-        color={selected ? getColor('teal-600') : getColor('gray-400')}
+        color={selected ? getColor('primary-500') : getColor('gray-400')}
       />
       <Label>{label}</Label>
     </TouchableOpacity>

@@ -120,7 +120,7 @@ export default function SettingsScreen() {
             />
             <SettingItem
               iconName="logout"
-              iconColor={getColor('teal-500')}
+              iconColor={getColor('primary-500')}
               title="Log out"
             />
           </View>

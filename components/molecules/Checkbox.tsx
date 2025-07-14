@@ -45,7 +45,7 @@ const Checkbox: React.FC<CheckboxProps> = memo(function Checkbox({
         )}
       >
         {checked && (
-          <Icon name="check-bold" size={16} color={getColor('teal-600')} />
+          <Icon name="check-bold" size={16} color={getColor('primary-500')} />
         )}
       </View>
       {label && (
@@ -60,7 +60,7 @@ const classes = {
   container: 'flex-row items-center gap-2',
   checkbox:
     'w-5 h-5 rounded border border-slate-300 flex items-center justify-center bg-white',
-  checked: 'bg-teal-500 border-teal-500',
+  checked: 'bg-primary-500 border-primary-500',
   disabled: 'opacity-50',
 };
 export default Checkbox;

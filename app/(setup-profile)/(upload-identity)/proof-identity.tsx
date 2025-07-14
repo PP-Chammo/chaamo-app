@@ -54,7 +54,7 @@ export default function ProofIdentityScreen() {
 
 const classes = {
   container: 'flex-1 gap-4',
-  title: 'text-3xl font-bold text-teal-600',
+  title: 'text-3xl font-bold text-primary-500',
   description: 'text-slate-500 font-medium text-lg mb-6',
   icon: 'w-10 h-10',
   proofIdentity:

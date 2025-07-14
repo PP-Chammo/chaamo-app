@@ -61,7 +61,7 @@ export default function WalletScreen() {
 
 const classes = {
   container: 'flex-1 p-4.5',
-  balanceContainer: 'bg-teal-200/20 rounded-lg px-4 py-6',
+  balanceContainer: 'bg-primary-200/20 rounded-lg px-4 py-6',
   availableBalanceText: 'text-slate-600',
   withdrawButton: 'mt-8',
   divider: 'mt-8',

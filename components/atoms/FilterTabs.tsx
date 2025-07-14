@@ -59,9 +59,9 @@ const FilterTabs = memo(function FilterTabs({
 const classes = {
   container: 'flex-row mb-2 mt-1 gap-5 self-start',
   tab: 'px-3 py-1.5 rounded-full border border-slate-300',
-  tabActive: 'px-3 py-1.5 rounded-full border border-teal-500 bg-teal-50',
+  tabActive: 'px-3 py-1.5 rounded-full border border-primary-500 bg-primary-50',
   label: 'text-slate-600 text-sm',
-  labelActive: 'text-teal-600 text-sm font-medium',
+  labelActive: 'text-primary-500 text-sm font-medium',
 };
 
 export default FilterTabs;

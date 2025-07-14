@@ -117,7 +117,7 @@ const classes = {
   headerContainer: 'px-4.5',
   titleContainer: 'flex flex-row items-center gap-2',
   title: 'text-[15px] font-semibold',
-  viewAllText: 'text-teal-600 font-semibold',
+  viewAllText: 'text-primary-500 font-semibold',
   contentContainerVertical: 'flex-1 gap-5 px-4.5 py-4',
   contentContainerHorizontal: 'gap-5 px-4.5 py-4',
 };

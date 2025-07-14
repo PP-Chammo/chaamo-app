@@ -36,7 +36,7 @@ export default function IDCardProgressScreen() {
 const classes = {
   container: 'flex-1',
   content: 'flex-1 items-center mt-14 px-4.5',
-  title: 'text-teal-600 font-bold mb-2',
+  title: 'text-primary-500 font-bold mb-2',
   description: 'text-slate-600 text-center text-md',
   button: 'm-4.5',
 };

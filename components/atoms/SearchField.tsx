@@ -78,7 +78,7 @@ const SearchField = forwardRef<TextInput, SearchFieldProps>(
 const classes = {
   container: 'relative flex-1 h-11',
   input:
-    'flex-1 rounded-lg border border-teal-100/60 rounded-md px-4 bg-gray-50 h-[38px]',
+    'flex-1 rounded-lg border border-primary-100/60 rounded-md px-4 bg-gray-50 h-[38px]',
   clearButton: 'absolute right-0 top-1/2 -translate-y-1/2 p-3',
 };
 

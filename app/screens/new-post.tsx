@@ -91,10 +91,10 @@ export default function NewPostScreen() {
 }
 
 const classes = {
-  title: 'text-teal-600 text-xl font-medium',
+  title: 'text-primary-500 text-xl font-medium',
   container: 'flex-1 mx-4.5 gap-8',
   image: 'w-full h-72 rounded-2xl',
-  attachment: 'bg-teal-600 rounded-full p-3 absolute bottom-16 right-6',
+  attachment: 'bg-primary-500 rounded-full p-3 absolute bottom-16 right-6',
   imageContainer: 'relative',
   closeIcon: 'absolute top-2 right-2 bg-white rounded-full p-1',
 };

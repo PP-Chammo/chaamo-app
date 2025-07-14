@@ -20,7 +20,7 @@ export default function BlockedAccounts() {
           variant="Ionicons"
           name="ban-outline"
           size={80}
-          color={getColor('teal-100')}
+          color={getColor('primary-100')}
         />
         <Label className={classes.emptyText}>No blocked accounts found</Label>
       </View>
@@ -33,7 +33,7 @@ export default function BlockedAccounts() {
         title="Blocked Accounts"
         onBackPress={() => router.back()}
         rightIcon="plus-circle"
-        rightIconColor={getColor('teal-600')}
+        rightIconColor={getColor('primary-500')}
         rightIconSize={28}
         onRightPress={() => router.push('/screens/block-accounts')}
       />

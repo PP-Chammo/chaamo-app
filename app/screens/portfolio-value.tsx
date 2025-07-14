@@ -48,7 +48,7 @@ export default function PortfolioValueScreen() {
                 </Label>
                 <Icon
                   name="trending-up"
-                  color={getColor('teal-500')}
+                  color={getColor('primary-500')}
                   size={20}
                 />
               </Row>
@@ -104,7 +104,7 @@ const classes = {
   header: 'bg-white',
   currentCollectionContainer: 'px-4.5 pt-4.5',
   currentCollectionContainerGreen:
-    'flex-1 gap-1.5 bg-teal-100/40 rounded-lg p-4',
+    'flex-1 gap-1.5 bg-primary-100/40 rounded-lg p-4',
   currentCollectionContainerYellow:
     'flex-1 gap-1.5 bg-orange-100/60 rounded-lg p-4',
   currentCollectionContainerRed: 'flex-1 gap-1.5 bg-red-100/60 rounded-lg p-4',

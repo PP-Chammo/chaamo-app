@@ -72,6 +72,6 @@ const classes = {
   container: 'flex-1 gap-0.5 px-4.5',
   optionContainer: 'bg-white gap-3 p-4.5',
   titleContainer: 'p-4.5',
-  title: '!text-2xl font-bold text-teal-600',
+  title: '!text-2xl font-bold text-primary-500',
   buttonContainer: 'p-4.5',
 };

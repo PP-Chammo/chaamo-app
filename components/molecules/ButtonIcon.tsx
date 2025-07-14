@@ -45,7 +45,7 @@ const ButtonIcon = memo(function ButtonIcon({
 const classes = {
   container: 'p-2 rounded-full',
   countContainer:
-    'absolute top-0 right-0 flex items-center justify-center bg-teal-500 w-5 h-5 rounded-full',
+    'absolute top-0 right-0 flex items-center justify-center bg-primary-500 w-5 h-5 rounded-full',
   countText: '!text-white text-xs font-semibold',
 };
 

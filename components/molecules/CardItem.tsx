@@ -118,7 +118,7 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
               </Label>
               <Icon
                 name={indicator === 'up' ? 'trending-up' : 'trending-down'}
-                color={getColor(indicator === 'up' ? 'teal-600' : 'red-600')}
+                color={getColor(indicator === 'up' ? 'primary-500' : 'red-600')}
                 size={16}
               />
             </Row>
@@ -152,7 +152,7 @@ const classes = {
   textBold: 'text-sm font-semibold',
   rowDate: 'gap-2',
   bidContainer: 'flex flex-col items-end justify-end',
-  textBidPrice: 'text-base font-semibold text-teal-600',
+  textBidPrice: 'text-base font-semibold text-primary-500',
   priceContainer: '!items-end',
 };
 
