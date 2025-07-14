@@ -39,15 +39,11 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
 
   const handleChange = useCallback(
     (value: string) => {
+      let formattedValue = value;
       if (type === 'date') {
-        const formattedValue = formatExpiryCardField(value);
-
-        console.log({ formattedValue });
-
-        return onChange({ name, value: formattedValue });
+        formattedValue = formatExpiryCardField(value);
       }
-
-      return onChange({ name, value });
+      onChange({ name, value: formattedValue });
     },
     [name, onChange, type],
   );

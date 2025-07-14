@@ -35,13 +35,13 @@ export default function CardDetailsScreen() {
   const [form, setForm] = useState<Form>(initialForm);
   const [errors, setErrors] = useState<ValidationErrors<Form>>({});
 
-  const handleChange = ({ name, value }: TextChangeParams) => {
+  const handleChange = useCallback(({ name, value }: TextChangeParams) => {
     setErrors((prev) => {
       delete prev[name as keyof typeof prev];
       return prev;
     });
     setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  }, []);
 
   const handleContinue = useCallback(() => {
     const errors = validateRequired<Form>(form, [
