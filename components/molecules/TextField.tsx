@@ -5,12 +5,13 @@ import { Pressable, Text, TextInput, TextInputProps, View } from 'react-native';
 
 import { Icon } from '@/components/atoms';
 import { TextChangeParams } from '@/domains';
+import { formatExpiryCardField } from '@/utils/card';
 import { getColor } from '@/utils/getColor';
 
 interface TextFieldProps extends Omit<TextInputProps, 'onChange'> {
   label?: string;
   required?: boolean;
-  type?: 'text' | 'password';
+  type?: 'text' | 'password' | 'date';
   hidePassword?: boolean;
   name: string;
   onChange: ({ name, value }: TextChangeParams) => void;
@@ -37,7 +38,15 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
   const [hidePassword, setHidePassword] = useState(true);
 
   const handleChange = (value: string) => {
-    onChange({ name, value });
+    if (type === 'date') {
+      const formattedValue = formatExpiryCardField(value);
+
+      console.log({ formattedValue });
+
+      return onChange({ name, value: formattedValue });
+    }
+
+    return onChange({ name, value });
   };
 
   return (
@@ -65,6 +74,7 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
           )}
           onChangeText={handleChange}
           secureTextEntry={type === 'password' && hidePassword}
+          value={value}
           {...props}
         />
         {type === 'password' && (

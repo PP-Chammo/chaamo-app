@@ -4,6 +4,7 @@ export { default as BankAccount } from './BankAccount';
 export { default as Boost } from './Boost';
 export { default as BottomSheetModal } from './BottomSheetModal';
 export { default as Button } from './Button';
+export { default as CardField } from './CardField';
 export { default as ChatMessage } from './ChatMessage';
 export { default as ContextMenu } from './ContextMenu';
 export { default as Divider } from './Divider';
