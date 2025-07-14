@@ -12,6 +12,7 @@ export { default as Icon } from './Icon';
 export { default as KeyboardView } from './KeyboardView';
 export { default as Label } from './Label';
 export { default as Modal } from './Modal';
+export { default as PaymentMethodCard } from './PaymentMethodCard';
 export { default as ProfileStat } from './ProfileStat';
 export { default as ProofIdentity } from './ProofIdentity';
 export { default as Row } from './Row';
