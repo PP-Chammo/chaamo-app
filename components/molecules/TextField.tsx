@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 
 import { clsx } from 'clsx';
 import { Pressable, Text, TextInput, TextInputProps, View } from 'react-native';
@@ -37,17 +37,20 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
 }) {
   const [hidePassword, setHidePassword] = useState(true);
 
-  const handleChange = (value: string) => {
-    if (type === 'date') {
-      const formattedValue = formatExpiryCardField(value);
+  const handleChange = useCallback(
+    (value: string) => {
+      if (type === 'date') {
+        const formattedValue = formatExpiryCardField(value);
 
-      console.log({ formattedValue });
+        console.log({ formattedValue });
 
-      return onChange({ name, value: formattedValue });
-    }
+        return onChange({ name, value: formattedValue });
+      }
 
-    return onChange({ name, value });
-  };
+      return onChange({ name, value });
+    },
+    [name, onChange, type],
+  );
 
   return (
     <View

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { router } from 'expo-router';
 import { View } from 'react-native';
@@ -13,6 +13,17 @@ import {
 } from '@/components/atoms';
 import { Header, TextField } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
+import {
+  validateRequired,
+  ValidationErrors,
+  ValidationValues,
+} from '@/utils/validate';
+
+interface Form extends ValidationValues {
+  cardNumber: string;
+  expiry: string;
+  cvc: string;
+}
 
 const initialForm = {
   cardNumber: '',
@@ -21,15 +32,30 @@ const initialForm = {
 };
 
 export default function CardDetailsScreen() {
-  const [form, setForm] = useState(initialForm);
+  const [form, setForm] = useState<Form>(initialForm);
+  const [errors, setErrors] = useState<ValidationErrors<Form>>({});
 
   const handleChange = ({ name, value }: TextChangeParams) => {
+    setErrors((prev) => {
+      delete prev[name as keyof typeof prev];
+      return prev;
+    });
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleContinue = () => {
-    router.push('/screens/checkout-subscription');
-  };
+  const handleContinue = useCallback(() => {
+    const errors = validateRequired<Form>(form, [
+      'cardNumber',
+      'expiry',
+      'cvc',
+    ]);
+    if (Object.keys(errors).length > 0) {
+      setErrors(errors);
+      return;
+    }
+
+    return router.push('/screens/checkout-subscription');
+  }, [form]);
 
   return (
     <ScreenContainer>
@@ -47,6 +73,7 @@ export default function CardDetailsScreen() {
             onChange={handleChange}
             placeholder="2424 2424 2424 2424"
             required
+            error={errors['cardNumber']}
           />
           <Row className={classes.row}>
             <TextField
@@ -60,6 +87,7 @@ export default function CardDetailsScreen() {
               required
               className={classes.input}
               type="date"
+              error={errors['expiry']}
             />
             <TextField
               name="cvc"
@@ -70,6 +98,7 @@ export default function CardDetailsScreen() {
               maxLength={3}
               required
               className={classes.input}
+              error={errors['cvc']}
             />
           </Row>
         </KeyboardView>

@@ -38,7 +38,7 @@ const CardField = memo(function CardField({
     return validateCardNumber(value);
   }, [value]);
 
-  const renderCardIcon = () => {
+  const renderCardIcon = useMemo(() => {
     if (cardValidation.isVisa) {
       return <VisaCard />;
     }
@@ -48,7 +48,7 @@ const CardField = memo(function CardField({
     }
 
     return null;
-  };
+  }, [cardValidation.isMasterCard, cardValidation.isVisa]);
 
   return (
     <View className={clsx(classes.container, className)}>
@@ -67,7 +67,7 @@ const CardField = memo(function CardField({
           className={clsx(classes.input, inputClassName)}
           {...props}
         />
-        <View className={classes.cardIcon}>{renderCardIcon()}</View>
+        <View className={classes.cardIcon}>{renderCardIcon}</View>
       </View>
       {error && <Text className={classes.error}>{error}</Text>}
       {value && value.length >= 4 && !cardValidation.isValid && (
