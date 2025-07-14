@@ -1,12 +1,11 @@
 import { renderHook, act } from '@testing-library/react-native';
+import { router } from 'expo-router';
 
 import { useSelectWithScreenStore } from '../useSelectWithScreenStore';
 
 jest.mock('expo-router', () => ({
   router: { back: jest.fn() },
 }));
-
-const { router } = require('expo-router');
 
 describe('useSelectWithScreenStore', () => {
   beforeEach(() => {

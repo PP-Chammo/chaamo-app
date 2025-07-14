@@ -76,7 +76,6 @@ const classes = {
   inputContainer: 'relative',
   input: 'rounded-lg border border-slate-200 rounded-md p-4 bg-white h-[48px]',
   inputWithLeftIcon: 'px-12 py-4',
-  eyeIcon: 'absolute right-4 top-1/2 -translate-y-1/2',
   error: 'text-red-500 text-sm',
   leftIconContainer: 'absolute left-4 translate-y-1/2 z-10',
   rightIconContainer: 'absolute right-4 translate-y-1/2 z-10',

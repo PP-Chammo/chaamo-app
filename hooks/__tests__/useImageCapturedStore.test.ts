@@ -1,12 +1,11 @@
 import { renderHook, act } from '@testing-library/react-native';
+import { router } from 'expo-router';
 
 import { useImageCapturedStore } from '../useImageCapturedStore';
 
 jest.mock('expo-router', () => ({
   router: { push: jest.fn() },
 }));
-
-const { router } = require('expo-router');
 
 describe('useImageCapturedStore', () => {
   beforeEach(() => {

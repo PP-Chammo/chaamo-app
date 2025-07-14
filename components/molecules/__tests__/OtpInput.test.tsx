@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { render } from '@testing-library/react-native';
+import { OtpInput as OtpInputComponent } from 'react-native-otp-entry';
 
 import OTPInput from '../OtpInput';
 
@@ -47,5 +48,18 @@ describe('OTPInput', () => {
   it('applies correct styling classes', () => {
     const { getByTestId } = render(<OTPInput {...defaultProps} />);
     expect(getByTestId('otp-input')).toBeTruthy();
+  });
+
+  it('calls onChange when text is entered', () => {
+    const onChange = jest.fn();
+    const { UNSAFE_getAllByType } = render(
+      <OTPInput {...defaultProps} onChange={onChange} name="otp" />,
+    );
+    // Find the OtpInput component and trigger onTextChange
+    const OtpInputInstance = UNSAFE_getAllByType(OtpInputComponent)[0];
+    if (OtpInputInstance && OtpInputInstance.props.onTextChange) {
+      OtpInputInstance.props.onTextChange('123456');
+      expect(onChange).toHaveBeenCalledWith({ name: 'otp', value: '123456' });
+    }
   });
 });

@@ -60,7 +60,6 @@ export default function CategoriesScreen() {
 
 const classes = {
   containerTop: 'bg-white',
-  containerBottom: '!bg-gray-50',
   header: 'bg-white',
   headerCategory: 'py-5',
   list: 'pt-4.5',

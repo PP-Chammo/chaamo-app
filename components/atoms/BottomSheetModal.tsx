@@ -1,0 +1,184 @@
+import React, { useEffect, useRef, useCallback, useState } from 'react';
+
+import { clsx } from 'clsx';
+import {
+  Animated,
+  Dimensions,
+  PanResponder,
+  Pressable,
+  View,
+  GestureResponderEvent,
+  PanResponderGestureState,
+  Keyboard,
+  KeyboardEvent,
+  ScrollView,
+  Platform,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+interface BottomSheetModalProps {
+  show: boolean;
+  onDismiss: () => void;
+  children: React.ReactNode;
+  height?: number; // Optional custom height
+  className?: string;
+  overlayClassName?: string;
+}
+
+const screenHeight = Dimensions.get('window').height;
+
+const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
+  show,
+  onDismiss,
+  children,
+  height,
+  className,
+  overlayClassName,
+}) => {
+  const insets = useSafeAreaInsets();
+  const sheetHeight = height ?? screenHeight * 0.5;
+  const DRAG_DISMISS_THRESHOLD = sheetHeight * 0.25;
+  const translateY = useRef(new Animated.Value(sheetHeight)).current;
+  const isOpen = useRef(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useEffect(() => {
+    const onKeyboardShow = (e: KeyboardEvent) =>
+      setKeyboardHeight(e.endCoordinates.height);
+    const onKeyboardHide = () => setKeyboardHeight(0);
+    const showSub = Keyboard.addListener('keyboardDidShow', onKeyboardShow);
+    const hideSub = Keyboard.addListener('keyboardDidHide', onKeyboardHide);
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (show) {
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        isOpen.current = true;
+      });
+    } else {
+      Animated.timing(translateY, {
+        toValue: sheetHeight,
+        duration: 250,
+        useNativeDriver: true,
+      }).start(() => {
+        isOpen.current = false;
+      });
+    }
+  }, [show, translateY, sheetHeight]);
+
+  const handleOverlayPress = useCallback(() => {
+    Animated.timing(translateY, {
+      toValue: sheetHeight,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      isOpen.current = false;
+      onDismiss();
+    });
+  }, [sheetHeight, onDismiss, translateY]);
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: useCallback(
+        (_: GestureResponderEvent, gestureState: PanResponderGestureState) => {
+          return Math.abs(gestureState.dy) > 5;
+        },
+        [],
+      ),
+      onPanResponderMove: useCallback(
+        (_: GestureResponderEvent, gestureState: PanResponderGestureState) => {
+          if (gestureState.dy > 0) {
+            translateY.setValue(gestureState.dy);
+          }
+        },
+        [translateY],
+      ),
+      onPanResponderRelease: useCallback(
+        (_: GestureResponderEvent, gestureState: PanResponderGestureState) => {
+          if (gestureState.dy > DRAG_DISMISS_THRESHOLD) {
+            Animated.timing(translateY, {
+              toValue: sheetHeight,
+              duration: 200,
+              useNativeDriver: true,
+            }).start(() => {
+              isOpen.current = false;
+              onDismiss();
+            });
+          } else {
+            Animated.spring(translateY, {
+              toValue: 0,
+              useNativeDriver: true,
+            }).start();
+          }
+        },
+        [DRAG_DISMISS_THRESHOLD, sheetHeight, onDismiss, translateY],
+      ),
+    }),
+  ).current;
+
+  if (!show && !isOpen.current) return null;
+
+  // Subtract safe area inset from keyboard height on iOS
+  const effectiveKeyboardHeight =
+    Platform.OS === 'ios' ? Math.max(0, keyboardHeight - insets.bottom) : 0;
+
+  return (
+    <View
+      className={classes.container}
+      pointerEvents={show ? 'auto' : 'none'}
+      testID="bottom-sheet-container"
+    >
+      {/* Overlay */}
+      <Pressable
+        className={clsx(classes.overlay, overlayClassName)}
+        onPress={handleOverlayPress}
+        accessible={true}
+        accessibilityLabel="Close bottom sheet"
+        accessibilityRole="button"
+        testID="bottom-sheet-overlay"
+      />
+      {/* Bottom Sheet */}
+      <Animated.View
+        className={clsx(classes.sheet, className)}
+        style={{
+          height: sheetHeight,
+          transform: [{ translateY }],
+          bottom: effectiveKeyboardHeight,
+        }}
+        {...panResponder.panHandlers}
+        accessibilityViewIsModal={true}
+        accessibilityLiveRegion="polite"
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          bounces={false}
+        >
+          <View className={classes.handleContainer}>
+            <View className={classes.handle} />
+          </View>
+          <View className={classes.content}>{children}</View>
+        </ScrollView>
+      </Animated.View>
+    </View>
+  );
+};
+
+const classes = {
+  container: 'z-90 absolute inset-0',
+  overlay: 'absolute inset-0 bg-black/30',
+  sheet: 'absolute left-0 right-0 bottom-0 rounded-t-3xl shadow-lg',
+  handleContainer: 'items-center pt-4 pb-2',
+  handle: 'w-16 h-1.5 rounded bg-white/70',
+  content: 'flex-1 px-6 pb-6 justify-center',
+};
+
+export default BottomSheetModal;

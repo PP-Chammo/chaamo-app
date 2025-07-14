@@ -1,12 +1,11 @@
 import { renderHook, act } from '@testing-library/react-native';
+import { router } from 'expo-router';
 
 import { useAuthStore } from '../useAuthStore';
 
 jest.mock('expo-router', () => ({
   router: { replace: jest.fn() },
 }));
-
-const { router } = require('expo-router');
 
 describe('useAuthStore', () => {
   beforeEach(() => {

@@ -8,6 +8,7 @@ interface ModalProps {
   onClose: () => void;
   children: React.ReactNode;
   className?: string;
+  testID?: string;
 }
 
 const Modal = memo(function Modal({
@@ -15,17 +16,24 @@ const Modal = memo(function Modal({
   onClose,
   children,
   className,
+  testID,
 }: ModalProps) {
   return (
     <RNModal
+      testID={testID}
       visible={visible}
       animationType="fade"
       statusBarTranslucent
       transparent
       onRequestClose={onClose}
     >
-      <Pressable onPress={onClose} className={classes.container}>
+      <Pressable
+        testID="modal-backdrop"
+        onPress={onClose}
+        className={classes.container}
+      >
         <View
+          testID="modal-content"
           className={clsx(classes.content, className)}
           onStartShouldSetResponder={() => true}
         >

@@ -160,7 +160,6 @@ export default function PersonalDetailsScreen() {
 
 const classes = {
   container: 'flex-1 p-4.5 gap-4',
-  login: 'text-slate-500 text-md underline font-bold',
   button: 'my-10 mx-4.5',
   input: 'flex-1',
 };

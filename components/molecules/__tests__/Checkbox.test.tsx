@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { render } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
+import { View } from 'react-native';
 
 import Checkbox from '../Checkbox';
 
@@ -11,9 +12,15 @@ describe('Checkbox', () => {
     name: 'test-checkbox',
   };
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders correctly with default props', () => {
-    const { toJSON } = render(<Checkbox {...defaultProps} />);
-    expect(toJSON()).toBeTruthy();
+    const { getByTestId } = render(
+      <Checkbox {...defaultProps} testID="checkbox" />,
+    );
+    expect(getByTestId('checkbox')).toBeTruthy();
   });
 
   it('renders with label', () => {
@@ -25,39 +32,66 @@ describe('Checkbox', () => {
 
   it('calls onChange when pressed', () => {
     const onChange = jest.fn();
-    const { toJSON } = render(
-      <Checkbox {...defaultProps} onChange={onChange} />,
+    const { getByTestId } = render(
+      <Checkbox {...defaultProps} onChange={onChange} testID="checkbox" />,
     );
 
-    // Since we can't easily test Pressable interactions in this environment,
-    // we'll just verify the component renders
-    expect(toJSON()).toBeTruthy();
+    const checkbox = getByTestId('checkbox');
+    fireEvent.press(checkbox);
+    expect(onChange).toHaveBeenCalledWith({
+      name: 'test-checkbox',
+      value: true,
+    });
   });
 
   it('renders with checked state', () => {
-    const { toJSON } = render(<Checkbox {...defaultProps} checked={true} />);
-    expect(toJSON()).toBeTruthy();
+    const { getByTestId } = render(
+      <Checkbox {...defaultProps} checked={true} testID="checkbox" />,
+    );
+    expect(getByTestId('checkbox')).toBeTruthy();
   });
 
   it('renders with disabled state', () => {
-    const { toJSON } = render(<Checkbox {...defaultProps} disabled={true} />);
-    expect(toJSON()).toBeTruthy();
+    const { getByTestId } = render(
+      <Checkbox {...defaultProps} disabled={true} testID="checkbox" />,
+    );
+    expect(getByTestId('checkbox')).toBeTruthy();
+  });
+
+  it('does not call onChange when disabled and pressed', () => {
+    const onChange = jest.fn();
+    const { getByTestId } = render(
+      <Checkbox
+        {...defaultProps}
+        onChange={onChange}
+        disabled={true}
+        testID="checkbox"
+      />,
+    );
+
+    const checkbox = getByTestId('checkbox');
+    fireEvent.press(checkbox);
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   it('applies custom className', () => {
-    const { toJSON } = render(
-      <Checkbox {...defaultProps} className="custom-checkbox-class" />,
+    const { getByTestId } = render(
+      <Checkbox
+        {...defaultProps}
+        className="custom-checkbox-class"
+        testID="checkbox"
+      />,
     );
-    expect(toJSON()).toBeTruthy();
+    expect(getByTestId('checkbox')).toBeTruthy();
   });
 
   it('renders with children', () => {
-    const { toJSON } = render(
-      <Checkbox {...defaultProps}>
-        <div>Custom Content</div>
+    const { getByTestId } = render(
+      <Checkbox {...defaultProps} testID="checkbox">
+        <View>Custom Content</View>
       </Checkbox>,
     );
-    expect(toJSON()).toBeTruthy();
+    expect(getByTestId('checkbox')).toBeTruthy();
   });
 
   it('renders with different labels', () => {
@@ -81,33 +115,128 @@ describe('Checkbox', () => {
   });
 
   it('displays check icon when checked', () => {
-    const { toJSON } = render(<Checkbox {...defaultProps} checked={true} />);
-    expect(toJSON()).toBeTruthy();
+    const { getByTestId } = render(
+      <Checkbox {...defaultProps} checked={true} testID="checkbox" />,
+    );
+    expect(getByTestId('checkbox')).toBeTruthy();
   });
 
   it('does not display check icon when unchecked', () => {
-    const { toJSON } = render(<Checkbox {...defaultProps} checked={false} />);
-    expect(toJSON()).toBeTruthy();
+    const { getByTestId } = render(
+      <Checkbox {...defaultProps} checked={false} testID="checkbox" />,
+    );
+    expect(getByTestId('checkbox')).toBeTruthy();
   });
 
   it('applies correct styling classes', () => {
-    const { toJSON } = render(<Checkbox {...defaultProps} />);
-    expect(toJSON()).toBeTruthy();
+    const { getByTestId } = render(
+      <Checkbox {...defaultProps} testID="checkbox" />,
+    );
+    expect(getByTestId('checkbox')).toBeTruthy();
   });
 
   it('renders with all props combined', () => {
-    const { getByText, toJSON } = render(
+    const { getByText, getByTestId } = render(
       <Checkbox
         {...defaultProps}
         label="Test Label"
         checked={true}
         disabled={false}
         className="custom-class"
+        testID="checkbox"
       >
-        <div>Child Content</div>
+        <View>Child Content</View>
       </Checkbox>,
     );
     expect(getByText('Test Label')).toBeTruthy();
+    expect(getByTestId('checkbox')).toBeTruthy();
+  });
+
+  it('toggles checked state when pressed', () => {
+    const onChange = jest.fn();
+    const { getByTestId, rerender } = render(
+      <Checkbox {...defaultProps} onChange={onChange} testID="checkbox" />,
+    );
+
+    const checkbox = getByTestId('checkbox');
+
+    // First press - should check
+    fireEvent.press(checkbox);
+    expect(onChange).toHaveBeenCalledWith({
+      name: 'test-checkbox',
+      value: true,
+    });
+
+    // Reset mock and update props to reflect the change
+    onChange.mockClear();
+    rerender(
+      <Checkbox
+        {...defaultProps}
+        checked={true}
+        onChange={onChange}
+        testID="checkbox"
+      />,
+    );
+
+    // Second press - should uncheck
+    fireEvent.press(checkbox);
+    expect(onChange).toHaveBeenCalledWith({
+      name: 'test-checkbox',
+      value: false,
+    });
+  });
+
+  it('has correct accessibility props', () => {
+    const { getByTestId } = render(
+      <Checkbox {...defaultProps} testID="checkbox" />,
+    );
+    const checkbox = getByTestId('checkbox');
+    expect(checkbox.props.accessibilityRole).toBe('checkbox');
+    expect(checkbox.props.accessibilityState).toEqual({
+      checked: false,
+      disabled: false,
+    });
+  });
+
+  it('has correct accessibility props when checked', () => {
+    const { getByTestId } = render(
+      <Checkbox {...defaultProps} checked={true} testID="checkbox" />,
+    );
+    const checkbox = getByTestId('checkbox');
+    expect(checkbox.props.accessibilityState).toEqual({
+      checked: true,
+      disabled: false,
+    });
+  });
+
+  it('has correct accessibility props when disabled', () => {
+    const { getByTestId } = render(
+      <Checkbox {...defaultProps} disabled={true} testID="checkbox" />,
+    );
+    const checkbox = getByTestId('checkbox');
+    expect(checkbox.props.accessibilityState).toEqual({
+      checked: false,
+      disabled: true,
+    });
+  });
+
+  it('renders without testID when not provided', () => {
+    const { toJSON } = render(<Checkbox {...defaultProps} />);
     expect(toJSON()).toBeTruthy();
+  });
+
+  it('handles multiple rapid presses', () => {
+    const onChange = jest.fn();
+    const { getByTestId } = render(
+      <Checkbox {...defaultProps} onChange={onChange} testID="checkbox" />,
+    );
+
+    const checkbox = getByTestId('checkbox');
+
+    fireEvent.press(checkbox);
+    fireEvent.press(checkbox);
+    fireEvent.press(checkbox);
+
+    expect(onChange).toHaveBeenCalledTimes(3);
   });
 });

@@ -1,5 +1,5 @@
-import { create } from 'zustand';
 import { router } from 'expo-router';
+import { create } from 'zustand';
 
 import { AuthStore, authStore } from '@/stores/authStore';
 

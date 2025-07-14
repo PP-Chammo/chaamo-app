@@ -91,12 +91,6 @@ export default TextField;
 const classes = {
   container: 'gap-2',
   label: 'text-slate-500 font-medium text-md ml-4',
-  title: 'text-2xl font-bold text-teal-600',
-  description: 'text-slate-500 font-medium text-md mb-6',
-  login: 'text-gray-500 text-md text-center underline font-bold',
-  link: 'text-teal-600 underline font-bold',
-  loginButton: 'my-2',
-  signUp: 'text-slate-500 text-md text-center mb-8',
   required: 'text-red-500',
   inputContainer: 'relative',
   input:

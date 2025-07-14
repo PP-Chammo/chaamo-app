@@ -136,7 +136,7 @@ const classes = {
     'primary-light': 'bg-teal-100/40 border border-teal-500',
     secondary: 'bg-gray-200',
     danger: 'bg-red-600',
-    light: 'bg-white border border-gray-300',
+    light: 'border border-gray-300',
     link: 'bg-transparent',
     ghost: 'bg-transparent',
   },

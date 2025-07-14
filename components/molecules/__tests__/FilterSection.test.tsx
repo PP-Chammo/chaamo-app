@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { render } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
+import { router } from 'expo-router';
 
 import FilterSection from '../FilterSection';
 
@@ -48,5 +49,12 @@ describe('FilterSection', () => {
     const resultText = getByTestId('filter-result-text');
     expect(resultText.props.children).toContain(0);
     expect(resultText.props.children).toContain('test query');
+  });
+
+  it('calls router.push when advanced filter button is pressed', () => {
+    const { getByTestId } = render(<FilterSection />);
+    const advancedButton = getByTestId('filter-advanced-button');
+    fireEvent.press(advancedButton);
+    expect(router.push).toHaveBeenCalledWith('/screens/advanced-filter');
   });
 });

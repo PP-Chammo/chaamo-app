@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { render, fireEvent } from '@testing-library/react-native';
+import { View } from 'react-native';
 
 import CommonCard from '../CommonCard';
 
@@ -121,5 +122,26 @@ describe('CommonCard', () => {
       'A very long card title for testing purposes',
     );
     expect(getByTestId('common-card-price').props.children).toBe('$1234567890');
+  });
+
+  it('renders right icon with default props when only onRightIconPress is provided', () => {
+    const onRightIconPress = jest.fn();
+    const { getByTestId } = render(
+      <CommonCard {...defaultProps} onRightIconPress={onRightIconPress} />,
+    );
+    expect(getByTestId('right-icon-button')).toBeTruthy();
+  });
+
+  it('does not render right icon button when onRightIconPress is not provided', () => {
+    const { queryByTestId } = render(<CommonCard {...defaultProps} />);
+    expect(queryByTestId('right-icon-button')).toBeNull();
+  });
+
+  it('renders right component when provided instead of right icon', () => {
+    const rightComponent = <View testID="custom-right-component">Custom</View>;
+    const { getByTestId } = render(
+      <CommonCard {...defaultProps} rightComponent={rightComponent} />,
+    );
+    expect(getByTestId('custom-right-component')).toBeTruthy();
   });
 });

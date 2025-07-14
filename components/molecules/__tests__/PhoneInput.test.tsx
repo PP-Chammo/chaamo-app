@@ -52,4 +52,18 @@ describe('PhoneNumberInput', () => {
     const { getByTestId } = render(<PhoneNumberInput {...defaultProps} />);
     expect(getByTestId('phone-input-container')).toBeTruthy();
   });
+
+  it('calls onChange when text is entered', () => {
+    const onChange = jest.fn();
+    const { getByTestId } = render(
+      <PhoneNumberInput {...defaultProps} onChange={onChange} name="phone" />,
+    );
+    const phoneInput = getByTestId('phone-input-field');
+    // Simulate a change
+    phoneInput.props.onChangeFormattedText('+1234567890');
+    expect(onChange).toHaveBeenCalledWith({
+      name: 'phone',
+      value: '+1234567890',
+    });
+  });
 });

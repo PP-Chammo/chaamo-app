@@ -12,6 +12,7 @@ jest.mock('date-fns', () => {
   };
 });
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { isToday, isYesterday, isThisWeek, isThisYear } = require('date-fns');
 
 describe('date utils', () => {

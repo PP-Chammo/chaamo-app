@@ -128,4 +128,20 @@ describe('PostCard', () => {
     );
     expect(getByTestId('post-card')).toBeTruthy();
   });
+
+  it('handles missing callback props', () => {
+    const { getByTestId } = render(<PostCard post={mockPost} />);
+    expect(getByTestId('post-card')).toBeTruthy();
+
+    // Should not throw when callbacks are not provided
+    const commentButton = getByTestId('comment-button');
+    const likeButton = getByTestId('like-button');
+    const contextMenu = getByTestId('post-context-menu');
+
+    expect(() => {
+      fireEvent.press(commentButton);
+      fireEvent.press(likeButton);
+      fireEvent.press(contextMenu);
+    }).not.toThrow();
+  });
 });

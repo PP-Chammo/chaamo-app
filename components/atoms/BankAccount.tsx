@@ -41,7 +41,6 @@ const classes = {
   container: 'flex-row justify-between items-center',
   cardInfoContainer: 'flex-row items-center gap-2',
   cardInfoText: 'text-md text-slate-600',
-  dotsContainer: 'flex-row items-center gap-2',
 };
 
 export default BankAccount;

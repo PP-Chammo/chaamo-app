@@ -81,8 +81,6 @@ const classes = {
     'w-36 min-h-[170px] h-auto flex items-center justify-center bg-gray-200 rounded-lg',
   title: 'text-sm !text-gray-800',
   price: 'text-sm !text-gray-800',
-  marketContainer: 'flex flex-row items-center gap-1.5',
-  indicator: 'text-xs text-gray-500',
   rightIconButton:
     'absolute top-2 right-2 z-10 w-8 h-8 bg-white rounded-full items-center justify-center',
 };
