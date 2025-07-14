@@ -6,6 +6,7 @@ import { Image, TouchableOpacity, View } from 'react-native';
 
 import EBayImage from '@/assets/svg/ebay.svg';
 import { Badge, Icon, Label } from '@/components/atoms';
+import { PriceIndicator } from '@/components/molecules';
 import { CommonCardType } from '@/types/card';
 import { getColor } from '@/utils/getColor';
 
@@ -111,11 +112,7 @@ const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
         >
           {marketPrice}
         </Label>
-        <Icon
-          name={indicator === 'up' ? 'trending-up' : 'trending-down'}
-          color={getColor(indicator === 'up' ? 'primary-500' : 'red-600')}
-          size={16}
-        />
+        <PriceIndicator direction={indicator} />
       </View>
     </TouchableOpacity>
   );

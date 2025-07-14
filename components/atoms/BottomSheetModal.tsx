@@ -1,18 +1,18 @@
-import React, { useEffect, useRef, useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { clsx } from 'clsx';
 import {
   Animated,
   Dimensions,
-  PanResponder,
-  Pressable,
-  View,
   GestureResponderEvent,
-  PanResponderGestureState,
   Keyboard,
   KeyboardEvent,
-  ScrollView,
+  PanResponder,
+  PanResponderGestureState,
   Platform,
+  Pressable,
+  ScrollView,
+  View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -178,7 +178,7 @@ const classes = {
   sheet: 'absolute left-0 right-0 bottom-0 rounded-t-3xl shadow-lg',
   handleContainer: 'items-center pt-4 pb-2',
   handle: 'w-16 h-1.5 rounded bg-white/70',
-  content: 'flex-1 px-6 pb-6 justify-center',
+  content: 'flex-1 justify-center',
 };
 
 export default BottomSheetModal;

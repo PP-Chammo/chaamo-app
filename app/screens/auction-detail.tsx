@@ -1,21 +1,20 @@
 import React from 'react';
 
-import { clsx } from 'clsx';
 import { router } from 'expo-router';
 import { cssInterop } from 'nativewind';
-import { ScrollView, View, TouchableOpacity } from 'react-native';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 
 import {
+  BottomSheetModal,
   Icon,
   Label,
   ScreenContainer,
-  Button,
-  BottomSheetModal,
 } from '@/components/atoms';
 import { Chart, Header, ProductDetailInfo } from '@/components/molecules';
+import AuctionBottomBar from '@/components/molecules/AuctionDetailBottomBar';
 import PlaceBidModalContent from '@/components/molecules/PlaceBidModalContent';
 import { ListedByList, SimilarAdList } from '@/components/organisms';
-import { dummyPortfolioValueData, dummyAuctionDetail } from '@/constants/dummy';
+import { dummyAuctionDetail, dummyPortfolioValueData } from '@/constants/dummy';
 import { getColor } from '@/utils/getColor';
 
 cssInterop(ScrollView, {
@@ -74,28 +73,12 @@ export default function AuctionDetailScreen() {
         </TouchableOpacity>
         <SimilarAdList />
       </ScrollView>
-      <View className={clsx(classes.bottomBar, { hidden: showModal })}>
-        <View className={classes.timeBarInner}>
-          <Label className={classes.timeText}>7d 15h</Label>
-        </View>
-        <View className={classes.bottomBarLeft}>
-          <Label className={classes.highestBidLabel}>Highest Bid</Label>
-          <Label className={classes.highestBidValue}>$400</Label>
-        </View>
-        <Button
-          variant="light"
-          className={classes.bidButton}
-          textClassName={classes.bidText}
-          onPress={handleBidNow}
-        >
-          Bid Now
-        </Button>
-      </View>
+      <AuctionBottomBar showModal={showModal} onBidNowPress={handleBidNow} />
       <BottomSheetModal
         show={showModal}
         onDismiss={() => setShowModal(false)}
         className={classes.bottomSheet}
-        height={416}
+        height={390}
       >
         <PlaceBidModalContent />
       </BottomSheetModal>

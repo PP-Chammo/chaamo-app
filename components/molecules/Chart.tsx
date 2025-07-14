@@ -190,10 +190,10 @@ const classes = {
   card: 'bg-white rounded-2xl p-4.5 shadow-sm border border-slate-200',
   tabContainer:
     'flex-row border border-primary-100 rounded-full p-0.5 mb-3 mt-1',
-  tab: 'flex-1 items-center py-2 rounded-full bg-white',
-  tabActive: 'flex-1 items-center py-2 rounded-full bg-primary-500',
-  tabLabel: '!text-gray-800',
-  tabLabelActive: 'text-white',
+  tab: 'flex-1 items-center py-2.5 rounded-full bg-white',
+  tabActive: 'flex-1 items-center py-2.5 rounded-full bg-primary-500',
+  tabLabel: '!text-gray-800 !text-sm font-medium',
+  tabLabelActive: 'text-white !text-sm font-medium',
   chartContainer: 'w-full relative mb-2',
   xAxisContainer:
     'absolute left-0 right-0 top-2 flex-row justify-between px-[-10px]',

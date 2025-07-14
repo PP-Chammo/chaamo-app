@@ -1,32 +1,25 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { clsx } from 'clsx';
-import { formatDistanceToNow } from 'date-fns';
 import { router } from 'expo-router';
 import { cssInterop } from 'nativewind';
-import { ScrollView, View, TouchableOpacity } from 'react-native';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 
-import EBayImage from '@/assets/svg/ebay.svg';
 import {
+  BottomSheetModal,
   Icon,
   Label,
   ScreenContainer,
-  Row,
-  Button,
-  BottomSheetModal,
 } from '@/components/atoms';
 import {
   Chart,
-  CommonCard,
   Header,
-  ListContainer,
-  People,
+  PlaceOfferModalContent,
+  ProductDetailBottomBar,
+  ProductDetailInfo,
 } from '@/components/molecules';
-import {
-  dummyPortfolioValueData,
-  dummyAuctionDetail,
-  dummyFeaturedCardList,
-} from '@/constants/dummy';
+import { ListedByList, SimilarAdList } from '@/components/organisms';
+import { dummyAuctionDetail, dummyPortfolioValueData } from '@/constants/dummy';
 import { getColor } from '@/utils/getColor';
 
 cssInterop(ScrollView, {
@@ -35,23 +28,28 @@ cssInterop(ScrollView, {
   },
 });
 
-export default function AuctionDetailScreen() {
+export default function ProductDetailScreen() {
   const card = dummyAuctionDetail;
 
-  const [showModal, setShowModal] = React.useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-  const handleToggleFavorite = React.useCallback(() => {
+  const handleToggleFavorite = useCallback(() => {
     console.log('toggle favorite');
   }, []);
 
-  const handleBidNow = React.useCallback(() => {
-    // TODO: Implement bid logic/modal
-    console.log('Bid Now pressed');
+  const handleBuyNow = useCallback(() => {
     setShowModal(true);
   }, []);
 
+  const handleMakeAnOffer = useCallback(() => {}, []);
+
   return (
-    <ScreenContainer classNameBottom={classes.containerBottom}>
+    <ScreenContainer
+      classNameBottom={clsx({
+        [classes.containerBottom]: !showModal,
+        [classes.containerBottomPrimary]: showModal,
+      })}
+    >
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerClassName={classes.scrollView}
@@ -70,105 +68,49 @@ export default function AuctionDetailScreen() {
             <Icon name="cards-outline" size={64} color={getColor('gray-400')} />
           </View>
         </View>
-        <View className={classes.cardInfoWrapper}>
-          <View className={classes.priceRow}>
-            <Label variant="subtitle" className={classes.price}>
-              {card.currentPrice}
-            </Label>
-            <Row className={classes.dateRow}>
-              <Icon
-                name="calendar"
-                variant="SimpleLineIcons"
-                size={12}
-                color={getColor('gray-400')}
-              />
-              <Label className={classes.date}>
-                {formatDistanceToNow(new Date(card.date), { addSuffix: true })}
-              </Label>
-            </Row>
-          </View>
-          <Label variant="subtitle" className={classes.name}>
-            {card.title}
-          </Label>
-          <View className={classes.ebayRow}>
-            <EBayImage />
-            <Label className={classes.priceValueLabel}>Price Value: </Label>
-            <Label className={classes.priceValue}>{card.bidPrice}</Label>
-          </View>
-          <View className={classes.descriptionWrapper}>
-            <Label className={classes.descriptionTitle}>Description</Label>
-            <Label className={classes.description}>{card.description}</Label>
-          </View>
-        </View>
+        <ProductDetailInfo
+          price={card.currentPrice}
+          date={card.date}
+          title={card.title}
+          marketPrice={card.bidPrice}
+          description={card.description}
+          indicator="down"
+        />
         <View className={classes.chartWrapper}>
           <Chart data={dummyPortfolioValueData} />
         </View>
-        <View className={classes.listedByWrapper}>
-          <Label variant="subtitle">Listed By</Label>
-          <People fullname="John Doe" onViewProfilePress={() => {}} />
-        </View>
+        <ListedByList />
         <TouchableOpacity className={classes.reportButton}>
           <Icon name="flag" size={18} />
           <Label variant="subtitle">Report this Ad</Label>
         </TouchableOpacity>
-        <ListContainer noLink title="Similar Ads" data={dummyFeaturedCardList}>
-          {(item: (typeof dummyFeaturedCardList)[number]) => (
-            <CommonCard
-              id={item.id}
-              imageUrl={item.imageUrl}
-              title={item.title}
-              price={item.price}
-              marketPrice={item.marketPrice}
-              marketType={item.marketType}
-              indicator={item.indicator}
-            />
-          )}
-        </ListContainer>
+        <SimilarAdList />
       </ScrollView>
-      <View className={clsx(classes.bottomBar, { hidden: showModal })}>
-        <View className={classes.timeBarInner}>
-          <Label className={classes.timeText}>7d 15h</Label>
-        </View>
-        <View className={classes.bottomBarLeft}>
-          <Label className={classes.highestBidLabel}>Highest Bid</Label>
-          <Label className={classes.highestBidValue}>$400</Label>
-        </View>
-        <Button
-          variant="light"
-          className={classes.bidButton}
-          textClassName={classes.bidText}
-          onPress={handleBidNow}
-        >
-          Bid Now
-        </Button>
-      </View>
+      <ProductDetailBottomBar
+        showModal={showModal}
+        onBuyNowPress={handleBuyNow}
+        onMakeAnOfferPress={handleMakeAnOffer}
+      />
       <BottomSheetModal
         show={showModal}
         onDismiss={() => setShowModal(false)}
         className={classes.bottomSheet}
+        height={230}
       >
-        <Label>this is modal content</Label>
+        <PlaceOfferModalContent />
       </BottomSheetModal>
     </ScreenContainer>
   );
 }
 
 const classes = {
-  containerBottom: 'bg-primary-500',
+  containerBottom: 'bg-white',
+  containerBottomPrimary: 'bg-primary-500',
   header: '!bg-transparent',
-  scrollView: 'gap-4.5 pb-32',
-  cardInfoWrapper: 'px-4.5',
+  scrollView: 'gap-4.5 pb-20',
   cardImageWrapper: 'items-center',
   cardImage:
     'w-56 h-80 rounded-xl border border-gray-200 bg-gray-200 items-center justify-center',
-  priceRow: 'flex-row items-center justify-between',
-  price: 'text-primary-500 text-xl font-bold',
-  date: 'text-sm text-gray-400',
-  name: 'text-lg font-semibold mt-1',
-  ebayRow: 'flex-row items-center mt-1 gap-1',
-  descriptionWrapper: 'mt-4',
-  descriptionTitle: 'text-base font-semibold mb-1',
-  description: 'text-base text-gray-700',
   chartWrapper: 'px-4.5',
   priceValueLabel: 'text-sm text-gray-500',
   priceValue: 'text-sm text-gray-700 font-bold',
@@ -176,7 +118,6 @@ const classes = {
   contextMenuDelete: 'py-2 px-3 !text-red-900',
   contextMenuDivider: 'h-px bg-gray-200',
   dateRow: 'gap-1.5',
-  listedByWrapper: 'px-4.5 gap-2',
   reportButton:
     'flex-row justify-center items-center gap-1.5 mx-4.5 py-3 border-y border-slate-200',
   reportText: 'text-white text-sm font-semibold',

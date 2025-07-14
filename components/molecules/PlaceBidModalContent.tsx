@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-import { View, TextInput, Pressable } from 'react-native';
+import { TextInput, View } from 'react-native';
 
-import { Label, Button } from '@/components/atoms';
+import { Button, Label, Row } from '@/components/atoms';
 
 const quickBids = [5000, 6000, 7000];
 
@@ -17,52 +17,45 @@ const PlaceBidModalContent: React.FC = () => {
 
   return (
     <View className={classes.container}>
-      <View className={classes.headerRow}>
+      <Row between className={classes.headerRow}>
         <Label className={classes.title}>Place Bid</Label>
         <Label className={classes.time}>7d 15h</Label>
+      </Row>
+      <View className={classes.maxBidRow}>
+        <Label className={classes.label}>Max Bid</Label>
+        <TextInput
+          className={classes.input}
+          value={`$${bid}`}
+          onChangeText={(v) => setBid(v.replace(/\D/g, ''))}
+          keyboardType="numeric"
+          placeholder="$0"
+          placeholderTextColor="#fff"
+          selectionColor="#fff"
+        />
+        <Label className={classes.currentBid}>Current Bid: $4000</Label>
       </View>
-      <Label className={classes.label}>Max Bid</Label>
-      <TextInput
-        className={classes.input}
-        value={`$${bid}`}
-        onChangeText={(v) => setBid(v.replace(/[^0-9]/g, ''))}
-        keyboardType="numeric"
-        placeholder="$0"
-        placeholderTextColor="#fff"
-        selectionColor="#fff"
-      />
-      <Label className={classes.currentBid}>Current Bid: $4000</Label>
-      <View className={classes.quickBidRow}>
+      <Row className={classes.quickBidRow}>
         {quickBids.map((val, idx) => (
-          <Pressable
+          <Button
             key={val}
-            className={
-              selected === idx ? classes.quickBidActive : classes.quickBid
-            }
+            variant={selected === idx ? 'white' : 'white-light'}
+            size="small"
+            className={classes.quickBid}
             onPress={() => handleQuickBid(val, idx)}
           >
-            <Label
-              className={
-                selected === idx
-                  ? classes.quickBidTextActive
-                  : classes.quickBidText
-              }
-            >
-              ${val}
-            </Label>
-          </Pressable>
+            ${val}
+          </Button>
         ))}
-      </View>
+      </Row>
       <Label className={classes.note}>
         <Label className={classes.noteBold}>Note:</Label> The minimum threshold
         for placing a bid is set at $2000. Please ensure your bid meets or
         exceeds this amount.
       </Label>
       <Button
-        variant="light"
+        variant="white-light"
         size="small"
         className={classes.placeBidBtn}
-        textClassName={classes.placeBidBtnText}
       >
         Place Bid
       </Button>
@@ -71,23 +64,19 @@ const PlaceBidModalContent: React.FC = () => {
 };
 
 const classes = {
-  container: 'flex-1 bg-primary-500 rounded-t-3xl px-6 pt-2 pb-6',
-  headerRow: 'flex-row justify-between items-center mb-6',
-  title: 'text-white text-2xl font-bold',
-  time: 'text-white text-lg font-bold',
-  label: 'text-white text-base font-semibold mb-1',
+  container: 'flex-1 gap-4.5 bg-primary-500 rounded-t-3xl p-4.5',
+  headerRow: 'mb-2',
+  title: 'text-white font-bold',
+  time: 'text-white font-semibold',
+  maxBidRow: 'gap-0.5',
+  label: 'text-white text-base font-semibold mb-2',
   input: 'text-white text-3xl font-bold border-b border-white mb-2 pb-1',
-  currentBid: 'text-white text-base mb-4',
-  quickBidRow: 'flex-row justify-between mb-6',
-  quickBid: 'flex-1 border border-white rounded-full py-2 mx-1 items-center',
-  quickBidActive:
-    'flex-1 bg-white border border-white rounded-full py-2 mx-1 items-center',
-  quickBidText: 'text-white text-lg font-bold',
-  quickBidTextActive: 'text-primary-500 text-lg font-bold',
-  note: 'text-white text-base mb-6',
-  noteBold: 'font-bold',
-  placeBidBtn: 'border-2 border-white rounded-full py-3 mt-2',
-  placeBidBtnText: 'text-white text-lg font-bold',
+  currentBid: 'text-white text-sm',
+  quickBidRow: 'gap-5',
+  quickBid: 'flex-1',
+  note: 'text-white',
+  noteBold: 'text-white font-bold',
+  placeBidBtn: 'mt-2',
 };
 
 export default PlaceBidModalContent;
