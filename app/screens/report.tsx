@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 
 import { Button, Label, ScreenContainer } from '@/components/atoms';
-import { Header, TextField, RadioInput } from '@/components/molecules';
+import { Header, RadioInput, TextField } from '@/components/molecules';
 import { reportOptions } from '@/constants/reportOptions';
 
 export default function ReportScreen() {
@@ -34,6 +34,7 @@ export default function ReportScreen() {
             })}
           >
             <RadioInput
+              name="report"
               label={option.label}
               selected={selected === option.label}
               onPress={() => setSelected(option.label)}

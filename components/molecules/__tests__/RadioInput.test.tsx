@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import RadioInput from '../RadioInput';
 
@@ -8,6 +8,7 @@ describe('RadioInput', () => {
   const defaultProps = {
     label: 'Test Option',
     selected: false,
+    name: 'test-radio',
     onPress: jest.fn(),
   };
 
@@ -16,7 +17,7 @@ describe('RadioInput', () => {
     expect(getByText('Test Option')).toBeTruthy();
   });
 
-  it('calls onPress when pressed', () => {
+  it('calls onPress when pressed with correct parameters', () => {
     const onPress = jest.fn();
     const { getByText } = render(
       <RadioInput {...defaultProps} onPress={onPress} />,
@@ -24,6 +25,10 @@ describe('RadioInput', () => {
 
     fireEvent.press(getByText('Test Option'));
     expect(onPress).toHaveBeenCalledTimes(1);
+    expect(onPress).toHaveBeenCalledWith({
+      name: 'test-radio',
+      value: 'Test Option',
+    });
   });
 
   it('renders with selected state', () => {
@@ -81,6 +86,55 @@ describe('RadioInput', () => {
 
   it('applies correct styling classes', () => {
     const { toJSON } = render(<RadioInput {...defaultProps} />);
+    expect(toJSON()).toBeTruthy();
+  });
+
+  it('uses keyLabel as value when provided', () => {
+    const onPress = jest.fn();
+    const { getByText } = render(
+      <RadioInput
+        {...defaultProps}
+        onPress={onPress}
+        keyLabel="insurance"
+        label="Protect your purchase with optional insurance"
+      />,
+    );
+
+    fireEvent.press(getByText('Protect your purchase with optional insurance'));
+    expect(onPress).toHaveBeenCalledWith({
+      name: 'test-radio',
+      value: 'insurance',
+    });
+  });
+
+  it('uses label as value when keyLabel is not provided', () => {
+    const onPress = jest.fn();
+    const { getByText } = render(
+      <RadioInput
+        {...defaultProps}
+        onPress={onPress}
+        label="Ship to pickup point"
+      />,
+    );
+
+    fireEvent.press(getByText('Ship to pickup point'));
+    expect(onPress).toHaveBeenCalledWith({
+      name: 'test-radio',
+      value: 'Ship to pickup point',
+    });
+  });
+
+  it('renders with reverse layout', () => {
+    const { getByText, toJSON } = render(
+      <RadioInput {...defaultProps} reverse={true} />,
+    );
+    expect(getByText('Test Option')).toBeTruthy();
+    expect(toJSON()).toBeTruthy();
+  });
+
+  it('renders without reverse layout by default', () => {
+    const { getByText, toJSON } = render(<RadioInput {...defaultProps} />);
+    expect(getByText('Test Option')).toBeTruthy();
     expect(toJSON()).toBeTruthy();
   });
 });
