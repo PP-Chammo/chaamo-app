@@ -1740,6 +1740,13 @@
   dependencies:
     merge-options "^3.0.4"
 
+"@react-native-community/datetimepicker@8.4.1":
+  version "8.4.1"
+  resolved "https://registry.npmjs.org/@react-native-community/datetimepicker/-/datetimepicker-8.4.1.tgz#a798c237f01ae96658d5c93292fc2955dad04a83"
+  integrity sha512-DrK+CUS5fZnz8dhzBezirkzQTcNDdaXer3oDLh0z4nc2tbdIdnzwvXCvi8IEOIvleoc9L95xS5tKUl0/Xv71Mg==
+  dependencies:
+    invariant "^2.2.4"
+
 "@react-native/assets-registry@0.79.5":
   version "0.79.5"
   resolved "https://registry.yarnpkg.com/@react-native/assets-registry/-/assets-registry-0.79.5.tgz#90a178ec6646a22eb4218285cc2df7fd82603e34"
@@ -3149,6 +3156,13 @@ caniuse-lite@^1.0.30001726:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001726.tgz#a15bd87d5a4bf01f6b6f70ae7c97fdfd28b5ae47"
   integrity sha512-VQAUIUzBiZ/UnlM28fSp2CRF3ivUn1BWEvxMcVTNwpw91Py1pGbPIyIKtd+tzct9C3ouceCVdGAXxZOpZAsgdw==
 
+card-validator@^10.0.3:
+  version "10.0.3"
+  resolved "https://registry.npmjs.org/card-validator/-/card-validator-10.0.3.tgz#61640cfa1d3b5f387247b696ef26693558925f94"
+  integrity sha512-xOEDsK3hojV0OIpmrR64eZGpngnOqRDEP20O+WSRtvjLSW6nyekW4i2N9SzYg679uFO3RyHcFHxb+mml5tXc4A==
+  dependencies:
+    credit-card-type "^10.0.2"
+
 chalk@^2.0.1, chalk@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.2.tgz#cd42541677a54333cf541a49108c1432b44c9424"
@@ -3472,6 +3486,11 @@ create-jest@^29.7.0:
     jest-config "^29.7.0"
     jest-util "^29.7.0"
     prompts "^2.0.1"
+
+credit-card-type@^10.0.2:
+  version "10.0.2"
+  resolved "https://registry.npmjs.org/credit-card-type/-/credit-card-type-10.0.2.tgz#a9be299ecd0ea44f4b51c8212109670bb0f4e669"
+  integrity sha512-vt/iQokU0mtrT7ceRU75FSmWnIh5JFpLsUUUWYRmztYekOGm0ZbCuzwFTbNkq41k92y+0B8ChscFhRN9DhVZEA==
 
 cross-fetch@^3.1.5:
   version "3.2.0"
