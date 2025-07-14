@@ -48,10 +48,10 @@ export default function ReviewsProfile() {
 const classes = {
   contentContainer: 'p-4.5',
   reviewContainer:
-    'bg-white items-center justify-between gap-2 p-5 border border-teal-100 rounded-lg',
+    'bg-white items-center justify-between gap-2 p-5 border border-primary-100 rounded-lg',
   outstandingText: 'text-sm text-slate-500',
   reviewHeader: 'flex flex-row items-center justify-between my-5',
   reviewHeaderRight:
-    'bg-white flex-row items-center gap-2 py-1 px-4 rounded-full border border-teal-100',
+    'bg-white flex-row items-center gap-2 py-1 px-4 rounded-full border border-primary-100',
   reviewList: 'gap-5',
 };

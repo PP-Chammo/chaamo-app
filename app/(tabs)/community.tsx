@@ -18,7 +18,7 @@ export default function CommunityScreen() {
         title="Community"
         onBackPress={() => router.back()}
         rightIcon="plus-circle"
-        rightIconColor={getColor('teal-600')}
+        rightIconColor={getColor('primary-500')}
         rightIconSize={28}
         onRightPress={() => router.push('/screens/new-post')}
         className={classes.header}

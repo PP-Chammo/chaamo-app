@@ -76,7 +76,7 @@ const PostCard: React.FC<PostCardProps> = memo(function PostCard({
           onPress={onCommentPress}
           icon="comment-outline"
           iconSize={22}
-          iconColor={getColor('teal-600')}
+          iconColor={getColor('primary-500')}
           className={classes.actionButton}
           textClassName={classes.actionButtonTealText}
         >
@@ -115,7 +115,7 @@ const classes = {
   postText: 'text-base leading-5.5 !text-gray-700 px-5',
   postActions: 'flex justify-end gap-0 px-5 py-2',
   actionButton: '!gap-0 !px-3',
-  actionButtonTealText: '!text-base !font-medium text-teal-600 !px-2',
+  actionButtonTealText: '!text-base !font-medium text-primary-500 !px-2',
   actionButtonText: '!text-base !font-medium text-gray-500 !px-2',
 };
 

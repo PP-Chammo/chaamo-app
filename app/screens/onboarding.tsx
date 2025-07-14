@@ -99,7 +99,7 @@ export default function OnboardingScreen() {
 const classes = {
   container: 'flex-1',
   background: 'flex-1',
-  link: 'text-teal-600 underline font-bold',
+  link: 'text-primary-500 underline font-bold',
   terms: 'text-slate-500 text-sm',
   content: 'flex-1 justify-end',
   logo: 'items-center gap-2 mb-10',
@@ -109,7 +109,7 @@ const classes = {
   logoText: 'text-[30px] text-yellow-600',
   blurView: 'p-4 z-20',
   termsContainer:
-    'my-5 bg-teal-100 border border-teal-400 py-3 px-2 rounded-xl',
+    'my-5 bg-primary-100 border border-primary-400 py-3 px-2 rounded-xl',
   footer: 'h-56 w-full absolute bottom-0 z-0 bg-white',
   bottomBlurView: 'absolute bottom-56 h-56 left-0 right-0 z-0',
 };

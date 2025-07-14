@@ -59,13 +59,13 @@ const SetupProfileTabs = memo(function SetupProfileTabs() {
 
 const classes = {
   TabTitle: {
-    active: 'text-teal-600 font-semibold mb-2',
-    previous: 'text-teal-700/30 font-semibold mb-2',
+    active: 'text-primary-500 font-semibold mb-2',
+    previous: 'text-primary-700/30 font-semibold mb-2',
     inactive: 'text-slate-500 font-medium mb-2',
   },
   TabIndicator: {
-    active: 'h-1 bg-teal-500 w-full rounded-full',
-    previous: 'h-1 bg-teal-500/30 w-full rounded-full',
+    active: 'h-1 bg-primary-500 w-full rounded-full',
+    previous: 'h-1 bg-primary-500/30 w-full rounded-full',
     inactive: 'h-1 bg-slate-400 w-full rounded-full',
   },
 };

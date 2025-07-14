@@ -31,7 +31,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = memo(
         <Label className={classes.benefits}>Benefits</Label>
         {benefits?.map((benefit) => (
           <Row key={benefit}>
-            <Icon name="check" size={24} color={getColor('teal-600')} />
+            <Icon name="check" size={24} color={getColor('primary-500')} />
             <Label>{benefit}</Label>
           </Row>
         ))}
@@ -43,12 +43,12 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = memo(
 const classes = {
   container: 'bg-white rounded-lg px-6 py-4 border border-amber-500',
   plan: 'text-md bg-yellow-400 py-2 px-6 rounded-lg font-bold self-start mt-7 mb-10 uppercase',
-  title: '!text-2xl font-bold text-teal-600 mb-3',
+  title: '!text-2xl font-bold text-primary-500 mb-3',
   description: 'text-lg text-gray-500',
-  price: '!text-2xl font-bold text-teal-600 my-8',
+  price: '!text-2xl font-bold text-primary-500 my-8',
   benefits: 'mb-5',
-  priceSuffix: 'text-sm text-teal-600 font-medium',
-  planName: '!text-2xl font-bold text-teal-600 capitalize',
+  priceSuffix: 'text-sm text-primary-500 font-medium',
+  planName: '!text-2xl font-bold text-primary-500 capitalize',
 };
 
 export default SubscriptionCard;

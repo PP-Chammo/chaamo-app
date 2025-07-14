@@ -32,7 +32,7 @@ export default function OTPSuccessScreen() {
 }
 
 const classes = {
-  title: 'text-2xl font-bold text-teal-600 mb-2 text-center mt-12',
+  title: 'text-2xl font-bold text-primary-500 mb-2 text-center mt-12',
   description: 'text-slate-500 text-md font-medium mb-8 text-center',
   successIconContainer: 'mx-auto text-center mt-12',
   container: 'flex-1 px-4.5',

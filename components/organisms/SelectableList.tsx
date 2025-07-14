@@ -51,7 +51,11 @@ const SelectableList: React.FC<SelectableListProps> = memo(
                 <Row between>
                   <Text>{item}</Text>
                   {value === item && (
-                    <Icon name="check" size={24} color={getColor('teal-500')} />
+                    <Icon
+                      name="check"
+                      size={24}
+                      color={getColor('primary-500')}
+                    />
                   )}
                 </Row>
               </TouchableOpacity>

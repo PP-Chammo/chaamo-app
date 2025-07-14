@@ -59,7 +59,7 @@ const FilterConditionInput: React.FC<FilterConditionInputProps> = memo(
               {splittedValues.includes(condition.value) && (
                 <Icon
                   name="check-circle"
-                  color={getColor('teal-600')}
+                  color={getColor('primary-500')}
                   size={20}
                 />
               )}

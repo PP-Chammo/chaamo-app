@@ -76,7 +76,11 @@ const WishListItem: React.FC<WishListItemProps> = memo(function WishListItem({
               >
                 {currentPrice}
               </Label>
-              <Icon name="trending-up" color={getColor('teal-600')} size={16} />
+              <Icon
+                name="trending-up"
+                color={getColor('primary-500')}
+                size={16}
+              />
             </Row>
           </View>
           <View className={classes.bidContainer}>
@@ -103,8 +107,8 @@ const classes = {
   dateContainer: 'gap-1',
   priceContainer: 'mt-5',
   bidContainer: 'items-end',
-  bidLabel: 'text-xs bg-teal-50 !text-teal-600 p-2',
-  bidPrice: '!text-teal-600 font-bold text-sm',
+  bidLabel: 'text-xs bg-primary-50 !text-primary-500 p-2',
+  bidPrice: '!text-primary-500 font-bold text-sm',
   priceLabel: 'text-xs',
   priceValue: '!text-slate-800 font-bold text-xs',
   dateText: '!text-slate-500 text-xs',

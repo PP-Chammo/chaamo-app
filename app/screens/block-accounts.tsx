@@ -28,7 +28,7 @@ export default function BlockedAccounts() {
           variant="Ionicons"
           name="ban-outline"
           size={80}
-          color={getColor('teal-100')}
+          color={getColor('primary-100')}
         />
         <Label className={classes.emptyText}>No accounts found</Label>
       </View>

@@ -58,7 +58,7 @@ export default function ForgotPasswordScreen() {
 
 const classes = {
   form: 'flex-1 mt-[50] gap-3 px-4.5',
-  title: 'text-2xl font-bold text-teal-600',
+  title: 'text-2xl font-bold text-primary-500',
   description: 'text-slate-500 font-medium text-lg mb-6',
   resetButton: 'my-4',
   errorText: 'text-red-500 text-sm',

@@ -142,7 +142,7 @@ const Chart = memo(function Chart({ data }: ChartProps) {
                 y2={CHART_HEIGHT}
                 stroke={
                   selectedPeriod === 7 && i === 4
-                    ? getColor('teal-600')
+                    ? getColor('primary-500')
                     : getColor('gray-300')
                 }
                 strokeWidth={1}
@@ -153,12 +153,12 @@ const Chart = memo(function Chart({ data }: ChartProps) {
               <LinearGradient id="chartGradient" x1="0" y1="1" x2="0" y2="0">
                 <Stop
                   offset="100%"
-                  stopColor={getColor('teal-500')}
+                  stopColor={getColor('primary-500')}
                   stopOpacity={0.6}
                 />
                 <Stop
                   offset="0%"
-                  stopColor={getColor('teal-50')}
+                  stopColor={getColor('primary-50')}
                   stopOpacity={0.0}
                 />
               </LinearGradient>
@@ -188,9 +188,10 @@ export default Chart;
 
 const classes = {
   card: 'bg-white rounded-2xl p-4.5 shadow-sm border border-slate-200',
-  tabContainer: 'flex-row border border-teal-100 rounded-full p-0.5 mb-3 mt-1',
+  tabContainer:
+    'flex-row border border-primary-100 rounded-full p-0.5 mb-3 mt-1',
   tab: 'flex-1 items-center py-2 rounded-full bg-white',
-  tabActive: 'flex-1 items-center py-2 rounded-full bg-teal-600',
+  tabActive: 'flex-1 items-center py-2 rounded-full bg-primary-500',
   tabLabel: '!text-gray-800',
   tabLabelActive: 'text-white',
   chartContainer: 'w-full relative mb-2',
@@ -199,7 +200,7 @@ const classes = {
   xAxisLabelContainer: 'items-center w-8',
   xAxisLabel: 'text-xs text-slate-400 font-semibold',
   xAxisDate: 'text-xs text-slate-800 font-semibold',
-  dot: 'w-1.5 h-1.5 rounded-full bg-teal-600/80 mt-1.5',
+  dot: 'w-1.5 h-1.5 rounded-full bg-primary-500/80 mt-1.5',
   statsContainer: 'flex-row justify-between mt-3',
   statItem: 'gap-3',
   statLabel: 'text-xs text-slate-700',
@@ -207,5 +208,5 @@ const classes = {
   statValue: 'text-xs font-semibold text-slate-700 text-right',
   statValueBolder: 'text-xs font-bold text-slate-900 text-right',
   chart: 'mt-16 w-full',
-  areaChartContainer: 'px-3.5 border-b border-teal-600',
+  areaChartContainer: 'px-3.5 border-b border-primary-500',
 };

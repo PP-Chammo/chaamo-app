@@ -36,7 +36,7 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
             </View>
           ) : (
             <StyledGradient
-              colors={[getColor('orange-50'), getColor('teal-50')]}
+              colors={[getColor('orange-50'), getColor('primary-50')]}
               className={clsx(classes.container, className)}
             >
               {children}
@@ -54,7 +54,7 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
 const classes = {
   containerTop: 'bg-orange-50',
   container: 'flex-1',
-  containerBottom: 'bg-teal-50',
+  containerBottom: 'bg-primary-50',
 };
 
 export default ScreenContainer;

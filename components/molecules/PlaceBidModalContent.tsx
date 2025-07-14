@@ -71,7 +71,7 @@ const PlaceBidModalContent: React.FC = () => {
 };
 
 const classes = {
-  container: 'flex-1 bg-teal-600 rounded-t-3xl px-6 pt-2 pb-6',
+  container: 'flex-1 bg-primary-500 rounded-t-3xl px-6 pt-2 pb-6',
   headerRow: 'flex-row justify-between items-center mb-6',
   title: 'text-white text-2xl font-bold',
   time: 'text-white text-lg font-bold',
@@ -83,7 +83,7 @@ const classes = {
   quickBidActive:
     'flex-1 bg-white border border-white rounded-full py-2 mx-1 items-center',
   quickBidText: 'text-white text-lg font-bold',
-  quickBidTextActive: 'text-teal-500 text-lg font-bold',
+  quickBidTextActive: 'text-primary-500 text-lg font-bold',
   note: 'text-white text-base mb-6',
   noteBold: 'font-bold',
   placeBidBtn: 'border-2 border-white rounded-full py-3 mt-2',

@@ -43,7 +43,7 @@ const Review: React.FC<ReviewProps> = memo(function Review({
 });
 
 const classes = {
-  container: 'bg-white p-5 rounded-lg border border-teal-100',
+  container: 'bg-white p-5 rounded-lg border border-primary-100',
   imageContainer: 'flex flex-row items-center gap-3',
   name: 'text-base',
   header: 'flex flex-row items-center justify-between',

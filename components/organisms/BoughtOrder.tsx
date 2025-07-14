@@ -54,7 +54,7 @@ const classes = {
   content: 'mt-10',
   tabs: 'mt-4.5',
   emptyOrders: 'items-center mt-24',
-  emptyOrdersTitle: '!text-2xl font-bold text-teal-600',
+  emptyOrdersTitle: '!text-2xl font-bold text-primary-500',
   emptyOrdersDescription: 'text-sm text-gray-500 mt-2 w-56 text-center',
 };
 

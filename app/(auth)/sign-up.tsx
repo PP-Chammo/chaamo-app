@@ -79,10 +79,10 @@ export default function SignUpScreen() {
 
 const classes = {
   form: 'flex-1 mt-[50] gap-5 px-4.5',
-  title: 'text-3xl font-bold text-teal-600 mb-2',
+  title: 'text-3xl font-bold text-primary-500 mb-2',
   description: 'text-slate-500 text-lg mb-8',
   login: 'text-slate-500 text-md text-center',
-  link: 'text-teal-600 underline font-bold',
+  link: 'text-primary-500 underline font-bold',
   sendButton: 'my-2',
   terms: 'text-slate-500 text-md ',
 };
