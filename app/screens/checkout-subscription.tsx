@@ -2,10 +2,10 @@ import { Link, router } from 'expo-router';
 import { View } from 'react-native';
 
 import {
+  BillingInfo,
   Button,
   Label,
   PaymentMethodCard,
-  Row,
   ScreenContainer,
 } from '@/components/atoms';
 import { Header } from '@/components/molecules';
@@ -16,17 +16,8 @@ export default function CheckoutSubscriptionScreen() {
       <Header title="Checkout" onBackPress={router.back} />
 
       <View className={classes.container}>
-        <View className={classes.paymentMethodContainer}>
-          <Label className={classes.label}>Charged from</Label>
-          <PaymentMethodCard />
-        </View>
-        <View className={classes.billingContainer}>
-          <Label className={classes.label}>Billing Info</Label>
-          <Row className={classes.billingRow} between>
-            <Label>Chaamo Gold Membership</Label>
-            <Label className={classes.price}>$12.99/Monthly</Label>
-          </Row>
-        </View>
+        <PaymentMethodCard className={classes.paymentMethod} />
+        <BillingInfo />
       </View>
       <View className={classes.footer}>
         <Label className={classes.terms}>
@@ -46,9 +37,9 @@ export default function CheckoutSubscriptionScreen() {
 }
 
 const classes = {
-  container: 'flex-1 p-4.5',
+  container: 'flex-1 p-4.5 gap-10',
   label: 'text-sm font-bold text-gray-800',
-  paymentMethodContainer: 'gap-3 mb-12',
+  paymentMethod: 'mb-12',
   billingContainer: 'gap-3',
   billingRow: 'border-[0.2px] border-yellow-400 p-2',
   price: 'text-sm font-bold',
