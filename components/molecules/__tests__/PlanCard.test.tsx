@@ -2,9 +2,9 @@ import React from 'react';
 
 import { render, screen } from '@testing-library/react-native';
 
-import SubscriptionCard from '../SubscriptionCard';
+import PlanCard from '../PlanCard';
 
-describe('SubscriptionCard', () => {
+describe('PlanCard', () => {
   const mockProps = {
     name: 'Premium',
     price: '29.99',
@@ -20,7 +20,7 @@ describe('SubscriptionCard', () => {
   });
 
   it('renders correctly with all props', () => {
-    render(<SubscriptionCard {...mockProps} />);
+    render(<PlanCard {...mockProps} />);
 
     expect(screen.getAllByText('Premium')).toHaveLength(2);
     expect(screen.getByText('CHAAMO Premium Membership')).toBeTruthy();
@@ -30,19 +30,19 @@ describe('SubscriptionCard', () => {
   });
 
   it('displays plan name', () => {
-    render(<SubscriptionCard {...mockProps} />);
+    render(<PlanCard {...mockProps} />);
 
     expect(screen.getAllByText('Premium')).toHaveLength(2);
   });
 
   it('displays membership title with plan name', () => {
-    render(<SubscriptionCard {...mockProps} />);
+    render(<PlanCard {...mockProps} />);
 
     expect(screen.getByText('CHAAMO Premium Membership')).toBeTruthy();
   });
 
   it('displays description', () => {
-    render(<SubscriptionCard {...mockProps} />);
+    render(<PlanCard {...mockProps} />);
 
     // Accept both curly and straight apostrophe
     expect(
@@ -51,20 +51,20 @@ describe('SubscriptionCard', () => {
   });
 
   it('displays price with monthly suffix', () => {
-    render(<SubscriptionCard {...mockProps} />);
+    render(<PlanCard {...mockProps} />);
 
     expect(screen.getByText(/29\.99/)).toBeTruthy();
     expect(screen.getByText(/\/monthly/)).toBeTruthy();
   });
 
   it('displays benefits title', () => {
-    render(<SubscriptionCard {...mockProps} />);
+    render(<PlanCard {...mockProps} />);
 
     expect(screen.getByText('Benefits')).toBeTruthy();
   });
 
   it('displays all benefits with check icons', () => {
-    render(<SubscriptionCard {...mockProps} />);
+    render(<PlanCard {...mockProps} />);
 
     expect(screen.getByText('Unlimited access to all features')).toBeTruthy();
     expect(screen.getByText('Priority customer support')).toBeTruthy();
@@ -72,7 +72,7 @@ describe('SubscriptionCard', () => {
   });
 
   it('renders with all required elements', () => {
-    render(<SubscriptionCard {...mockProps} />);
+    render(<PlanCard {...mockProps} />);
 
     expect(screen.getAllByText('Premium')).toHaveLength(2);
     expect(screen.getByText('CHAAMO Premium Membership')).toBeTruthy();
@@ -89,7 +89,7 @@ describe('SubscriptionCard', () => {
       name: 'Basic',
     };
 
-    render(<SubscriptionCard {...propsWithDifferentPlan} />);
+    render(<PlanCard {...propsWithDifferentPlan} />);
 
     expect(screen.getAllByText('Basic')).toHaveLength(2);
     expect(screen.getByText('CHAAMO Basic Membership')).toBeTruthy();
@@ -101,7 +101,7 @@ describe('SubscriptionCard', () => {
       price: '9.99',
     };
 
-    render(<SubscriptionCard {...propsWithDifferentPrice} />);
+    render(<PlanCard {...propsWithDifferentPrice} />);
 
     expect(screen.getByText(/9\.99/)).toBeTruthy();
   });
@@ -112,7 +112,7 @@ describe('SubscriptionCard', () => {
       benefits: [],
     };
 
-    render(<SubscriptionCard {...propsWithNoBenefits} />);
+    render(<PlanCard {...propsWithNoBenefits} />);
 
     expect(screen.getByText('Benefits')).toBeTruthy();
     expect(screen.queryByText('Unlimited access to all features')).toBeNull();
@@ -124,13 +124,13 @@ describe('SubscriptionCard', () => {
       benefits: ['Single benefit'],
     };
 
-    render(<SubscriptionCard {...propsWithSingleBenefit} />);
+    render(<PlanCard {...propsWithSingleBenefit} />);
 
     expect(screen.getByText('Single benefit')).toBeTruthy();
   });
 
   it('displays check icons for each benefit', () => {
-    render(<SubscriptionCard {...mockProps} />);
+    render(<PlanCard {...mockProps} />);
 
     // Each benefit should have a check icon
     expect(screen.getByText('Unlimited access to all features')).toBeTruthy();
@@ -144,7 +144,7 @@ describe('SubscriptionCard', () => {
       name: 'Pro+',
     };
 
-    render(<SubscriptionCard {...propsWithSpecialChars} />);
+    render(<PlanCard {...propsWithSpecialChars} />);
 
     expect(screen.getAllByText('Pro+')).toHaveLength(2);
     expect(screen.getByText('CHAAMO Pro+ Membership')).toBeTruthy();
