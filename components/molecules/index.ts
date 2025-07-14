@@ -1,4 +1,5 @@
 export { default as AuctionCard } from './AuctionCard';
+export { default as AuctionDetailBottomBar } from './AuctionDetailBottomBar';
 export { default as AuctionItem } from './AuctionItem';
 export { default as BlockListItem } from './BlockListItem';
 export { default as ButtonIcon } from './ButtonIcon';
@@ -27,8 +28,12 @@ export { default as OrderItem, type OrderStatus } from './OrderItem';
 export { default as OtpInput } from './OtpInput';
 export { default as People } from './People';
 export { default as PhoneInput } from './PhoneInput';
+export { default as PlaceBidModalContent } from './PlaceBidModalContent';
+export { default as PlaceOfferModalContent } from './PlaceOfferModalContent';
 export { default as PlanCard } from './PlanCard';
 export { default as PostCard } from './PostCard';
+export { default as PriceIndicator } from './PriceIndicator';
+export { default as ProductDetailBottomBar } from './ProductDetailBottomBar';
 export { default as ProductDetailInfo } from './ProductDetailInfo';
 export { default as RadioInput } from './RadioInput';
 export { default as Rating } from './Rating';

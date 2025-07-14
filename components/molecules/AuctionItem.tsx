@@ -6,6 +6,7 @@ import { Image, TouchableOpacity, View } from 'react-native';
 
 import EBayLogo from '@/assets/svg/ebay.svg';
 import { Icon, Label, Row, Tag } from '@/components/atoms';
+import { PriceIndicator } from '@/components/molecules';
 import { getColor } from '@/utils/getColor';
 
 type AuctionItemProps = {
@@ -119,11 +120,7 @@ const AuctionItem: React.FC<AuctionItemProps> = memo(function AuctionItem({
               <Label className={classes.textBold} testID="auction-item-price">
                 {price}
               </Label>
-              <Icon
-                name={indicator === 'up' ? 'trending-up' : 'trending-down'}
-                color={getColor(indicator === 'up' ? 'primary-500' : 'red-600')}
-                size={16}
-              />
+              <PriceIndicator direction={indicator} />
             </Row>
           </View>
           <View className={classes.bidContainer}>

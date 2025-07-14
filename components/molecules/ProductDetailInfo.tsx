@@ -5,6 +5,7 @@ import { View } from 'react-native';
 
 import EBayImage from '@/assets/svg/ebay.svg';
 import { Icon, Label, Row } from '@/components/atoms';
+import { PriceIndicator } from '@/components/molecules';
 
 interface ProductDetailInfoProps {
   price: string | number;
@@ -12,6 +13,7 @@ interface ProductDetailInfoProps {
   title: string;
   marketPrice: string | number;
   description: string;
+  indicator?: 'up' | 'down';
 }
 
 const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
@@ -20,6 +22,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
   title,
   marketPrice,
   description,
+  indicator,
 }) => {
   return (
     <View className={classes.cardInfoWrapper}>
@@ -46,6 +49,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
         <EBayImage />
         <Label className={classes.priceValueLabel}>Price Value: </Label>
         <Label className={classes.priceValue}>{marketPrice}</Label>
+        {indicator && <PriceIndicator direction={indicator} />}
       </View>
       <View className={classes.descriptionWrapper}>
         <Label className={classes.descriptionTitle}>Description</Label>

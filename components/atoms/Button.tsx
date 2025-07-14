@@ -16,6 +16,8 @@ interface ButtonProps extends TouchableOpacityProps {
   variant?:
     | 'primary'
     | 'primary-light'
+    | 'white'
+    | 'white-light'
     | 'secondary'
     | 'danger'
     | 'light'
@@ -133,7 +135,9 @@ const classes = {
   disabled: 'opacity-50',
   variant: {
     primary: 'bg-primary-500',
-    'primary-light': 'bg-primary-100/40 border border-primary-500',
+    'primary-light': 'bg-transparent border border-primary-500',
+    white: 'bg-white',
+    'white-light': 'bg-transparent border border-white/70',
     secondary: 'bg-gray-200',
     danger: 'bg-red-600',
     light: 'border border-gray-300',
@@ -148,6 +152,8 @@ const classes = {
   textVariant: {
     primary: 'text-white',
     'primary-light': 'text-primary-500',
+    white: 'text-primary-500',
+    'white-light': 'text-white',
     secondary: 'text-primary-500',
     danger: 'text-white',
     light: 'text-gray-600',

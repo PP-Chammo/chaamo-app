@@ -6,6 +6,7 @@ import { Image, TouchableOpacity, View } from 'react-native';
 
 import EBayLogo from '@/assets/svg/ebay.svg';
 import { Icon, Label, Row } from '@/components/atoms';
+import { PriceIndicator } from '@/components/molecules';
 import { getColor } from '@/utils/getColor';
 
 type CardItemProps = {
@@ -116,11 +117,7 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
               <Label className={classes.textBold} testID="card-item-price">
                 {price}
               </Label>
-              <Icon
-                name={indicator === 'up' ? 'trending-up' : 'trending-down'}
-                color={getColor(indicator === 'up' ? 'primary-500' : 'red-600')}
-                size={16}
-              />
+              <PriceIndicator direction={indicator} />
             </Row>
           </View>
           <View className={classes.bidContainer}>
