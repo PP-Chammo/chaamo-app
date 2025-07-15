@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, develop, feat/**, fix/**]
+    branches: [main, develop, feat/**, fix/**, chore/**]
   pull_request:
-    branches: [main, develop, feat/**, fix/**]
+    branches: [main, develop, feat/**, fix/**, chore/**]
 
 jobs:
   build:
@@ -19,6 +19,9 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Generate GraphQL types
         run: yarn codegen
+        env:
+          EXPO_PUBLIC_SUPABASE_GRAPHQL_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_GRAPHQL_URL }}
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
       - name: Lint
         run: npm run lint
       - name: Type check
