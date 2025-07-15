@@ -52,9 +52,9 @@ const TextArea: React.FC<TextAreaProps> = memo(function TextArea({
 export default TextArea;
 
 const classes = {
-  container: 'gap-2',
+  container: 'w-full gap-2',
   label: 'text-slate-500 font-medium text-md ml-4',
   required: 'text-red-500',
   input:
-    'rounded-lg border border-slate-200 rounded-md p-4 bg-white min-h-[46px]',
+    'rounded-lg border border-slate-200 rounded-md p-4 bg-white min-h-[46px] max-h-56',
 };
