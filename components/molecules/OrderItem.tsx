@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react';
 
 import { clsx } from 'clsx';
+import { router } from 'expo-router';
 import { Image, TouchableOpacity, View } from 'react-native';
 
 import { Divider, Icon, Label, Row } from '@/components/atoms';
@@ -32,7 +33,7 @@ const OrderItem: React.FC<OrderItemProps> = memo(function OrderItem({
   }, [status]);
 
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => router.push('/screens/order-details')}>
       <Row between>
         <Row className={classes.row}>
           <View className={classes.imageContainer}>
