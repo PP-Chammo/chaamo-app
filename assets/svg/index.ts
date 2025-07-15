@@ -3,6 +3,7 @@ export { default as EmptyOrders } from './empty-orders.svg';
 export { default as IDVerificationIcon } from './id-verification.svg';
 export { default as MasterCard } from './master-card.svg';
 export { default as OTPSuccessIcon } from './otp-success.svg';
+export { default as PaymentSuccessIcon } from './payment-success.svg';
 export { default as StripeIcon } from './stripe.svg';
 export { default as VerificationFailedIcon } from './verification-failed.svg';
 export { default as VerificationInProgressIcon } from './verification-in-progress.svg';

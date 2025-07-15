@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { router } from 'expo-router';
 import { Image, ScrollView, View } from 'react-native';
@@ -28,9 +28,13 @@ const initialForm = {
 export default function CheckoutScreen() {
   const [form, setForm] = useState<Form>(initialForm);
 
-  const handleChange = ({ name, value }: TextChangeParams) => {
+  const handleChange = useCallback(({ name, value }: TextChangeParams) => {
     setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  }, []);
+
+  const handlePay = useCallback(() => {
+    router.push('/screens/checkout-success');
+  }, []);
 
   return (
     <ScreenContainer>
@@ -111,7 +115,9 @@ export default function CheckoutScreen() {
               This is a secure encrypted payment
             </Label>
           </Row>
-          <Button className={classes.buttonPay}>Pay $1332</Button>
+          <Button className={classes.buttonPay} onPress={handlePay}>
+            Pay $1332
+          </Button>
         </View>
       </ScrollView>
     </ScreenContainer>
