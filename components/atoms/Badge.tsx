@@ -8,11 +8,12 @@ import { getColor } from '@/utils/getColor';
 
 interface BadgeProps {
   className?: string;
+  testID?: string;
 }
 
-const Badge: React.FC<BadgeProps> = memo(function Badge({ className }) {
+const Badge: React.FC<BadgeProps> = memo(function Badge({ className, testID }) {
   return (
-    <View className={clsx(classes.container, className)}>
+    <View testID={testID} className={clsx(classes.container, className)}>
       <MaterialCommunityIcons name="star" size={14} color={getColor('white')} />
     </View>
   );

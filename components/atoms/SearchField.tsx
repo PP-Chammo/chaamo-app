@@ -61,6 +61,7 @@ const SearchField = forwardRef<TextInput, SearchFieldProps>(
           {...props}
         />
         <TouchableOpacity
+          accessibilityRole="button"
           onPress={handleClear}
           className={clsx(classes.clearButton, value.length === 0 && 'hidden')}
         >

@@ -17,6 +17,7 @@ const SimilarAdList = memo(function SimilarAdList() {
           marketPrice={item.marketPrice}
           marketType={item.marketType}
           indicator={item.indicator}
+          featured={item.boosted}
           onPress={() => router.push('/screens/product-detail')}
         />
       )}

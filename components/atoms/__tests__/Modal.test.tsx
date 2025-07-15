@@ -111,4 +111,10 @@ describe('Modal', () => {
     expect(getByText('Nested')).toBeTruthy();
     expect(getByText('Multiple')).toBeTruthy();
   });
+
+  it('calls onStartShouldSetResponder and returns true', () => {
+    const { getByTestId } = render(<Modal {...defaultProps} testID="modal" />);
+    const content = getByTestId('modal-content');
+    expect(content.props.onStartShouldSetResponder()).toBe(true);
+  });
 });

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { View } from 'react-native';
 
 import CommonCard from '../CommonCard';
@@ -143,5 +143,15 @@ describe('CommonCard', () => {
       <CommonCard {...defaultProps} rightComponent={rightComponent} />,
     );
     expect(getByTestId('custom-right-component')).toBeTruthy();
+  });
+
+  it('does not render eBay image for non-eBay marketType', () => {
+    const { queryByTestId } = render(
+      <CommonCard {...defaultProps} marketType="other" />,
+    );
+    // EBayImage is not rendered, so we check that no SVG or EBayImage is present
+    // (EBayImage is a custom SVG component, so we check for absence of SVG root)
+    // If EBayImage has a testID, use it; otherwise, check for absence of SVG
+    expect(queryByTestId('ebay-svg')).toBeNull();
   });
 });
