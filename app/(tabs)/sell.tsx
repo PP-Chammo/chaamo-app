@@ -1,9 +1,7 @@
-import { Label, ScreenContainer } from '@/components/atoms';
+import React from 'react';
 
-export default function SellScreen() {
-  return (
-    <ScreenContainer>
-      <Label>Sell Screen</Label>
-    </ScreenContainer>
-  );
+import { Redirect } from 'expo-router';
+
+export default function SellRedirectionScreen() {
+  return <Redirect href="/screens/sell" />;
 }

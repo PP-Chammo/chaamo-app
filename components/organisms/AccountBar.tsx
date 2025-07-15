@@ -10,7 +10,7 @@ const AccountBar = memo(function AccountBar() {
   return (
     <Row testID="account-bar" between className={classes.container}>
       <View testID="account-bar-left" className={classes.leftSpace}>
-        <Label className="text-xl">👋 Hi</Label>
+        <Label className="text-xl">Hi</Label>
         <Label className="text-xl font-bold">Shireen!</Label>
       </View>
       <View testID="account-bar-right" className={classes.rightSpace}>
