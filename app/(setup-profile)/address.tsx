@@ -11,7 +11,7 @@ import {
   TextField,
 } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
-import { useSelectWithScreenStore } from '@/hooks/useSelectWithScreenStore';
+import { useSelectWithScreenVar } from '@/hooks/useSelectWithScreenVar';
 import {
   validateRequired,
   ValidationErrors,
@@ -37,7 +37,7 @@ export default function AddressScreen() {
     addressLine2: '',
   });
 
-  const { selectedCountry, selectedState } = useSelectWithScreenStore();
+  const [selectState] = useSelectWithScreenVar();
 
   const [errors, setErrors] = useState<ValidationErrors<Form>>({});
 
@@ -68,10 +68,10 @@ export default function AddressScreen() {
   useEffect(() => {
     setForm((prev) => ({
       ...prev,
-      country: selectedCountry,
-      state: selectedState,
+      country: selectState.selectedCountry,
+      state: selectState.selectedState,
     }));
-  }, [selectedCountry, selectedState]);
+  }, [selectState.selectedCountry, selectState.selectedState]);
 
   return (
     <ScreenContainer>

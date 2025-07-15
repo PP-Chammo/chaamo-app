@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import FilterPriceRangeInput from '../FilterPriceRangeInput';
 
@@ -36,7 +36,7 @@ describe('FilterPriceRangeInput', () => {
     );
     const minInput = getByTestId('filter-price-min-input');
     fireEvent.changeText(minInput, '200');
-    expect(onChange).toHaveBeenCalledWith('priceRange', '200,Any');
+    expect(onChange).toHaveBeenCalledWith('200,Any');
   });
 
   it('calls onChange when max price is changed', () => {
@@ -46,7 +46,7 @@ describe('FilterPriceRangeInput', () => {
     );
     const maxInput = getByTestId('filter-price-max-input');
     fireEvent.changeText(maxInput, '1000');
-    expect(onChange).toHaveBeenCalledWith('priceRange', '0,1000');
+    expect(onChange).toHaveBeenCalledWith('0,1000');
   });
 
   it('renders with empty value', () => {

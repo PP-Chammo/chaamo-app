@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { View } from 'react-native';
 
 import TextField from '../TextField';
@@ -72,14 +72,11 @@ describe('TextField', () => {
     const input = getByTestId('text-input');
     const eyeIcon = getByTestId('eye-icon');
 
-    // Initially password should be hidden
     expect(input.props.secureTextEntry).toBe(true);
 
-    // Toggle password visibility
     fireEvent.press(eyeIcon);
     expect(input.props.secureTextEntry).toBe(false);
 
-    // Toggle back
     fireEvent.press(eyeIcon);
     expect(input.props.secureTextEntry).toBe(true);
   });

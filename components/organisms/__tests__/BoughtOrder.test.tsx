@@ -1,8 +1,7 @@
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import BoughtOrder from '../BoughtOrder';
 
-// Mock the constants and dummy data
 jest.mock('@/constants/dummy', () => ({
   dummyOrders: [
     {
@@ -37,7 +36,6 @@ describe('BoughtOrder', () => {
   it('renders correctly with default state', () => {
     const { getByText } = render(<BoughtOrder />);
 
-    // Should show the filter tabs
     expect(getByText('Progress')).toBeTruthy();
     expect(getByText('Completed')).toBeTruthy();
   });
@@ -45,7 +43,6 @@ describe('BoughtOrder', () => {
   it('shows orders when data is available', () => {
     const { getByText } = render(<BoughtOrder />);
 
-    // Should show the first order (progress status is selected by default)
     expect(getByText('Test Product 1')).toBeTruthy();
     expect(getByText('$99.99')).toBeTruthy();
   });
@@ -53,10 +50,8 @@ describe('BoughtOrder', () => {
   it('filters orders when tab is changed', () => {
     const { getByText } = render(<BoughtOrder />);
 
-    // Click on completed tab
     fireEvent.press(getByText('Completed'));
 
-    // Should show the completed order
     expect(getByText('Test Product 2')).toBeTruthy();
     expect(getByText('$149.99')).toBeTruthy();
   });
@@ -64,10 +59,8 @@ describe('BoughtOrder', () => {
   it('handles filter changes correctly', () => {
     const { getByText } = render(<BoughtOrder />);
 
-    // Initially should show progress orders
     expect(getByText('Test Product 1')).toBeTruthy();
 
-    // Change to completed filter
     fireEvent.press(getByText('Completed'));
     expect(getByText('Test Product 2')).toBeTruthy();
   });

@@ -11,7 +11,7 @@ import {
   TextField,
 } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
-import { useSelectWithScreenStore } from '@/hooks/useSelectWithScreenStore';
+import { useSelectWithScreenVar } from '@/hooks/useSelectWithScreenVar';
 import {
   validateRequired,
   ValidationErrors,
@@ -46,7 +46,7 @@ export default function PersonalDetailsScreen() {
   const [form, setForm] = useState<Form>(initialForm);
   const [errors, setErrors] = useState<ValidationErrors<Form>>({});
 
-  const { selectedCountry, selectedState } = useSelectWithScreenStore();
+  const [selectState] = useSelectWithScreenVar();
 
   const handleChange = ({ name, value }: TextChangeParams) => {
     setErrors((prev) => {
@@ -75,10 +75,10 @@ export default function PersonalDetailsScreen() {
   useEffect(() => {
     setForm((prev) => ({
       ...prev,
-      country: selectedCountry,
-      state: selectedState,
+      country: selectState.selectedCountry,
+      state: selectState.selectedState,
     }));
-  }, [selectedCountry, selectedState]);
+  }, [selectState.selectedCountry, selectState.selectedState]);
 
   return (
     <ScreenContainer>

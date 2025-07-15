@@ -1,10 +1,9 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import ChatListItem from '../ChatListItem';
 
-// Mock the date utility
 jest.mock('@/utils/date', () => ({
   formatTime: jest.fn((time) => `formatted-${time}`),
 }));

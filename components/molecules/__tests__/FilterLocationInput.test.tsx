@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import FilterLocationInput from '../FilterLocationInput';
 
@@ -32,7 +32,6 @@ describe('FilterLocationInput', () => {
     const { getByTestId } = render(<FilterLocationInput {...defaultProps} />);
     const button = getByTestId('filter-location-button');
     fireEvent.press(button);
-    // The component should handle the press event without errors
     expect(button).toBeTruthy();
   });
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import BlockList from '../BlockList';
 
@@ -46,7 +46,6 @@ describe('BlockList', () => {
     const firstItem = blockListItems[0];
 
     fireEvent.press(firstItem);
-    // The onPress is currently empty, so we just verify it doesn't crash
     expect(firstItem).toBeTruthy();
   });
 

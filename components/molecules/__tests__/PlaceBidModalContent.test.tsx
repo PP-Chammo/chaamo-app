@@ -90,10 +90,8 @@ describe('PlaceBidModalContent', () => {
   it('handles quick bid selection correctly', () => {
     render(<PlaceBidModalContent />);
 
-    // Initially $5000 should be selected
     expect(screen.getByDisplayValue('$5000')).toBeTruthy();
 
-    // Select $7000
     const quickBid7000 = screen.getByText('$7000');
     fireEvent.press(quickBid7000);
 
@@ -106,7 +104,6 @@ describe('PlaceBidModalContent', () => {
     const quickBid6000 = screen.getByText('$6000');
     fireEvent.press(quickBid6000);
 
-    // The selected quick bid should remain active
     expect(screen.getByDisplayValue('$6000')).toBeTruthy();
   });
 });

@@ -1,11 +1,10 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
-import { View, Text } from 'react-native';
+import { fireEvent, render } from '@testing-library/react-native';
+import { Text, View } from 'react-native';
 
 import TabView from '../TabView';
 
-// Mock react-native-pager-view
 jest.mock('react-native-pager-view', () => {
   const React = jest.requireActual('react');
   const { View } = jest.requireActual('react-native');
@@ -120,7 +119,6 @@ describe('TabView', () => {
     const tab2 = getByText('Tab 2');
 
     fireEvent.press(tab2);
-    // Tab press should work without errors
     expect(tab2).toBeTruthy();
   });
 
@@ -199,7 +197,6 @@ describe('TabView', () => {
     const { getByTestId } = render(<TabView {...defaultProps} />);
     const pagerView = getByTestId('pager-view');
 
-    // Simulate page change
     fireEvent(pagerView, 'layout');
 
     expect(pagerView).toBeTruthy();

@@ -1,11 +1,10 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { router } from 'expo-router';
 
 import AuctionList from '../AuctionList';
 
-// Mock the router and Link component
 jest.mock('expo-router', () => ({
   router: { push: jest.fn() },
   Link: 'Link',

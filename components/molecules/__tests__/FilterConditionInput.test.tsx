@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import FilterConditionInput from '../FilterConditionInput';
 
@@ -20,7 +20,6 @@ describe('FilterConditionInput', () => {
 
   it('renders all condition buttons', () => {
     const { getByTestId } = render(<FilterConditionInput {...defaultProps} />);
-    // Check that condition buttons are rendered
     expect(getByTestId('filter-condition-input')).toBeTruthy();
   });
 
@@ -29,10 +28,9 @@ describe('FilterConditionInput', () => {
     const { getByTestId } = render(
       <FilterConditionInput {...defaultProps} onChange={onChange} />,
     );
-    // Find and press the first condition button
     const firstButton = getByTestId('filter-condition-button-raw');
     fireEvent.press(firstButton);
-    expect(onChange).toHaveBeenCalledWith('condition', 'raw');
+    expect(onChange).toHaveBeenCalledWith('raw');
   });
 
   it('toggles condition value when button is pressed', () => {
@@ -46,7 +44,7 @@ describe('FilterConditionInput', () => {
     );
     const button = getByTestId('filter-condition-button-raw');
     fireEvent.press(button);
-    expect(onChange).toHaveBeenCalledWith('condition', '');
+    expect(onChange).toHaveBeenCalledWith('');
   });
 
   it('applies correct styling classes', () => {

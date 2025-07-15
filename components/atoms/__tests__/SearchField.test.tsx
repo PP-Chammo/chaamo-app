@@ -46,9 +46,7 @@ describe('SearchField', () => {
       />,
     );
 
-    // Test that the search field renders correctly with a value
     expect(getByTestId('search-field')).toBeTruthy();
-    // The clear functionality is tested through the onChange behavior
     expect(onChange).not.toHaveBeenCalled();
   });
 
@@ -59,7 +57,6 @@ describe('SearchField', () => {
     );
 
     const input = getByPlaceholderText('Search');
-    // Directly call the onSubmitEditing function to ensure coverage
     input.props.onSubmitEditing();
     expect(onSubmit).toHaveBeenCalledTimes(1);
   });
@@ -157,12 +154,10 @@ describe('SearchField', () => {
     const { getByPlaceholderText } = render(<SearchField {...defaultProps} />);
     const input = getByPlaceholderText('Search');
 
-    // Should not throw when onSubmit is not provided
     expect(() => {
       fireEvent(input, 'submitEditing');
     }).not.toThrow();
 
-    // Test that the onSubmitEditing prop exists but is optional
     expect(input.props.onSubmitEditing).toBeDefined();
   });
 
@@ -171,7 +166,6 @@ describe('SearchField', () => {
     const { getByRole } = render(
       <SearchField value="something" onChange={onChange} />,
     );
-    // Find the clear button by role (button)
     const clearButton = getByRole('button');
     fireEvent.press(clearButton);
     expect(onChange).toHaveBeenCalledWith({ name: 'search', value: '' });

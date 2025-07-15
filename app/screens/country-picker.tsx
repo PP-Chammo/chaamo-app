@@ -6,20 +6,20 @@ import { ScreenContainer } from '@/components/atoms';
 import { Header } from '@/components/molecules';
 import { SelectableList } from '@/components/organisms';
 import { COUNTRIES } from '@/constants/dummy';
-import { useSelectWithScreenStore } from '@/hooks/useSelectWithScreenStore';
+import { useSelectWithScreenVar } from '@/hooks/useSelectWithScreenVar';
 
 export default function CountryPickerScreen() {
-  const { selectedCountry, setSelectedCountry } = useSelectWithScreenStore();
+  const [state, setState] = useSelectWithScreenVar();
 
-  const handleSelectCountry = (country: string) => {
-    setSelectedCountry(country);
+  const handleSelectCountry = (selectedCountry: string) => {
+    setState({ selectedCountry });
   };
 
   return (
     <ScreenContainer>
       <Header title="Select Country" onBackPress={() => router.back()} />
       <SelectableList
-        value={selectedCountry}
+        value={state.selectedCountry}
         data={COUNTRIES}
         onSelect={handleSelectCountry}
       />

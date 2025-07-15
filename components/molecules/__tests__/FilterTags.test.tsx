@@ -4,7 +4,6 @@ import { render } from '@testing-library/react-native';
 
 import FilterTags from '../FilterTags';
 
-// Mock the useSearchStore hook
 const mockUseSearchStore = {
   query: '',
   condition: '',
@@ -13,13 +12,12 @@ const mockUseSearchStore = {
   adProperties: '',
 };
 
-jest.mock('@/hooks/useSearchStore', () => ({
-  useSearchStore: () => mockUseSearchStore,
+jest.mock('@/hooks/useSearchVar', () => ({
+  useSearchVar: () => [mockUseSearchStore, jest.fn()],
 }));
 
 describe('FilterTags', () => {
   beforeEach(() => {
-    // Reset mock values before each test
     mockUseSearchStore.query = '';
     mockUseSearchStore.condition = '';
     mockUseSearchStore.location = '';
@@ -105,7 +103,6 @@ describe('FilterTags', () => {
     mockUseSearchStore.priceRange = '';
     mockUseSearchStore.adProperties = '';
     const { getByTestId } = render(<FilterTags />);
-    // Should only render the container, no filter tags
     expect(getByTestId('filter-tags').children.length).toBe(0);
   });
 

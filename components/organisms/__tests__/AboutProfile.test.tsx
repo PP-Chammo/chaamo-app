@@ -13,7 +13,7 @@ describe('AboutProfile', () => {
   it('displays portfolio listings stat', () => {
     const { getByText, getAllByText } = render(<AboutProfile />);
     expect(getByText('Portfolio Listings')).toBeTruthy();
-    expect(getAllByText('5')).toHaveLength(4); // There are 4 stats with value "5"
+    expect(getAllByText('5')).toHaveLength(4);
   });
 
   it('displays sold items stat', () => {

@@ -20,7 +20,7 @@ export type ListContainerProps<T> = {
   headerClassName?: string;
   contentContainerClassName?: string;
   noLink?: boolean;
-  data: Record<keyof T, T[keyof T]>[];
+  data: T[];
   children: (item: T, index: number) => React.ReactNode;
 };
 
@@ -86,16 +86,16 @@ function ListContainer<T>({
           )}
         >
           {data.map((item, index) => {
-            const element = children(item as T, index);
+            const element = children(item, index);
             if (React.isValidElement(element) && element.key == null) {
-              return React.cloneElement(element, { key: index });
+              return React.cloneElement(element, { key: Date.now() });
             }
             return element;
           })}
         </View>
       ) : (
         <FlatList
-          data={data as T[]}
+          data={data}
           renderItem={({ item, index }: { item: T; index: number }) =>
             children(item, index) as React.ReactElement | null
           }

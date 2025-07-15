@@ -1,0 +1,26 @@
+schema:
+  - ${EXPO_PUBLIC_SUPABASE_GRAPHQL_URL}:
+      headers:
+        apikey: ${EXPO_PUBLIC_SUPABASE_ANON_KEY}
+documents: graphql/*.graphql
+generates:
+  generated/graphql.ts:
+    plugins:
+      - add:
+          content: '/* eslint-disable @typescript-eslint/no-explicit-any */'
+      - add:
+          content: '/* eslint-disable @typescript-eslint/array-type */'
+      - add:
+          content: '// @ts-nocheck'
+      - add:
+          content: '// This file is generated. Do not edit directly.'
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      withHooks: true
+      withHOC: false
+      withComponent: false
+      namingConvention:
+        typeNames: change-case#pascalCase
+        enumValues: change-case#upperCase

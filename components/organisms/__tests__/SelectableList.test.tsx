@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import SelectableList from '../SelectableList';
 
@@ -48,6 +48,5 @@ describe('SelectableList', () => {
       <SelectableList value="Alaska" data={mockData} onSelect={onSelect} />,
     );
     expect(getByText('Alaska')).toBeTruthy();
-    // The check icon is rendered, but we can't directly query it by testID unless added
   });
 });

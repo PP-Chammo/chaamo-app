@@ -4,12 +4,11 @@ import { TouchableOpacity, View } from 'react-native';
 
 import { Icon, Label, Row } from '@/components/atoms';
 import { adProperties } from '@/constants/adProperties';
-import { SearchStore } from '@/stores/searchStore';
 import { getColor } from '@/utils/getColor';
 
 interface FilterAdPropertiesInputProps {
   value: string;
-  onChange: (key: keyof SearchStore, value: string) => void;
+  onChange: (value: string) => void;
 }
 
 const FilterAdPropertiesInput: React.FC<FilterAdPropertiesInputProps> = memo(
@@ -25,13 +24,13 @@ const FilterAdPropertiesInput: React.FC<FilterAdPropertiesInputProps> = memo(
           const newValues = splittedValues.filter(
             (item) => item !== value && item !== '',
           );
-          onChange('adProperties', newValues.join(','));
+          onChange(newValues.join(','));
         } else {
           const newValues = [
             ...splittedValues.filter((item) => item !== ''),
             value,
           ];
-          onChange('adProperties', newValues.join(','));
+          onChange(newValues.join(','));
         }
       },
       [onChange, splittedValues],

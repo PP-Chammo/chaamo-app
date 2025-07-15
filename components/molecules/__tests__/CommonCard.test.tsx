@@ -149,9 +149,6 @@ describe('CommonCard', () => {
     const { queryByTestId } = render(
       <CommonCard {...defaultProps} marketType="other" />,
     );
-    // EBayImage is not rendered, so we check that no SVG or EBayImage is present
-    // (EBayImage is a custom SVG component, so we check for absence of SVG root)
-    // If EBayImage has a testID, use it; otherwise, check for absence of SVG
     expect(queryByTestId('ebay-svg')).toBeNull();
   });
 });

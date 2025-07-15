@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import SearchHistoryList from '../SearchHistoryList';
 
@@ -71,7 +71,6 @@ describe('SearchHistoryList', () => {
         onHistoryPress={onHistoryPress}
       />,
     );
-    // There are as many remove icons as items
     const removeIcons = getAllByText('×');
     fireEvent.press(removeIcons[1]);
     expect(onRemovePress).toHaveBeenCalled();

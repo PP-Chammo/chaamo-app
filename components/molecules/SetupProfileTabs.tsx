@@ -33,7 +33,6 @@ const SetupProfileTabs = memo(function SetupProfileTabs() {
         };
 
         return (
-          // for development purposes, it's should not clickable
           <Pressable
             key={tab.route}
             testID={`tab-${tab.route}`}

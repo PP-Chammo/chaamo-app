@@ -47,7 +47,6 @@ describe('SubscriptionCard (molecules)', () => {
 
   it('renders Icon for each benefit', () => {
     const { getAllByText } = render(<SubscriptionCard {...baseProps} />);
-    // There should be one 'check' icon per benefit
     expect(getAllByText('check').length).toBe(baseProps.benefits.length);
   });
 

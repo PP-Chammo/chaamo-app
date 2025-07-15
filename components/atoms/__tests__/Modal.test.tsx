@@ -59,7 +59,6 @@ describe('Modal', () => {
 
     const modal = getByTestId('modal');
     expect(modal.props.onRequestClose).toBe(onClose);
-    // Directly call the onRequestClose function to ensure coverage
     modal.props.onRequestClose();
     expect(onClose).toHaveBeenCalledTimes(1);
   });

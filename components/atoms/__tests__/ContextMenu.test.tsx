@@ -91,7 +91,6 @@ describe('ContextMenu', () => {
 
   it('calculates position correctly when triggerRef is available', () => {
     const triggerRef = React.createRef<View | null>();
-    // Mock the measure function
     triggerRef.current = {
       measure: jest.fn((callback) => {
         callback(100, 200, 50, 30, 100, 200);
@@ -111,7 +110,6 @@ describe('ContextMenu', () => {
 
   it('handles screen bounds correctly - menu would go off right edge', () => {
     const triggerRef = React.createRef<View | null>();
-    // Mock the measure function with position that would cause menu to go off right edge
     triggerRef.current = {
       measure: jest.fn((callback) => {
         callback(300, 200, 50, 30, 300, 200);
@@ -131,7 +129,6 @@ describe('ContextMenu', () => {
 
   it('handles screen bounds correctly - menu would go off left edge', () => {
     const triggerRef = React.createRef<View | null>();
-    // Mock the measure function with position that would cause menu to go off left edge
     triggerRef.current = {
       measure: jest.fn((callback) => {
         callback(10, 200, 50, 30, 10, 200);
@@ -151,7 +148,6 @@ describe('ContextMenu', () => {
 
   it('handles screen bounds correctly - menu would go off bottom edge', () => {
     const triggerRef = React.createRef<View | null>();
-    // Mock the measure function with position that would cause menu to go off bottom edge
     triggerRef.current = {
       measure: jest.fn((callback) => {
         callback(100, 700, 50, 30, 100, 700);

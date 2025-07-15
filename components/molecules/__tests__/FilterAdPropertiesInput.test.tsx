@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import FilterAdPropertiesInput from '../FilterAdPropertiesInput';
 
@@ -22,7 +22,6 @@ describe('FilterAdPropertiesInput', () => {
     const { getByTestId } = render(
       <FilterAdPropertiesInput {...defaultProps} />,
     );
-    // Check that ad property buttons are rendered
     expect(getByTestId('filter-ad-properties-input')).toBeTruthy();
   });
 
@@ -31,10 +30,9 @@ describe('FilterAdPropertiesInput', () => {
     const { getByTestId } = render(
       <FilterAdPropertiesInput {...defaultProps} onChange={onChange} />,
     );
-    // Find and press the first ad property button
     const firstButton = getByTestId('filter-ad-property-button-featured');
     fireEvent.press(firstButton);
-    expect(onChange).toHaveBeenCalledWith('adProperties', 'featured');
+    expect(onChange).toHaveBeenCalledWith('featured');
   });
 
   it('toggles ad property value when button is pressed', () => {
@@ -48,7 +46,7 @@ describe('FilterAdPropertiesInput', () => {
     );
     const button = getByTestId('filter-ad-property-button-featured');
     fireEvent.press(button);
-    expect(onChange).toHaveBeenCalledWith('adProperties', '');
+    expect(onChange).toHaveBeenCalledWith('');
   });
 
   it('applies correct styling classes', () => {

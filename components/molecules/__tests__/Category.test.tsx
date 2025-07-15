@@ -1,11 +1,10 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { View } from 'react-native';
 
 import CategoryItem from '../Category';
 
-// Mock SVG component
 const MockSvgComponent = () => <View testID="svg-image">SVG Image</View>;
 
 describe('CategoryItem', () => {
@@ -121,7 +120,6 @@ describe('CategoryItem', () => {
     const { getByTestId } = render(<CategoryItem {...defaultProps} />);
     const touchable = getByTestId('category-item');
 
-    // Should not throw error when pressed without onPress handler
     expect(() => fireEvent.press(touchable)).not.toThrow();
   });
 });

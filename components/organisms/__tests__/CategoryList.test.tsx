@@ -1,14 +1,52 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import CategoryList from '../CategoryList';
 
-// Mock the Link component and router
 jest.mock('expo-router', () => ({
   Link: 'Link',
   router: { push: () => {} },
   useRouter: () => ({ push: () => {} }),
+}));
+
+jest.mock('@/generated/graphql', () => ({
+  ...jest.requireActual('@/generated/graphql'),
+  useGetCategoriesQuery: jest.fn(() => ({
+    data: {
+      categoriesCollection: {
+        edges: [
+          {
+            node: {
+              id: 1,
+              name: 'PokeMon',
+              type: 'TYPE1',
+              __typename: 'categories',
+            },
+            __typename: 'categoriesEdge',
+          },
+          {
+            node: {
+              id: 2,
+              name: 'Marvel',
+              type: 'TYPE2',
+              __typename: 'categories',
+            },
+            __typename: 'categoriesEdge',
+          },
+          ...Array.from({ length: 8 }, (_, i) => ({
+            node: {
+              id: i + 3,
+              name: `Category${i + 3}`,
+              type: `TYPE${i + 3}`,
+              __typename: 'categories',
+            },
+            __typename: 'categoriesEdge',
+          })),
+        ],
+      },
+    },
+  })),
 }));
 
 describe('CategoryList', () => {

@@ -1,15 +1,13 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import Chart from '../Chart';
 
-// Mock react-native-svg-charts
 jest.mock('react-native-svg-charts', () => ({
   AreaChart: 'AreaChart',
 }));
 
-// Mock react-native-svg
 jest.mock('react-native-svg', () => ({
   Defs: 'Defs',
   LinearGradient: 'LinearGradient',
@@ -92,13 +90,11 @@ describe('Chart', () => {
 
   it('displays correct best value', () => {
     const { getByTestId } = render(<Chart {...defaultProps} />);
-    // Best value should be the maximum of the current data (40 for raw 7 days)
     expect(getByTestId('best-value')).toBeTruthy();
   });
 
   it('displays correct today value', () => {
     const { getByTestId } = render(<Chart {...defaultProps} />);
-    // Today value should be the last value in the current data (40 for raw 7 days)
     expect(getByTestId('today-value')).toBeTruthy();
   });
 

@@ -65,7 +65,6 @@ describe('ProductDetailInfo', () => {
   it('displays date information', () => {
     render(<ProductDetailInfo {...mockProps} />);
 
-    // The date will be formatted by formatDistanceToNow
     expect(screen.getByText(/ago/)).toBeTruthy();
   });
 
@@ -105,7 +104,6 @@ describe('ProductDetailInfo', () => {
 
   it('displays eBay logo or text', () => {
     render(<ProductDetailInfo {...mockProps} />);
-    // The eBay SVG is present, but we can check for the text 'Price Value:' as a proxy
     expect(screen.getByText(/Price Value:/)).toBeTruthy();
   });
 });

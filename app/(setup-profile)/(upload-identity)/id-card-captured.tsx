@@ -6,16 +6,15 @@ import { Image, Text, View } from 'react-native';
 import { Button, ScreenContainer, UploadInstruction } from '@/components/atoms';
 import { Header } from '@/components/molecules';
 import { FRAME_HEIGHT, FRAME_WIDTH } from '@/constants/setup-profile';
-import { useImageCapturedStore } from '@/hooks/useImageCapturedStore';
-import { imageCapturedStore } from '@/stores/imageCapturedStore';
+import { useImageCapturedVar } from '@/hooks/useImageCapturedVar';
 
 export default function IDCardCapturedScreen() {
-  const { uri, setImageCaptured } = useImageCapturedStore();
+  const [imageCaptured, setImageCaptured] = useImageCapturedVar();
 
   const handleRetake = useCallback(() => {
-    setImageCaptured(imageCapturedStore);
+    setImageCaptured(imageCaptured);
     router.push('/id-card');
-  }, [setImageCaptured]);
+  }, [imageCaptured, setImageCaptured]);
 
   const handleSubmit = useCallback(() => {
     // TODO: Implement submit logic save image to storage and send to backend
@@ -35,7 +34,7 @@ export default function IDCardCapturedScreen() {
           // Note: Tailwind does not generate classes at runtime.
           // To use dynamic styles like this, you must use inline styles or ensure all possible classes are generated at build time.
           style={{ width: FRAME_WIDTH, height: FRAME_HEIGHT }}
-          source={{ uri }}
+          source={{ uri: imageCaptured.uri }}
           className={classes.image}
         />
         <UploadInstruction variant="light" />

@@ -64,7 +64,6 @@ describe('OrderItem', () => {
   it('is touchable', () => {
     const { getByText } = render(<OrderItem {...defaultProps} />);
 
-    // The component should be wrapped in TouchableOpacity
     expect(getByText('Test Product')).toBeTruthy();
   });
 });

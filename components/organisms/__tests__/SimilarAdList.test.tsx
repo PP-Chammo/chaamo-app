@@ -34,7 +34,6 @@ describe('SimilarAdList', () => {
   it('renders ProductCardList component', () => {
     render(<SimilarAdList />);
 
-    // The ProductCardList component should be rendered
     expect(screen.getByTestId('list-container')).toBeTruthy();
   });
 
@@ -74,7 +73,6 @@ describe('SimilarAdList', () => {
   it('renders product cards', () => {
     render(<SimilarAdList />);
 
-    // Check for product cards
     expect(screen.getAllByTestId('common-card')).toHaveLength(3);
   });
 
@@ -92,7 +90,6 @@ describe('SimilarAdList', () => {
     const productCards = screen.getAllByTestId('common-card');
     expect(productCards).toHaveLength(3);
 
-    // Test that each card exists
     productCards.forEach((card) => {
       expect(card).toBeTruthy();
     });
@@ -135,7 +132,6 @@ describe('SimilarAdList edge cases', () => {
   });
 
   it('renders with noLink ListContainer', () => {
-    // Patch ListContainer to force noLink
     jest.doMock('@/components/molecules/ListContainer', () => {
       const Actual = jest.requireActual('@/components/molecules/ListContainer');
       const MockListContainer = (props: Record<string, unknown>) => (
