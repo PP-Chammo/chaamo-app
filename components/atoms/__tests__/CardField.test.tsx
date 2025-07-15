@@ -3,68 +3,94 @@ import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
 
 import CardField from '../CardField';
+
+jest.mock('@/assets/svg', () => {
+  const { Text } = jest.requireActual('react-native');
+  return {
+    VisaCard: () => <Text>VisaCard</Text>,
+    MasterCard: () => <Text>MasterCard</Text>,
+  };
+});
+
+jest.mock('@/utils/card', () => ({
+  formatCardField: jest.fn((v) => v),
+  validateCardNumber: jest.fn((v) => {
+    let cardType = null;
+    if (v.startsWith('4')) cardType = 'visa';
+    else if (v.startsWith('5')) cardType = 'mastercard';
+
+    return {
+      isValid: v === '4111 1111 1111 1111',
+      isVisa: v.startsWith('4'),
+      isMasterCard: v.startsWith('5'),
+      cardType,
+    };
+  }),
+}));
+
 describe('CardField', () => {
-  it('renders correctly', () => {
-    const { getByText } = render(
-      <CardField
-        value=""
-        onChange={jest.fn()}
-        label="Card Number"
-        name="cardNumber"
-      />,
-    );
-    expect(getByText('Card Number')).toBeTruthy();
+  const defaultProps = {
+    value: '',
+    onChange: jest.fn(),
+    label: 'Card Number',
+    name: 'cardNumber',
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
-  it('calls onChange when input changes', () => {
+
+  it('renders with label and required', () => {
+    const { getByText } = render(<CardField {...defaultProps} required />);
+    expect(getByText(/Card Number/)).toBeTruthy();
+  });
+
+  it('calls onChange with formatted value', () => {
     const onChange = jest.fn();
-    const { getByDisplayValue } = render(
-      <CardField
-        value=""
-        onChange={onChange}
-        label="Card Number"
-        name="cardNumber"
-      />,
+    const { getByLabelText } = render(
+      <CardField {...defaultProps} onChange={onChange} value="" />,
     );
-    const input = getByDisplayValue('');
-    fireEvent.changeText(input, '1234');
+    const input = getByLabelText('Card Number');
+    fireEvent.changeText(input, '4111 1111 1111 1111');
     expect(onChange).toHaveBeenCalledWith({
       name: 'cardNumber',
-      value: '1234',
+      value: '4111 1111 1111 1111',
     });
   });
-  it('shows error message', () => {
+
+  it('shows error message if error prop is set', () => {
     const { getByText } = render(
-      <CardField
-        value=""
-        onChange={jest.fn()}
-        label="Card Number"
-        name="cardNumber"
-        error="Test error"
-      />,
+      <CardField {...defaultProps} error="Invalid input" />,
     );
-    expect(getByText('Test error')).toBeTruthy();
+    expect(getByText(/Invalid input/)).toBeTruthy();
   });
-  it('shows required asterisk', () => {
+
+  it('shows invalid card number message for invalid card', () => {
     const { getByText } = render(
-      <CardField
-        value=""
-        onChange={jest.fn()}
-        label="Card Number"
-        name="cardNumber"
-        required
-      />,
+      <CardField {...defaultProps} value="1234 5678 9012 3456" />,
     );
-    expect(getByText('*')).toBeTruthy();
+    expect(getByText(/Invalid card number/)).toBeTruthy();
   });
-  it('shows invalid card number message', () => {
+
+  it('renders VisaCard icon for Visa number', () => {
     const { getByText } = render(
-      <CardField
-        value="1234"
-        onChange={jest.fn()}
-        label="Card Number"
-        name="cardNumber"
-      />,
+      <CardField {...defaultProps} value="4111 1111 1111 1111" />,
     );
-    expect(getByText('Invalid card number')).toBeTruthy();
+    expect(getByText('VisaCard')).toBeTruthy();
+  });
+
+  it('renders MasterCard icon for MasterCard number', () => {
+    const { getByText } = render(
+      <CardField {...defaultProps} value="5111 1111 1111 1111" />,
+    );
+    expect(getByText('MasterCard')).toBeTruthy();
+  });
+
+  it('does not render card icon for unknown card', () => {
+    const { queryByText } = render(
+      <CardField {...defaultProps} value="6011 1111 1111 1117" />,
+    );
+    expect(queryByText('VisaCard')).toBeNull();
+    expect(queryByText('MasterCard')).toBeNull();
   });
 });

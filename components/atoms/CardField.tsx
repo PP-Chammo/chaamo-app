@@ -52,7 +52,7 @@ const CardField = memo(function CardField({
 
   return (
     <View className={clsx(classes.container, className)}>
-      {label && (
+      {!!label && (
         <Text className={classes.label}>
           {label}
           {required && <Text className={classes.required}>*</Text>}
@@ -65,12 +65,13 @@ const CardField = memo(function CardField({
           keyboardType="numeric"
           maxLength={19}
           className={clsx(classes.input, inputClassName)}
+          accessibilityLabel={label}
           {...props}
         />
         <View className={classes.cardIcon}>{renderCardIcon}</View>
       </View>
       {error && <Text className={classes.error}>{error}</Text>}
-      {value && value.length >= 4 && !cardValidation.isValid && (
+      {!!value && value.length >= 4 && !cardValidation.isValid && (
         <Text className={classes.error}>Invalid card number</Text>
       )}
     </View>

@@ -70,7 +70,7 @@ const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
       className={clsx(classes.container, className)}
       onPress={onPress}
     >
-      {featured && <Badge />}
+      {featured && <Badge testID="badge" />}
       {rightComponent ?? renderRightIcon()}
       {imageUrl ? (
         <Image

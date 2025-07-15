@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import PostCard from '../PostCard';
 
@@ -143,5 +143,33 @@ describe('PostCard', () => {
       fireEvent.press(likeButton);
       fireEvent.press(contextMenu);
     }).not.toThrow();
+  });
+
+  it('renders correct time for 1 hour ago', () => {
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const post = { ...defaultProps.post, date: oneHourAgo };
+    const { getByText } = render(<PostCard {...defaultProps} post={post} />);
+    expect(getByText(/1 hour ago/)).toBeTruthy();
+  });
+
+  it('renders correct time for 2 hours ago', () => {
+    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
+    const post = { ...defaultProps.post, date: twoHoursAgo };
+    const { getByText } = render(<PostCard {...defaultProps} post={post} />);
+    expect(getByText(/2 hours ago/)).toBeTruthy();
+  });
+
+  it('renders correct time for 1 minute ago', () => {
+    const oneMinuteAgo = new Date(Date.now() - 60 * 1000).toISOString();
+    const post = { ...defaultProps.post, date: oneMinuteAgo };
+    const { getByText } = render(<PostCard {...defaultProps} post={post} />);
+    expect(getByText(/1 minute ago/)).toBeTruthy();
+  });
+
+  it('renders correct time for 2 minutes ago', () => {
+    const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000).toISOString();
+    const post = { ...defaultProps.post, date: twoMinutesAgo };
+    const { getByText } = render(<PostCard {...defaultProps} post={post} />);
+    expect(getByText(/2 minutes ago/)).toBeTruthy();
   });
 });

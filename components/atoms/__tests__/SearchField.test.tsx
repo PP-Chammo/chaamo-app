@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { TextInput } from 'react-native';
 
 import SearchField from '../SearchField';
@@ -164,5 +164,16 @@ describe('SearchField', () => {
 
     // Test that the onSubmitEditing prop exists but is optional
     expect(input.props.onSubmitEditing).toBeDefined();
+  });
+
+  it('calls onChange with empty value when clear button is pressed', () => {
+    const onChange = jest.fn();
+    const { getByRole } = render(
+      <SearchField value="something" onChange={onChange} />,
+    );
+    // Find the clear button by role (button)
+    const clearButton = getByRole('button');
+    fireEvent.press(clearButton);
+    expect(onChange).toHaveBeenCalledWith({ name: 'search', value: '' });
   });
 });
