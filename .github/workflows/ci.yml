@@ -17,6 +17,8 @@ jobs:
           node-version: 20
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+      - name: Generate GraphQL types
+        run: yarn graphql:codegen
       - name: Lint
         run: npm run lint
       - name: Type check
