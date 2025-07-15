@@ -19,7 +19,8 @@
     "test:ci": "jest --bail",
     "precheck": "npm run lint:fix && npm run prettier:fix && npx tsc --noEmit",
     "prepare": "husky",
-    "fix": "npm run lint:fix && npm run prettier:fix"
+    "fix": "npm run lint:fix && npm run prettier:fix",
+    "codegen": "npx supabase gen types typescript --project-id 'atdordzshxrtafbogpiw' --schema public > types/database.ts"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
@@ -28,6 +29,7 @@
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
+    "@supabase/supabase-js": "^2.51.0",
     "card-validator": "^10.0.3",
     "clsx": "^2.1.1",
     "d3-shape": "^3.2.0",

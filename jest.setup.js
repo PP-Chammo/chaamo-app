@@ -1,3 +1,4 @@
+require('dotenv').config();
 /* eslint-disable no-undef */
 // Mock Expo modules
 jest.mock('expo-router', () => ({

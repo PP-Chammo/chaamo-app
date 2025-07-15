@@ -43,3 +43,4 @@ app-example
 
 # coverage reports
 coverage/
+.env
