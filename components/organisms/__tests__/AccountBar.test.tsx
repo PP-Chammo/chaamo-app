@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { router } from 'expo-router';
 
 import AccountBar from '../AccountBar';
@@ -18,7 +18,7 @@ describe('AccountBar', () => {
 
   it('displays greeting message', () => {
     const { getByText } = render(<AccountBar />);
-    expect(getByText('👋 Hi')).toBeTruthy();
+    expect(getByText('Hi')).toBeTruthy();
     expect(getByText('Shireen!')).toBeTruthy();
   });
 
