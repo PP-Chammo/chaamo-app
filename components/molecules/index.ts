@@ -38,6 +38,7 @@ export { default as ProductDetailInfo } from './ProductDetailInfo';
 export { default as RadioInput } from './RadioInput';
 export { default as Rating } from './Rating';
 export { default as Review } from './Review';
+export { default as Select } from './Select';
 export { default as SelectWithScreen } from './SelectWithScreen';
 export { default as SettingItem } from './SettingItem';
 export { default as SetupProfileTabs } from './SetupProfileTabs';
