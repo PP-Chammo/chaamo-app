@@ -18,7 +18,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Generate GraphQL types
-        run: yarn graphql:codegen
+        run: yarn codegen
       - name: Lint
         run: npm run lint
       - name: Type check
