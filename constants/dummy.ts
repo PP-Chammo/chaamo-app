@@ -106,24 +106,60 @@ export const dummyPortfolioCardList = [
   },
 ];
 
-export const COUNTRIES = [
-  'USA',
-  'India',
-  'Canada',
-  'Australia',
-  'China',
-  'Pakistan',
-];
-
 export const CURRENCIES = ['USD', 'Euro', 'Pound', 'PKR', 'CAD', 'AUD'];
 
 export const STATES = [
-  'California',
-  'New York',
-  'Texas',
-  'Florida',
-  'Illinois',
-  'Ohio',
+  {
+    label: 'California',
+    value: 'CA',
+  },
+  {
+    label: 'New York',
+    value: 'NY',
+  },
+  {
+    label: 'Texas',
+    value: 'TX',
+  },
+  {
+    label: 'Florida',
+    value: 'FL',
+  },
+  {
+    label: 'Illinois',
+    value: 'IL',
+  },
+  {
+    label: 'Ohio',
+    value: 'OH',
+  },
+];
+
+export const COUNTRIES = [
+  {
+    label: 'USA',
+    value: 'USA',
+  },
+  {
+    label: 'India',
+    value: 'India',
+  },
+  {
+    label: 'Canada',
+    value: 'Canada',
+  },
+  {
+    label: 'Australia',
+    value: 'Australia',
+  },
+  {
+    label: 'China',
+    value: 'China',
+  },
+  {
+    label: 'Pakistan',
+    value: 'Pakistan',
+  },
 ];
 
 export const dummyEvents = [

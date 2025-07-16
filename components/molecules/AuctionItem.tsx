@@ -5,8 +5,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { Image, TouchableOpacity, View } from 'react-native';
 
 import EBayLogo from '@/assets/svg/ebay.svg';
-import { Icon, Label, Row, Tag } from '@/components/atoms';
-import { PriceIndicator } from '@/components/molecules';
+import { Icon, Label, PriceIndicator, Row, Tag } from '@/components/atoms';
 import { getColor } from '@/utils/getColor';
 
 type AuctionItemProps = {

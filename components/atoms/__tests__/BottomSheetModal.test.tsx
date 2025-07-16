@@ -132,10 +132,8 @@ describe('BottomSheetModal', () => {
         {mockChildren}
       </BottomSheetModal>,
     );
-    listeners['keyboardDidShow'] &&
-      listeners['keyboardDidShow']({ endCoordinates: { height: 100 } });
-    // Simulate keyboardDidHide event
-    listeners['keyboardDidHide'] && listeners['keyboardDidHide']();
+    listeners['keyboardDidShow']?.({ endCoordinates: { height: 100 } });
+    listeners['keyboardDidHide']?.();
     expect(getByTestId('bottom-sheet-container')).toBeTruthy();
 
     Object.defineProperty(Platform, 'OS', {

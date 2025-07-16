@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { Fragment, useCallback, useRef, useState } from 'react';
 
 import { router } from 'expo-router';
 import { Alert, TouchableOpacity, View } from 'react-native';
@@ -47,7 +47,7 @@ export default function PublicProfileScreen() {
   }, [handleCloseContextMenu]);
 
   return (
-    <>
+    <Fragment>
       <ScreenContainer className={classes.container}>
         <Header
           rightIcon="dots-vertical"
@@ -120,7 +120,7 @@ export default function PublicProfileScreen() {
           <Label className={classes.blockText}>Block</Label>
         </TouchableOpacity>
       </ContextMenu>
-    </>
+    </Fragment>
   );
 }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { router } from 'expo-router';
 import { Alert, View } from 'react-native';
@@ -7,11 +7,11 @@ import { Button, KeyboardView, Row, ScreenContainer } from '@/components/atoms';
 import {
   Header,
   PhoneInput,
-  SelectWithScreen,
+  SelectModal,
   TextField,
 } from '@/components/molecules';
+import { COUNTRIES, STATES } from '@/constants/dummy';
 import { TextChangeParams } from '@/domains';
-import { useSelectWithScreenVar } from '@/hooks/useSelectWithScreenVar';
 import {
   validateRequired,
   ValidationErrors,
@@ -46,8 +46,6 @@ export default function PersonalDetailsScreen() {
   const [form, setForm] = useState<Form>(initialForm);
   const [errors, setErrors] = useState<ValidationErrors<Form>>({});
 
-  const [selectState] = useSelectWithScreenVar();
-
   const handleChange = ({ name, value }: TextChangeParams) => {
     setErrors((prev) => {
       delete prev[name as keyof typeof prev];
@@ -72,20 +70,12 @@ export default function PersonalDetailsScreen() {
     return Alert.alert('Success', 'Personal details updated successfully');
   };
 
-  useEffect(() => {
-    setForm((prev) => ({
-      ...prev,
-      country: selectState.selectedCountry,
-      state: selectState.selectedState,
-    }));
-  }, [selectState.selectedCountry, selectState.selectedState]);
-
   return (
     <ScreenContainer>
       <Header title="Personal Details" onBackPress={() => router.back()} />
       <KeyboardView>
         <View className={classes.container}>
-          <Row between>
+          <Row between className={classes.row}>
             <TextField
               label="First Name"
               value={form.firstName}
@@ -114,7 +104,7 @@ export default function PersonalDetailsScreen() {
             onChange={handleChange}
             name="address"
           />
-          <Row between>
+          <Row between className={classes.row}>
             <TextField
               label="City"
               value={form.city}
@@ -124,22 +114,28 @@ export default function PersonalDetailsScreen() {
               required
               error={errors['city']}
             />
-            <SelectWithScreen
+            <SelectModal
+              required
+              name="state"
               label="State"
-              onPress={() => router.push('/screens/state-picker')}
+              value={form.state}
+              onChange={handleChange}
+              options={STATES}
               error={errors['state']}
               placeholder="--Select--"
-              value={form.state}
-              required
+              className={classes.input}
             />
           </Row>
-          <SelectWithScreen
+          <SelectModal
+            required
+            name="country"
             label="Country"
-            onPress={() => router.push('/screens/country-picker')}
+            value={form.country}
+            onChange={handleChange}
+            options={COUNTRIES}
             error={errors['country']}
             placeholder="--Select--"
-            value={form.country}
-            required
+            className={classes.input}
           />
           <TextField
             label="Postal Code"
@@ -160,6 +156,7 @@ export default function PersonalDetailsScreen() {
 
 const classes = {
   container: 'flex-1 p-4.5 gap-4',
-  button: 'my-10 mx-4.5',
+  button: 'm-4.5',
   input: 'flex-1',
+  row: 'gap-3',
 };

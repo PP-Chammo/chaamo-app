@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { router } from 'expo-router';
 import { View } from 'react-native';
@@ -6,12 +6,12 @@ import { View } from 'react-native';
 import { Button, KeyboardView, Row, ScreenContainer } from '@/components/atoms';
 import {
   Header,
-  SelectWithScreen,
+  SelectModal,
   SetupProfileTabs,
   TextField,
 } from '@/components/molecules';
+import { COUNTRIES, STATES } from '@/constants/dummy';
 import { TextChangeParams } from '@/domains';
-import { useSelectWithScreenVar } from '@/hooks/useSelectWithScreenVar';
 import {
   validateRequired,
   ValidationErrors,
@@ -36,8 +36,6 @@ export default function AddressScreen() {
     addressLine1: '',
     addressLine2: '',
   });
-
-  const [selectState] = useSelectWithScreenVar();
 
   const [errors, setErrors] = useState<ValidationErrors<Form>>({});
 
@@ -65,14 +63,6 @@ export default function AddressScreen() {
     router.push('/(setup-profile)/(upload-identity)/proof-identity');
   };
 
-  useEffect(() => {
-    setForm((prev) => ({
-      ...prev,
-      country: selectState.selectedCountry,
-      state: selectState.selectedState,
-    }));
-  }, [selectState.selectedCountry, selectState.selectedState]);
-
   return (
     <ScreenContainer>
       <Header title="Setting Up Profile" onBackPress={() => router.back()} />
@@ -96,7 +86,7 @@ export default function AddressScreen() {
             value={form.addressLine2}
             error={errors['addressLine2']}
           />
-          <Row>
+          <Row className="gap-3">
             <TextField
               name="city"
               label="City"
@@ -105,21 +95,30 @@ export default function AddressScreen() {
               value={form.city}
               required
               error={errors['city']}
+              className={classes.input}
             />
-            <SelectWithScreen
+            <SelectModal
+              required
+              name="state"
               label="State"
-              onPress={() => router.push('/screens/state-picker')}
+              value={form.state}
+              onChange={handleChange}
+              options={STATES}
               error={errors['state']}
               placeholder="--Select--"
-              value={form.state}
+              className={classes.input}
             />
           </Row>
-          <SelectWithScreen
+          <SelectModal
+            required
+            name="country"
             label="Country"
-            onPress={() => router.push('/screens/country-picker')}
+            value={form.country}
+            onChange={handleChange}
+            options={COUNTRIES}
             error={errors['country']}
             placeholder="--Select--"
-            value={form.country}
+            className={classes.input}
           />
           <TextField
             name="postalCode"
@@ -149,5 +148,6 @@ const classes = {
   keyboardViewContent: 'flex-grow gap-3 pb-20',
   statePicker: 'border-1 border-gray-200 rounded-8 p-12 mt-8',
   formContainer: 'pb-10 flex gap-4',
+  input: 'flex-1',
   button: 'mt-5',
 };

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 
 import { Link, router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
@@ -22,7 +22,7 @@ export default function OrderDetailsScreen() {
   const _renderOrderDetails = useMemo(() => {
     if (isExpandedOrderDetails)
       return (
-        <>
+        <Fragment>
           <Row between>
             <Label>Time Placed</Label>
             <Label>21 March 2025 at 9:29 AM</Label>
@@ -37,7 +37,7 @@ export default function OrderDetailsScreen() {
               John Doe
             </Link>
           </Row>
-        </>
+        </Fragment>
       );
 
     return null;
@@ -46,7 +46,7 @@ export default function OrderDetailsScreen() {
   const _renderPaymentInfo = useMemo(() => {
     if (isExpandedPaymentInfo)
       return (
-        <>
+        <Fragment>
           <Row between>
             <Label>Item</Label>
             <Label>$ 18.31</Label>
@@ -59,7 +59,7 @@ export default function OrderDetailsScreen() {
             <Label>Insurance</Label>
             <Label>$ 3.50</Label>
           </Row>
-        </>
+        </Fragment>
       );
 
     return null;
