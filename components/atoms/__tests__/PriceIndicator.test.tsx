@@ -4,12 +4,15 @@ import { render } from '@testing-library/react-native';
 
 import PriceIndicator from '../PriceIndicator';
 
-jest.mock('@/components/atoms', () => {
-  const { Text } = jest.requireActual('react-native');
+jest.mock('@expo/vector-icons', () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { Text } = require('react-native');
   return {
-    Icon: (props: Record<string, unknown>) => (
-      <Text>{`${props.name}-${props.color}-${props.size}`}</Text>
-    ),
+    MaterialCommunityIcons: (props: {
+      name: string;
+      color: string;
+      size: number;
+    }) => <Text>{`${props.name}-${props.color}-${props.size}`}</Text>,
   };
 });
 

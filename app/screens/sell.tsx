@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { Fragment, useCallback, useMemo, useState } from 'react';
 
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
@@ -166,7 +166,7 @@ export default function SellScreen() {
             />
           )}
           {form.condition2 === 'auction' && (
-            <>
+            <Fragment>
               <TextField
                 type="date"
                 name="endDate"
@@ -207,7 +207,7 @@ export default function SellScreen() {
                 leftIconColor={getColor('slate-500')}
                 error={errors.reservedPrice}
               />
-            </>
+            </Fragment>
           )}
           <Button
             className={classes.submitBtn}

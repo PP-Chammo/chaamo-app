@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { Fragment, useCallback, useState } from 'react';
 
 import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
@@ -22,7 +22,7 @@ export default function SettingsScreen() {
   }, [isDeleteAccountModalVisible]);
 
   return (
-    <>
+    <Fragment>
       <ScreenContainer classNameTop={classes.containerTop}>
         <Header
           title="Settings"
@@ -153,7 +153,7 @@ export default function SettingsScreen() {
           Cancel
         </Button>
       </Modal>
-    </>
+    </Fragment>
   );
 }
 

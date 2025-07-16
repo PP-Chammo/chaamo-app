@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
@@ -6,7 +8,7 @@ import { getColor } from '@/utils/getColor';
 
 export default function RootLayout() {
   return (
-    <>
+    <Fragment>
       <Stack
         screenOptions={{
           headerShown: false,
@@ -16,6 +18,6 @@ export default function RootLayout() {
         <Stack.Screen name="index" />
       </Stack>
       <StatusBar style="auto" />
-    </>
+    </Fragment>
   );
 }

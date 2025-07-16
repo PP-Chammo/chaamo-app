@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useRef, useState } from 'react';
+import React, { Fragment, memo, useCallback, useRef, useState } from 'react';
 
 import { Alert, TouchableOpacity, View } from 'react-native';
 
@@ -47,7 +47,7 @@ const FollowListItem: React.FC<FollowListItemProps> = memo(
     }, [handleCloseContextMenu, onBlock]);
 
     return (
-      <>
+      <Fragment>
         <Row testID="follow-list-item" between>
           <Row className={classes.row}>
             <Avatar testID="avatar" imageUrl={imageUrl} size={50} />
@@ -75,7 +75,7 @@ const FollowListItem: React.FC<FollowListItemProps> = memo(
             <Label className={classes.blockText}>Block</Label>
           </TouchableOpacity>
         </ContextMenu>
-      </>
+      </Fragment>
     );
   },
 );

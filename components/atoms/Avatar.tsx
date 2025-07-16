@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { Fragment, memo, useState } from 'react';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { clsx } from 'clsx';
@@ -34,7 +34,7 @@ const Avatar = memo(function Avatar({
     >
       <View className={clsx(classes.imageContainer, imageContainerClassName)}>
         {imageUrl && !imageError ? (
-          <>
+          <Fragment>
             <Image
               source={{ uri: imageUrl }}
               onError={() => {
@@ -53,9 +53,9 @@ const Avatar = memo(function Avatar({
                 className={classes.modifyIcon}
               />
             )}
-          </>
+          </Fragment>
         ) : (
-          <>
+          <Fragment>
             <MaterialCommunityIcons name="account" size={size} color="white" />
             {onPress && (
               <MaterialCommunityIcons
@@ -65,7 +65,7 @@ const Avatar = memo(function Avatar({
                 className={classes.modifyIcon}
               />
             )}
-          </>
+          </Fragment>
         )}
       </View>
     </TouchableOpacity>

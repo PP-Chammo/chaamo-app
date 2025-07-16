@@ -8,9 +8,15 @@ jest.mock('@/utils/getColor', () => ({
   getColor: jest.fn(() => '#000'),
 }));
 
-jest.mock('@expo/vector-icons', () => ({
-  MaterialCommunityIcons: (props: Record<string, unknown>) => <>{props.name}</>,
-}));
+jest.mock('@expo/vector-icons', () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { Text } = require('react-native');
+  return {
+    MaterialCommunityIcons: (props: Record<string, React.ReactNode>) => (
+      <Text>{props.name}</Text>
+    ),
+  };
+});
 
 describe('PaymentMethodCard', () => {
   it('renders charged from label and card details', () => {
