@@ -147,7 +147,7 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
 export default TextField;
 
 const classes = {
-  container: 'gap-2',
+  container: 'flex gap-2',
   label: 'text-slate-500 font-medium text-md ml-4',
   required: 'text-red-500',
   inputContainer: 'relative',

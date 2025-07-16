@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { Fragment, memo } from 'react';
 
 import { clsx } from 'clsx';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -27,7 +27,7 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
     ...props
   }) {
     return (
-      <>
+      <Fragment>
         <SafeAreaView className={clsx(classes.containerTop, classNameTop)} />
         <SafeAreaView className={classes.container} style={style} {...props}>
           {className?.includes('bg-') ? (
@@ -46,7 +46,7 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
         <SafeAreaView
           className={clsx(classes.containerBottom, classNameBottom)}
         />
-      </>
+      </Fragment>
     );
   },
 );

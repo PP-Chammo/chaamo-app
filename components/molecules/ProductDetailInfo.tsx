@@ -4,8 +4,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { View } from 'react-native';
 
 import EBayImage from '@/assets/svg/ebay.svg';
-import { Icon, Label, Row } from '@/components/atoms';
-import { PriceIndicator } from '@/components/molecules';
+import { Icon, Label, PriceIndicator, Row } from '@/components/atoms';
 
 interface ProductDetailInfoProps {
   price: string | number;

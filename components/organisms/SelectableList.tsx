@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from 'react';
+import { Fragment, memo, useMemo, useState } from 'react';
 
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
@@ -26,7 +26,7 @@ const SelectableList: React.FC<SelectableListProps> = memo(
     );
 
     return (
-      <>
+      <Fragment>
         <View className={classes.searchContainer}>
           <TextField
             name="search"
@@ -62,7 +62,7 @@ const SelectableList: React.FC<SelectableListProps> = memo(
             )}
           />
         </View>
-      </>
+      </Fragment>
     );
   },
 );

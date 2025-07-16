@@ -5,8 +5,7 @@ import { clsx } from 'clsx';
 import { Image, TouchableOpacity, View } from 'react-native';
 
 import EBayImage from '@/assets/svg/ebay.svg';
-import { Badge, Icon, Label } from '@/components/atoms';
-import { PriceIndicator } from '@/components/molecules';
+import { Badge, Icon, Label, PriceIndicator } from '@/components/atoms';
 import { CommonCardType } from '@/types/card';
 import { getColor } from '@/utils/getColor';
 
@@ -42,7 +41,7 @@ const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
     if (marketType === 'eBay') {
       return <EBayImage />;
     }
-    return <></>;
+    return null;
   }, [marketType]);
 
   const renderRightIcon = useCallback(
