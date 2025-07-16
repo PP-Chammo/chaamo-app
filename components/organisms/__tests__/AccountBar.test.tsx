@@ -5,7 +5,6 @@ import { router } from 'expo-router';
 
 import AccountBar from '../AccountBar';
 
-// Mock the router
 jest.mock('expo-router', () => ({
   router: { push: jest.fn() },
 }));
@@ -37,7 +36,7 @@ describe('AccountBar', () => {
   it('handles notification button press', () => {
     const { getAllByTestId } = render(<AccountBar />);
     const buttonIcons = getAllByTestId('button-icon');
-    const notificationButton = buttonIcons[0]; // First button is notification
+    const notificationButton = buttonIcons[0];
 
     fireEvent.press(notificationButton);
 
@@ -47,7 +46,7 @@ describe('AccountBar', () => {
   it('handles wallet button press', () => {
     const { getAllByTestId } = render(<AccountBar />);
     const buttonIcons = getAllByTestId('button-icon');
-    const walletButton = buttonIcons[1]; // Second button is wallet
+    const walletButton = buttonIcons[1];
 
     fireEvent.press(walletButton);
 

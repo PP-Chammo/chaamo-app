@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { Image } from 'react-native';
 
 import Avatar from '../Avatar';
@@ -48,7 +48,6 @@ describe('Avatar', () => {
       <Avatar {...defaultProps} testID="avatar" />,
     );
 
-    // Should not throw when pressed without onPress
     expect(() => {
       fireEvent.press(getByTestId('avatar'));
     }).not.toThrow();
@@ -117,7 +116,6 @@ describe('Avatar', () => {
     const avatar = getByTestId('avatar');
     expect(avatar).toBeTruthy();
 
-    // Find the Image component and trigger onError
     const images = UNSAFE_getAllByType(Image);
     const image = images.find(
       (img) => img.props.source?.uri === 'https://invalid-url.com/image.jpg',
@@ -127,7 +125,6 @@ describe('Avatar', () => {
       image.props.onError();
     }
 
-    // Test that the component renders correctly even with invalid image URL
     expect(avatar).toBeTruthy();
   });
 

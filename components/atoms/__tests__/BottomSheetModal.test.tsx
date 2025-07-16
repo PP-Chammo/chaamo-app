@@ -3,26 +3,24 @@ import React from 'react';
 import {
   fireEvent,
   render,
-  waitFor,
   screen,
+  waitFor,
 } from '@testing-library/react-native';
 import {
-  Text,
   Animated,
-  Platform,
   Keyboard,
   PanResponder,
   PanResponderInstance,
+  Platform,
+  Text,
 } from 'react-native';
 
 import BottomSheetModal from '../BottomSheetModal';
 
-// Mock react-native-safe-area-context
 jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ bottom: 0, top: 0, left: 0, right: 0 }),
 }));
 
-// Mock react-native-reanimated
 jest.mock('react-native-reanimated', () => {
   const Reanimated = jest.requireActual('react-native-reanimated/mock');
   Reanimated.default.call = () => {};
@@ -35,7 +33,6 @@ describe('BottomSheetModal', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // Mock Animated.timing and Animated.spring directly
     jest.spyOn(Animated, 'timing').mockImplementation((() => ({
       start: (cb?: () => void) => cb && cb(),
     })) as unknown as jest.MockedFunction<typeof Animated.timing>);
@@ -103,10 +100,8 @@ describe('BottomSheetModal', () => {
     });
     const overlay = overlays[0];
     expect(overlay).toBeTruthy();
-    // Test accessibility props while we have the overlay
     expect(overlay.props.accessibilityLabel).toBe('Close bottom sheet');
     expect(overlay.props.accessibilityRole).toBe('button');
-    // Test the press functionality
     if (overlay.props.onPress) {
       overlay.props.onPress();
     } else {
@@ -124,7 +119,6 @@ describe('BottomSheetModal', () => {
       value: 'ios',
       writable: true,
     });
-    // Mock Keyboard.addListener to capture the callbacks
     const listeners: Record<string, Function> = {};
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     jest.spyOn(Keyboard, 'addListener').mockImplementation((...args: any[]) => {
@@ -138,14 +132,10 @@ describe('BottomSheetModal', () => {
         {mockChildren}
       </BottomSheetModal>,
     );
-    // Simulate keyboardDidShow event
-    listeners['keyboardDidShow'] &&
-      listeners['keyboardDidShow']({ endCoordinates: { height: 100 } });
-    // Simulate keyboardDidHide event
-    listeners['keyboardDidHide'] && listeners['keyboardDidHide']();
+    listeners['keyboardDidShow']?.({ endCoordinates: { height: 100 } });
+    listeners['keyboardDidHide']?.();
     expect(getByTestId('bottom-sheet-container')).toBeTruthy();
 
-    // Restore original Platform.OS
     Object.defineProperty(Platform, 'OS', {
       value: originalOS,
       writable: true,
@@ -153,7 +143,6 @@ describe('BottomSheetModal', () => {
   });
 
   it('returns null when show is false and isOpen.current is false', () => {
-    // Render with show=false, should return null
     const { queryByTestId } = render(
       <BottomSheetModal show={false} onDismiss={mockOnDismiss}>
         {mockChildren}
@@ -163,7 +152,6 @@ describe('BottomSheetModal', () => {
   });
 
   it('handles pan responder drag below and above threshold', () => {
-    // Mock PanResponder.create to capture the handlers
     const mockPanHandlers = {
       onStartShouldSetPanResponder: jest.fn(),
       onMoveShouldSetPanResponder: jest.fn(),
@@ -175,7 +163,6 @@ describe('BottomSheetModal', () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     jest.spyOn(PanResponder, 'create').mockImplementation((config: any) => {
-      // Store the config handlers in our mockPanHandlers
       if (config.onMoveShouldSetPanResponder) {
         mockPanHandlers.onMoveShouldSetPanResponder =
           config.onMoveShouldSetPanResponder;
@@ -197,12 +184,11 @@ describe('BottomSheetModal', () => {
     const sheet = getByTestId('bottom-sheet-container');
     expect(sheet).toBeTruthy();
 
-    // Test drag below threshold (should not dismiss)
     const belowThresholdEvent = {
       nativeEvent: { pageX: 0, pageY: 0 },
     };
     const belowThresholdGestureState = {
-      dy: 50, // Below threshold (25% of sheet height)
+      dy: 50,
       dx: 0,
       vx: 0,
       vy: 0,
@@ -213,26 +199,23 @@ describe('BottomSheetModal', () => {
       numberActiveTouches: 1,
     };
 
-    // Test onMoveShouldSetPanResponder
     const shouldSetPanResponder = mockPanHandlers.onMoveShouldSetPanResponder(
       belowThresholdEvent,
       belowThresholdGestureState,
     );
     expect(shouldSetPanResponder).toBe(true);
 
-    // Test onPanResponderRelease below threshold (should not call onDismiss)
     mockPanHandlers.onPanResponderRelease(
       belowThresholdEvent,
       belowThresholdGestureState,
     );
     expect(mockOnDismiss).not.toHaveBeenCalled();
 
-    // Test drag above threshold (should dismiss)
     const aboveThresholdEvent = {
       nativeEvent: { pageX: 0, pageY: 0 },
     };
     const aboveThresholdGestureState = {
-      dy: 200, // Above threshold (25% of sheet height)
+      dy: 200,
       dx: 0,
       vx: 0,
       vy: 0,
@@ -243,7 +226,6 @@ describe('BottomSheetModal', () => {
       numberActiveTouches: 1,
     };
 
-    // Test onPanResponderRelease above threshold (should call onDismiss)
     mockPanHandlers.onPanResponderRelease(
       aboveThresholdEvent,
       aboveThresholdGestureState,

@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import FilterTabs from '../FilterTabs';
 
@@ -70,7 +70,6 @@ describe('FilterTabs', () => {
       <FilterTabs tabs={[]} selected="" onChange={jest.fn()} />,
     );
 
-    // Should render without crashing
     expect(getByTestId).toBeTruthy();
   });
 });

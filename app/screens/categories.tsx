@@ -1,12 +1,14 @@
 import { useCallback } from 'react';
 
 import { router } from 'expo-router';
+import { upperFirst } from 'lodash';
 import { cssInterop } from 'nativewind';
 import { FlatList, View } from 'react-native';
 
 import { Label, ScreenContainer } from '@/components/atoms';
 import { Category, Header } from '@/components/molecules';
-import { categories } from '@/constants/categories';
+import { imageCategories } from '@/constants/categories';
+import { useGetCategoriesQuery } from '@/generated/graphql';
 
 cssInterop(FlatList, {
   className: {
@@ -18,6 +20,9 @@ cssInterop(FlatList, {
 });
 
 export default function CategoriesScreen() {
+  const { data } = useGetCategoriesQuery();
+  const edges = data?.categoriesCollection?.edges ?? [];
+
   const handleCtaCards = useCallback((query: string) => {
     router.push({
       pathname: '/screens/product-list',
@@ -34,20 +39,20 @@ export default function CategoriesScreen() {
       />
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={categories}
-        keyExtractor={(item) => item.title}
+        data={edges}
+        keyExtractor={(item) => item.node.name}
         renderItem={({ item, index }) => (
           <View>
-            {categories?.[index - 1]?.type !== item.type && (
+            {edges?.[index - 1]?.node.type !== item.node.type && (
               <Label variant="subtitle" className={classes.headerCategory}>
-                {item.type}
+                {upperFirst(item.node.type)}
               </Label>
             )}
             <Category
               horizontal
               onPress={handleCtaCards}
-              title={item.title}
-              image={item.image}
+              title={item.node.name}
+              image={imageCategories?.[item.node.name]}
             />
           </View>
         )}

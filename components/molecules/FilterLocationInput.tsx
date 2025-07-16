@@ -3,16 +3,15 @@ import { memo, useCallback, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
 import { Icon, Label, Row } from '@/components/atoms';
-import { SearchStore } from '@/stores/searchStore';
 import { getColor } from '@/utils/getColor';
 
 interface FilterLocationInputProps {
   value: string;
-  onChange: (key: keyof SearchStore, value: string) => void;
+  onChange: (value: string) => void;
 }
 
 const FilterLocationInput: React.FC<FilterLocationInputProps> = memo(
-  function FilterLocationInput({ value }) {
+  function FilterLocationInput({ value, onChange }) {
     const [open, setOpen] = useState(false);
 
     const handleOpen = useCallback(() => {

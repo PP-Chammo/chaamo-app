@@ -4,12 +4,11 @@ import { TouchableOpacity, View } from 'react-native';
 
 import { Icon, Label, Row } from '@/components/atoms';
 import { conditions } from '@/constants/condition';
-import { SearchStore } from '@/stores/searchStore';
 import { getColor } from '@/utils/getColor';
 
 interface FilterConditionInputProps {
   value: string;
-  onChange: (key: keyof SearchStore, value: string) => void;
+  onChange: (value: string) => void;
 }
 
 const FilterConditionInput: React.FC<FilterConditionInputProps> = memo(
@@ -25,13 +24,13 @@ const FilterConditionInput: React.FC<FilterConditionInputProps> = memo(
           const newValues = splittedValues.filter(
             (item) => item !== value && item !== '',
           );
-          onChange('condition', newValues.join(','));
+          onChange(newValues.join(','));
         } else {
           const newValues = [
             ...splittedValues.filter((item) => item !== ''),
             value,
           ];
-          onChange('condition', newValues.join(','));
+          onChange(newValues.join(','));
         }
       },
       [onChange, splittedValues],

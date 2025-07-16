@@ -17,10 +17,6 @@ jest.mock('@/utils/getColor', () => ({
   getColor: jest.fn(() => '#000'),
 }));
 
-beforeAll(() => {
-  // No-op, mock is at the top
-});
-
 describe('SubscriptionCard', () => {
   it('renders all subscription details and logo', () => {
     const { getByText } = render(<SubscriptionCard />);

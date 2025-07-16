@@ -39,7 +39,6 @@ const CategoryItem: React.FC<CategoryProps> = memo(function CategoryItem({
       >
         <View className={classes.logo}>
           {image ? (
-            // Render the image component as JSX
             <SvgImage />
           ) : (
             <Icon

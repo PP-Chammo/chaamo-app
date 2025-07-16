@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { View } from 'react-native';
 
 import Checkbox from '../Checkbox';
@@ -160,14 +160,12 @@ describe('Checkbox', () => {
 
     const checkbox = getByTestId('checkbox');
 
-    // First press - should check
     fireEvent.press(checkbox);
     expect(onChange).toHaveBeenCalledWith({
       name: 'test-checkbox',
       value: true,
     });
 
-    // Reset mock and update props to reflect the change
     onChange.mockClear();
     rerender(
       <Checkbox
@@ -178,7 +176,6 @@ describe('Checkbox', () => {
       />,
     );
 
-    // Second press - should uncheck
     fireEvent.press(checkbox);
     expect(onChange).toHaveBeenCalledWith({
       name: 'test-checkbox',

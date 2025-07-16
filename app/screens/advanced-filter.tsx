@@ -10,11 +10,10 @@ import {
   FilterTags,
   Header,
 } from '@/components/molecules';
-import { useSearchStore } from '@/hooks/useSearchStore';
+import { useSearchVar } from '@/hooks/useSearchVar';
 
 export default function AdvancedFilterScreen() {
-  const { condition, location, priceRange, adProperties, setSearch } =
-    useSearchStore();
+  const [searchVar, setSearchVar] = useSearchVar();
 
   return (
     <ScreenContainer classNameTop={classes.containerTop}>
@@ -25,10 +24,22 @@ export default function AdvancedFilterScreen() {
       />
       <FilterTags />
       <View className={classes.fitlerContainer}>
-        <FilterLocationInput value={location} onChange={setSearch} />
-        <FilterPriceRangeInput value={priceRange} onChange={setSearch} />
-        <FilterConditionInput value={condition} onChange={setSearch} />
-        <FilterAdPropertiesInput value={adProperties} onChange={setSearch} />
+        <FilterLocationInput
+          value={searchVar.location}
+          onChange={(value) => setSearchVar({ location: value })}
+        />
+        <FilterPriceRangeInput
+          value={searchVar.priceRange}
+          onChange={(value) => setSearchVar({ priceRange: value })}
+        />
+        <FilterConditionInput
+          value={searchVar.condition}
+          onChange={(value) => setSearchVar({ condition: value })}
+        />
+        <FilterAdPropertiesInput
+          value={searchVar.adProperties}
+          onChange={(value) => setSearchVar({ adProperties: value })}
+        />
       </View>
     </ScreenContainer>
   );

@@ -44,7 +44,6 @@ describe('PlanCard', () => {
   it('displays description', () => {
     render(<PlanCard {...mockProps} />);
 
-    // Accept both curly and straight apostrophe
     expect(
       screen.getByText(/Enjoy complete access to CHAAMO[’']s features!/),
     ).toBeTruthy();
@@ -132,7 +131,6 @@ describe('PlanCard', () => {
   it('displays check icons for each benefit', () => {
     render(<PlanCard {...mockProps} />);
 
-    // Each benefit should have a check icon
     expect(screen.getByText('Unlimited access to all features')).toBeTruthy();
     expect(screen.getByText('Priority customer support')).toBeTruthy();
     expect(screen.getByText('Exclusive content')).toBeTruthy();

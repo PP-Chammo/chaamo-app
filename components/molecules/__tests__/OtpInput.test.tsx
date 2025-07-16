@@ -5,7 +5,6 @@ import { OtpInput as OtpInputComponent } from 'react-native-otp-entry';
 
 import OTPInput from '../OtpInput';
 
-// Mock react-native-otp-entry
 jest.mock('react-native-otp-entry', () => ({
   OtpInput: 'OtpInput',
 }));
@@ -55,7 +54,6 @@ describe('OTPInput', () => {
     const { UNSAFE_getAllByType } = render(
       <OTPInput {...defaultProps} onChange={onChange} name="otp" />,
     );
-    // Find the OtpInput component and trigger onTextChange
     const OtpInputInstance = UNSAFE_getAllByType(OtpInputComponent)[0];
     if (OtpInputInstance && OtpInputInstance.props.onTextChange) {
       OtpInputInstance.props.onTextChange('123456');

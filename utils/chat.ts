@@ -27,7 +27,6 @@ export const groupMessagesByDateAndSender = (
     return [];
   }
 
-  // Group messages by date
   const dateMap: Record<string, ChatMessage[]> = {};
 
   for (let msg of messages) {
@@ -36,7 +35,6 @@ export const groupMessagesByDateAndSender = (
     dateMap[dateKey].push(msg);
   }
 
-  //   For each date, group consecutive messages by sender
   const result: DateGroupedMessages[] = [];
   for (const date in dateMap) {
     if (!Object.prototype.hasOwnProperty.call(dateMap, date)) continue;
@@ -71,7 +69,6 @@ export const groupMessagesByDateAndSender = (
     result.push({ date, groups });
   }
 
-  // Sort by date ascending
   result.sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   );

@@ -25,7 +25,6 @@ describe('ListedByList', () => {
   it('renders People component', () => {
     render(<ListedByList />);
 
-    // The People component should be rendered with the specified props
     expect(screen.getByText('John Doe')).toBeTruthy();
   });
 

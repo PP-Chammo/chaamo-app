@@ -1,8 +1,8 @@
 import {
-  fnGetStorage,
-  fnSetStorage,
   fnAppendStorage,
+  fnGetStorage,
   fnRemoveStorage,
+  fnSetStorage,
 } from '../storage';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({

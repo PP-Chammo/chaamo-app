@@ -25,7 +25,6 @@ describe('SoldItemsProfile', () => {
 
   it('renders Boost component for boosted items', () => {
     const { getAllByTestId } = render(<SoldItemsProfile />);
-    // There should be as many Boost components as items
     const boosts = getAllByTestId('boost');
     expect(boosts.length).toBe(dummyFeaturedCardList.length);
   });

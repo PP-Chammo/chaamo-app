@@ -3,12 +3,11 @@ import { memo, useMemo } from 'react';
 import { TextInput, View } from 'react-native';
 
 import { Icon, Label, Row } from '@/components/atoms';
-import { SearchStore } from '@/stores/searchStore';
 import { getColor } from '@/utils/getColor';
 
 interface FilterPriceRangeInputProps {
   value: string;
-  onChange: (key: keyof SearchStore, value: string) => void;
+  onChange: (value: string) => void;
 }
 
 const FilterPriceRangeInput: React.FC<FilterPriceRangeInputProps> = memo(
@@ -25,7 +24,7 @@ const FilterPriceRangeInput: React.FC<FilterPriceRangeInputProps> = memo(
       if (index === 0) newMin = text;
       if (index === 1) newMax = text;
       const joined = `${newMin},${newMax}`;
-      onChange('priceRange', joined);
+      onChange(joined);
     };
 
     return (

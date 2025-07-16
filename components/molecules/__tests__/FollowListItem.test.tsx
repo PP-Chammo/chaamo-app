@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import FollowListItem from '../FollowListItem';
 
@@ -73,7 +73,6 @@ describe('FollowListItem', () => {
     const dotsButton = getByTestId('dots-menu-button');
     fireEvent.press(dotsButton);
 
-    // Context menu should be visible
     expect(getByTestId('context-menu')).toBeTruthy();
   });
 
@@ -115,7 +114,6 @@ describe('FollowListItem', () => {
     const blockOption = getByText('Block');
     fireEvent.press(blockOption);
 
-    // Context menu should be closed
     expect(queryByTestId('context-menu')).toBeNull();
   });
 
@@ -156,12 +154,10 @@ describe('FollowListItem', () => {
       />,
     );
 
-    // Press unfollow multiple times
     const unfollowButton = getByText('Unfollow');
     fireEvent.press(unfollowButton);
     fireEvent.press(unfollowButton);
 
-    // Open context menu and block
     const dotsButton = getByTestId('dots-menu-button');
     fireEvent.press(dotsButton);
     const blockOption = getByText('Block');

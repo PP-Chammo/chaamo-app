@@ -1,10 +1,9 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import SetupProfileTabs from '../SetupProfileTabs';
 
-// Mock expo-router
 const mockRouter = {
   push: jest.fn(),
 };
@@ -28,13 +27,11 @@ describe('SetupProfileTabs', () => {
 
   it('renders all tabs from setupProfileTabs', () => {
     const { getByTestId } = render(<SetupProfileTabs />);
-    // Check that the main container is rendered
     expect(getByTestId('setup-profile-tabs')).toBeTruthy();
   });
 
   it('calls router.push when tab is pressed', () => {
     const { getByTestId } = render(<SetupProfileTabs />);
-    // Find the first tab and press it
     const firstTab = getByTestId('tab-personal-info');
     fireEvent.press(firstTab);
     expect(mockRouter.push).toHaveBeenCalledWith('/personal-info');

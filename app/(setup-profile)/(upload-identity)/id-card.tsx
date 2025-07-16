@@ -8,14 +8,14 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import { ScreenContainer, UploadInstruction } from '@/components/atoms';
 import { Header } from '@/components/molecules';
 import { FRAME_HEIGHT, FRAME_WIDTH } from '@/constants/setup-profile';
-import { useImageCapturedStore } from '@/hooks/useImageCapturedStore';
+import { useImageCapturedVar } from '@/hooks/useImageCapturedVar';
 
 export default function IDCardScreen() {
   const cameraRef = useRef<CameraView>(null);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
 
-  const { setImageCaptured } = useImageCapturedStore();
+  const setImageCaptured = useImageCapturedVar()[1];
 
   const takePicture = useCallback(async () => {
     if (cameraRef.current && isCameraReady) {

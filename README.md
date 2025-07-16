@@ -72,6 +72,54 @@ Chaamo is a feature-rich mobile application designed for seamless user experienc
 
 ---
 
+## 🛰️ GraphQL & Apollo Client (Supabase)
+
+This project supports Supabase GraphQL with Apollo Client and automatic type-safe hooks via GraphQL Code Generator.
+
+### Environment Variables
+
+Add these to your `.env` (not committed):
+
+```
+EXPO_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+EXPO_PUBLIC_SUPABASE_GRAPHQL_URL=https://your-project-ref.supabase.co/graphql/v1
+```
+
+### Apollo Client Setup
+
+Apollo Client is pre-installed. Use `EXPO_PUBLIC_SUPABASE_GRAPHQL_URL` as the endpoint:
+
+```ts
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+
+const client = new ApolloClient({
+  uri: process.env.EXPO_PUBLIC_SUPABASE_GRAPHQL_URL,
+  cache: new InMemoryCache(),
+  headers: {
+    apikey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!,
+  },
+});
+
+// Wrap your app with ApolloProvider
+```
+
+### GraphQL Codegen
+
+- Place your `.graphql` queries/mutations in `src/`.
+- Run `yarn codegen` to generate type-safe hooks and types in `types/graphql.ts`.
+- Hooks are auto-generated for each operation (e.g., `useGetUsersQuery`).
+
+### Example Usage
+
+```ts
+import { useGetUsersQuery } from '@/types/graphql';
+
+const { data, loading, error } = useGetUsersQuery();
+```
+
+---
+
 ## 📝 Scripts
 
 - `yarn start` — Start Expo development server

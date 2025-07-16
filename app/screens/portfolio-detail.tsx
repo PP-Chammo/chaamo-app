@@ -3,15 +3,15 @@ import React, { useRef, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { router } from 'expo-router';
 import { cssInterop } from 'nativewind';
-import { ScrollView, View, TouchableOpacity, Alert } from 'react-native';
+import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
 
 import EBayImage from '@/assets/svg/ebay.svg';
 import {
+  ContextMenu,
   Icon,
   Label,
-  ScreenContainer,
-  ContextMenu,
   Row,
+  ScreenContainer,
 } from '@/components/atoms';
 import { Chart, Header } from '@/components/molecules';
 import {
@@ -32,7 +32,6 @@ cssInterop(ScrollView, {
 export default function PortfolioDetailScreen() {
   const card = dummyPortoflioDetail;
 
-  // Context menu state & ref
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
   const dotsRef = useRef<View>(null);
 
@@ -77,7 +76,7 @@ export default function PortfolioDetailScreen() {
             visible={isContextMenuVisible}
             onClose={handleCloseMenu}
             triggerRef={dotsRef}
-            menuHeight={-10} // 3 row * 44px (py-2 px-3)
+            menuHeight={-10}
           >
             <TouchableOpacity
               className={classes.contextMenuItem}

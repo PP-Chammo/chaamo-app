@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-// Mock Expo modules
+
 jest.mock('expo-router', () => ({
   useRouter: () => ({
     push: jest.fn(),
@@ -52,12 +52,10 @@ jest.mock('expo-linear-gradient', () => ({
   LinearGradient: 'LinearGradient',
 }));
 
-// Mock AsyncStorage
 jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
 );
 
-// Mock react-native-svg
 jest.mock('react-native-svg', () => ({
   Svg: 'Svg',
   Circle: 'Circle',
@@ -80,7 +78,6 @@ jest.mock('react-native-svg', () => ({
   ClipPath: 'ClipPath',
 }));
 
-// Mock react-native-svg-charts
 jest.mock('react-native-svg-charts', () => ({
   LineChart: 'LineChart',
   AreaChart: 'AreaChart',
@@ -88,31 +85,25 @@ jest.mock('react-native-svg-charts', () => ({
   PieChart: 'PieChart',
 }));
 
-// Mock react-native-phone-number-input
 jest.mock('react-native-phone-number-input', () => 'PhoneInput');
 
-// Mock react-native-otp-entry
 jest.mock('react-native-otp-entry', () => ({
   OtpInput: 'OtpInput',
 }));
 
-// Mock react-native-keyboard-aware-scroll-view
 jest.mock(
   'react-native-keyboard-aware-scroll-view',
   () => 'KeyboardAwareScrollView',
 );
 
-// Mock react-native-pager-view
 jest.mock('react-native-pager-view', () => 'PagerView');
 
-// Mock react-native-reanimated
 jest.mock('react-native-reanimated', () => {
   const Reanimated = require('react-native-reanimated/mock');
   Reanimated.default.call = () => {};
   return Reanimated;
 });
 
-// Mock react-native-gesture-handler
 jest.mock('react-native-gesture-handler', () => {
   const View = require('react-native/Libraries/Components/View/View');
   const TouchableOpacity = require('react-native/Libraries/Components/Touchable/TouchableOpacity');
@@ -140,24 +131,20 @@ jest.mock('react-native-gesture-handler', () => {
   };
 });
 
-// Mock react-native-safe-area-context
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaProvider: ({ children }) => children,
   useSafeAreaInsets: () => ({ top: 0, right: 0, bottom: 0, left: 0 }),
   SafeAreaView: 'SafeAreaView',
 }));
 
-// Mock react-native-screens
 jest.mock('react-native-screens', () => ({
   enableScreens: jest.fn(),
   Screen: 'Screen',
   ScreenContainer: 'ScreenContainer',
 }));
 
-// Mock react-native-webview
 jest.mock('react-native-webview', () => 'WebView');
 
-// Mock @expo/vector-icons
 jest.mock('@expo/vector-icons', () => ({
   MaterialCommunityIcons: 'MaterialCommunityIcons',
   MaterialIcons: 'MaterialIcons',
@@ -175,18 +162,15 @@ jest.mock('@expo/vector-icons', () => ({
   Zocial: 'Zocial',
 }));
 
-// Mock nativewind
 jest.mock('nativewind', () => ({
   cssInterop: jest.fn((component) => component),
   styled: (Component) => Component,
 }));
 
-// Mock react-native-css-interop
 jest.mock('react-native-css-interop', () => ({
   cssInterop: jest.fn((component) => component),
 }));
 
-// Mock SVG components
 jest.mock('@/assets/svg/ebay.svg', () => 'EBayLogo');
 jest.mock('@/assets/svg/boost.svg', () => 'BoostIcon');
 jest.mock('@/assets/svg/id-verification.svg', () => 'IdVerificationIcon');
@@ -200,7 +184,6 @@ jest.mock(
   () => 'VerificationInProgressIcon',
 );
 
-// Mock category SVGs
 jest.mock('@/assets/svg/categories/dc.svg', () => 'DcIcon');
 jest.mock('@/assets/svg/categories/digimon.svg', () => 'DigimonIcon');
 jest.mock('@/assets/svg/categories/fortnite.svg', () => 'FortniteIcon');
@@ -222,7 +205,6 @@ jest.mock('@/assets/svg/categories/topps.svg', () => 'ToppsIcon');
 jest.mock('@/assets/svg/categories/wrestling.svg', () => 'WrestlingIcon');
 jest.mock('@/assets/svg/categories/yugioh.svg', () => 'YugiohIcon');
 
-// Mock d3-shape
 jest.mock('d3-shape', () => ({
   line: () => ({
     x: () => ({}),
@@ -235,11 +217,9 @@ jest.mock('d3-shape', () => ({
   }),
 }));
 
-// Suppress console.error for React state updates in tests
 const originalError = console.error;
 beforeAll(() => {
   console.error = (...args) => {
-    // Suppress React state update warnings in tests
     if (
       typeof args[0] === 'string' &&
       args[0].includes('An update to') &&

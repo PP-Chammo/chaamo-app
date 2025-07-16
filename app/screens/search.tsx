@@ -7,27 +7,27 @@ import { ScreenContainer } from '@/components/atoms';
 import { HeaderSearch } from '@/components/molecules';
 import { SearchHistoryList } from '@/components/organisms';
 import { TextChangeParams } from '@/domains';
-import { useSearchStore } from '@/hooks/useSearchStore';
+import { useSearchVar } from '@/hooks/useSearchVar';
 import { useStorage } from '@/hooks/useStorage';
 
 export default function CardsScreen() {
   const searchRef = useRef<TextInput>(null);
   const { getStorage, setStorage, appendStorage, removeStorage } = useStorage();
   const params = useLocalSearchParams();
-  const { query, setSearch } = useSearchStore();
+  const [searchVar, setSearchVar] = useSearchVar();
 
   const [historyList, setHistoryList] = useState<string[]>([]);
 
   const handleCtaBack = useCallback(() => {
-    setSearch('query', '');
+    setSearchVar({ query: '' });
     router.back();
-  }, [setSearch]);
+  }, [setSearchVar]);
 
   const handleChange = useCallback(
     ({ value }: TextChangeParams) => {
-      setSearch('query', value.trim());
+      setSearchVar({ query: value.trim() });
     },
-    [setSearch],
+    [setSearchVar],
   );
 
   const filterOutItem = useCallback((item: string, list: string[]) => {
@@ -50,16 +50,16 @@ export default function CardsScreen() {
 
   const handleSubmitSearch = useCallback(
     (selectedQuery?: string) => {
-      const trimmedQuery = query.trim();
+      const trimmedQuery = searchVar.query.trim();
       if (selectedQuery) {
-        setSearch('query', selectedQuery);
+        setSearchVar({ query: selectedQuery });
       }
       if (!historyList.includes(trimmedQuery)) {
         appendStorage<string>('searchHistories', trimmedQuery);
       }
       router.push('/screens/product-list');
     },
-    [appendStorage, historyList, query, setSearch],
+    [appendStorage, historyList, searchVar.query, setSearchVar],
   );
 
   const handleClearAll = useCallback(() => {
@@ -99,7 +99,7 @@ export default function CardsScreen() {
   return (
     <ScreenContainer classNameTop={classes.containerTop}>
       <HeaderSearch
-        value={query}
+        value={searchVar.query}
         onChange={handleChange}
         onBackPress={handleCtaBack}
         onSubmit={handleSubmitSearch}

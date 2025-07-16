@@ -1,11 +1,10 @@
 import React from 'react';
 
 import { render } from '@testing-library/react-native';
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import KeyboardView from '../KeyboardView';
 
-// Mock react-native-keyboard-aware-scroll-view
 jest.mock('react-native-keyboard-aware-scroll-view', () => ({
   KeyboardAwareScrollView: 'KeyboardAwareScrollView',
 }));

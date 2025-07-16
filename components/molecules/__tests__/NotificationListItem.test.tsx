@@ -1,10 +1,9 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import NotificationListItem from '../NotificationListItem';
 
-// Mock date-fns
 jest.mock('date-fns', () => ({
   formatDistanceToNow: jest.fn(() => '2 hours ago'),
 }));

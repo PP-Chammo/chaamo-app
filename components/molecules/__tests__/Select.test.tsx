@@ -22,7 +22,6 @@ describe('Select', () => {
         options={options}
       />,
     );
-    // getAllByText returns all nodes with the text, including nested ones
     expect(getAllByText(/Test Label/).length).toBeGreaterThan(0);
     expect(getAllByText('*').length).toBeGreaterThan(0);
   });
@@ -83,7 +82,6 @@ describe('Select', () => {
   });
 
   it('renders with custom className and inputClassName', () => {
-    // This test just ensures no crash when custom className/inputClassName are provided
     const { getByTestId } = render(
       <Select
         name="test"

@@ -13,21 +13,21 @@ import {
 import { dummyAuctionCardList } from '@/constants/dummy';
 import { productListTabs } from '@/constants/tabs';
 import { TextChangeParams } from '@/domains';
-import { useSearchStore } from '@/hooks/useSearchStore';
+import { useSearchVar } from '@/hooks/useSearchVar';
 
 export default function ProductListScreen() {
   const params = useLocalSearchParams();
-  const { setSearch, query } = useSearchStore();
+  const [searchVar, setSearchVar] = useSearchVar();
 
   const handleChange = useCallback(
-    ({ value }: TextChangeParams) => setSearch('query', value.trim()),
-    [setSearch],
+    ({ value }: TextChangeParams) => setSearchVar({ query: value.trim() }),
+    [setSearchVar],
   );
 
   return (
     <ScreenContainer classNameTop={classes.containerTop}>
       <HeaderSearch
-        value={query}
+        value={searchVar.query}
         onChange={handleChange}
         onBackPress={() => router.back()}
       />

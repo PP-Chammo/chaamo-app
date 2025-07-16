@@ -1,11 +1,10 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { router } from 'expo-router';
 
 import FilterSection from '../FilterSection';
 
-// Mock expo-router
 jest.mock('expo-router', () => ({
   router: {
     push: jest.fn(),
