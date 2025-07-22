@@ -1,9 +1,10 @@
-import { Fragment, memo } from 'react';
+import { memo } from 'react';
 
 import { clsx } from 'clsx';
 import { LinearGradient } from 'expo-linear-gradient';
 import { cssInterop } from 'nativewind';
-import { SafeAreaView, View, ViewProps } from 'react-native';
+import { ViewProps } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { getColor } from '@/utils/getColor';
 
@@ -27,34 +28,24 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
     ...props
   }) {
     return (
-      <Fragment>
-        <SafeAreaView className={clsx(classes.containerTop, classNameTop)} />
-        <SafeAreaView className={classes.container} style={style} {...props}>
-          {className?.includes('bg-') ? (
-            <View className={clsx(classes.container, className)} style={style}>
-              {children}
-            </View>
-          ) : (
-            <StyledGradient
-              colors={[getColor('orange-50'), getColor('primary-50')]}
-              className={clsx(classes.container, className)}
-            >
-              {children}
-            </StyledGradient>
-          )}
-        </SafeAreaView>
+      <StyledGradient
+        colors={[getColor('orange-50'), getColor('primary-50')]}
+        className="flex-1"
+      >
         <SafeAreaView
-          className={clsx(classes.containerBottom, classNameBottom)}
-        />
-      </Fragment>
+          edges={['top', 'bottom']}
+          className={clsx(classes.container, className)}
+          {...props}
+        >
+          {children}
+        </SafeAreaView>
+      </StyledGradient>
     );
   },
 );
 
 const classes = {
-  containerTop: 'bg-orange-50',
   container: 'flex-1',
-  containerBottom: 'bg-primary-50',
 };
 
 export default ScreenContainer;
