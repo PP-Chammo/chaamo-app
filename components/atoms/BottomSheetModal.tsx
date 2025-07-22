@@ -23,6 +23,7 @@ interface BottomSheetModalProps {
   height?: number; // Optional custom height
   className?: string;
   overlayClassName?: string;
+  variant?: 'default' | 'secondary';
 }
 
 const screenHeight = Dimensions.get('window').height;
@@ -34,6 +35,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
   height,
   className,
   overlayClassName,
+  variant = 'default',
 }) => {
   const insets = useSafeAreaInsets();
   const sheetHeight = height ?? screenHeight * 0.5;
@@ -124,7 +126,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
     }),
   ).current;
 
-  if (!show && !isOpen.current) return null;
+  if (!show) return null;
 
   // Subtract safe area inset from keyboard height on iOS
   const effectiveKeyboardHeight =
@@ -147,7 +149,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
       />
       {/* Bottom Sheet */}
       <Animated.View
-        className={clsx(classes.sheet, className)}
+        className={clsx(classes.sheet.base, classes.sheet[variant], className)}
         style={{
           height: sheetHeight,
           transform: [{ translateY }],
@@ -163,7 +165,9 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
           bounces={false}
         >
           <View className={classes.handleContainer}>
-            <View className={classes.handle} />
+            <View
+              className={clsx(classes.handle.base, classes.handle[variant])}
+            />
           </View>
           <View className={classes.content}>{children}</View>
         </ScrollView>
@@ -175,9 +179,17 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
 const classes = {
   container: 'z-90 absolute inset-0',
   overlay: 'absolute inset-0 bg-black/30',
-  sheet: 'absolute left-0 right-0 bottom-0 rounded-t-3xl shadow-lg',
+  sheet: {
+    base: 'absolute left-0 right-0 bottom-0 rounded-t-3xl shadow-lg',
+    default: 'bg-primary-500',
+    secondary: 'bg-white',
+  },
   handleContainer: 'items-center pt-4 pb-2',
-  handle: 'w-16 h-1.5 rounded bg-white/70',
+  handle: {
+    base: 'w-16 h-1.5 rounded',
+    default: 'bg-white/70',
+    secondary: 'bg-slate-600/70',
+  },
   content: 'flex-1 justify-center',
 };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import { FlatData } from '@/domains/group-data.types';
 import { Notification } from '@/utils/notification';
@@ -23,12 +23,18 @@ const mockNotifications: FlatData<Notification>[] = [
 
 describe('NotificationList', () => {
   const onPressMock = jest.fn();
+  const onLongPressMock = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('renders correctly', () => {
     const { getByTestId } = render(
       <NotificationList
         notifications={mockNotifications}
         onPress={onPressMock}
+        onLongPress={onLongPressMock}
       />,
     );
     expect(getByTestId('notification-list')).toBeTruthy();
@@ -39,6 +45,7 @@ describe('NotificationList', () => {
       <NotificationList
         notifications={mockNotifications}
         onPress={onPressMock}
+        onLongPress={onLongPressMock}
       />,
     );
     const items = getAllByTestId('notification-list-item');
@@ -50,6 +57,7 @@ describe('NotificationList', () => {
       <NotificationList
         notifications={mockNotifications}
         onPress={onPressMock}
+        onLongPress={onLongPressMock}
       />,
     );
     expect(getByText('Jan 1, 2023')).toBeTruthy();
@@ -60,10 +68,85 @@ describe('NotificationList', () => {
       <NotificationList
         notifications={mockNotifications}
         onPress={onPressMock}
+        onLongPress={onLongPressMock}
       />,
     );
     const items = getAllByTestId('notification-list-item');
     fireEvent.press(items[0]);
     expect(onPressMock).toHaveBeenCalled();
+  });
+
+  it('calls onLongPress when a notification is long pressed', () => {
+    const { getAllByTestId } = render(
+      <NotificationList
+        notifications={mockNotifications}
+        onPress={onPressMock}
+        onLongPress={onLongPressMock}
+      />,
+    );
+    const items = getAllByTestId('notification-list-item');
+    fireEvent(items[0], 'longPress');
+    expect(onLongPressMock).toHaveBeenCalled();
+  });
+
+  it('calls both onPress and onLongPress when both events occur', () => {
+    const { getAllByTestId } = render(
+      <NotificationList
+        notifications={mockNotifications}
+        onPress={onPressMock}
+        onLongPress={onLongPressMock}
+      />,
+    );
+    const items = getAllByTestId('notification-list-item');
+
+    fireEvent.press(items[0]);
+    fireEvent(items[0], 'longPress');
+
+    expect(onPressMock).toHaveBeenCalledTimes(1);
+    expect(onLongPressMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('handles multiple interactions with different notifications', () => {
+    const multipleNotifications: FlatData<Notification>[] = [
+      { type: 'date', date: '2023-01-01' },
+      {
+        type: 'group',
+        group: {
+          id: 1,
+          category: 'Order Shipped',
+          message: 'Test notification 1',
+          date: '2023-01-01',
+        },
+        date: '2023-01-01',
+      },
+      {
+        type: 'group',
+        group: {
+          id: 2,
+          category: 'New Bid',
+          message: 'Test notification 2',
+          date: '2023-01-01',
+        },
+        date: '2023-01-01',
+      },
+    ];
+
+    const { getAllByTestId } = render(
+      <NotificationList
+        notifications={multipleNotifications}
+        onPress={onPressMock}
+        onLongPress={onLongPressMock}
+      />,
+    );
+    const items = getAllByTestId('notification-list-item');
+
+    // Test multiple notifications
+    fireEvent.press(items[0]);
+    fireEvent(items[0], 'longPress');
+    fireEvent.press(items[1]);
+    fireEvent(items[1], 'longPress');
+
+    expect(onPressMock).toHaveBeenCalledTimes(2);
+    expect(onLongPressMock).toHaveBeenCalledTimes(2);
   });
 });

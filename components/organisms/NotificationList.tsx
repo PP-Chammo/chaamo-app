@@ -10,11 +10,12 @@ import { Notification } from '@/utils/notification';
 
 interface NotificationListProps {
   onPress: () => void;
+  onLongPress: () => void;
   notifications: FlatData<Notification>[];
 }
 
 const NotificationList: React.FC<NotificationListProps> = memo(
-  function NotificationList({ onPress, notifications }) {
+  function NotificationList({ onPress, onLongPress, notifications }) {
     return (
       <FlatList
         testID="notification-list"
@@ -39,6 +40,7 @@ const NotificationList: React.FC<NotificationListProps> = memo(
               message={group.message}
               date={group.date}
               onPress={onPress}
+              onLongPress={onLongPress}
             />
           );
         }}
