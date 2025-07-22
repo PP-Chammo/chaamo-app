@@ -29,7 +29,7 @@ export default function StartPage() {
   }
 
   return (
-    <View className="bg-splash w-full h-full">
+    <View className={classes.container}>
       <Image
         source={require('@/assets/images/splash-screen.gif')}
         className={classes.image}
@@ -40,5 +40,6 @@ export default function StartPage() {
 }
 
 const classes = {
+  container: 'bg-splash w-full h-full',
   image: 'absolute inset-0',
 };
