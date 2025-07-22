@@ -1,8 +1,7 @@
 import { router } from 'expo-router';
-import { View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import { Label, ScreenContainer } from '@/components/atoms';
+import { ScreenContainer } from '@/components/atoms';
 import { Header, TabView } from '@/components/molecules';
 import { privacyPolicyTabs } from '@/constants/tabs';
 
@@ -17,9 +16,11 @@ export default function PrivacyPolicyScreen() {
         <WebView
           source={{ uri: 'https://chaamo.com/terms-of-service#content' }}
         />
-        <View>
-          <Label>HMRC Guidelines</Label>
-        </View>
+        <WebView
+          source={{
+            uri: 'https://docs.google.com/document/d/11BRKuwUYs-FIB1RLvzchkIiu-HEYbY9evhX3ZBsMCpE',
+          }}
+        />
       </TabView>
     </ScreenContainer>
   );
