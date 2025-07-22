@@ -14,6 +14,7 @@ describe('NotificationListItem', () => {
     message: 'You have a new bid on your item',
     date: '2023-01-01T10:00:00Z',
     onPress: jest.fn(),
+    onLongPress: jest.fn(),
   };
 
   beforeEach(() => {
@@ -70,14 +71,45 @@ describe('NotificationListItem', () => {
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
+  it('calls onLongPress when long pressed', () => {
+    const onLongPress = jest.fn();
+    const { getByTestId } = render(
+      <NotificationListItem {...defaultProps} onLongPress={onLongPress} />,
+    );
+    const item = getByTestId('notification-list-item');
+    fireEvent(item, 'longPress');
+    expect(onLongPress).toHaveBeenCalledTimes(1);
+  });
+
+  it('calls both onPress and onLongPress when both events occur', () => {
+    const onPress = jest.fn();
+    const onLongPress = jest.fn();
+    const { getByTestId } = render(
+      <NotificationListItem
+        {...defaultProps}
+        onPress={onPress}
+        onLongPress={onLongPress}
+      />,
+    );
+    const item = getByTestId('notification-list-item');
+
+    fireEvent.press(item);
+    fireEvent(item, 'longPress');
+
+    expect(onPress).toHaveBeenCalledTimes(1);
+    expect(onLongPress).toHaveBeenCalledTimes(1);
+  });
+
   it('renders with all props combined', () => {
     const onPress = jest.fn();
+    const onLongPress = jest.fn();
     const { getByTestId, getByText } = render(
       <NotificationListItem
         category="Order Shipped"
         message="Your package is on its way"
         date="2023-01-03T09:00:00Z"
         onPress={onPress}
+        onLongPress={onLongPress}
       />,
     );
 
@@ -100,5 +132,19 @@ describe('NotificationListItem', () => {
       />,
     );
     expect(getByText('2 hours ago')).toBeTruthy();
+  });
+
+  it('handles multiple long press events', () => {
+    const onLongPress = jest.fn();
+    const { getByTestId } = render(
+      <NotificationListItem {...defaultProps} onLongPress={onLongPress} />,
+    );
+    const item = getByTestId('notification-list-item');
+
+    fireEvent(item, 'longPress');
+    fireEvent(item, 'longPress');
+    fireEvent(item, 'longPress');
+
+    expect(onLongPress).toHaveBeenCalledTimes(3);
   });
 });

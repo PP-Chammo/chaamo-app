@@ -11,10 +11,11 @@ export interface NotificationCardProps {
   message: string;
   date: string;
   onPress: () => void;
+  onLongPress: () => void;
 }
 
 const NotificationCard: React.FC<NotificationCardProps> = memo(
-  function NotificationCard({ category, message, date, onPress }) {
+  function NotificationCard({ category, message, date, onPress, onLongPress }) {
     let time = formatDistanceToNow(new Date(date), {
       addSuffix: true,
       includeSeconds: true,
@@ -32,6 +33,7 @@ const NotificationCard: React.FC<NotificationCardProps> = memo(
         testID="notification-list-item"
         onPress={onPress}
         className={classes.container}
+        onLongPress={onLongPress}
       >
         <View className={classes.iconContainer}>
           <Icon name={icon} size={24} color={getColor('primary-500')} />
