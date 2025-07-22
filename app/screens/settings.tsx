@@ -106,8 +106,8 @@ export default function SettingsScreen() {
             <Divider position="horizontal" className={classes.divider} />
             <SettingItem
               iconName="shield-lock-outline"
-              title="Privacy Policy"
-              onPress={() => router.push('/screens/privacy-policy')}
+              title="Privacy Policies"
+              onPress={() => router.push('/screens/privacy-policies')}
             />
           </View>
 
