@@ -21,7 +21,6 @@
     "prepare": "husky",
     "fix": "npm run lint:fix && npm run prettier:fix",
     "codegen": "dotenv -e .env -- graphql-codegen --config codegen.yml",
-    "prebuild": "npm run codegen",
     "build:android": "react-native build-android --mode=release",
     "build:android:apk": "expo run:android --variant release"
   },
