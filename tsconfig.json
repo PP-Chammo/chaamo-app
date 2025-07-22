@@ -14,5 +14,5 @@
     "nativewind-env.d.ts",
     "svg.d.ts"
   ],
-  "exclude": ["node_modules", "generated/graphql.ts"]
+  "exclude": ["node_modules", "generated/**/*"]
 }
