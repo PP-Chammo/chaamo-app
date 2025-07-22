@@ -8,7 +8,7 @@ import { privacyPolicyTabs } from '@/constants/tabs';
 export default function PrivacyPolicyScreen() {
   return (
     <ScreenContainer>
-      <Header title="Privacy Policy" onBackPress={router.back} />
+      <Header title="Privacy Policies" onBackPress={router.back} />
       <TabView tabs={privacyPolicyTabs}>
         <WebView
           source={{ uri: 'https://chaamo.com/privacy-policy#content' }}
