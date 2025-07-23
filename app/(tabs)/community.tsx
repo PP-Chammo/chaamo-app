@@ -34,7 +34,6 @@ export default function CommunityScreen() {
             post={post}
             onCommentPress={handleComment}
             onLikePress={handleLike}
-            onContextPress={() => router.push('/screens/report')}
           />
         ))}
       </ScrollView>

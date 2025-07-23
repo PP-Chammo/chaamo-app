@@ -21,7 +21,6 @@ describe('PostCard', () => {
     post: mockPost,
     onCommentPress: jest.fn(),
     onLikePress: jest.fn(),
-    onContextPress: jest.fn(),
   };
 
   beforeEach(() => {
@@ -77,27 +76,15 @@ describe('PostCard', () => {
     expect(onLikePress).toHaveBeenCalledTimes(1);
   });
 
-  it('calls onContextPress when context menu is pressed', () => {
-    const onContextPress = jest.fn();
-    const { getByTestId } = render(
-      <PostCard {...defaultProps} onContextPress={onContextPress} />,
-    );
-    const contextMenu = getByTestId('post-context-menu');
-    fireEvent.press(contextMenu);
-    expect(onContextPress).toHaveBeenCalledTimes(1);
-  });
-
   it('renders with all props combined', () => {
     const onCommentPress = jest.fn();
     const onLikePress = jest.fn();
-    const onContextPress = jest.fn();
 
     const { getByTestId, getByText } = render(
       <PostCard
         post={mockPost}
         onCommentPress={onCommentPress}
         onLikePress={onLikePress}
-        onContextPress={onContextPress}
       />,
     );
 
