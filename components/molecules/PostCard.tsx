@@ -1,8 +1,9 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useRef, useState } from 'react';
 
-import { Image, TouchableOpacity, View } from 'react-native';
+import { router } from 'expo-router';
+import { Alert, Image, TouchableOpacity, View } from 'react-native';
 
-import { Button, Icon, Label, Row } from '@/components/atoms';
+import { Button, ContextMenu, Icon, Label, Row } from '@/components/atoms';
 import { Post } from '@/types/post';
 import { getColor } from '@/utils/getColor';
 
@@ -10,15 +11,31 @@ type PostCardProps = {
   post: Post;
   onCommentPress?: () => void;
   onLikePress?: () => void;
-  onContextPress?: () => void;
 };
 
 const PostCard: React.FC<PostCardProps> = memo(function PostCard({
   post,
   onCommentPress,
   onLikePress,
-  onContextPress,
 }) {
+  const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
+  const dotsRef = useRef<View>(null);
+
+  const handleContextMenuPress = useCallback(
+    () => setIsContextMenuVisible(!isContextMenuVisible),
+    [isContextMenuVisible],
+  );
+
+  const handleBlockPress = useCallback(() => {
+    handleContextMenuPress();
+    Alert.alert('Blocked', 'User Blocked');
+  }, [handleContextMenuPress]);
+
+  const handleReportPress = useCallback(() => {
+    handleContextMenuPress();
+    router.push('/screens/report');
+  }, [handleContextMenuPress]);
+
   const getDateByNow = useCallback((date: string) => {
     const postDate = new Date(date);
     const now = new Date();
@@ -56,11 +73,31 @@ const PostCard: React.FC<PostCardProps> = memo(function PostCard({
         </View>
         <TouchableOpacity
           testID="post-context-menu"
-          onPress={onContextPress}
+          onPress={handleContextMenuPress}
           className={classes.containerPostMenu}
+          ref={dotsRef}
         >
           <Icon name="dots-vertical" size={20} className={classes.postMenu} />
         </TouchableOpacity>
+        <ContextMenu
+          visible={isContextMenuVisible}
+          onClose={handleContextMenuPress}
+          triggerRef={dotsRef}
+          menuHeight={20}
+        >
+          <TouchableOpacity
+            onPress={handleBlockPress}
+            className={classes.contextMenuItem}
+          >
+            <Label className={classes.contextMenuBlockLabel}>Block</Label>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleReportPress}
+            className={classes.contextMenuItem}
+          >
+            <Label className={classes.contextMenuReportLabel}>Report</Label>
+          </TouchableOpacity>
+        </ContextMenu>
       </Row>
       {post.image && (
         <View className={classes.containerPostImage}>
@@ -117,6 +154,9 @@ const classes = {
   actionButton: '!gap-0 !px-3',
   actionButtonTealText: '!text-base !font-medium text-primary-500 !px-2',
   actionButtonText: '!text-base !font-medium text-gray-500 !px-2',
+  contextMenuItem: 'py-1',
+  contextMenuBlockLabel: '!text-red-600',
+  contextMenuReportLabel: '!text-slate-600',
 };
 
 export default PostCard;
