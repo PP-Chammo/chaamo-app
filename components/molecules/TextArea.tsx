@@ -41,6 +41,8 @@ const TextArea: React.FC<TextAreaProps> = memo(function TextArea({
         placeholder={placeholder}
         textAlignVertical="top"
         className={clsx(classes.input, inputClassName)}
+        value={value}
+        autoComplete="off"
         onChangeText={handleChange}
         placeholderTextColor={getColor('gray-400')}
         {...props}

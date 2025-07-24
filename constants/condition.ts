@@ -1,25 +1,27 @@
+import { CardCondition, ListingType } from '@/generated/graphql';
+
 export const conditions = [
   {
     label: 'Raw',
-    value: 'raw',
+    value: CardCondition.RAW,
   },
   {
     label: 'Graded',
-    value: 'graded',
+    value: CardCondition.GRADED,
   },
 ];
 
 export const conditionSells = [
   {
     label: 'Sell',
-    value: 'sell',
+    value: ListingType.SELL,
   },
   {
     label: 'Auction',
-    value: 'auction',
+    value: ListingType.AUCTION,
   },
   {
     label: 'Portfolio',
-    value: 'portfolio',
+    value: ListingType.PORTFOLIO,
   },
 ];
