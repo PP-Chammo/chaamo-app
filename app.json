@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "chaamo-app",
-    "slug": "chaamo-app",
+    "name": "Chaamo",
+    "slug": "Chaamo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ppchaamo.chaamoapp"
+      "bundleIdentifier": "com.chaamo.app.chaamo"
     },
     "android": {
       "adaptiveIcon": {
@@ -22,7 +22,7 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.CAMERA"
       ],
-      "package": "com.ppchaamo.chaamoapp"
+      "package": "com.chaamo.app.chaamo"
     },
     "web": {
       "bundler": "metro",

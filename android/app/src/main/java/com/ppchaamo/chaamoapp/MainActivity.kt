@@ -1,4 +1,4 @@
-package com.ppchaamo.chaamoapp
+package com.chaamo.app.chaamo
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build
