@@ -27,19 +27,19 @@ const Modal = memo(function Modal({
       transparent
       onRequestClose={onClose}
     >
-      <Pressable
-        testID="modal-backdrop"
-        onPress={onClose}
-        className={classes.container}
-      >
+      <View className={classes.container}>
+        <Pressable
+          testID="modal-backdrop"
+          onPress={onClose}
+          className="absolute inset-0"
+        />
         <View
           testID="modal-content"
           className={clsx(classes.content, className)}
-          onStartShouldSetResponder={() => true}
         >
           {children}
         </View>
-      </Pressable>
+      </View>
     </RNModal>
   );
 });

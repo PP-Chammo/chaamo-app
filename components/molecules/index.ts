@@ -1,4 +1,5 @@
 export { default as AuctionCard } from './AuctionCard';
+export { default as AutocompleteCardItem } from './AutocompleteCardItem';
 export { default as AuctionDetailBottomBar } from './AuctionDetailBottomBar';
 export { default as AuctionItem } from './AuctionItem';
 export { default as BlockListItem } from './BlockListItem';

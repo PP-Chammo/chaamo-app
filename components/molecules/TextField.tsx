@@ -5,7 +5,7 @@ import { Pressable, Text, TextInput, TextInputProps, View } from 'react-native';
 
 import { Icon } from '@/components/atoms';
 import { TextChangeParams } from '@/domains';
-import { formatExpiryCardField } from '@/utils/card';
+import { formatDateInput } from '@/utils/date';
 import { getColor } from '@/utils/getColor';
 
 interface TextFieldProps extends Omit<TextInputProps, 'onChange'> {
@@ -61,7 +61,7 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
     (value: string) => {
       let formattedValue = value;
       if (type === 'date') {
-        formattedValue = formatExpiryCardField(value);
+        formattedValue = formatDateInput(value);
       }
       onChange({ name, value: formattedValue });
     },
@@ -97,6 +97,7 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
         )}
         <TextInput
           testID="text-input"
+          autoComplete="off"
           placeholder={placeholder}
           className={clsx(
             classes.input,

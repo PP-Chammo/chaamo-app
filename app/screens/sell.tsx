@@ -1,33 +1,150 @@
-import React, { Fragment, useCallback, useMemo, useState } from 'react';
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
+import { formatISO, parse } from 'date-fns';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-import { Alert, View } from 'react-native';
+import { cssInterop } from 'nativewind';
+import { Alert, FlatList, View } from 'react-native';
 
-import { Button, KeyboardView, ScreenContainer } from '@/components/atoms';
+import {
+  Button,
+  KeyboardView,
+  Modal,
+  ScreenContainer,
+} from '@/components/atoms';
 import PhotoUpload from '@/components/atoms/PhotoUpload';
-import { Header, Select, TextArea, TextField } from '@/components/molecules';
+import {
+  AutocompleteCardItem,
+  Header,
+  Select,
+  TextArea,
+  TextField,
+} from '@/components/molecules';
 import { conditions, conditionSells } from '@/constants/condition';
+import {
+  CardCondition,
+  ListingType,
+  MasterCards,
+  useGetMasterCardsAutocompleteLazyQuery,
+  useInsertListingsMutation,
+  useInsertUserCardMutation,
+  useUpdateUserCardMutation,
+} from '@/generated/graphql';
+import useDebounce from '@/hooks/useDebounce';
 import { getColor } from '@/utils/getColor';
+import { uploadToBucket } from '@/utils/supabase';
 import { validateRequired, ValidationErrors } from '@/utils/validate';
 
-const initialForm = {
+cssInterop(FlatList, {
+  className: {
+    target: 'style',
+  },
+  contentContainerClassName: {
+    target: 'contentContainerStyle',
+  },
+});
+
+type SellForm = {
+  imageUrl: string;
+  title: string;
+  description: string;
+  condition: CardCondition;
+  listing_type: ListingType;
+  currency: string;
+  price: string;
+  endDate: string;
+  minPrice: string;
+  reservedPrice: string;
+
+  master_card_id: string;
+  grading_company: string;
+  grade: number;
+};
+
+const initialForm: SellForm = {
   imageUrl: '',
   title: '',
   description: '',
-  condition1: '',
-  condition2: '',
+  condition: CardCondition.RAW,
+  listing_type: ListingType.PORTFOLIO,
+  currency: '$',
   price: '',
   endDate: '',
   minPrice: '',
   reservedPrice: '',
+  // this below input get from autocomplete
+  master_card_id: '',
+  grading_company: '',
+  grade: 0,
 };
 
 export default function SellScreen() {
-  const [form, setForm] = useState(initialForm);
+  const [form, setForm] = useState<SellForm>(initialForm);
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const [errors, setErrors] = useState<ValidationErrors<typeof initialForm>>(
     {},
   );
+  const [getAutocompleteList, { data: masterCards }] =
+    useGetMasterCardsAutocompleteLazyQuery();
+  const [insertListings] = useInsertListingsMutation();
+  const [insertUserCard] = useInsertUserCardMutation();
+  const [updateUserCard] = useUpdateUserCardMutation();
+
+  const debouncedSearch = useDebounce(searchText, 700);
+  useEffect(() => {
+    if (debouncedSearch.length >= 2) {
+      const keywords = searchText.trim().split(/\s+/);
+      getAutocompleteList({
+        variables: {
+          filter: {
+            and: keywords.map((word) => ({ name: { ilike: `%${word}%` } })),
+          },
+          last: 50,
+        },
+      });
+    }
+    // need disable exahustive deps to keep debounce works
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearch, getAutocompleteList]);
+
+  const requiredFields = useMemo<(keyof typeof initialForm)[]>(() => {
+    const fields: (keyof typeof initialForm)[] = [
+      'title',
+      'description',
+      'condition',
+      'listing_type',
+    ];
+    if (form.listing_type === 'sell') fields.push('price');
+    if (form.listing_type === 'auction')
+      fields.push('endDate', 'minPrice', 'reservedPrice');
+    return fields;
+  }, [form.listing_type]);
+
+  const isFormValid = useMemo(
+    () =>
+      requiredFields.every(
+        (field) => form[field] && form[field].toString().trim() !== '',
+      ),
+    [form, requiredFields],
+  );
+
+  const handleAutocompletePress = useCallback((masterCard: MasterCards) => {
+    setForm((prev) => ({
+      ...prev,
+      title: masterCard.name,
+      master_card_id: masterCard.id,
+    }));
+    setSearchText(masterCard.name);
+    setShowModal(false);
+  }, []);
 
   const handleChange = useCallback(
     ({ name, value }: { name: string; value: string }) => {
@@ -58,42 +175,103 @@ export default function SellScreen() {
     setForm((prev) => ({ ...prev, imageUrl: '' }));
   }, []);
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
+    setLoading(true);
     const requiredFields: (keyof typeof initialForm)[] = [
       'title',
       'description',
-      'condition1',
-      'condition2',
+      'condition',
+      'listing_type',
     ];
-    if (form.condition2 === 'sell') requiredFields.push('price');
-    if (form.condition2 === 'auction')
+    if (form.listing_type === 'sell') {
+      requiredFields.push('price');
+    }
+    if (form.listing_type === 'auction') {
       requiredFields.push('endDate', 'minPrice', 'reservedPrice');
+    }
     const validationErrors = validateRequired(form, requiredFields);
     setErrors(validationErrors);
-    if (Object.keys(validationErrors).length > 0) return;
-    Alert.alert('Posted!', 'Your card has been posted.');
-  }, [form]);
 
-  const requiredFields = useMemo<(keyof typeof initialForm)[]>(() => {
-    const fields: (keyof typeof initialForm)[] = [
-      'title',
-      'description',
-      'condition1',
-      'condition2',
-    ];
-    if (form.condition2 === 'sell') fields.push('price');
-    if (form.condition2 === 'auction')
-      fields.push('endDate', 'minPrice', 'reservedPrice');
-    return fields;
-  }, [form.condition2]);
+    if (Object.keys(validationErrors).length === 0) {
+      const uploadedUrl = await uploadToBucket(
+        form.imageUrl,
+        'chaamo',
+        'user_cards',
+      );
+      insertUserCard({
+        variables: {
+          objects: [
+            {
+              user_id: '30bb1d42-a983-4380-b1f5-90be962dfe92',
+              master_card_id: form.master_card_id,
+              condition: form.condition,
+              grading_company: form.grading_company,
+              grade: '0.0',
+              user_images: uploadedUrl,
+            },
+          ],
+        },
+        onCompleted: ({ insertIntouser_cardsCollection }) => {
+          if (insertIntouser_cardsCollection?.records?.length) {
+            const userCardId = insertIntouser_cardsCollection.records[0].id;
+            insertListings({
+              variables: {
+                objects: [
+                  {
+                    user_card_id: userCardId,
+                    seller_id: '30bb1d42-a983-4380-b1f5-90be962dfe92',
+                    listing_type: form.listing_type,
+                    description: form.description,
 
-  const isFormValid = useMemo(
-    () =>
-      requiredFields.every(
-        (field) => form[field] && form[field].toString().trim() !== '',
-      ),
-    [form, requiredFields],
-  );
+                    // Sell
+                    ...(form.listing_type === ListingType.SELL
+                      ? {
+                          currency: form.currency ?? '$',
+                          price: Number(form.price).toFixed(2),
+                          accepts_offers: true,
+                        }
+                      : {}),
+
+                    // Auction
+                    ...(form.listing_type === ListingType.AUCTION
+                      ? {
+                          currency: form.currency ?? '$',
+                          start_price: Number(form.minPrice).toFixed(2),
+                          reserve_price: Number(form.reservedPrice).toFixed(2),
+                          start_time: formatISO(new Date()),
+                          ends_at: formatISO(
+                            parse(form.endDate, 'dd/MM/yyyy', new Date()),
+                          ),
+                        }
+                      : {}),
+                  },
+                ],
+              },
+              onCompleted: ({ insertIntolistingsCollection }) => {
+                if (insertIntolistingsCollection?.records?.length) {
+                  updateUserCard({
+                    variables: {
+                      set: {
+                        is_in_listing: true,
+                      },
+                      filter: {
+                        id: { eq: userCardId },
+                      },
+                    },
+                  });
+                  setForm(initialForm);
+                  setLoading(false);
+                  Alert.alert('Posted!', 'Your card has been posted.');
+                }
+              },
+            });
+          }
+        },
+      });
+    } else {
+      setLoading(false);
+    }
+  }, [form, insertListings, insertUserCard, updateUserCard]);
 
   return (
     <ScreenContainer>
@@ -114,6 +292,7 @@ export default function SellScreen() {
             placeholder="E.g: Lamine Yamal"
             value={form.title}
             onChange={handleChange}
+            onPress={() => setShowModal(true)}
             required
             inputClassName={classes.input}
             error={errors.title}
@@ -128,28 +307,28 @@ export default function SellScreen() {
             inputClassName={classes.input}
           />
           <Select
-            name="condition1"
+            name="condition"
             label="Condition"
             required
             placeholder="--Please Select--"
-            value={form.condition1}
+            value={form.condition}
             onChange={handleChange}
             options={conditions}
             inputClassName={classes.input}
-            error={errors.condition1}
+            error={errors.condition}
           />
           <Select
-            name="condition2"
-            label="Condition"
+            name="listing_type"
+            label="Listing Type"
             required
             placeholder="--Please Select--"
-            value={form.condition2}
+            value={form.listing_type}
             onChange={handleChange}
             options={conditionSells}
             inputClassName={classes.input}
-            error={errors.condition2}
+            error={errors.listing_type}
           />
-          {form.condition2 === 'sell' && (
+          {form.listing_type === 'sell' && (
             <TextField
               name="price"
               label="Price"
@@ -165,7 +344,7 @@ export default function SellScreen() {
               error={errors.price}
             />
           )}
-          {form.condition2 === 'auction' && (
+          {form.listing_type === 'auction' && (
             <Fragment>
               <TextField
                 type="date"
@@ -213,12 +392,42 @@ export default function SellScreen() {
             className={classes.submitBtn}
             textClassName={classes.submitBtnText}
             onPress={handleSubmit}
-            disabled={!isFormValid}
+            disabled={!isFormValid || loading}
           >
             Post Your Card
           </Button>
         </View>
       </KeyboardView>
+      <Modal
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        className={classes.modal}
+      >
+        <TextField
+          name="searchText"
+          value={searchText}
+          placeholder="Search for a card"
+          onChange={({ value }) => setSearchText(value)}
+        />
+        <View className={classes.modalContainer}>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={masterCards?.master_cardsCollection?.edges ?? []}
+            renderItem={({ item }) => (
+              <AutocompleteCardItem
+                onPress={() =>
+                  handleAutocompletePress(item.node as MasterCards)
+                }
+                imageUrl={item.node.canonical_image_url ?? ''}
+                name={item.node.name}
+                category={item.node.categories?.name ?? ''}
+              />
+            )}
+            className={classes.list}
+            contentContainerClassName={classes.listContainer}
+          />
+        </View>
+      </Modal>
     </ScreenContainer>
   );
 }
@@ -233,4 +442,8 @@ const classes = {
   submitBtn: 'mt-8 rounded-full bg-primary-100',
   submitBtnText: 'text-primary-500 text-base font-semibold',
   input: 'bg-white leading-5',
+  modalContainer: 'h-[70%]',
+  modal: '!mx-4.5 w-[calc(100%-1rem)] p-4.5 !bg-slate-100 gap-4.5',
+  list: 'flex-1',
+  listContainer: 'gap-2',
 };
