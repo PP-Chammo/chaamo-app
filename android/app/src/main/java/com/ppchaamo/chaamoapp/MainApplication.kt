@@ -1,4 +1,4 @@
-package com.ppchaamo.chaamoapp
+package com.chaamo.app.chaamo
 
 import android.app.Application
 import android.content.res.Configuration

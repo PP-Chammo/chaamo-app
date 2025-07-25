@@ -257,7 +257,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.ppchaamo.chaamoapp";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.chaamo.app.chaamo";
 				PRODUCT_NAME = "chaamoapp";
 				SWIFT_OBJC_BRIDGING_HEADER = "chaamoapp/chaamoapp-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -286,7 +286,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.ppchaamo.chaamoapp";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.chaamo.app.chaamo";
 				PRODUCT_NAME = "chaamoapp";
 				SWIFT_OBJC_BRIDGING_HEADER = "chaamoapp/chaamoapp-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
