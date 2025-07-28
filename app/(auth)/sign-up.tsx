@@ -6,6 +6,7 @@ import { View } from 'react-native';
 import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Checkbox, Header, PhoneInput } from '@/components/molecules';
 import { BooleanChangeParams, TextChangeParams } from '@/domains';
+import { loginWithGoogle } from '@/utils/auth';
 
 export default function SignUpScreen() {
   const [form, setForm] = useState({
@@ -49,6 +50,10 @@ export default function SignUpScreen() {
             Login
           </Link>
         </Label>
+        <Label className={classes.orLabel}>Or</Label>
+        <Button icon="google" onPress={loginWithGoogle} variant="primary-light">
+          Continue with Google
+        </Button>
       </View>
       <Checkbox
         className="mb-12 px-4.5"
@@ -85,4 +90,5 @@ const classes = {
   link: 'text-primary-500 underline font-bold',
   sendButton: 'my-2',
   terms: 'text-slate-500 text-md ',
+  orLabel: 'text-center !text-slate-400',
 };

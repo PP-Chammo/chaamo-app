@@ -1,9 +1,11 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { Image } from 'expo-image';
-import { Redirect, router } from 'expo-router';
+import { router } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { View } from 'react-native';
+
+import { fnGetStorage } from '@/utils/storage';
 
 export default function StartPage() {
   const isDevelopment = process.env.NODE_ENV === 'development';
@@ -14,19 +16,30 @@ export default function StartPage() {
     },
   });
 
+  const checkSession = useCallback(async () => {
+    const session = await fnGetStorage('session');
+    if (isDevelopment) {
+      if (session) {
+        router.replace('/(tabs)/home');
+      } else {
+        router.replace('/(auth)/sign-in');
+      }
+    }
+  }, [isDevelopment]);
+
   useEffect(() => {
-    if (!isDevelopment) {
+    if (isDevelopment) {
+      checkSession();
+    } else {
       const timeout = setTimeout(() => {
         router.replace('/screens/onboarding');
       }, 6000);
 
       return () => clearTimeout(timeout);
     }
-  }, [isDevelopment]);
+  }, [isDevelopment, checkSession]);
 
-  if (isDevelopment) {
-    return <Redirect href="/(tabs)/home" />;
-  }
+  if (isDevelopment) return null;
 
   return (
     <View className={classes.container}>

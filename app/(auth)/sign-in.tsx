@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header, PhoneInput, TextField } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
+import { loginWithGoogle } from '@/utils/auth';
 
 interface SignInForm {
   phone: string;
@@ -65,7 +66,12 @@ export default function SignInScreen() {
         <Link className={classes.login} href="/forgot-password">
           Forgot Password?
         </Link>
+        <Label className={classes.orLabel}>Or</Label>
+        <Button icon="google" onPress={loginWithGoogle} variant="primary-light">
+          Continue with Google
+        </Button>
       </View>
+
       <Label className={classes.signUp}>
         Don&apos;t have an account?{' '}
         <Link className={classes.link} href="/sign-up">
@@ -83,7 +89,8 @@ const classes = {
   description: 'text-slate-500 font-medium text-lg mb-6',
   login: 'text-slate-500 text-md text-center underline font-bold self-center',
   link: 'text-primary-500 underline font-bold',
-  loginButton: 'my-2 ',
+  loginButton: 'my-2',
   signUp: 'text-slate-500 text-md text-center mb-8',
   errorText: 'text-red-500 text-sm',
+  orLabel: 'text-center !text-slate-400',
 };
