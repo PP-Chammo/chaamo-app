@@ -73,39 +73,6 @@ export const dummyDiscoverPeopleList = [
   },
 ];
 
-export const dummyPortfolioCardList = [
-  {
-    id: '1',
-    imageUrl: 'https://example.com/image1.jpg',
-    title: 'Elly De La Cruz 1',
-    currentPrice: '$200.00',
-    bidPrice: '$70.00',
-    market: 'eBay',
-    indicator: 'down',
-    boosted: true,
-  },
-  {
-    id: '2',
-    imageUrl: 'https://example.com/image1.jpg',
-    title: 'Elly De La Cruz 2',
-    currentPrice: '$200.00',
-    bidPrice: '$70.00',
-    market: 'eBay',
-    indicator: 'up',
-    boosted: false,
-  },
-  {
-    id: '3',
-    imageUrl: 'https://example.com/image1.jpg',
-    title: 'Elly De La Cruz 3',
-    currentPrice: '$200.00',
-    bidPrice: '$70.00',
-    market: 'eBay',
-    indicator: 'down',
-    boosted: false,
-  },
-];
-
 export const CURRENCIES = ['USD', 'Euro', 'Pound', 'PKR', 'CAD', 'AUD'];
 
 export const STATES = [
@@ -671,5 +638,43 @@ export const dummyOrders = [
     title: 'Lamine Yamal',
     price: '1,282',
     status: 'cancelled',
+  },
+];
+
+export const dummyPortfolioList = [
+  {
+    id: '1',
+    imageUrl: 'https://example.com/image1.jpg',
+    title: 'Elly De La Cruz 1',
+    price: '$200.00',
+    marketPrice: '$70.00',
+    marketType: 'eBay',
+    indicator: 'down',
+    date: '2025-03-08T18:00:00Z',
+    boosted: true,
+  },
+  {
+    id: '2',
+    imageUrl: 'https://example.com/image1.jpg',
+    title: 'Elly De La Cruz 2',
+    price: '$200.00',
+    marketPrice: '$70.00',
+    marketType: 'eBay',
+    indicator: 'up',
+    date: '2025-03-08T18:00:00Z',
+    boosted: false,
+    listing_type: 'buy-now',
+  },
+  {
+    id: '3',
+    imageUrl: 'https://example.com/image1.jpg',
+    title: 'Elly De La Cruz 3',
+    price: '$200.00',
+    marketPrice: '$70.00',
+    marketType: 'eBay',
+    indicator: 'down',
+    date: '2025-03-08T18:00:00Z',
+    boosted: false,
+    listing_type: 'auction',
   },
 ];
