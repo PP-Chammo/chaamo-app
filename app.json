@@ -13,10 +13,6 @@
       "bundleIdentifier": "com.chaamo.app.chaamo"
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
       "edgeToEdgeEnabled": true,
       "permissions": [
         "android.permission.RECORD_AUDIO",
@@ -32,12 +28,9 @@
     "plugins": [
       "expo-router",
       [
-        "expo-splash-screen",
+        "@react-native-google-signin/google-signin",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "iosUrlScheme": "com.googleusercontent.apps.850799339504-b8ji8amlr8tm324jaka8c91it9emhuvd"
         }
       ],
       [

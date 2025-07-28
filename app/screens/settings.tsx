@@ -11,6 +11,7 @@ import {
   ScreenContainer,
 } from '@/components/atoms';
 import { Header, SettingItem } from '@/components/molecules';
+import { logout } from '@/utils/auth';
 import { getColor } from '@/utils/getColor';
 
 export default function SettingsScreen() {
@@ -122,6 +123,7 @@ export default function SettingsScreen() {
               iconName="logout"
               iconColor={getColor('primary-500')}
               title="Log out"
+              onPress={logout}
             />
           </View>
         </ScrollView>
