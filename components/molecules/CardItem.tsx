@@ -127,6 +127,10 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
               {marketPrice}
             </Label>
           </View>
+          <Image
+            source={require('@/assets/images/logo.png')}
+            className={classes.logoImage}
+          />
         </Row>
       </View>
     </TouchableOpacity>
@@ -150,6 +154,7 @@ const classes = {
   bidContainer: 'flex flex-col items-end justify-end',
   textBidPrice: 'text-base font-semibold text-primary-500',
   priceContainer: '!items-end',
+  logoImage: 'w-8 h-8',
 };
 
 export default CardItem;
