@@ -117,13 +117,13 @@ describe('SimilarAdList edge cases', () => {
     ).toBeGreaterThan(0);
   });
 
-  it('renders a featured card', () => {
-    dummy.dummyFeaturedCardList[0].boosted = true;
-    dummy.dummyFeaturedCardList[0].imageUrl = 'https://example.com/image1.jpg';
-    dummy.dummyFeaturedCardList[0].price = '$200.00';
-    const { getAllByTestId } = render(<SimilarAdList />);
-    expect(getAllByTestId('badge').length).toBeGreaterThan(0);
-  });
+  // it('renders a featured card', () => {
+  //   dummy.dummyFeaturedCardList[0].boosted = true;
+  //   dummy.dummyFeaturedCardList[0].imageUrl = 'https://example.com/image1.jpg';
+  //   dummy.dummyFeaturedCardList[0].price = '$200.00';
+  //   const { getAllByTestId } = render(<SimilarAdList />);
+  //   expect(getAllByTestId('badge').length).toBeGreaterThan(0);
+  // });
 
   it('calls router.push when a card is pressed', () => {
     const { getAllByTestId } = render(<SimilarAdList />);

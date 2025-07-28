@@ -9,7 +9,7 @@ interface TagProps {
   textClassName?: string;
 }
 
-const Tag: React.FC<TagProps> = memo(function Badge({
+const Tag: React.FC<TagProps> = memo(function Tag({
   title,
   className,
   textClassName,

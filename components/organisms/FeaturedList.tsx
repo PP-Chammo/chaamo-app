@@ -12,7 +12,6 @@ const FeaturedList = memo(function FeaturedList() {
     >
       {(card: (typeof dummyFeaturedCardList)[number]) => (
         <CommonCard
-          featured
           key={card.id}
           id={card.id}
           imageUrl={card.imageUrl}
