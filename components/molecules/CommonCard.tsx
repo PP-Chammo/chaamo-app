@@ -5,12 +5,11 @@ import { clsx } from 'clsx';
 import { Image, TouchableOpacity, View } from 'react-native';
 
 import EBayImage from '@/assets/svg/ebay.svg';
-import { Badge, Icon, Label, PriceIndicator } from '@/components/atoms';
+import { Icon, Label, PriceIndicator } from '@/components/atoms';
 import { CommonCardType } from '@/types/card';
 import { getColor } from '@/utils/getColor';
 
 interface CommonCardProps extends Omit<CommonCardType, 'price'> {
-  featured?: boolean;
   price?: string;
   onPress?: () => void;
   onRightIconPress?: () => void;
@@ -28,7 +27,6 @@ const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
   marketPrice,
   marketType,
   indicator,
-  featured = false,
   onPress,
   onRightIconPress,
   rightIcon,
@@ -69,7 +67,6 @@ const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
       className={clsx(classes.container, className)}
       onPress={onPress}
     >
-      {featured && <Badge testID="badge" />}
       {rightComponent ?? renderRightIcon()}
       {imageUrl ? (
         <Image

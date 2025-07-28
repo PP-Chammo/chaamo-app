@@ -87,7 +87,6 @@ describe('CommonCard', () => {
       <CommonCard
         {...defaultProps}
         price="$100"
-        featured={true}
         onPress={onPress}
         onRightIconPress={onRightIconPress}
         rightIcon="star"

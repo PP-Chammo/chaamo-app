@@ -12,7 +12,7 @@ interface PeopleProps {
   onViewProfilePress?: () => void;
 }
 
-const People: React.FC<PeopleProps> = memo(function Badge({
+const People: React.FC<PeopleProps> = memo(function People({
   fullname,
   imageUrl,
   onPress,
