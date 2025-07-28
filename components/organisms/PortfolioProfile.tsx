@@ -86,7 +86,7 @@ export default function Portfolio() {
         value={filter}
         onChange={({ value }) => setFilter(value)}
         options={portfolioFilters}
-        inputClassName={classes.filterInput}
+        className={classes.filterInput}
       />
       {_renderContent}
     </>
