@@ -66,7 +66,7 @@ export default function SignInScreen() {
         <Link className={classes.login} href="/forgot-password">
           Forgot Password?
         </Link>
-        <Label className="text-center !text-slate-400">Or</Label>
+        <Label className={classes.orLabel}>Or</Label>
         <Button icon="google" onPress={loginWithGoogle} variant="primary-light">
           Continue with Google
         </Button>
@@ -92,4 +92,5 @@ const classes = {
   loginButton: 'my-2',
   signUp: 'text-slate-500 text-md text-center mb-8',
   errorText: 'text-red-500 text-sm',
+  orLabel: 'text-center !text-slate-400',
 };

@@ -50,7 +50,7 @@ export default function SignUpScreen() {
             Login
           </Link>
         </Label>
-        <Label className="text-center !text-slate-400">Or</Label>
+        <Label className={classes.orLabel}>Or</Label>
         <Button icon="google" onPress={loginWithGoogle} variant="primary-light">
           Continue with Google
         </Button>
@@ -90,4 +90,5 @@ const classes = {
   link: 'text-primary-500 underline font-bold',
   sendButton: 'my-2',
   terms: 'text-slate-500 text-md ',
+  orLabel: 'text-center !text-slate-400',
 };
