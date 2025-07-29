@@ -56,6 +56,183 @@ jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
 );
 
+// Mock Apollo Client
+jest.mock('@apollo/client', () => ({
+  ApolloClient: jest.fn(),
+  InMemoryCache: jest.fn(),
+  createHttpLink: jest.fn(),
+  ApolloProvider: ({ children }) => children,
+  useQuery: jest.fn(() => ({
+    data: null,
+    loading: false,
+    error: null,
+  })),
+  useMutation: jest.fn(() => [
+    jest.fn(),
+    { loading: false, error: null, data: null },
+  ]),
+  useLazyQuery: jest.fn(() => [
+    jest.fn(),
+    { loading: false, error: null, data: null },
+  ]),
+  gql: jest.fn(),
+}));
+
+// Mock generated GraphQL hooks
+jest.mock('@/generated/graphql', () => ({
+  useGetAuctionListingsQuery: jest.fn(() => ({
+    data: {
+      listingsCollection: {
+        edges: [
+          { node: { id: '1', title: 'Auction Item 1' } },
+          { node: { id: '2', title: 'Auction Item 2' } },
+          { node: { id: '3', title: 'Auction Item 3' } },
+        ],
+      },
+    },
+    loading: false,
+    error: null,
+  })),
+  useGetFeaturedListingsQuery: jest.fn(() => ({
+    data: {
+      listingsCollection: {
+        edges: [
+          { node: { id: '1', title: 'Featured Item 1' } },
+          { node: { id: '2', title: 'Featured Item 2' } },
+          { node: { id: '3', title: 'Featured Item 3' } },
+        ],
+      },
+    },
+    loading: false,
+    error: null,
+  })),
+  useGetRecentlyAddedListingsQuery: jest.fn(() => ({
+    data: {
+      listingsCollection: {
+        edges: [
+          { node: { id: '1', title: 'Recent Item 1' } },
+          { node: { id: '2', title: 'Recent Item 2' } },
+          { node: { id: '3', title: 'Recent Item 3' } },
+        ],
+      },
+    },
+    loading: false,
+    error: null,
+  })),
+  useGetNotificationsQuery: jest.fn(() => ({
+    data: { notificationsCollection: { edges: [] } },
+    loading: false,
+    error: null,
+  })),
+  useGetPeoplesQuery: jest.fn(() => ({
+    data: {
+      profilesCollection: {
+        edges: [
+          { node: { id: '1', fullname: 'John Doe' } },
+          { node: { id: '2', fullname: 'Jane Smith' } },
+          { node: { id: '3', fullname: 'Bob Johnson' } },
+        ],
+      },
+    },
+    loading: false,
+    error: null,
+  })),
+  useInsertFavoritesMutation: jest.fn(() => [
+    jest.fn(),
+    { loading: false, error: null, data: null },
+  ]),
+  useRemoveFavoritesMutation: jest.fn(() => [
+    jest.fn(),
+    { loading: false, error: null, data: null },
+  ]),
+  ListingType: {
+    AUCTION: 'AUCTION',
+    SELL: 'SELL',
+    EBAY: 'EBAY',
+    PORTFOLIO: 'PORTFOLIO',
+  },
+  CardCondition: {
+    RAW: 'RAW',
+    GRADED: 'GRADED',
+  },
+}));
+
+// Mock hooks with reactive behavior
+jest.mock('@/hooks/useAuthVar', () => ({
+  useAuthVar: jest.fn(() => {
+    const mockAuthState = { isAuthenticated: false };
+    const mockSetAuthVar = jest.fn((value) => {
+      if ('signIn' in value && value.signIn) {
+        mockAuthState.isAuthenticated = true;
+        // Mock router.replace call
+        const router = require('expo-router');
+        router.router.replace('/(tabs)/home');
+      } else if ('signOut' in value && value.signOut) {
+        mockAuthState.isAuthenticated = false;
+        // Mock router.replace call
+        const router = require('expo-router');
+        router.router.replace('/(auth)/sign-in');
+      } else {
+        Object.assign(mockAuthState, value);
+      }
+    });
+    return [mockAuthState, mockSetAuthVar];
+  }),
+}));
+
+jest.mock('@/hooks/useSearchVar', () => ({
+  useSearchVar: jest.fn(() => {
+    const mockSearchState = {
+      query: '',
+      location: '',
+      priceRange: '',
+      condition: '',
+      adProperties: '',
+    };
+    const mockSetSearchVar = jest.fn((value) => {
+      Object.assign(mockSearchState, value);
+    });
+    return [mockSearchState, mockSetSearchVar];
+  }),
+}));
+
+jest.mock('@/hooks/useImageCapturedVar', () => ({
+  useImageCapturedVar: jest.fn(() => {
+    const mockImageState = {
+      uri: '',
+      height: 0,
+      width: 0,
+    };
+    const mockSetImageVar = jest.fn((value) => {
+      Object.assign(mockImageState, value);
+      // Mock router.push call
+      const router = require('expo-router');
+      router.router.push('/(setup-profile)/(upload-identity)/id-card-captured');
+    });
+    return [mockImageState, mockSetImageVar];
+  }),
+}));
+
+jest.mock('@/hooks/useProfileVar', () => ({
+  useProfileVar: jest.fn(() => [
+    {
+      id: 'test-user-id',
+      fullname: 'Shireen',
+      user_metadata: { name: 'Shireen' },
+      email: 'shireen@example.com',
+    },
+    jest.fn(),
+  ]),
+}));
+
+jest.mock('@/hooks/useStorage', () => ({
+  useStorage: jest.fn(() => ({
+    getItem: jest.fn(),
+    setItem: jest.fn(),
+    removeItem: jest.fn(),
+  })),
+}));
+
 jest.mock('react-native-svg', () => ({
   Svg: 'Svg',
   Circle: 'Circle',

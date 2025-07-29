@@ -3,8 +3,16 @@ import { memo } from 'react';
 import { clsx } from 'clsx';
 import { LinearGradient } from 'expo-linear-gradient';
 import { cssInterop } from 'nativewind';
-import { ViewProps } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  Platform,
+  SafeAreaView as RNSafeAreaView,
+  View,
+  ViewProps,
+} from 'react-native';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 import { getColor } from '@/utils/getColor';
 
@@ -27,19 +35,41 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
     style,
     ...props
   }) {
+    const insets = useSafeAreaInsets();
     return (
-      <StyledGradient
-        colors={[getColor('orange-50'), getColor('primary-50')]}
-        className="flex-1"
-      >
-        <SafeAreaView
-          edges={['top', 'bottom']}
-          className={clsx(classes.container, className)}
-          {...props}
+      <>
+        {Platform.OS === 'ios' ? (
+          <RNSafeAreaView
+            className={clsx(classNameTop, {
+              'bg-orange-50': !classNameTop?.includes('bg-'),
+            })}
+          />
+        ) : (
+          <View
+            className={clsx(classNameTop, {
+              'bg-orange-50': !classNameTop?.includes('bg-'),
+            })}
+            style={Platform.OS === 'android' ? { paddingTop: insets.top } : {}}
+          />
+        )}
+        <StyledGradient
+          colors={[getColor('orange-50'), getColor('primary-50')]}
+          className="flex-1"
         >
-          {children}
-        </SafeAreaView>
-      </StyledGradient>
+          <SafeAreaView
+            edges={[]}
+            className={clsx(classes.container, className)}
+            {...props}
+          >
+            {children}
+          </SafeAreaView>
+        </StyledGradient>
+        <RNSafeAreaView
+          className={clsx(classNameBottom, {
+            'bg-primary-50': !classNameBottom?.includes('bg-'),
+          })}
+        />
+      </>
     );
   },
 );

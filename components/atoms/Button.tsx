@@ -2,6 +2,7 @@ import React, { memo, useMemo } from 'react';
 
 import { clsx } from 'clsx';
 import {
+  ActivityIndicator,
   Text,
   TextProps,
   TouchableOpacity,
@@ -29,6 +30,7 @@ interface ButtonProps extends TouchableOpacityProps {
   textClassName?: string;
   textProps?: TextProps;
   disabled?: boolean;
+  loading?: boolean;
   icon?: IconProp['name'];
   iconSize?: IconProp['size'];
   iconColor?: IconProp['color'];
@@ -49,6 +51,7 @@ const Button: React.FC<ButtonProps> = memo(function Button({
   textClassName,
   textProps,
   disabled = false,
+  loading = false,
   icon,
   iconSize,
   iconColor,
@@ -115,7 +118,7 @@ const Button: React.FC<ButtonProps> = memo(function Button({
         )}
         {...textProps}
       >
-        {children}
+        {loading ? <ActivityIndicator color={iconColorBase} /> : children}
       </Text>
       {rightIcon && (
         <Icon

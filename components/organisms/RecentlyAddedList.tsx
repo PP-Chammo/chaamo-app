@@ -1,33 +1,140 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 
 import { CommonCard, ListContainer } from '@/components/molecules';
-import { dummyFeaturedCardList } from '@/constants/dummy';
+import {
+  GetFavoritesQuery,
+  GetRecentlyAddedListingsQuery,
+  ListingType,
+  useGetRecentlyAddedListingsQuery,
+  useInsertFavoritesMutation,
+  useRemoveFavoritesMutation,
+} from '@/generated/graphql';
+import { useProfileVar } from '@/hooks/useProfileVar';
+import { DeepGet } from '@/types/helper';
+import { getColor } from '@/utils/getColor';
 
-const RecentlyAddedList = memo(function RecentlyAddedList() {
-  return (
-    <ListContainer
-      title="Recently Added"
-      onViewAllHref="/screens/product-list"
-      data={dummyFeaturedCardList}
-    >
-      {(featured: (typeof dummyFeaturedCardList)[number]) => (
-        <CommonCard
-          id={featured.id}
-          key={featured.id}
-          imageUrl={featured.imageUrl}
-          title={featured.title}
-          price={featured.price}
-          marketPrice={featured.marketPrice}
-          marketType={featured.marketType}
-          indicator={featured.indicator}
-          rightIcon="heart-outline"
-          onRightIconPress={() => {
-            console.log(`Favorite pressed for card ${featured.id}`);
-          }}
-        />
-      )}
-    </ListContainer>
-  );
-});
+type RecentlyAddedListProps = {
+  favoriteList: DeepGet<
+    GetFavoritesQuery,
+    ['favorite_listingsCollection', 'edges']
+  >;
+  refreshFavoriteCount: () => void;
+};
+
+const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
+  function RecentlyAddedList({ favoriteList = [], refreshFavoriteCount }) {
+    const [profile] = useProfileVar();
+    const { data, loading } = useGetRecentlyAddedListingsQuery({
+      variables: {
+        filter: {
+          or: [
+            { listing_type: { eq: ListingType.SELL } },
+            { listing_type: { eq: ListingType.EBAY } },
+          ],
+        },
+        last: 10,
+      },
+    });
+    const cards = data?.listingsCollection?.edges ?? [];
+
+    const [insertFavorites] = useInsertFavoritesMutation();
+    const [removeFavorites] = useRemoveFavoritesMutation();
+
+    const getIsFavorite = useCallback(
+      (listingId: string) =>
+        favoriteList.some((edge) => edge.node.listing_id === listingId),
+      [favoriteList],
+    );
+
+    const handleToggleFavorite = useCallback(
+      (listing_id: string) => () => {
+        if (getIsFavorite(listing_id)) {
+          removeFavorites({
+            variables: {
+              filter: {
+                user_id: { eq: profile?.id },
+                listing_id: { eq: listing_id },
+              },
+            },
+            onCompleted: () => {
+              refreshFavoriteCount();
+            },
+          });
+        } else {
+          insertFavorites({
+            variables: {
+              objects: [
+                {
+                  user_id: profile?.id,
+                  listing_id,
+                },
+              ],
+            },
+            onCompleted: () => {
+              refreshFavoriteCount();
+            },
+          });
+        }
+      },
+      [
+        getIsFavorite,
+        insertFavorites,
+        profile?.id,
+        refreshFavoriteCount,
+        removeFavorites,
+      ],
+    );
+
+    if (loading) {
+      return null;
+    }
+
+    return (
+      <ListContainer<
+        DeepGet<
+          GetRecentlyAddedListingsQuery,
+          ['listingsCollection', 'edges', number]
+        >
+      >
+        title="Recently Added"
+        onViewAllHref="/screens/product-list"
+        data={cards}
+      >
+        {(card) => (
+          <CommonCard
+            key={card.node.id}
+            id={card.node.id}
+            imageUrl={
+              card.node.user_cards?.user_images ??
+              card.node.ebay_posts?.image_url ??
+              ''
+            }
+            title={
+              card.node.user_cards?.master_cards?.name ??
+              card.node.ebay_posts?.title ??
+              ''
+            }
+            price={`${card.node.currency?.trim()}${card.node.price?.trim()}`}
+            marketPrice={
+              card?.node?.price
+                ? `${card.node.currency?.trim()}${card.node.price?.trim()}`
+                : ''
+            }
+            marketType={
+              card.node.listing_type === ListingType.EBAY ? 'eBay' : 'chaamo'
+            }
+            indicator="up"
+            rightIcon={getIsFavorite(card.node.id) ? 'heart' : 'heart-outline'}
+            rightIconColor={
+              getIsFavorite(card.node.id) ? getColor('red-600') : undefined
+            }
+            rightIconSize={18}
+            onRightIconPress={handleToggleFavorite(card.node.id)}
+          />
+        )}
+      </ListContainer>
+    );
+  },
+);
 
 export default RecentlyAddedList;

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import { dummyDiscoverPeopleList } from '@/constants/dummy';
 
@@ -12,15 +12,15 @@ describe('PeopleList', () => {
     expect(getByTestId('list-container')).toBeTruthy();
   });
 
+  it('displays people title', () => {
+    const { getByText } = render(<PeopleList />);
+    expect(getByText('People')).toBeTruthy();
+  });
+
   it('renders all people items', () => {
     const { getAllByTestId } = render(<PeopleList />);
     const peopleItems = getAllByTestId('people-item');
     expect(peopleItems.length).toBe(dummyDiscoverPeopleList.length);
-  });
-
-  it('displays people title', () => {
-    const { getByText } = render(<PeopleList />);
-    expect(getByText('People')).toBeTruthy();
   });
 
   it('handles people item press', () => {
@@ -28,9 +28,7 @@ describe('PeopleList', () => {
     const { getAllByTestId } = render(<PeopleList />);
     const peopleItems = getAllByTestId('people-item');
     fireEvent.press(peopleItems[0]);
-    expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringMatching(/People pressed for card/),
-    );
+    expect(consoleSpy).toHaveBeenCalledWith('People id 1');
     consoleSpy.mockRestore();
   });
 
@@ -39,9 +37,7 @@ describe('PeopleList', () => {
     const { getAllByTestId } = render(<PeopleList />);
     const followButtons = getAllByTestId('follow-button');
     fireEvent.press(followButtons[0]);
-    expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringMatching(/Follow pressed for card/),
-    );
+    expect(consoleSpy).toHaveBeenCalledWith('Follow people id 1');
     consoleSpy.mockRestore();
   });
 });

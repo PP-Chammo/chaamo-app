@@ -28,9 +28,9 @@ describe('FilterConditionInput', () => {
     const { getByTestId } = render(
       <FilterConditionInput {...defaultProps} onChange={onChange} />,
     );
-    const firstButton = getByTestId('filter-condition-button-raw');
+    const firstButton = getByTestId('filter-condition-button-RAW');
     fireEvent.press(firstButton);
-    expect(onChange).toHaveBeenCalledWith('raw');
+    expect(onChange).toHaveBeenCalledWith('RAW');
   });
 
   it('toggles condition value when button is pressed', () => {
@@ -38,11 +38,11 @@ describe('FilterConditionInput', () => {
     const { getByTestId } = render(
       <FilterConditionInput
         {...defaultProps}
-        value="raw"
+        value="RAW"
         onChange={onChange}
       />,
     );
-    const button = getByTestId('filter-condition-button-raw');
+    const button = getByTestId('filter-condition-button-RAW');
     fireEvent.press(button);
     expect(onChange).toHaveBeenCalledWith('');
   });
@@ -54,7 +54,7 @@ describe('FilterConditionInput', () => {
 
   it('renders with multiple selected conditions', () => {
     const { getByTestId } = render(
-      <FilterConditionInput {...defaultProps} value="raw,graded" />,
+      <FilterConditionInput {...defaultProps} value="RAW,GRADED" />,
     );
     expect(getByTestId('filter-condition-input')).toBeTruthy();
   });

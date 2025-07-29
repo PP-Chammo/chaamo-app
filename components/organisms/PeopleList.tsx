@@ -5,26 +5,41 @@ import {
   ListContainerDirection,
   People,
 } from '@/components/molecules';
-import { dummyDiscoverPeopleList } from '@/constants/dummy';
+import { useGetPeoplesQuery } from '@/generated/graphql';
+import { useProfileVar } from '@/hooks/useProfileVar';
 
 const PeopleList = memo(function PeopleList() {
+  const [profile] = useProfileVar();
+  const { data, loading } = useGetPeoplesQuery({
+    variables: {
+      filter: {
+        id: { neq: profile?.id },
+      },
+    },
+  });
+  const peoples = data?.profilesCollection?.edges ?? [];
+
+  if (loading) {
+    return null;
+  }
+
   return (
     <ListContainer
       listDirection={ListContainerDirection.None}
       title="People"
       onViewAllHref="/screens/people"
-      data={dummyDiscoverPeopleList}
+      data={peoples}
     >
-      {(people: (typeof dummyDiscoverPeopleList)[number]) => (
+      {(people) => (
         <People
-          key={people.id}
-          imageUrl={people.imageUrl}
-          fullname={people.fullname}
+          key={people.node.id}
+          imageUrl={people.node.profile_image_url ?? ''}
+          fullname={people.node.username}
           onPress={() => {
-            console.log(`People pressed for card ${people.id}`);
+            console.log(`People id ${people.node.id}`);
           }}
           onFollowPress={() => {
-            console.log(`Follow pressed for card ${people.id}`);
+            console.log(`Follow people id ${people.node.id}`);
           }}
         />
       )}

@@ -60,7 +60,7 @@ const Avatar = memo(function Avatar({
             {onPress && (
               <MaterialCommunityIcons
                 name="plus"
-                size={24}
+                size={20}
                 color={getColor('slate-700')}
                 className={classes.modifyIcon}
               />
