@@ -37,6 +37,7 @@ import {
   useUpdateUserCardMutation,
 } from '@/generated/graphql';
 import useDebounce from '@/hooks/useDebounce';
+import { useProfileVar } from '@/hooks/useProfileVar';
 import { getColor } from '@/utils/getColor';
 import { uploadToBucket } from '@/utils/supabase';
 import { validateRequired, ValidationErrors } from '@/utils/validate';
@@ -85,6 +86,8 @@ const initialForm: SellForm = {
 };
 
 export default function SellScreen() {
+  const [profile] = useProfileVar();
+
   const [form, setForm] = useState<SellForm>(initialForm);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -202,7 +205,7 @@ export default function SellScreen() {
         variables: {
           objects: [
             {
-              user_id: '30bb1d42-a983-4380-b1f5-90be962dfe92',
+              user_id: profile?.id,
               master_card_id: form.master_card_id,
               condition: form.condition,
               grading_company: form.grading_company,
@@ -219,7 +222,7 @@ export default function SellScreen() {
                 objects: [
                   {
                     user_card_id: userCardId,
-                    seller_id: '30bb1d42-a983-4380-b1f5-90be962dfe92',
+                    seller_id: profile?.id,
                     listing_type: form.listing_type,
                     description: form.description,
 
@@ -271,7 +274,7 @@ export default function SellScreen() {
     } else {
       setLoading(false);
     }
-  }, [form, insertListings, insertUserCard, updateUserCard]);
+  }, [form, insertListings, insertUserCard, profile?.id, updateUserCard]);
 
   return (
     <ScreenContainer>
@@ -393,6 +396,7 @@ export default function SellScreen() {
             textClassName={classes.submitBtnText}
             onPress={handleSubmit}
             disabled={!isFormValid || loading}
+            loading={loading}
           >
             Post Your Card
           </Button>

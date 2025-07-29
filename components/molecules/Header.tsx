@@ -33,7 +33,7 @@ const Header: React.FC<HeaderProps> = memo(function Header({
 }) {
   return (
     <View testID="header" className={clsx(classes.header, className)}>
-      {onBackPress && (
+      {onBackPress ? (
         <TouchableOpacity
           testID="back-button"
           onPress={onBackPress}
@@ -41,27 +41,29 @@ const Header: React.FC<HeaderProps> = memo(function Header({
         >
           <Icon name="arrow-left" size={24} color={getColor('slate-700')} />
         </TouchableOpacity>
+      ) : (
+        <View className={classes.buttonContainerLeft} />
       )}
       {leftComponent}
       <Text className={classes.title}>{title}</Text>
-      {onRightPress && (
-        <View className={classes.buttonContainerRight}>
-          <TouchableOpacity
-            testID="right-button"
-            onPress={onRightPress}
-            ref={rightRef}
-          >
-            {rightIcon && (
-              <Icon
-                name={rightIcon}
-                size={rightIconSize ?? 24}
-                color={rightIconColor}
-              />
-            )}
-          </TouchableOpacity>
-        </View>
+      {onRightPress ? (
+        <TouchableOpacity
+          testID="right-button"
+          onPress={onRightPress}
+          ref={rightRef}
+          className={classes.buttonContainerRight}
+        >
+          {rightIcon && (
+            <Icon
+              name={rightIcon}
+              size={rightIconSize ?? 24}
+              color={rightIconColor}
+            />
+          )}
+        </TouchableOpacity>
+      ) : (
+        <View className={classes.buttonContainerRight} />
       )}
-      {onBackPress && !onRightPress && <View className={classes.rightSpace} />}
     </View>
   );
 });

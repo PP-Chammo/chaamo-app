@@ -76,7 +76,7 @@ const AuctionCard: React.FC<AuctionCardProps> = memo(function CategoryItem({
 });
 
 const classes = {
-  container: 'flex flex-col gap-2',
+  container: 'w-36 flex flex-col gap-2',
   image:
     'w-36 min-h-[170px] h-auto flex items-center justify-center bg-gray-200 rounded-lg',
   title: 'text-sm !text-gray-800',

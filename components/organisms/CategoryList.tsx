@@ -4,15 +4,11 @@ import { router } from 'expo-router';
 
 import { Category, ListContainer } from '@/components/molecules';
 import { imageCategories } from '@/constants/categories';
+import { GetCategoriesQuery, useGetCategoriesQuery } from '@/generated/graphql';
 import { DeepGet } from '@/types/helper';
 
-import {
-  GetCategoriesQuery,
-  useGetCategoriesQuery,
-} from '../../generated/graphql';
-
 const CategoryList = memo(function CategoryList() {
-  const { data } = useGetCategoriesQuery();
+  const { data, loading } = useGetCategoriesQuery();
   const edges = data?.categoriesCollection?.edges ?? [];
 
   const handleCtaCards = useCallback(
@@ -20,6 +16,10 @@ const CategoryList = memo(function CategoryList() {
       router.push({ pathname: '/screens/product-list', params: { category } }),
     [],
   );
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <ListContainer<

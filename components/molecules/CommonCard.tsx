@@ -39,6 +39,14 @@ const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
     if (marketType === 'eBay') {
       return <EBayImage />;
     }
+    if (marketType === 'chaamo') {
+      return (
+        <Image
+          source={require('@/assets/images/logo.png')}
+          className={classes.chaamoLogo}
+        />
+      );
+    }
     return null;
   }, [marketType]);
 
@@ -82,22 +90,24 @@ const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
           <Icon name="cards-outline" size={40} color={getColor('red-100')} />
         </View>
       )}
-      {!!price && (
+      <View className={classes.titleContainer}>
+        {!!price && (
+          <Label
+            variant="subtitle"
+            className={classes.price}
+            testID="common-card-price"
+          >
+            {price}
+          </Label>
+        )}
         <Label
           variant="subtitle"
-          className={classes.price}
-          testID="common-card-price"
+          className={classes.title}
+          testID="common-card-title"
         >
-          {price}
+          {title}
         </Label>
-      )}
-      <Label
-        variant="subtitle"
-        className={classes.title}
-        testID="common-card-title"
-      >
-        {title}
-      </Label>
+      </View>
       <View className={classes.marketContainer}>
         {renderMarketType}
         <Label
@@ -117,12 +127,14 @@ const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
 export default CommonCard;
 
 const classes = {
-  container: 'w-36 flex flex-col gap-2',
+  container: 'w-36 flex flex-col gap-2 justify-between',
   image: 'w-full h-[170px] h-auto  bg-gray-200 rounded-lg',
+  titleContainer: 'flex-1 flex flex-col gap-1 ',
   price: 'text-sm text-primary-500 !font-bold',
   marketPrice: 'text-xs text-gray-500',
   title: 'text-sm !text-gray-800',
-  marketContainer: 'flex flex-row items-center gap-1.5',
+  marketContainer: 'flex flex-row items-center gap-2',
   rightIconButton:
     'absolute top-2 right-2 z-10 w-8 h-8 bg-white rounded-full items-center justify-center',
+  chaamoLogo: 'w-5 h-5',
 };

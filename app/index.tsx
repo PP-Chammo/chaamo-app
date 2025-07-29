@@ -1,13 +1,16 @@
 import { useCallback, useEffect } from 'react';
 
+import { Session } from '@supabase/supabase-js';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { View } from 'react-native';
 
+import { useProfileVar } from '@/hooks/useProfileVar';
 import { fnGetStorage } from '@/utils/storage';
 
 export default function StartPage() {
+  const [, setProfileVar] = useProfileVar();
   const isDevelopment = process.env.NODE_ENV === 'development';
 
   cssInterop(Image, {
@@ -17,15 +20,16 @@ export default function StartPage() {
   });
 
   const checkSession = useCallback(async () => {
-    const session = await fnGetStorage('session');
+    const session = await fnGetStorage<Session>('session');
     if (isDevelopment) {
       if (session) {
+        setProfileVar(session.user);
         router.replace('/(tabs)/home');
       } else {
         router.replace('/(auth)/sign-in');
       }
     }
-  }, [isDevelopment]);
+  }, [isDevelopment, setProfileVar]);
 
   useEffect(() => {
     if (isDevelopment) {

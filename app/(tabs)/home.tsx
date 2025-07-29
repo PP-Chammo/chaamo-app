@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { router } from 'expo-router';
 import { cssInterop } from 'nativewind';
@@ -15,6 +15,8 @@ import {
   RecentlyAddedList,
 } from '@/components/organisms';
 import { TextChangeParams } from '@/domains';
+import { useGetFavoritesQuery } from '@/generated/graphql';
+import { useProfileVar } from '@/hooks/useProfileVar';
 
 cssInterop(ScrollView, {
   contentContainerClassName: {
@@ -23,7 +25,24 @@ cssInterop(ScrollView, {
 });
 
 export default function HomeScreen() {
+  const [profile] = useProfileVar();
+  const { data: favoritesData, refetch: refetchFavorites } =
+    useGetFavoritesQuery({
+      variables: {
+        filter: {
+          user_id: { eq: profile.id },
+        },
+      },
+    });
+  const favorites = favoritesData?.favorite_listingsCollection?.edges ?? [];
+
   const [searchText, setSearchText] = useState<string>('');
+
+  const favoriteCount = useMemo(() => {
+    if (favorites?.length > 0) {
+      return favorites?.length > 9 ? '9+' : favorites?.length;
+    }
+  }, [favorites?.length]);
 
   const handleChange = useCallback(
     () =>
@@ -54,7 +73,7 @@ export default function HomeScreen() {
             name="heart"
             iconVariant="SimpleLineIcons"
             onPress={() => router.push('/screens/wishlist')}
-            count="5+"
+            count={favoriteCount}
           />
         </Row>
       </View>
@@ -64,18 +83,27 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <CategoryList />
-        <FeaturedList />
-        <AuctionList />
+        <FeaturedList
+          favoriteList={favorites}
+          refreshFavoriteCount={refetchFavorites}
+        />
+        <AuctionList
+          favoriteList={favorites}
+          refreshFavoriteCount={refetchFavorites}
+        />
         <PeopleList />
-        <RecentlyAddedList />
+        <RecentlyAddedList
+          favoriteList={favorites}
+          refreshFavoriteCount={refetchFavorites}
+        />
       </ScrollView>
     </ScreenContainer>
   );
 }
 
 const classes = {
-  containerTop: '!bg-white',
-  headerContainer: 'bg-white gap-3 py-5 border-b border-gray-100',
+  containerTop: 'bg-white',
+  headerContainer: 'bg-white gap-3 pt-3 pb-4.5 border-b border-gray-100',
   headerRow: 'px-5',
   contentContainer: 'py-4.5 gap-5',
   auctionList: 'bg-white py-4.5',

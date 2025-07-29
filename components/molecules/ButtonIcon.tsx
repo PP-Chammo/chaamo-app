@@ -33,7 +33,7 @@ const ButtonIcon = memo(function ButtonIcon({
       className={clsx(classes.container, className)}
     >
       <Icon name={name} size={iconSize} color={color} variant={iconVariant} />
-      {count && (
+      {!!count && (
         <View testID="count-badge" className={classes.countContainer}>
           <Label className={classes.countText}>{count}</Label>
         </View>
