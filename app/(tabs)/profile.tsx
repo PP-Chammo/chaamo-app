@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 
 import { router } from 'expo-router';
 import { TouchableOpacity, View } from 'react-native';
@@ -20,18 +20,25 @@ import {
   SoldItemsProfile,
 } from '@/components/organisms';
 import { profileTabs } from '@/constants/tabs';
-import { Profile } from '@/domains/user.types';
+import { useGetPeoplesQuery } from '@/generated/graphql';
 import { useProfileVar } from '@/hooks/useProfileVar';
 import { getColor } from '@/utils/getColor';
-import { supabase } from '@/utils/supabase';
 
 export default function ProfileScreen() {
   const [profileState] = useProfileVar();
-  const [profileData, setProfileData] = useState<Profile>({
-    username: '',
-    profile_image_url: '',
-    bio: '',
+
+  const { data } = useGetPeoplesQuery({
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      filter: {
+        id: {
+          eq: profileState.id,
+        },
+      },
+    },
   });
+
+  const profileData = data?.profilesCollection?.edges?.[0]?.node;
 
   const handleSettingsPress = useCallback(() => {
     router.push('/screens/settings');
@@ -53,31 +60,6 @@ export default function ProfileScreen() {
     console.log('Edit profile pressed');
   }, []);
 
-  const fetchProfile = useCallback(async () => {
-    try {
-      if (!profileState.id) return router.replace('/(auth)/sign-in');
-
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('username, profile_image_url, bio')
-        .eq('id', profileState.id)
-        .single();
-
-      if (error) {
-        console.error('Error fetching profile:', error);
-        return;
-      }
-
-      setProfileData(data);
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-    }
-  }, [profileState.id]);
-
-  useEffect(() => {
-    fetchProfile();
-  }, [fetchProfile]);
-
   return (
     <ScreenContainer className={classes.container}>
       <Header
@@ -89,11 +71,11 @@ export default function ProfileScreen() {
         <Avatar
           size={80}
           imageContainerClassName={classes.avatarImageContainer}
-          imageUrl={profileData.profile_image_url}
+          imageUrl={profileData?.profile_image_url ?? ''}
         />
         <View className={classes.profileInfoContainer}>
           <Label variant="title" className={classes.profileName}>
-            {profileData.username}
+            {profileData?.username ?? ''}
           </Label>
           <View className={classes.portfolioContainer}>
             <Label className={classes.portfolioValueLabel}>

@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { router, useFocusEffect } from 'expo-router';
+import { router } from 'expo-router';
 import { Alert, View } from 'react-native';
 
 import { Button, KeyboardView, Row, ScreenContainer } from '@/components/atoms';
@@ -15,6 +15,7 @@ import { TextChangeParams } from '@/domains';
 import {
   useGetPersonalProfileLazyQuery,
   useUpdateProfileMutation,
+  useUpdateUserAddressMutation,
 } from '@/generated/graphql';
 import { useProfileVar } from '@/hooks/useProfileVar';
 import {
@@ -56,6 +57,7 @@ export default function PersonalDetailsScreen() {
   const [getPersonalProfile, { data, loading, error }] =
     useGetPersonalProfileLazyQuery({ fetchPolicy: 'cache-and-network' });
   const [updateProfile] = useUpdateProfileMutation();
+  const [updateUserAddress] = useUpdateUserAddressMutation();
 
   const handleChange = ({ name, value }: TextChangeParams) => {
     setErrors((prev) => {
@@ -78,7 +80,17 @@ export default function PersonalDetailsScreen() {
       return;
     }
 
-    const { first_name, last_name, country_code, phone_number } = form;
+    const {
+      first_name,
+      last_name,
+      country_code,
+      phone_number,
+      address_line_1,
+      city,
+      state_province,
+      country,
+      postal_code,
+    } = form;
 
     updateProfile({
       variables: {
@@ -99,47 +111,57 @@ export default function PersonalDetailsScreen() {
         Alert.alert('Success', 'Personal details updated successfully');
       },
     });
-  };
 
-  useFocusEffect(
-    useCallback(() => {
-      getPersonalProfile({
-        variables: {
-          filter: {
-            user_id: {
-              eq: profileState?.id,
-            },
+    updateUserAddress({
+      variables: {
+        set: {
+          address_line_1,
+          city,
+          state_province,
+          country,
+          postal_code,
+        },
+        filter: {
+          user_id: {
+            eq: profileState?.id,
           },
         },
-      });
+      },
+    });
+  };
 
-      if (data && !loading && !error) {
-        const userData = data?.user_addressesCollection?.edges?.[0]?.node;
-        const profileData = userData?.profiles;
+  useEffect(() => {
+    getPersonalProfile({
+      variables: {
+        filter: {
+          user_id: {
+            eq: profileState?.id,
+          },
+        },
+      },
+    });
+  }, [getPersonalProfile, profileState?.id]);
 
-        setForm((prev) => ({
-          ...prev,
-          first_name: profileData?.first_name || '',
-          last_name: profileData?.last_name || '',
-          country_code: profileData?.country_code || '',
-          phone_number: profileData?.phone_number || '',
-          address_line_1: userData?.address_line_1 || '',
-          city: userData?.city || '',
-          state_province: userData?.state_province || '',
-          country: userData?.country || '',
-          postal_code: userData?.postal_code || '',
-          email: profileState?.email || '',
-        }));
-      }
-    }, [
-      data,
-      error,
-      getPersonalProfile,
-      loading,
-      profileState?.email,
-      profileState?.id,
-    ]),
-  );
+  useEffect(() => {
+    if (data && !loading && !error) {
+      const userData = data?.user_addressesCollection?.edges?.[0]?.node;
+      const profileData = userData?.profiles;
+
+      setForm((prev) => ({
+        ...prev,
+        first_name: profileData?.first_name || '',
+        last_name: profileData?.last_name || '',
+        country_code: profileData?.country_code || '',
+        phone_number: profileData?.phone_number || '',
+        address_line_1: userData?.address_line_1 || '',
+        city: userData?.city || '',
+        state_province: userData?.state_province || '',
+        country: userData?.country || '',
+        postal_code: userData?.postal_code || '',
+        email: profileState?.email || '',
+      }));
+    }
+  }, [data, error, loading, profileState?.email]);
 
   return (
     <ScreenContainer>

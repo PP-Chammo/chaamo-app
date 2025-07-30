@@ -18,12 +18,11 @@
     "test:coverage": "jest --coverage",
     "test:ci": "jest --bail",
     "precheck": "npm run lint:fix && npm run prettier:fix && npx tsc --noEmit",
-    "prepare": "husky",
+    "prepare": "husky && patch-package",
     "fix": "npm run lint:fix && npm run prettier:fix",
     "codegen": "dotenv -e .env -- graphql-codegen --config codegen.yml",
     "build:android": "react-native build-android --mode=release",
-    "build:android:apk": "expo run:android --variant release",
-    "postinstall": "patch-package"
+    "build:android:apk": "expo run:android --variant release"
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",
