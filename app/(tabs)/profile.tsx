@@ -71,11 +71,14 @@ export default function ProfileScreen() {
         <Avatar
           size={80}
           imageContainerClassName={classes.avatarImageContainer}
-          imageUrl={profileData?.profile_image_url ?? ''}
+          imageUrl={
+            profileData?.profile_image_url ||
+            profileState?.user_metadata?.avatar_url
+          }
         />
         <View className={classes.profileInfoContainer}>
           <Label variant="title" className={classes.profileName}>
-            {profileData?.username ?? ''}
+            {profileData?.username || profileState?.user_metadata?.name}
           </Label>
           <View className={classes.portfolioContainer}>
             <Label className={classes.portfolioValueLabel}>

@@ -25,8 +25,7 @@ export const getPersonalProfile = gql`
           country
           postal_code
           profiles {
-            first_name
-            last_name
+            username
             country_code
             phone_number
           }
@@ -41,6 +40,7 @@ export const updateProfile = gql`
     updateprofilesCollection(set: $set, filter: $filter) {
       records {
         id
+        username
       }
     }
   }

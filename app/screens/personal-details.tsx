@@ -18,6 +18,7 @@ import {
   useUpdateUserAddressMutation,
 } from '@/generated/graphql';
 import { useProfileVar } from '@/hooks/useProfileVar';
+import { cache } from '@/utils/apollo';
 import {
   validateRequired,
   ValidationErrors,
@@ -25,8 +26,7 @@ import {
 } from '@/utils/validate';
 
 interface Form extends ValidationValues {
-  first_name: string;
-  last_name: string;
+  username: string;
   country_code: string;
   phone_number: string;
   email: string;
@@ -38,8 +38,7 @@ interface Form extends ValidationValues {
 }
 
 const initialForm = {
-  first_name: '',
-  last_name: '',
+  username: '',
   country_code: '',
   phone_number: '',
   email: '',
@@ -81,8 +80,7 @@ export default function PersonalDetailsScreen() {
     }
 
     const {
-      first_name,
-      last_name,
+      username,
       country_code,
       phone_number,
       address_line_1,
@@ -95,8 +93,7 @@ export default function PersonalDetailsScreen() {
     updateProfile({
       variables: {
         set: {
-          first_name,
-          last_name,
+          username,
           country_code,
           phone_number,
         },
@@ -107,25 +104,39 @@ export default function PersonalDetailsScreen() {
         },
       },
       onCompleted: (data) => {
-        console.log({ data: data?.updateprofilesCollection?.records });
-        Alert.alert('Success', 'Personal details updated successfully');
-      },
-    });
-
-    updateUserAddress({
-      variables: {
-        set: {
-          address_line_1,
-          city,
-          state_province,
-          country,
-          postal_code,
-        },
-        filter: {
-          user_id: {
-            eq: profileState?.id,
+        const updatedProfile = data?.updateprofilesCollection?.records[0];
+        cache.modify({
+          fields: {
+            profilesCollection(existingData) {
+              return {
+                ...existingData,
+                edges: [...existingData.edges, { node: updatedProfile }],
+              };
+            },
           },
-        },
+        });
+
+        updateUserAddress({
+          variables: {
+            set: {
+              address_line_1,
+              city,
+              state_province,
+              country,
+              postal_code,
+            },
+            filter: {
+              user_id: {
+                eq: profileState?.id,
+              },
+            },
+          },
+          onCompleted: (data) => {
+            if (data?.updateuser_addressesCollection?.records.length) {
+              Alert.alert('Success', 'Personal details updated successfully');
+            }
+          },
+        });
       },
     });
   };
@@ -149,8 +160,7 @@ export default function PersonalDetailsScreen() {
 
       setForm((prev) => ({
         ...prev,
-        first_name: profileData?.first_name || '',
-        last_name: profileData?.last_name || '',
+        username: profileData?.username || '',
         country_code: profileData?.country_code || '',
         phone_number: profileData?.phone_number || '',
         address_line_1: userData?.address_line_1 || '',
@@ -168,22 +178,13 @@ export default function PersonalDetailsScreen() {
       <Header title="Personal Details" onBackPress={() => router.back()} />
       <KeyboardView>
         <View className={classes.container}>
-          <Row between className={classes.row}>
-            <TextField
-              label="First Name"
-              value={form.first_name}
-              onChange={handleChange}
-              name="first_name"
-              className={classes.input}
-            />
-            <TextField
-              label="Last Name"
-              value={form.last_name}
-              onChange={handleChange}
-              name="last_name"
-              className={classes.input}
-            />
-          </Row>
+          <TextField
+            label="Username"
+            value={form.username}
+            onChange={handleChange}
+            name="username"
+            className={classes.input}
+          />
           <PhoneInput
             name="phone_number"
             value={form.phone_number}

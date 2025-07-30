@@ -8,6 +8,10 @@ import {
 const uri = process.env.EXPO_PUBLIC_SUPABASE_GRAPHQL_URL;
 const apikey = process.env.EXPO_PUBLIC_SUPABSE_S_KEY;
 
+const cache = new InMemoryCache({
+  addTypename: false,
+});
+
 const client = new ApolloClient({
   link: new HttpLink({
     uri,
@@ -15,10 +19,8 @@ const client = new ApolloClient({
       apikey: apikey || '',
     },
   }),
-  cache: new InMemoryCache({
-    addTypename: false,
-  }),
+  cache,
 });
 
 export default client;
-export { ApolloProvider };
+export { ApolloProvider, cache };
