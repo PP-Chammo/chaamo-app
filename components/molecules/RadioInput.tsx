@@ -1,7 +1,7 @@
 import React, { memo, useCallback } from 'react';
 
 import { clsx } from 'clsx';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 import { Icon, Label } from '@/components/atoms';
 import { TextChangeParams } from '@/domains';
@@ -9,19 +9,25 @@ import { getColor } from '@/utils/getColor';
 
 interface RadioInputProps {
   label: string;
+  sublabel?: string;
   selected: boolean;
   name: string;
   onPress: ({ name, value }: TextChangeParams) => void;
   className?: string;
+  classNameLabel?: string;
+  classNameSublabel?: string;
   reverse?: boolean;
   keyLabel?: string;
 }
 
 const RadioInput = memo(function RadioInput({
   label,
+  sublabel,
   selected,
   onPress,
   className,
+  classNameLabel,
+  classNameSublabel,
   reverse = false,
   name,
   keyLabel,
@@ -45,15 +51,24 @@ const RadioInput = memo(function RadioInput({
         size={24}
         color={selected ? getColor('primary-500') : getColor('gray-400')}
       />
-      <Label className={classes.label}>{label}</Label>
+      <View className={classes.labels}>
+        <Label className={clsx(classes.label, classNameLabel)}>{label}</Label>
+        {sublabel && (
+          <Label className={clsx(classes.sublabel, classNameSublabel)}>
+            {sublabel}
+          </Label>
+        )}
+      </View>
     </TouchableOpacity>
   );
 });
 
 const classes = {
-  container: 'flex flex-row items-center gap-5',
+  container: 'flex flex-row items-center gap-4',
   reverse: '!flex-row-reverse',
+  labels: 'flex-1 flex flex-row justify-between items-center',
   label: 'flex-1',
+  sublabel: 'self-end',
   icon: 'self-start',
 };
 

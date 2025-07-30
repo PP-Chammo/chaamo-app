@@ -1,24 +1,17 @@
 import { gql } from '@apollo/client';
 
 export const getFeaturedListings = gql`
-  query GetFeaturedListings($filter: listingsFilter, $last: Int) {
-    listingsCollection(filter: $filter, last: $last) {
+  query GetFeaturedListings($filter: featured_cardsFilter, $last: Int) {
+    featured_cardsCollection(filter: $filter, last: $last) {
       edges {
         node {
           id
           listing_type
+          image_url
           currency
           price
-          user_cards {
-            user_images
-            master_cards {
-              name
-            }
-          }
-          ebay_posts {
-            image_url
-            title
-          }
+          start_price
+          name
         }
       }
     }
@@ -47,32 +40,25 @@ export const getAuctionListings = gql`
 `;
 
 export const getRecentlyAddedListings = gql`
-  query GetRecentlyAddedListings($filter: listingsFilter, $last: Int) {
-    listingsCollection(filter: $filter, last: $last) {
+  query GetRecentlyAddedListings($filter: chaamo_cardsFilter, $last: Int) {
+    chaamo_cardsCollection(filter: $filter, last: $last) {
       edges {
         node {
           id
           listing_type
+          image_url
           currency
           price
-          user_cards {
-            user_images
-            master_cards {
-              name
-            }
-          }
-          ebay_posts {
-            image_url
-            title
-          }
+          start_price
+          name
         }
       }
     }
   }
 `;
 
-export const insertListings = gql`
-  mutation InsertListings($objects: [listingsInsertInput!]!) {
+export const createListings = gql`
+  mutation CreateListings($objects: [listingsInsertInput!]!) {
     insertIntolistingsCollection(objects: $objects) {
       records {
         id
