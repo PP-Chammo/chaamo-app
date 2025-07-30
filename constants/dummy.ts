@@ -78,54 +78,66 @@ export const CURRENCIES = ['USD', 'Euro', 'Pound', 'PKR', 'CAD', 'AUD'];
 export const STATES = [
   {
     label: 'California',
-    value: 'CA',
+    value: 'California',
   },
   {
     label: 'New York',
-    value: 'NY',
+    value: 'New York',
   },
   {
     label: 'Texas',
-    value: 'TX',
+    value: 'Texas',
   },
   {
     label: 'Florida',
-    value: 'FL',
+    value: 'Florida',
   },
   {
     label: 'Illinois',
-    value: 'IL',
+    value: 'Illinois',
   },
   {
     label: 'Ohio',
-    value: 'OH',
+    value: 'Ohio',
+  },
+  {
+    label: 'Lombardy',
+    value: 'Lombardy',
   },
 ];
 
 export const COUNTRIES = [
   {
-    label: 'USA',
-    value: 'USA',
-  },
-  {
-    label: 'India',
-    value: 'India',
+    label: 'Australia',
+    value: 'Australia',
   },
   {
     label: 'Canada',
     value: 'Canada',
   },
   {
-    label: 'Australia',
-    value: 'Australia',
+    label: 'France',
+    value: 'France',
   },
   {
-    label: 'China',
-    value: 'China',
+    label: 'Germany',
+    value: 'Germany',
   },
   {
-    label: 'Pakistan',
-    value: 'Pakistan',
+    label: 'Italy',
+    value: 'Italy',
+  },
+  {
+    label: 'Spain',
+    value: 'Spain',
+  },
+  {
+    label: 'United Kingdom',
+    value: 'United Kingdom',
+  },
+  {
+    label: 'United States',
+    value: 'United States',
   },
 ];
 

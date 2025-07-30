@@ -8,10 +8,10 @@ function useProfileVar(): [
   (value: Partial<ProfileStore>) => void,
 ] {
   const profileState = profileVar.useVar();
-  const useProfileVar = (value: Partial<ProfileStore>) => {
+  const setProfileVar = (value: Partial<ProfileStore>) => {
     profileVar.set({ ...profileState, ...value });
   };
-  return [profileState, useProfileVar];
+  return [profileState, setProfileVar];
 }
 
 export { useProfileVar };

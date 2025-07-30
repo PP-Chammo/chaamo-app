@@ -15,7 +15,9 @@ const client = new ApolloClient({
       apikey: apikey || '',
     },
   }),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    addTypename: false,
+  }),
 });
 
 export default client;

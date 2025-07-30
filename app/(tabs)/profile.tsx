@@ -1,3 +1,5 @@
+import { useCallback, useEffect, useState } from 'react';
+
 import { router } from 'expo-router';
 import { TouchableOpacity, View } from 'react-native';
 
@@ -18,31 +20,87 @@ import {
   SoldItemsProfile,
 } from '@/components/organisms';
 import { profileTabs } from '@/constants/tabs';
+import { Profile } from '@/domains/user.types';
+import { useProfileVar } from '@/hooks/useProfileVar';
 import { getColor } from '@/utils/getColor';
+import { supabase } from '@/utils/supabase';
 
 export default function ProfileScreen() {
+  const [profileState] = useProfileVar();
+  const [profileData, setProfileData] = useState<Profile>({
+    username: '',
+    profile_image_url: '',
+    bio: '',
+  });
+
+  const handleSettingsPress = useCallback(() => {
+    router.push('/screens/settings');
+  }, []);
+
+  const handlePortfolioValuePress = useCallback(() => {
+    router.push('/screens/portfolio-value');
+  }, []);
+
+  const handleFollowersPress = useCallback(() => {
+    router.push('/screens/followers');
+  }, []);
+
+  const handleFollowingPress = useCallback(() => {
+    router.push('/screens/followings');
+  }, []);
+
+  const handleEditProfilePress = useCallback(() => {
+    console.log('Edit profile pressed');
+  }, []);
+
+  const fetchProfile = useCallback(async () => {
+    try {
+      if (!profileState.id) return router.replace('/(auth)/sign-in');
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username, profile_image_url, bio')
+        .eq('id', profileState.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching profile:', error);
+        return;
+      }
+
+      setProfileData(data);
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    }
+  }, [profileState.id]);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
   return (
     <ScreenContainer className={classes.container}>
       <Header
         title="Profile"
         rightIcon="menu"
-        onRightPress={() => router.push('/screens/settings')}
+        onRightPress={handleSettingsPress}
       />
       <View className={classes.profileContainer}>
         <Avatar
           size={80}
           imageContainerClassName={classes.avatarImageContainer}
+          imageUrl={profileData.profile_image_url}
         />
         <View className={classes.profileInfoContainer}>
           <Label variant="title" className={classes.profileName}>
-            John Doe
+            {profileData.username}
           </Label>
           <View className={classes.portfolioContainer}>
             <Label className={classes.portfolioValueLabel}>
               Portfolio Value:
             </Label>
             <TouchableOpacity
-              onPress={() => router.push('/screens/portfolio-value')}
+              onPress={handlePortfolioValuePress}
               className={classes.portfolioValueContainer}
             >
               <Label className={classes.portfolioValue}>$2000</Label>
@@ -65,17 +123,21 @@ export default function ProfileScreen() {
         <ProfileStat
           title="Followers"
           value="8"
-          onPress={() => router.push('/screens/followers')}
+          onPress={handleFollowersPress}
         />
         <Divider />
         <ProfileStat
           title="Following"
           value="51"
-          onPress={() => router.push('/screens/followings')}
+          onPress={handleFollowingPress}
         />
       </View>
 
-      <Button icon="pencil-outline" className={classes.editProfileButton}>
+      <Button
+        icon="pencil-outline"
+        className={classes.editProfileButton}
+        onPress={handleEditProfilePress}
+      >
         Edit Profile
       </Button>
       <TabView className={classes.tabView} tabs={profileTabs}>

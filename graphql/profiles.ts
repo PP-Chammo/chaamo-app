@@ -13,3 +13,48 @@ export const getPeoples = gql`
     }
   }
 `;
+
+export const getPersonalProfile = gql`
+  query GetPersonalProfile($filter: user_addressesFilter) {
+    user_addressesCollection(filter: $filter) {
+      edges {
+        node {
+          address_line_1
+          city
+          state_province
+          country
+          postal_code
+          profiles {
+            first_name
+            last_name
+            country_code
+            phone_number
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const updateProfile = gql`
+  mutation UpdateProfile($set: profilesUpdateInput!, $filter: profilesFilter) {
+    updateprofilesCollection(set: $set, filter: $filter) {
+      records {
+        id
+      }
+    }
+  }
+`;
+
+export const updateUserAddress = gql`
+  mutation UpdateUserAddress(
+    $set: user_addressesUpdateInput!
+    $filter: user_addressesFilter
+  ) {
+    updateuser_addressesCollection(set: $set, filter: $filter) {
+      records {
+        id
+      }
+    }
+  }
+`;

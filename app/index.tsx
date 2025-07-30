@@ -21,27 +21,21 @@ export default function StartPage() {
 
   const checkSession = useCallback(async () => {
     const session = await fnGetStorage<Session>('session');
-    if (isDevelopment) {
-      if (session) {
-        setProfileVar(session.user);
-        router.replace('/(tabs)/home');
-      } else {
-        router.replace('/(auth)/sign-in');
-      }
+    if (session) {
+      setProfileVar(session.user);
+      return router.replace('/(tabs)/home');
     }
-  }, [isDevelopment, setProfileVar]);
+
+    const timeout = setTimeout(() => {
+      router.replace('/screens/onboarding');
+    }, 6000);
+
+    return () => clearTimeout(timeout);
+  }, [setProfileVar]);
 
   useEffect(() => {
-    if (isDevelopment) {
-      checkSession();
-    } else {
-      const timeout = setTimeout(() => {
-        router.replace('/screens/onboarding');
-      }, 6000);
-
-      return () => clearTimeout(timeout);
-    }
-  }, [isDevelopment, checkSession]);
+    checkSession();
+  }, [checkSession]);
 
   if (isDevelopment) return null;
 

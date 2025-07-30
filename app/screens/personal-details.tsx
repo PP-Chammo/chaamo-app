@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Alert, View } from 'react-native';
 
 import { Button, KeyboardView, Row, ScreenContainer } from '@/components/atoms';
@@ -13,38 +13,49 @@ import {
 import { COUNTRIES, STATES } from '@/constants/dummy';
 import { TextChangeParams } from '@/domains';
 import {
+  useGetPersonalProfileLazyQuery,
+  useUpdateProfileMutation,
+} from '@/generated/graphql';
+import { useProfileVar } from '@/hooks/useProfileVar';
+import {
   validateRequired,
   ValidationErrors,
   ValidationValues,
 } from '@/utils/validate';
 
 interface Form extends ValidationValues {
-  firstName: string;
-  lastName: string;
-  phone: string;
+  first_name: string;
+  last_name: string;
+  country_code: string;
+  phone_number: string;
   email: string;
-  address: string;
+  address_line_1: string;
   city: string;
-  state: string;
+  state_province: string;
   country: string;
-  postalCode: string;
+  postal_code: string;
 }
 
 const initialForm = {
-  firstName: '',
-  lastName: '',
-  phone: '',
+  first_name: '',
+  last_name: '',
+  country_code: '',
+  phone_number: '',
   email: '',
-  address: '',
+  address_line_1: '',
   city: '',
-  state: '',
+  state_province: '',
   country: '',
-  postalCode: '',
+  postal_code: '',
 };
 
 export default function PersonalDetailsScreen() {
+  const [profileState] = useProfileVar();
   const [form, setForm] = useState<Form>(initialForm);
   const [errors, setErrors] = useState<ValidationErrors<Form>>({});
+  const [getPersonalProfile, { data, loading, error }] =
+    useGetPersonalProfileLazyQuery({ fetchPolicy: 'cache-and-network' });
+  const [updateProfile] = useUpdateProfileMutation();
 
   const handleChange = ({ name, value }: TextChangeParams) => {
     setErrors((prev) => {
@@ -54,12 +65,12 @@ export default function PersonalDetailsScreen() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
+  const handleUpdateProfile = () => {
     const errors = validateRequired<Form>(form, [
       'city',
-      'state',
+      'state_province',
       'country',
-      'postalCode',
+      'postal_code',
     ]);
 
     if (Object.keys(errors).length > 0) {
@@ -67,8 +78,68 @@ export default function PersonalDetailsScreen() {
       return;
     }
 
-    return Alert.alert('Success', 'Personal details updated successfully');
+    const { first_name, last_name, country_code, phone_number } = form;
+
+    updateProfile({
+      variables: {
+        set: {
+          first_name,
+          last_name,
+          country_code,
+          phone_number,
+        },
+        filter: {
+          id: {
+            eq: profileState?.id,
+          },
+        },
+      },
+      onCompleted: (data) => {
+        console.log({ data: data?.updateprofilesCollection?.records });
+        Alert.alert('Success', 'Personal details updated successfully');
+      },
+    });
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      getPersonalProfile({
+        variables: {
+          filter: {
+            user_id: {
+              eq: profileState?.id,
+            },
+          },
+        },
+      });
+
+      if (data && !loading && !error) {
+        const userData = data?.user_addressesCollection?.edges?.[0]?.node;
+        const profileData = userData?.profiles;
+
+        setForm((prev) => ({
+          ...prev,
+          first_name: profileData?.first_name || '',
+          last_name: profileData?.last_name || '',
+          country_code: profileData?.country_code || '',
+          phone_number: profileData?.phone_number || '',
+          address_line_1: userData?.address_line_1 || '',
+          city: userData?.city || '',
+          state_province: userData?.state_province || '',
+          country: userData?.country || '',
+          postal_code: userData?.postal_code || '',
+          email: profileState?.email || '',
+        }));
+      }
+    }, [
+      data,
+      error,
+      getPersonalProfile,
+      loading,
+      profileState?.email,
+      profileState?.id,
+    ]),
+  );
 
   return (
     <ScreenContainer>
@@ -78,31 +149,37 @@ export default function PersonalDetailsScreen() {
           <Row between className={classes.row}>
             <TextField
               label="First Name"
-              value={form.firstName}
+              value={form.first_name}
               onChange={handleChange}
-              name="firstName"
+              name="first_name"
               className={classes.input}
             />
             <TextField
               label="Last Name"
-              value={form.lastName}
+              value={form.last_name}
               onChange={handleChange}
-              name="lastName"
+              name="last_name"
               className={classes.input}
             />
           </Row>
-          <PhoneInput name="phone" value={form.phone} onChange={handleChange} />
+          <PhoneInput
+            name="phone_number"
+            value={form.phone_number}
+            countryCode={form.country_code}
+            onChange={handleChange}
+          />
           <TextField
             label="Email"
             value={form.email}
             onChange={handleChange}
             name="email"
+            editable={false}
           />
           <TextField
             label="Address"
-            value={form.address}
+            value={form.address_line_1}
             onChange={handleChange}
-            name="address"
+            name="address_line_1"
           />
           <Row between className={classes.row}>
             <TextField
@@ -116,12 +193,12 @@ export default function PersonalDetailsScreen() {
             />
             <SelectModal
               required
-              name="state"
+              name="state_province"
               label="State"
-              value={form.state}
+              value={form.state_province}
               onChange={handleChange}
               options={STATES}
-              error={errors['state']}
+              error={errors['state_province']}
               placeholder="--Select--"
               className={classes.input}
             />
@@ -139,15 +216,15 @@ export default function PersonalDetailsScreen() {
           />
           <TextField
             label="Postal Code"
-            value={form.postalCode}
+            value={form.postal_code}
             onChange={handleChange}
-            name="postalCode"
+            name="postal_code"
             required
-            error={errors['postalCode']}
+            error={errors['postal_code']}
           />
         </View>
       </KeyboardView>
-      <Button onPress={handleSubmit} className={classes.button}>
+      <Button onPress={handleUpdateProfile} className={classes.button}>
         Save Changes
       </Button>
     </ScreenContainer>
