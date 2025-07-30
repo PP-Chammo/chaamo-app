@@ -28,6 +28,7 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
 }) {
   const [profile] = useProfileVar();
   const { data, loading } = useGetAuctionListingsQuery({
+    fetchPolicy: 'cache-and-network',
     variables: {
       filter: {
         listing_type: { eq: ListingType.AUCTION },

@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
-export const insertUserCard = gql`
-  mutation InsertUserCard($objects: [user_cardsInsertInput!]!) {
+export const createUserCard = gql`
+  mutation CreateUserCard($objects: [user_cardsInsertInput!]!) {
     insertIntouser_cardsCollection(objects: $objects) {
       records {
         id

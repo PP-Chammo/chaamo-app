@@ -8,7 +8,9 @@ import { GetCategoriesQuery, useGetCategoriesQuery } from '@/generated/graphql';
 import { DeepGet } from '@/types/helper';
 
 const CategoryList = memo(function CategoryList() {
-  const { data, loading } = useGetCategoriesQuery();
+  const { data, loading } = useGetCategoriesQuery({
+    fetchPolicy: 'cache-and-network',
+  });
   const edges = data?.categoriesCollection?.edges ?? [];
 
   const handleCtaCards = useCallback(

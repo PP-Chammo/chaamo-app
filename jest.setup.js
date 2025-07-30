@@ -95,11 +95,38 @@ jest.mock('@/generated/graphql', () => ({
   })),
   useGetFeaturedListingsQuery: jest.fn(() => ({
     data: {
-      listingsCollection: {
+      featured_cardsCollection: {
         edges: [
-          { node: { id: '1', title: 'Featured Item 1' } },
-          { node: { id: '2', title: 'Featured Item 2' } },
-          { node: { id: '3', title: 'Featured Item 3' } },
+          {
+            node: {
+              id: '1',
+              name: 'Featured Item 1',
+              image_url: 'https://example.com/image1.jpg',
+              currency: '$',
+              start_price: '200.00',
+              listing_type: 'AUCTION',
+            },
+          },
+          {
+            node: {
+              id: '2',
+              name: 'Featured Item 2',
+              image_url: 'https://example.com/image2.jpg',
+              currency: '$',
+              start_price: '150.00',
+              listing_type: 'SELL',
+            },
+          },
+          {
+            node: {
+              id: '3',
+              name: 'Featured Item 3',
+              image_url: 'https://example.com/image3.jpg',
+              currency: '$',
+              start_price: '300.00',
+              listing_type: 'AUCTION',
+            },
+          },
         ],
       },
     },
@@ -108,11 +135,38 @@ jest.mock('@/generated/graphql', () => ({
   })),
   useGetRecentlyAddedListingsQuery: jest.fn(() => ({
     data: {
-      listingsCollection: {
+      chaamo_cardsCollection: {
         edges: [
-          { node: { id: '1', title: 'Recent Item 1' } },
-          { node: { id: '2', title: 'Recent Item 2' } },
-          { node: { id: '3', title: 'Recent Item 3' } },
+          {
+            node: {
+              id: '1',
+              name: 'Recent Item 1',
+              image_url: 'https://example.com/image1.jpg',
+              currency: '$',
+              start_price: '200.00',
+              listing_type: 'SELL',
+            },
+          },
+          {
+            node: {
+              id: '2',
+              name: 'Recent Item 2',
+              image_url: 'https://example.com/image2.jpg',
+              currency: '$',
+              start_price: '150.00',
+              listing_type: 'AUCTION',
+            },
+          },
+          {
+            node: {
+              id: '3',
+              name: 'Recent Item 3',
+              image_url: 'https://example.com/image3.jpg',
+              currency: '$',
+              start_price: '300.00',
+              listing_type: 'SELL',
+            },
+          },
         ],
       },
     },
@@ -150,6 +204,10 @@ jest.mock('@/generated/graphql', () => ({
     SELL: 'SELL',
     EBAY: 'EBAY',
     PORTFOLIO: 'PORTFOLIO',
+  },
+  UserTier: {
+    FREE: 'free',
+    GOLD: 'gold',
   },
   CardCondition: {
     RAW: 'RAW',
