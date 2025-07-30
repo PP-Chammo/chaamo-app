@@ -18,27 +18,28 @@ import {
   Modal,
   ScreenContainer,
 } from '@/components/atoms';
-import PhotoUpload from '@/components/atoms/PhotoUpload';
 import {
   AutocompleteCardItem,
   Header,
+  PhotoUpload,
   Select,
   TextArea,
   TextField,
 } from '@/components/molecules';
 import { conditions, conditionSells } from '@/constants/condition';
 import {
-  CardCondition,
   ListingType,
   MasterCards,
+  useCreateListingsMutation,
+  useCreateUserCardMutation,
   useGetMasterCardsAutocompleteLazyQuery,
-  useInsertListingsMutation,
-  useInsertUserCardMutation,
-  useUpdateUserCardMutation,
 } from '@/generated/graphql';
 import useDebounce from '@/hooks/useDebounce';
 import { useProfileVar } from '@/hooks/useProfileVar';
+import { initialSellFormState, useSellFormVar } from '@/hooks/useSellFormVar';
+import { SellFormStore } from '@/stores/sellFormStore';
 import { getColor } from '@/utils/getColor';
+import { structuredClone } from '@/utils/structuredClone';
 import { uploadToBucket } from '@/utils/supabase';
 import { validateRequired, ValidationErrors } from '@/utils/validate';
 
@@ -51,55 +52,18 @@ cssInterop(FlatList, {
   },
 });
 
-type SellForm = {
-  imageUrl: string;
-  title: string;
-  description: string;
-  condition: CardCondition;
-  listing_type: ListingType;
-  currency: string;
-  price: string;
-  endDate: string;
-  minPrice: string;
-  reservedPrice: string;
-
-  master_card_id: string;
-  grading_company: string;
-  grade: number;
-};
-
-const initialForm: SellForm = {
-  imageUrl: '',
-  title: '',
-  description: '',
-  condition: CardCondition.RAW,
-  listing_type: ListingType.PORTFOLIO,
-  currency: '$',
-  price: '',
-  endDate: '',
-  minPrice: '',
-  reservedPrice: '',
-  // this below input get from autocomplete
-  master_card_id: '',
-  grading_company: '',
-  grade: 0,
-};
-
 export default function SellScreen() {
   const [profile] = useProfileVar();
 
-  const [form, setForm] = useState<SellForm>(initialForm);
+  const [form, setForm] = useSellFormVar();
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [errors, setErrors] = useState<ValidationErrors<typeof initialForm>>(
-    {},
-  );
+  const [errors, setErrors] = useState<ValidationErrors<SellFormStore>>({});
   const [getAutocompleteList, { data: masterCards }] =
     useGetMasterCardsAutocompleteLazyQuery();
-  const [insertListings] = useInsertListingsMutation();
-  const [insertUserCard] = useInsertUserCardMutation();
-  const [updateUserCard] = useUpdateUserCardMutation();
+  const [createListings] = useCreateListingsMutation();
+  const [createUserCard] = useCreateUserCardMutation();
 
   const debouncedSearch = useDebounce(searchText, 700);
   useEffect(() => {
@@ -118,8 +82,8 @@ export default function SellScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch, getAutocompleteList]);
 
-  const requiredFields = useMemo<(keyof typeof initialForm)[]>(() => {
-    const fields: (keyof typeof initialForm)[] = [
+  const requiredFields = useMemo<(keyof SellFormStore)[]>(() => {
+    const fields: (keyof SellFormStore)[] = [
       'title',
       'description',
       'condition',
@@ -139,21 +103,23 @@ export default function SellScreen() {
     [form, requiredFields],
   );
 
-  const handleAutocompletePress = useCallback((masterCard: MasterCards) => {
-    setForm((prev) => ({
-      ...prev,
-      title: masterCard.name,
-      master_card_id: masterCard.id,
-    }));
-    setSearchText(masterCard.name);
-    setShowModal(false);
-  }, []);
+  const handleAutocompletePress = useCallback(
+    (masterCard: MasterCards) => {
+      setForm({
+        title: masterCard.name,
+        master_card_id: masterCard.id,
+      });
+      setSearchText(masterCard.name);
+      setShowModal(false);
+    },
+    [setForm],
+  );
 
   const handleChange = useCallback(
     ({ name, value }: { name: string; value: string }) => {
-      setForm((prev) => ({ ...prev, [name]: value }));
+      setForm({ [name]: value });
     },
-    [],
+    [setForm],
   );
 
   const handlePickImage = useCallback(async () => {
@@ -171,16 +137,17 @@ export default function SellScreen() {
     if (result.canceled || !result.assets.length)
       return Alert.alert('No image selected');
     const selectedImage = result.assets[0];
-    setForm((prev) => ({ ...prev, imageUrl: selectedImage.uri }));
-  }, []);
+    setForm({ imageUrl: selectedImage.uri });
+  }, [setForm]);
 
   const handleRemoveImage = useCallback(() => {
-    setForm((prev) => ({ ...prev, imageUrl: '' }));
-  }, []);
+    setForm({ imageUrl: '' });
+  }, [setForm]);
 
   const handleSubmit = useCallback(async () => {
     setLoading(true);
-    const requiredFields: (keyof typeof initialForm)[] = [
+    const requiredFields: (keyof SellFormStore)[] = [
+      'imageUrl',
       'title',
       'description',
       'condition',
@@ -192,7 +159,10 @@ export default function SellScreen() {
     if (form.listing_type === 'auction') {
       requiredFields.push('endDate', 'minPrice', 'reservedPrice');
     }
-    const validationErrors = validateRequired(form, requiredFields);
+    const validationErrors = validateRequired(
+      form as unknown as Record<string, string | number>,
+      requiredFields,
+    );
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
@@ -201,7 +171,7 @@ export default function SellScreen() {
         'chaamo',
         'user_cards',
       );
-      insertUserCard({
+      createUserCard({
         variables: {
           objects: [
             {
@@ -217,7 +187,7 @@ export default function SellScreen() {
         onCompleted: ({ insertIntouser_cardsCollection }) => {
           if (insertIntouser_cardsCollection?.records?.length) {
             const userCardId = insertIntouser_cardsCollection.records[0].id;
-            insertListings({
+            createListings({
               variables: {
                 objects: [
                   {
@@ -252,29 +222,36 @@ export default function SellScreen() {
               },
               onCompleted: ({ insertIntolistingsCollection }) => {
                 if (insertIntolistingsCollection?.records?.length) {
-                  updateUserCard({
-                    variables: {
-                      set: {
-                        is_in_listing: true,
+                  if (form.listing_type === ListingType.PORTFOLIO) {
+                    Alert.alert('Success!', 'Your portfolio has been saved.', [
+                      {
+                        text: 'OK',
+                        onPress: () => {
+                          setForm(structuredClone(initialSellFormState));
+                          router.replace('/(tabs)/home');
+                        },
                       },
-                      filter: {
-                        id: { eq: userCardId },
-                      },
-                    },
-                  });
-                  setForm(initialForm);
-                  setLoading(false);
-                  Alert.alert('Posted!', 'Your card has been posted.');
+                    ]);
+                  } else {
+                    setForm({
+                      user_card_id: userCardId,
+                      listing_id: insertIntolistingsCollection.records[0].id,
+                    });
+                    setLoading(false);
+                    router.push('/screens/select-ad-package');
+                  }
                 }
               },
+              onError: console.log,
             });
           }
         },
+        onError: console.log,
       });
     } else {
       setLoading(false);
     }
-  }, [form, insertListings, insertUserCard, profile?.id, updateUserCard]);
+  }, [form, createUserCard, profile?.id, setForm, createListings]);
 
   return (
     <ScreenContainer>
@@ -381,6 +358,7 @@ export default function SellScreen() {
                 label="Reserved Price"
                 value={form.reservedPrice}
                 onChange={handleChange}
+                keyboardType="number-pad"
                 required
                 inputClassName={classes.input}
                 leftIcon="attach-money"
@@ -395,7 +373,7 @@ export default function SellScreen() {
             className={classes.submitBtn}
             textClassName={classes.submitBtnText}
             onPress={handleSubmit}
-            disabled={!isFormValid || loading}
+            disabled={!isFormValid || !form.imageUrl || loading}
             loading={loading}
           >
             Post Your Card
@@ -410,7 +388,7 @@ export default function SellScreen() {
         <TextField
           name="searchText"
           value={searchText}
-          placeholder="Search for a card"
+          placeholder="Search card for reference"
           onChange={({ value }) => setSearchText(value)}
         />
         <View className={classes.modalContainer}>
@@ -446,8 +424,8 @@ const classes = {
   submitBtn: 'mt-8 rounded-full bg-primary-100',
   submitBtnText: 'text-primary-500 text-base font-semibold',
   input: 'bg-white leading-5',
-  modalContainer: 'h-[70%]',
-  modal: '!mx-4.5 w-[calc(100%-1rem)] p-4.5 !bg-slate-100 gap-4.5',
+  modalContainer: 'flex-1',
+  modal: '!mx-4.5 w-[calc(100%-1rem)] h-[70%] p-4.5 !bg-slate-100 gap-4.5',
   list: 'flex-1',
   listContainer: 'gap-2',
 };

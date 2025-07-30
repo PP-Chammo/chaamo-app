@@ -98,6 +98,7 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
         <TextInput
           testID="text-input"
           autoComplete="off"
+          autoCorrect={false}
           placeholder={placeholder}
           className={clsx(
             classes.input,

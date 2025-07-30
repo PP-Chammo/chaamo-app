@@ -2,7 +2,7 @@ import React from 'react';
 
 import { fireEvent, render } from '@testing-library/react-native';
 
-import PhotoUpload from '../PhotoUpload';
+import PhotoUpload from '../../molecules/PhotoUpload';
 describe('PhotoUpload', () => {
   it('renders correctly with no image', () => {
     const { getByText } = render(<PhotoUpload onPick={jest.fn()} />);
