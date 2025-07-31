@@ -66,7 +66,7 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
         </StyledGradient>
         <RNSafeAreaView
           className={clsx(classNameBottom, {
-            'bg-primary-50': !classNameBottom?.includes('bg-'),
+            'bg-slate-50': !classNameBottom?.includes('bg-'),
           })}
         />
       </>

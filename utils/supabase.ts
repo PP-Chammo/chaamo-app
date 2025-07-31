@@ -13,7 +13,7 @@ const mimeTypes: Record<string, string> = {
 
 export const supabase = createClient(
   process.env.EXPO_PUBLIC_SUPABASE_URL!,
-  process.env.EXPO_PUBLIC_SUPABASE_KEY!,
+  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!,
   {
     auth: {
       storage: {
@@ -30,6 +30,11 @@ export const supabase = createClient(
       autoRefreshToken: true,
       persistSession: true,
       detectSessionInUrl: false,
+    },
+    global: {
+      headers: {
+        apikey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!,
+      },
     },
   },
 );
@@ -64,14 +69,14 @@ export async function uploadToBucket(
       .upload(pathInBucket, arrayBuffer, { contentType });
 
     if (error) {
-      console.error('Upload error:', error.message);
+      console.error('Upload to bucket error:', error);
       return null;
     }
 
     const uploaded = supabase.storage.from(bucket).getPublicUrl(pathInBucket);
     return uploaded.data.publicUrl;
   } catch (e) {
-    console.error('Upload error:', e);
+    console.error('Supabase Upload error:', e);
     return null;
   }
 }

@@ -15,16 +15,25 @@ export const adPackages = [
   {
     label: '7 Days',
     value: '7',
-    price: 20,
+    price: [
+      { currency: '£', value: 1.75 },
+      { currency: '$', value: 1.75 },
+    ],
   },
   {
     label: '14 Days',
     value: '14',
-    price: 40,
+    price: [
+      { currency: '£', value: 3 },
+      { currency: '$', value: 3 },
+    ],
   },
   {
     label: '30 Days',
     value: '30',
-    price: 60,
+    price: [
+      { currency: '£', value: 7 },
+      { currency: '$', value: 7 },
+    ],
   },
 ];

@@ -4,6 +4,7 @@ export interface SellFormStore {
   imageUrl: string;
   title: string;
   description: string;
+  category_id: string;
   condition: CardCondition;
   listing_type: ListingType;
   currency: string;
@@ -28,6 +29,7 @@ export const sellFormStore: SellFormStore = {
   imageUrl: '',
   title: '',
   description: '',
+  category_id: '',
   condition: CardCondition.RAW,
   listing_type: ListingType.PORTFOLIO,
   currency: '$',

@@ -77,7 +77,7 @@ export default function SelectAdPackageScreen() {
                   name="adPackage"
                   key={adPackage.label}
                   label={adPackage.label}
-                  sublabel={`$ ${adPackage.price}`}
+                  sublabel={`${adPackage.price[0].currency} ${adPackage.price[0].value}`}
                   selected={form.selectedPackageDays === adPackage.value}
                   onPress={handleSelectPackage(adPackage)}
                   className={classes.adPackage}
