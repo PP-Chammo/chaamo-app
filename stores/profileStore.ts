@@ -1,7 +1,14 @@
 import { User } from '@supabase/supabase-js';
 
+import { GetProfilesQuery } from '@/generated/graphql';
+import { DeepGet } from '@/types/helper';
+
 export interface ProfileStore extends User {
   id: string;
+  profile?: DeepGet<
+    GetProfilesQuery,
+    ['profilesCollection', 'edges', 0, 'node']
+  >;
 }
 
 export const profileStore: ProfileStore = {
@@ -10,4 +17,5 @@ export const profileStore: ProfileStore = {
   user_metadata: {},
   aud: '',
   created_at: '',
+  profile: undefined,
 };

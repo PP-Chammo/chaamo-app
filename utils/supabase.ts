@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
 import { decode } from 'base64-arraybuffer';
 import * as FileSystem from 'expo-file-system';
@@ -12,7 +13,25 @@ const mimeTypes: Record<string, string> = {
 
 export const supabase = createClient(
   process.env.EXPO_PUBLIC_SUPABASE_URL!,
-  process.env.EXPO_PUBLIC_SUPABSE_S_KEY!,
+  process.env.EXPO_PUBLIC_SUPABASE_KEY!,
+  {
+    auth: {
+      storage: {
+        async getItem(key) {
+          return AsyncStorage.getItem(key);
+        },
+        async setItem(key, value) {
+          return AsyncStorage.setItem(key, value);
+        },
+        async removeItem(key) {
+          return AsyncStorage.removeItem(key);
+        },
+      },
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false,
+    },
+  },
 );
 
 export async function uploadToBucket(

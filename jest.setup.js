@@ -178,7 +178,7 @@ jest.mock('@/generated/graphql', () => ({
     loading: false,
     error: null,
   })),
-  useGetPeoplesQuery: jest.fn(() => ({
+  useGetProfilesQuery: jest.fn(() => ({
     data: {
       profilesCollection: {
         edges: [
