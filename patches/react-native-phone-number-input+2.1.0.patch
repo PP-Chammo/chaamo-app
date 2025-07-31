@@ -1,0 +1,40 @@
+diff --git a/node_modules/react-native-phone-number-input/lib/index.js b/node_modules/react-native-phone-number-input/lib/index.js
+index b89c388..d3b35ba 100644
+--- a/node_modules/react-native-phone-number-input/lib/index.js
++++ b/node_modules/react-native-phone-number-input/lib/index.js
+@@ -1,13 +1,13 @@
++import { PhoneNumberUtil } from "google-libphonenumber";
+ import React, { PureComponent } from "react";
+-import { View, Text, TouchableOpacity, Image, TextInput } from "react-native";
++import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
+ import CountryPicker, {
+-  getCallingCode,
++  CountryModalProvider,
+   DARK_THEME,
+   DEFAULT_THEME,
+-  CountryModalProvider,
+   Flag,
++  getCallingCode,
+ } from "react-native-country-picker-modal";
+-import { PhoneNumberUtil } from "google-libphonenumber";
+ import styles from "./styles";
+ 
+ const dropDown =
+@@ -186,7 +186,7 @@ export default class PhoneInput extends PureComponent {
+               withFilter
+               withFlag
+               filterProps={filterProps}
+-              countryCode={countryCode}
++              countryCode={this.props.defaultCode || countryCode}
+               withCallingCode
+               disableNativeModal={disabled}
+               visible={modalVisible}
+@@ -223,7 +223,7 @@ export default class PhoneInput extends PureComponent {
+               style={[styles.numberText, textInputStyle ? textInputStyle : {}]}
+               placeholder={placeholder ? placeholder : "Phone Number"}
+               onChangeText={this.onChangeText}
+-              value={number}
++              value={this.props.value || number}
+               editable={disabled ? false : true}
+               selectionColor="black"
+               keyboardAppearance={withDarkTheme ? "dark" : "default"}

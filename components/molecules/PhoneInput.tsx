@@ -12,12 +12,19 @@ const PhoneInputLocal = PhoneInput as unknown as React.JSX.ElementType;
 interface PhoneNumberInputProps {
   name: string;
   value: string;
+  countryCode?: string;
   onChange: ({ name, value }: TextChangeParams) => void;
   required?: boolean;
 }
 
 const PhoneNumberInput: React.FC<PhoneNumberInputProps> = memo(
-  function PhoneNumberInput({ name, value, onChange, required }) {
+  function PhoneNumberInput({
+    name,
+    value,
+    countryCode = 'GB',
+    onChange,
+    required,
+  }) {
     const handleChange = (text: string) => onChange({ name, value: text });
 
     return (
@@ -28,10 +35,10 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = memo(
         </Label>
         <PhoneInputLocal
           testID="phone-input-field"
-          defaultCode="GB"
+          defaultCode={countryCode || 'GB'}
           layout="second"
           value={value}
-          onChangeFormattedText={handleChange}
+          onChangeText={handleChange}
           autoFocus={false}
           containerStyle={styles.container}
           textContainerStyle={styles.textContainer}

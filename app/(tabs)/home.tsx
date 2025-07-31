@@ -26,7 +26,6 @@ cssInterop(ScrollView, {
 
 export default function HomeScreen() {
   const [profile] = useProfileVar();
-  console.log('home screen, this from useProfileVar', profile);
   const { data: favoritesData, refetch: refetchFavorites } =
     useGetFavoritesQuery({
       variables: {

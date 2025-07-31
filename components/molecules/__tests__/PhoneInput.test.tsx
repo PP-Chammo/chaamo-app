@@ -60,10 +60,10 @@ describe('PhoneNumberInput', () => {
     );
     const phoneInput = getByTestId('phone-input-field');
     // Simulate a change
-    phoneInput.props.onChangeFormattedText('+1234567890');
+    phoneInput.props.onChangeText('234567890');
     expect(onChange).toHaveBeenCalledWith({
       name: 'phone',
-      value: '+1234567890',
+      value: '234567890',
     });
   });
 });
