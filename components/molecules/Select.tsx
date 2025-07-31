@@ -1,11 +1,18 @@
 import React, { memo, useCallback, useState } from 'react';
 
 import { clsx } from 'clsx';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { cssInterop } from 'nativewind';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { Icon } from '@/components/atoms';
 import { TextChangeParams } from '@/domains';
 import { getColor } from '@/utils/getColor';
+
+cssInterop(ScrollView, {
+  contentContainerClassName: {
+    target: 'contentContainerStyle',
+  },
+});
 
 interface SelectProps {
   label?: string;
@@ -84,21 +91,23 @@ const Select: React.FC<SelectProps> = memo(function Select({
         </TouchableOpacity>
         {isOpen && (
           <View className={classes.dropdown}>
-            {options.map((option, idx) => (
-              <React.Fragment key={option.value}>
-                <TouchableOpacity
-                  className={classes.dropdownOption}
-                  onPress={() => handleSelect(option.value)}
-                >
-                  <Text className={classes.dropdownOptionText}>
-                    {option.label}
-                  </Text>
-                </TouchableOpacity>
-                {idx < options.length - 1 && (
-                  <View className={classes.dropdownSeparator} />
-                )}
-              </React.Fragment>
-            ))}
+            <ScrollView className="max-h-[50px]">
+              {options.map((option, idx) => (
+                <React.Fragment key={option.value}>
+                  <TouchableOpacity
+                    className={classes.dropdownOption}
+                    onPress={() => handleSelect(option.value)}
+                  >
+                    <Text className={classes.dropdownOptionText}>
+                      {option.label}
+                    </Text>
+                  </TouchableOpacity>
+                  {idx < options.length - 1 && (
+                    <View className={classes.dropdownSeparator} />
+                  )}
+                </React.Fragment>
+              ))}
+            </ScrollView>
           </View>
         )}
       </View>
@@ -121,7 +130,7 @@ const classes = {
   inputTextPlaceholder: 'text-gray-400',
   chevronIcon: 'mt-0.5',
   dropdown:
-    'absolute left-0 right-0 top-full bg-white border border-slate-200 rounded-lg shadow-lg shadow-black/10 mt-1 z-50 overflow-hidden',
+    'absolute left-0 right-0 top-full max-h-[180px] bg-white border border-slate-200 rounded-lg shadow-lg shadow-black/10 mt-1 z-50 overflow-hidden',
   dropdownOption: 'px-4 py-3',
   dropdownOptionText: 'text-gray-600',
   dropdownSeparator: 'h-px bg-gray-100',
