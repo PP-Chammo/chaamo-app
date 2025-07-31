@@ -1,7 +1,7 @@
 schema:
   - ${EXPO_PUBLIC_SUPABASE_GRAPHQL_URL}:
       headers:
-        apikey: ${EXPO_PUBLIC_SUPABASE_KEY}
+        apikey: ${EXPO_PUBLIC_SUPABASE_ANON_KEY}
 documents: graphql/*.ts
 generates:
   generated/graphql.ts:

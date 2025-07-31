@@ -33,6 +33,7 @@ export default function HomeScreen() {
           user_id: { eq: profile.id },
         },
       },
+      onError: console.log,
     });
   const favorites = favoritesData?.favorite_listingsCollection?.edges ?? [];
 

@@ -14,6 +14,7 @@ import {
   useCreateBoostedListingsMutation,
   useCreatePaymentsMutation,
   useUpdatePaymentsMutation,
+  useUpdateUserCardMutation,
 } from '@/generated/graphql';
 import { useProfileVar } from '@/hooks/useProfileVar';
 import { initialSellFormState, useSellFormVar } from '@/hooks/useSellFormVar';
@@ -38,6 +39,7 @@ export default function AdCheckoutScreen() {
   const [createPayment] = useCreatePaymentsMutation();
   const [createBoostedListing] = useCreateBoostedListingsMutation();
   const [updatePayment] = useUpdatePaymentsMutation();
+  const [updateUserCard] = useUpdateUserCardMutation();
 
   const selectedPackage = useMemo(() => {
     const selected = adPackages.find(
@@ -64,7 +66,7 @@ export default function AdCheckoutScreen() {
                 gateway: 'fake',
                 gateway_transaction_id: 'fake_transaction_id',
                 status: PaymentStatus.PENDING,
-                amount: (selectedPackage?.price ?? 0).toFixed(2),
+                amount: (selectedPackage?.price[0].value ?? 0).toFixed(2),
               },
             ],
           },
@@ -99,22 +101,36 @@ export default function AdCheckoutScreen() {
                       },
                       onCompleted: ({ updatepaymentsCollection }) => {
                         if (updatepaymentsCollection?.records?.length) {
-                          setLoading(false);
-                          Alert.alert(
-                            'Success!',
-                            'Your card has been boosted.',
-                            [
-                              {
-                                text: 'OK',
-                                onPress: () => {
-                                  setForm(
-                                    structuredClone(initialSellFormState),
-                                  );
-                                  router.replace('/(tabs)/home');
-                                },
+                          updateUserCard({
+                            variables: {
+                              set: {
+                                is_in_listing: true,
                               },
-                            ],
-                          );
+                              filter: {
+                                id: { eq: form.user_card_id },
+                              },
+                            },
+                            onCompleted: ({ updateuser_cardsCollection }) => {
+                              if (updateuser_cardsCollection?.records?.length) {
+                                setLoading(false);
+                                Alert.alert(
+                                  'Success!',
+                                  'Your card has been boosted.',
+                                  [
+                                    {
+                                      text: 'OK',
+                                      onPress: () => {
+                                        setForm(
+                                          structuredClone(initialSellFormState),
+                                        );
+                                        router.replace('/(tabs)/home');
+                                      },
+                                    },
+                                  ],
+                                );
+                              }
+                            },
+                          });
                         }
                       },
                     });
@@ -141,11 +157,12 @@ export default function AdCheckoutScreen() {
     createPayment,
     form.listing_id,
     form.selectedPackageDays,
-    form?.user_card_id,
+    form.user_card_id,
     profile.id,
     selectedPackage?.price,
     setForm,
     updatePayment,
+    updateUserCard,
   ]);
 
   return (
@@ -167,7 +184,10 @@ export default function AdCheckoutScreen() {
             <Label className={classes.detailTitle}>Checkout details</Label>
             <Row between>
               <Label>{selectedPackage?.label}</Label>
-              <Label>$ {selectedPackage?.price}</Label>
+              <Label>
+                {selectedPackage?.price[0].currency}{' '}
+                {selectedPackage?.price[0].value}
+              </Label>
             </Row>
           </View>
           <View className={classes.detail}>
@@ -191,7 +211,8 @@ export default function AdCheckoutScreen() {
           <Row between>
             <Label className={classes.detailTitle}>Total</Label>
             <Label className={classes.detailTitle}>
-              $ {selectedPackage?.price}
+              {selectedPackage?.price[0].currency}{' '}
+              {selectedPackage?.price[0].value}
             </Label>
           </Row>
           <Button

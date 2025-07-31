@@ -32,6 +32,7 @@ import {
   MasterCards,
   useCreateListingsMutation,
   useCreateUserCardMutation,
+  useGetCategoriesQuery,
   useGetMasterCardsAutocompleteLazyQuery,
 } from '@/generated/graphql';
 import useDebounce from '@/hooks/useDebounce';
@@ -54,8 +55,10 @@ cssInterop(FlatList, {
 
 export default function SellScreen() {
   const [profile] = useProfileVar();
-
   const [form, setForm] = useSellFormVar();
+
+  const { data: categoriesData } = useGetCategoriesQuery();
+
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -64,6 +67,16 @@ export default function SellScreen() {
     useGetMasterCardsAutocompleteLazyQuery();
   const [createListings] = useCreateListingsMutation();
   const [createUserCard] = useCreateUserCardMutation();
+
+  const categories = useMemo(() => {
+    const list = categoriesData?.categoriesCollection?.edges ?? [];
+    if (list.length > 0) {
+      return list.map((category) => ({
+        value: String(category?.node.id),
+        label: category?.node.name,
+      }));
+    }
+  }, [categoriesData?.categoriesCollection?.edges]);
 
   const debouncedSearch = useDebounce(searchText, 700);
   useEffect(() => {
@@ -150,6 +163,7 @@ export default function SellScreen() {
       'imageUrl',
       'title',
       'description',
+      'category_id',
       'condition',
       'listing_type',
     ];
@@ -177,6 +191,7 @@ export default function SellScreen() {
             {
               user_id: profile?.id,
               master_card_id: form.master_card_id,
+              category_id: Number(form.category_id),
               condition: form.condition,
               grading_company: form.grading_company,
               grade: '0.0',
@@ -287,10 +302,21 @@ export default function SellScreen() {
             inputClassName={classes.input}
           />
           <Select
+            name="category_id"
+            label="Category"
+            required
+            placeholder="Select Category"
+            value={form.category_id}
+            onChange={handleChange}
+            options={categories}
+            inputClassName={classes.input}
+            error={errors.category_id}
+          />
+          <Select
             name="condition"
             label="Condition"
             required
-            placeholder="--Please Select--"
+            placeholder="Select Card Condition"
             value={form.condition}
             onChange={handleChange}
             options={conditions}
@@ -301,7 +327,7 @@ export default function SellScreen() {
             name="listing_type"
             label="Listing Type"
             required
-            placeholder="--Please Select--"
+            placeholder="Select Listing Type"
             value={form.listing_type}
             onChange={handleChange}
             options={conditionSells}
