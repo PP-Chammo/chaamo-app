@@ -5,12 +5,12 @@ import {
   ListContainerDirection,
   People,
 } from '@/components/molecules';
-import { useGetPeoplesQuery } from '@/generated/graphql';
+import { useGetProfilesQuery } from '@/generated/graphql';
 import { useProfileVar } from '@/hooks/useProfileVar';
 
 const PeopleList = memo(function PeopleList() {
   const [profile] = useProfileVar();
-  const { data, loading } = useGetPeoplesQuery({
+  const { data, loading } = useGetProfilesQuery({
     variables: {
       filter: {
         id: { neq: profile?.id },

@@ -1,17 +1,22 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { Session } from '@supabase/supabase-js';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { cssInterop } from 'nativewind';
-import { View } from 'react-native';
+import { ActivityIndicator, Alert, View } from 'react-native';
 
+import { useGetProfilesLazyQuery } from '@/generated/graphql';
 import { useProfileVar } from '@/hooks/useProfileVar';
-import { fnGetStorage } from '@/utils/storage';
+import { supabase } from '@/utils/supabase';
 
 export default function StartPage() {
-  const [, setProfileVar] = useProfileVar();
+  const [, setProfile] = useProfileVar();
+  const [checkedSession, setCheckedSession] = useState(false);
   const isDevelopment = process.env.NODE_ENV === 'development';
+
+  const [getProfile, { loading: loadingGetProfile }] = useGetProfilesLazyQuery({
+    fetchPolicy: 'network-only',
+  });
 
   cssInterop(Image, {
     className: {
@@ -20,16 +25,51 @@ export default function StartPage() {
   });
 
   const checkSession = useCallback(async () => {
-    const session = await fnGetStorage<Session>('session');
+    const { data, error } = await supabase.auth.getSession();
+    if (error) {
+      console.error('Session error:', error);
+      router.replace('/(auth)/sign-in');
+      return;
+    }
     if (isDevelopment) {
-      if (session) {
-        setProfileVar(session.user);
-        router.replace('/(tabs)/home');
+      if (data.session) {
+        getProfile({
+          variables: {
+            filter: {
+              id: { eq: data.session.user.id },
+            },
+          },
+          onCompleted: ({ profilesCollection }) => {
+            if (profilesCollection) {
+              setProfile({
+                ...data.session.user,
+                profile: profilesCollection.edges[0].node,
+              });
+              setCheckedSession(true);
+              router.replace('/(tabs)/home');
+            } else {
+              Alert.alert(
+                'Failed get session',
+                'Session expired, please re-login.',
+                [
+                  {
+                    text: 'OK',
+                    onPress: () => {
+                      setCheckedSession(true);
+                      router.replace('/(auth)/sign-in');
+                    },
+                  },
+                ],
+              );
+            }
+          },
+        });
       } else {
+        setCheckedSession(true);
         router.replace('/(auth)/sign-in');
       }
     }
-  }, [isDevelopment, setProfileVar]);
+  }, [getProfile, isDevelopment, setProfile]);
 
   useEffect(() => {
     if (isDevelopment) {
@@ -43,7 +83,12 @@ export default function StartPage() {
     }
   }, [isDevelopment, checkSession]);
 
-  if (isDevelopment) return null;
+  if (isDevelopment || !checkedSession || loadingGetProfile)
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator />
+      </View>
+    );
 
   return (
     <View className={classes.container}>

@@ -6,7 +6,7 @@ import {
 } from '@apollo/client';
 
 const uri = process.env.EXPO_PUBLIC_SUPABASE_GRAPHQL_URL;
-const apikey = process.env.EXPO_PUBLIC_SUPABSE_S_KEY;
+const apikey = process.env.EXPO_PUBLIC_SUPABASE_S_KEY;
 
 const client = new ApolloClient({
   link: new HttpLink({
