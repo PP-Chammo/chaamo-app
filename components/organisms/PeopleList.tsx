@@ -11,6 +11,7 @@ import { useProfileVar } from '@/hooks/useProfileVar';
 const PeopleList = memo(function PeopleList() {
   const [profile] = useProfileVar();
   const { data, loading } = useGetProfilesQuery({
+    skip: !profile?.id,
     variables: {
       filter: {
         id: { neq: profile?.id },
@@ -19,7 +20,7 @@ const PeopleList = memo(function PeopleList() {
   });
   const peoples = data?.profilesCollection?.edges ?? [];
 
-  if (loading) {
+  if (loading || !profile?.id) {
     return null;
   }
 
