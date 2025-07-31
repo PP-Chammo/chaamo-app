@@ -28,9 +28,10 @@ export default function HomeScreen() {
   const [profile] = useProfileVar();
   const { data: favoritesData, refetch: refetchFavorites } =
     useGetFavoritesQuery({
+      skip: !profile?.id,
       variables: {
         filter: {
-          user_id: { eq: profile.id },
+          user_id: { eq: profile?.id },
         },
       },
       onError: console.log,

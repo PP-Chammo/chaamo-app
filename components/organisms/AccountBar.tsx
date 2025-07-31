@@ -11,6 +11,7 @@ import { useProfileVar } from '@/hooks/useProfileVar';
 const AccountBar = memo(function AccountBar() {
   const [profile] = useProfileVar();
   const { data } = useGetNotificationsQuery({
+    skip: !profile?.id,
     variables: {
       filter: {
         id: { eq: profile?.id },

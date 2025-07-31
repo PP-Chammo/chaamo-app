@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { Link, router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -6,7 +6,8 @@ import { Text, View } from 'react-native';
 import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header, PhoneInput, TextField } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
-import { loginWithGoogle } from '@/utils/auth';
+import { useProfileVar } from '@/hooks/useProfileVar';
+import { loginWithGoogle, updateProfileSession } from '@/utils/auth';
 
 interface SignInForm {
   phone: string;
@@ -14,6 +15,7 @@ interface SignInForm {
 }
 
 export default function SignInScreen() {
+  const [, setProfile] = useProfileVar();
   const [form, setForm] = useState<SignInForm>({
     phone: '',
     password: '',
@@ -25,13 +27,26 @@ export default function SignInScreen() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleLogin = () => {
+  const handleLogin = useCallback(() => {
     const phone = '+44123456';
     const password = '123456';
     if (password !== form.password || phone !== form.phone)
       return setErrorText('Incorrect number or password');
     return router.push('/(auth)/otp-verification');
-  };
+  }, [form.password, form.phone]);
+
+  const handleGoogleLogin = useCallback(async () => {
+    try {
+      await loginWithGoogle();
+      await updateProfileSession(setProfile, (isSuccess) => {
+        if (isSuccess) {
+          router.replace('/(tabs)/home');
+        }
+      });
+    } catch (e: unknown) {
+      console.error(e);
+    }
+  }, [setProfile]);
 
   return (
     <ScreenContainer>
@@ -67,7 +82,11 @@ export default function SignInScreen() {
           Forgot Password?
         </Link>
         <Label className={classes.orLabel}>Or</Label>
-        <Button icon="google" onPress={loginWithGoogle} variant="primary-light">
+        <Button
+          icon="google"
+          onPress={handleGoogleLogin}
+          variant="primary-light"
+        >
           Continue with Google
         </Button>
       </View>

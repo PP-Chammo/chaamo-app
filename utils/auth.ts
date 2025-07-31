@@ -2,6 +2,12 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { router } from 'expo-router';
 import { Alert } from 'react-native';
 
+import { getProfiles } from '@/graphql/profiles';
+import { getUserAddresses } from '@/graphql/user_addresses';
+import { ProfileStore } from '@/stores/profileStore';
+import { DeepGet } from '@/types/helper';
+
+import client from './apollo';
 import { supabase } from './supabase';
 
 GoogleSignin.configure({
@@ -37,7 +43,6 @@ export async function loginWithGoogle() {
         access_token: data.session.access_token,
         refresh_token: data.session.refresh_token,
       });
-
       router.replace('/(tabs)/home');
     } else if (error) {
       console.error('❌ Login error:', error);
@@ -52,3 +57,79 @@ export async function loginWithGoogle() {
     );
   }
 }
+
+export const updateProfileSession = async (
+  setProfile: (value: Partial<ProfileStore>) => void,
+  callback: (success: boolean, userId?: string) => void,
+) => {
+  const errorAlert = () => {
+    Alert.alert('Session Error', 'Failed to load profile. Please re-login.', [
+      {
+        text: 'OK',
+        onPress: () => {
+          callback(false);
+          router.replace('/(auth)/sign-in');
+        },
+      },
+    ]);
+  };
+
+  try {
+    const { data, error } = await supabase.auth.getSession();
+
+    if (error) {
+      console.error('Session error:', error);
+      errorAlert();
+      return;
+    }
+
+    if (data.session) {
+      const userId = data?.session?.user.id;
+      const selectedProfile = await client.query({
+        query: getProfiles,
+        variables: {
+          filter: {
+            id: { eq: userId },
+          },
+        },
+      });
+
+      if (selectedProfile.error) {
+        console.error('Profile fetch error:', selectedProfile.error);
+        errorAlert();
+        return;
+      }
+
+      const { profilesCollection } = selectedProfile.data || {};
+
+      const selectedUserAddress = await client.query({
+        query: getUserAddresses,
+        variables: {
+          filter: {
+            user_id: { eq: userId },
+          },
+        },
+      });
+
+      const profileData = profilesCollection?.edges[0]?.node;
+      const addressData =
+        selectedUserAddress?.data?.user_addressesCollection?.edges[0]?.node;
+
+      setProfile({
+        ...data?.session?.user,
+        profile: { ...profileData, ...addressData } as DeepGet<
+          ProfileStore,
+          ['profile']
+        >,
+      });
+
+      callback(true, userId);
+    } else {
+      callback(false);
+    }
+  } catch (error) {
+    console.error('Data fetching error:', error);
+    callback(false);
+    errorAlert();
+  }
+};
