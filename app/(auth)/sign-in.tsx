@@ -38,7 +38,7 @@ export default function SignInScreen() {
   const handleGoogleLogin = useCallback(async () => {
     try {
       await loginWithGoogle();
-      await await updateProfileSession(setProfile, (isSuccess) => {
+      await updateProfileSession(setProfile, (isSuccess) => {
         if (isSuccess) {
           router.replace('/(tabs)/home');
         }
