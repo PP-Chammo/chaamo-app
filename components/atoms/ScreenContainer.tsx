@@ -41,19 +41,19 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
         {Platform.OS === 'ios' ? (
           <RNSafeAreaView
             className={clsx(classNameTop, {
-              'bg-orange-50': !classNameTop?.includes('bg-'),
+              'bg-slate-50': !classNameTop?.includes('bg-'),
             })}
           />
         ) : (
           <View
             className={clsx(classNameTop, {
-              'bg-orange-50': !classNameTop?.includes('bg-'),
+              'bg-slate-50': !classNameTop?.includes('bg-'),
             })}
             style={Platform.OS === 'android' ? { paddingTop: insets.top } : {}}
           />
         )}
         <StyledGradient
-          colors={[getColor('orange-50'), getColor('primary-50')]}
+          colors={[getColor('slate-50'), getColor('slate-50')]}
           className="flex-1"
         >
           <SafeAreaView

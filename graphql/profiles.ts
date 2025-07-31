@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
-export const getPeoples = gql`
-  query GetPeoples($filter: profilesFilter, $last: Int) {
+export const getProfiles = gql`
+  query GetProfiles($filter: profilesFilter, $last: Int) {
     profilesCollection(filter: $filter, last: $last) {
       edges {
         node {

@@ -20,25 +20,11 @@ import {
   SoldItemsProfile,
 } from '@/components/organisms';
 import { profileTabs } from '@/constants/tabs';
-import { useGetPeoplesQuery } from '@/generated/graphql';
 import { useProfileVar } from '@/hooks/useProfileVar';
 import { getColor } from '@/utils/getColor';
 
 export default function ProfileScreen() {
   const [profileState] = useProfileVar();
-
-  const { data } = useGetPeoplesQuery({
-    fetchPolicy: 'cache-and-network',
-    variables: {
-      filter: {
-        id: {
-          eq: profileState.id,
-        },
-      },
-    },
-  });
-
-  const profileData = data?.profilesCollection?.edges?.[0]?.node;
 
   const handleSettingsPress = useCallback(() => {
     router.push('/screens/settings');
@@ -72,13 +58,14 @@ export default function ProfileScreen() {
           size={80}
           imageContainerClassName={classes.avatarImageContainer}
           imageUrl={
-            profileData?.profile_image_url ??
+            profileState?.profile?.profile_image_url ??
             profileState?.user_metadata?.avatar_url
           }
         />
         <View className={classes.profileInfoContainer}>
           <Label variant="title" className={classes.profileName}>
-            {profileData?.username ?? profileState?.user_metadata?.name}
+            {profileState?.profile?.username ??
+              profileState?.user_metadata?.name}
           </Label>
           <View className={classes.portfolioContainer}>
             <Label className={classes.portfolioValueLabel}>

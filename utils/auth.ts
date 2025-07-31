@@ -2,7 +2,6 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { router } from 'expo-router';
 import { Alert } from 'react-native';
 
-import { fnRemoveStorage, fnSetStorage } from './storage';
 import { supabase } from './supabase';
 
 GoogleSignin.configure({
@@ -13,7 +12,6 @@ GoogleSignin.configure({
 
 export async function logout() {
   await supabase.auth.signOut();
-  await fnRemoveStorage('session');
   router.replace('/(auth)/sign-in');
 }
 
@@ -40,7 +38,6 @@ export async function loginWithGoogle() {
         refresh_token: data.session.refresh_token,
       });
 
-      await fnSetStorage('session', data.session);
       router.replace('/(tabs)/home');
     } else if (error) {
       console.error('❌ Login error:', error);
