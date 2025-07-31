@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { router } from 'expo-router';
 import { Alert, View } from 'react-native';
@@ -13,165 +13,114 @@ import {
 import { COUNTRIES, STATES } from '@/constants/dummy';
 import { TextChangeParams } from '@/domains';
 import {
-  useGetPersonalProfileLazyQuery,
   useUpdateProfileMutation,
   useUpdateUserAddressMutation,
 } from '@/generated/graphql';
 import { useProfileVar } from '@/hooks/useProfileVar';
-import { cache } from '@/utils/apollo';
-import {
-  validateRequired,
-  ValidationErrors,
-  ValidationValues,
-} from '@/utils/validate';
-
-interface Form extends ValidationValues {
-  username: string;
-  country_code: string;
-  phone_number: string;
-  email: string;
-  address_line_1: string;
-  city: string;
-  state_province: string;
-  country: string;
-  postal_code: string;
-}
-
-const initialForm = {
-  username: '',
-  country_code: '',
-  phone_number: '',
-  email: '',
-  address_line_1: '',
-  city: '',
-  state_province: '',
-  country: '',
-  postal_code: '',
-};
+import { ProfileStore } from '@/stores/profileStore';
+import { DeepGet } from '@/types/helper';
+import { validateRequired, ValidationErrors } from '@/utils/validate';
 
 export default function PersonalDetailsScreen() {
-  const [profileState] = useProfileVar();
-  const [form, setForm] = useState<Form>(initialForm);
-  const [errors, setErrors] = useState<ValidationErrors<Form>>({});
-  const [getPersonalProfile, { data, loading, error }] =
-    useGetPersonalProfileLazyQuery({ fetchPolicy: 'cache-and-network' });
+  const [form, setForm] = useProfileVar();
+  const [errors, setErrors] = useState<
+    ValidationErrors<DeepGet<ProfileStore, ['profile']>>
+  >({});
   const [updateProfile] = useUpdateProfileMutation();
   const [updateUserAddress] = useUpdateUserAddressMutation();
 
-  const handleChange = ({ name, value }: TextChangeParams) => {
-    setErrors((prev) => {
-      delete prev[name as keyof typeof prev];
-      return prev;
-    });
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  const handleChange = useCallback(
+    ({ name, value }: TextChangeParams) => {
+      setErrors((prev) => {
+        delete prev[name as keyof typeof prev];
+        return prev;
+      });
+
+      setForm({
+        ...form,
+        profile: { ...form.profile, [name]: value } as DeepGet<
+          ProfileStore,
+          ['profile']
+        >,
+      });
+    },
+    [form, setForm],
+  );
 
   const handleUpdateProfile = () => {
-    const errors = validateRequired<Form>(form, [
+    const requiredFields: (keyof DeepGet<ProfileStore, ['profile']>)[] = [
       'city',
       'state_province',
       'country',
       'postal_code',
-    ]);
+    ];
 
-    if (Object.keys(errors).length > 0) {
-      setErrors(errors);
-      return;
-    }
+    const validationErrors = validateRequired(
+      form.profile as unknown as Record<string, string>,
+      requiredFields,
+    );
 
-    const {
-      username,
-      country_code,
-      phone_number,
-      address_line_1,
-      city,
-      state_province,
-      country,
-      postal_code,
-    } = form;
+    setErrors(validationErrors);
 
-    updateProfile({
-      variables: {
-        set: {
-          username,
-          country_code,
-          phone_number,
-        },
-        filter: {
-          id: {
-            eq: profileState?.id,
+    if (Object.keys(validationErrors).length === 0) {
+      const {
+        id,
+        username,
+        country_code,
+        phone_number,
+        address_line_1,
+        city,
+        state_province,
+        country,
+        postal_code,
+      } = form.profile ?? {};
+
+      updateProfile({
+        variables: {
+          set: {
+            username,
+            country_code,
+            phone_number,
           },
-        },
-      },
-      onCompleted: (data) => {
-        const updatedProfile = data?.updateprofilesCollection?.records[0];
-        cache.modify({
-          fields: {
-            profilesCollection(existingData) {
-              return {
-                ...existingData,
-                edges: [...existingData.edges, { node: updatedProfile }],
-              };
+          filter: {
+            id: {
+              eq: id,
             },
           },
-        });
-
-        updateUserAddress({
-          variables: {
-            set: {
-              address_line_1,
-              city,
-              state_province,
-              country,
-              postal_code,
-            },
-            filter: {
-              user_id: {
-                eq: profileState?.id,
+        },
+        onCompleted: ({ updateprofilesCollection }) => {
+          if (updateprofilesCollection?.records.length) {
+            updateUserAddress({
+              variables: {
+                set: {
+                  address_line_1,
+                  city,
+                  state_province,
+                  country,
+                  postal_code,
+                },
+                filter: {
+                  user_id: {
+                    eq: id,
+                  },
+                },
               },
-            },
-          },
-          onCompleted: (data) => {
-            if (data?.updateuser_addressesCollection?.records.length) {
-              Alert.alert('Success', 'Personal details updated successfully');
-            }
-          },
-        });
-      },
-    });
+              onCompleted: (data) => {
+                if (data?.updateuser_addressesCollection?.records.length) {
+                  Alert.alert(
+                    'Success',
+                    'Personal details updated successfully',
+                  );
+                }
+              },
+            });
+          }
+        },
+      });
+    }
   };
 
-  useEffect(() => {
-    getPersonalProfile({
-      variables: {
-        filter: {
-          user_id: {
-            eq: profileState?.id,
-          },
-        },
-      },
-    });
-  }, [getPersonalProfile, profileState?.id]);
-
-  useEffect(() => {
-    if (data && !loading && !error) {
-      const userData = data?.user_addressesCollection?.edges?.[0]?.node;
-      const profileData = userData?.profiles;
-
-      setForm((prev) => ({
-        ...prev,
-        username: profileData?.username || '',
-        country_code: profileData?.country_code || '',
-        phone_number: profileData?.phone_number || '',
-        address_line_1: userData?.address_line_1 || '',
-        city: userData?.city || '',
-        state_province: userData?.state_province || '',
-        country: userData?.country || '',
-        postal_code: userData?.postal_code || '',
-        email: profileState?.email || '',
-      }));
-    }
-  }, [data, error, loading, profileState?.email]);
+  const profile = form.profile;
 
   return (
     <ScreenContainer>
@@ -180,48 +129,48 @@ export default function PersonalDetailsScreen() {
         <View className={classes.container}>
           <TextField
             label="Username"
-            value={form.username}
+            value={profile?.username}
             onChange={handleChange}
             name="username"
             className={classes.input}
           />
           <PhoneInput
             name="phone_number"
-            value={form.phone_number}
-            countryCode={form.country_code}
+            value={profile?.phone_number ?? ''}
+            countryCode={profile?.country_code ?? ''}
             onChange={handleChange}
           />
           <TextField
             label="Email"
-            value={form.email}
+            value={form?.email ?? ''}
             onChange={handleChange}
             name="email"
             editable={false}
           />
           <TextField
             label="Address"
-            value={form.address_line_1}
+            value={profile?.address_line_1}
             onChange={handleChange}
             name="address_line_1"
           />
           <Row between className={classes.row}>
             <TextField
               label="City"
-              value={form.city}
+              value={profile?.city}
               onChange={handleChange}
               name="city"
               className={classes.input}
               required
-              error={errors['city']}
+              error={errors.city}
             />
             <SelectModal
               required
               name="state_province"
               label="State"
-              value={form.state_province}
+              value={profile?.state_province ?? ''}
               onChange={handleChange}
               options={STATES}
-              error={errors['state_province']}
+              error={errors.state_province}
               placeholder="--Select--"
               className={classes.input}
             />
@@ -230,20 +179,20 @@ export default function PersonalDetailsScreen() {
             required
             name="country"
             label="Country"
-            value={form.country}
+            value={profile?.country ?? ''}
             onChange={handleChange}
             options={COUNTRIES}
-            error={errors['country']}
+            error={errors.country}
             placeholder="--Select--"
             className={classes.input}
           />
           <TextField
             label="Postal Code"
-            value={form.postal_code}
+            value={profile?.postal_code ?? ''}
             onChange={handleChange}
             name="postal_code"
             required
-            error={errors['postal_code']}
+            error={errors.postal_code}
           />
         </View>
       </KeyboardView>

@@ -8,6 +8,8 @@ export const getProfiles = gql`
           id
           username
           profile_image_url
+          phone_number
+          country_code
         }
       }
     }

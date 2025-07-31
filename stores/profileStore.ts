@@ -1,6 +1,6 @@
 import { User } from '@supabase/supabase-js';
 
-import { GetProfilesQuery } from '@/generated/graphql';
+import { GetProfilesQuery, GetUserAddressesQuery } from '@/generated/graphql';
 import { DeepGet } from '@/types/helper';
 
 export interface ProfileStore extends User {
@@ -8,7 +8,11 @@ export interface ProfileStore extends User {
   profile?: DeepGet<
     GetProfilesQuery,
     ['profilesCollection', 'edges', 0, 'node']
-  >;
+  > &
+    DeepGet<
+      GetUserAddressesQuery,
+      ['user_addressesCollection', 'edges', 0, 'node']
+    >;
 }
 
 export const profileStore: ProfileStore = {
