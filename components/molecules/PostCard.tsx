@@ -2,6 +2,7 @@ import React, { memo, useCallback, useRef, useState } from 'react';
 
 import { formatDistanceToNow } from 'date-fns';
 import { router } from 'expo-router';
+import pluralize from 'pluralize';
 import { Alert, Image, TouchableOpacity, View } from 'react-native';
 
 import { Button, ContextMenu, Icon, Label, Row } from '@/components/atoms';
@@ -158,7 +159,7 @@ const PostCard: React.FC<PostCardProps> = memo(function PostCard({
           className={classes.actionButton}
           textClassName={classes.actionButtonText}
         >
-          {likeCount > 0 ? likeCount : ''} Like{likeCount > 1 ? 's' : ''}
+          {pluralize('Like', likeCount, true)}
         </Button>
       </Row>
     </View>
