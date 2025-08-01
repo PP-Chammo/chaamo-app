@@ -1,4 +1,5 @@
 import 'react-native-url-polyfill/auto'; // this needed for supabase to be worked on react-native , dont remove it
+
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 
 import { router, Stack } from 'expo-router';
@@ -17,7 +18,7 @@ export default function RootLayout() {
   const [hasCheckedSession, setHasCheckedSession] = useState(false);
 
   const isDevelopment = useMemo(
-    () => process.env.NODE_ENV !== 'development',
+    () => process.env.NODE_ENV === 'development',
     [],
   );
 
