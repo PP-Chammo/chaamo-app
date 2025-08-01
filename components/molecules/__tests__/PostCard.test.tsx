@@ -5,22 +5,20 @@ import { fireEvent, render } from '@testing-library/react-native';
 import PostCard from '../PostCard';
 
 describe('PostCard', () => {
-  const mockPost = {
-    id: 1,
-    user_id: 1,
-    text: 'This is a test post',
-    date: '2023-01-01T10:00:00Z',
-    user: {
-      name: 'John Doe',
-      id: 'user1',
-    },
-    image: 'https://example.com/image.jpg',
-  };
-
   const defaultProps = {
-    post: mockPost,
+    showContext: true,
+    postId: '1',
+    userId: 'user1',
+    username: 'John Doe',
+    userImageUrl: 'https://example.com/avatar.jpg',
+    contentImageUrl: 'https://example.com/image.jpg',
+    content: 'This is a test post',
+    createdAt: '2023-01-01T10:00:00Z',
+    likeCount: 5,
+    liked: false,
     onCommentPress: jest.fn(),
     onLikePress: jest.fn(),
+    onBlockPress: jest.fn(),
   };
 
   beforeEach(() => {
@@ -35,9 +33,9 @@ describe('PostCard', () => {
   });
 
   it('renders without image when image is not provided', () => {
-    const postWithoutImage = { ...mockPost, image: undefined };
+    const propsWithoutImage = { ...defaultProps, contentImageUrl: undefined };
     const { getByTestId, getByText } = render(
-      <PostCard {...defaultProps} post={postWithoutImage} />,
+      <PostCard {...propsWithoutImage} />,
     );
     expect(getByTestId('post-card')).toBeTruthy();
     expect(getByText('This is a test post')).toBeTruthy();
@@ -49,10 +47,8 @@ describe('PostCard', () => {
   });
 
   it('renders without user name when user is not provided', () => {
-    const postWithoutUser = { ...mockPost, user: undefined };
-    const { getByTestId } = render(
-      <PostCard {...defaultProps} post={postWithoutUser} />,
-    );
+    const propsWithoutUsername = { ...defaultProps, username: '' };
+    const { getByTestId } = render(<PostCard {...propsWithoutUsername} />);
     expect(getByTestId('post-card')).toBeTruthy();
   });
 
@@ -82,7 +78,7 @@ describe('PostCard', () => {
 
     const { getByTestId, getByText } = render(
       <PostCard
-        post={mockPost}
+        {...defaultProps}
         onCommentPress={onCommentPress}
         onLikePress={onLikePress}
       />,
@@ -92,7 +88,7 @@ describe('PostCard', () => {
     expect(getByText('John Doe')).toBeTruthy();
     expect(getByText('This is a test post')).toBeTruthy();
     expect(getByText('Comment')).toBeTruthy();
-    expect(getByText('Like')).toBeTruthy();
+    expect(getByText(/Like/)).toBeTruthy();
   });
 
   it('applies correct styling classes', () => {
@@ -101,23 +97,27 @@ describe('PostCard', () => {
   });
 
   it('handles different date formats', () => {
-    const recentPost = { ...mockPost, date: new Date().toISOString() };
-    const { getByTestId } = render(
-      <PostCard {...defaultProps} post={recentPost} />,
-    );
+    const recentDate = new Date().toISOString();
+    const propsWithRecentDate = { ...defaultProps, createdAt: recentDate };
+    const { getByTestId } = render(<PostCard {...propsWithRecentDate} />);
     expect(getByTestId('post-card')).toBeTruthy();
   });
 
   it('renders with empty text', () => {
-    const postWithEmptyText = { ...mockPost, text: '' };
-    const { getByTestId } = render(
-      <PostCard {...defaultProps} post={postWithEmptyText} />,
-    );
+    const propsWithEmptyContent = { ...defaultProps, content: '' };
+    const { getByTestId } = render(<PostCard {...propsWithEmptyContent} />);
     expect(getByTestId('post-card')).toBeTruthy();
   });
 
   it('handles missing callback props', () => {
-    const { getByTestId } = render(<PostCard post={mockPost} />);
+    const { getByTestId } = render(
+      <PostCard
+        {...defaultProps}
+        onCommentPress={undefined}
+        onLikePress={undefined}
+        onBlockPress={undefined}
+      />,
+    );
     expect(getByTestId('post-card')).toBeTruthy();
 
     const commentButton = getByTestId('comment-button');
@@ -133,29 +133,32 @@ describe('PostCard', () => {
 
   it('renders correct time for 1 hour ago', () => {
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-    const post = { ...defaultProps.post, date: oneHourAgo };
-    const { getByText } = render(<PostCard {...defaultProps} post={post} />);
+    const propsWithOneHourAgo = { ...defaultProps, createdAt: oneHourAgo };
+    const { getByText } = render(<PostCard {...propsWithOneHourAgo} />);
     expect(getByText(/1 hour ago/)).toBeTruthy();
   });
 
   it('renders correct time for 2 hours ago', () => {
     const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
-    const post = { ...defaultProps.post, date: twoHoursAgo };
-    const { getByText } = render(<PostCard {...defaultProps} post={post} />);
+    const propsWithTwoHoursAgo = { ...defaultProps, createdAt: twoHoursAgo };
+    const { getByText } = render(<PostCard {...propsWithTwoHoursAgo} />);
     expect(getByText(/2 hours ago/)).toBeTruthy();
   });
 
   it('renders correct time for 1 minute ago', () => {
     const oneMinuteAgo = new Date(Date.now() - 60 * 1000).toISOString();
-    const post = { ...defaultProps.post, date: oneMinuteAgo };
-    const { getByText } = render(<PostCard {...defaultProps} post={post} />);
+    const propsWithOneMinuteAgo = { ...defaultProps, createdAt: oneMinuteAgo };
+    const { getByText } = render(<PostCard {...propsWithOneMinuteAgo} />);
     expect(getByText(/1 minute ago/)).toBeTruthy();
   });
 
   it('renders correct time for 2 minutes ago', () => {
     const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000).toISOString();
-    const post = { ...defaultProps.post, date: twoMinutesAgo };
-    const { getByText } = render(<PostCard {...defaultProps} post={post} />);
+    const propsWithTwoMinutesAgo = {
+      ...defaultProps,
+      createdAt: twoMinutesAgo,
+    };
+    const { getByText } = render(<PostCard {...propsWithTwoMinutesAgo} />);
     expect(getByText(/2 minutes ago/)).toBeTruthy();
   });
 });

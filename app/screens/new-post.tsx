@@ -4,22 +4,34 @@ import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { Alert, Image, TouchableOpacity, View } from 'react-native';
 
-import { Icon, KeyboardView, Label, ScreenContainer } from '@/components/atoms';
+import {
+  Button,
+  Icon,
+  KeyboardView,
+  Label,
+  ScreenContainer,
+} from '@/components/atoms';
 import { Header, TextArea } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
+import { useCreateCommunityPostsMutation } from '@/generated/graphql';
+import { useProfileVar } from '@/hooks/useProfileVar';
 import { getColor } from '@/utils/getColor';
+import { uploadToBucket } from '@/utils/supabase';
 
 interface Form {
-  imageUrl: string;
-  description: string;
+  contentImageUrl?: string;
+  content: string;
 }
 
 const initialForm: Form = {
-  imageUrl: '',
-  description: '',
+  contentImageUrl: undefined,
+  content: '',
 };
 
 export default function NewPostScreen() {
+  const [profile] = useProfileVar();
+  const [createPosts, { loading }] = useCreateCommunityPostsMutation();
+
   const [form, setForm] = useState<Form>(initialForm);
 
   const handleChange = ({ name, value }: TextChangeParams) => {
@@ -45,12 +57,55 @@ export default function NewPostScreen() {
 
     const selectedImage = result.assets[0];
 
-    setForm((prev) => ({ ...prev, imageUrl: selectedImage.uri }));
+    setForm((prev) => ({ ...prev, contentImageUrl: selectedImage.uri }));
   }, []);
 
   const handleRemoveImage = useCallback(() => {
-    setForm((prev) => ({ ...prev, imageUrl: '' }));
+    setForm((prev) => ({ ...prev, contentImageUrl: '' }));
   }, []);
+
+  const handleSubmitPost = useCallback(async () => {
+    try {
+      let uploadedUrl;
+      if (form.contentImageUrl) {
+        uploadedUrl = await uploadToBucket(
+          form.contentImageUrl,
+          'chaamo',
+          'community_posts',
+        );
+      }
+      createPosts({
+        variables: {
+          objects: [
+            {
+              user_id: profile.id,
+              content: form.content,
+              ...(uploadedUrl
+                ? {
+                    content_image_url: uploadedUrl,
+                  }
+                : {}),
+            },
+          ],
+        },
+        onCompleted: ({ insertIntocommunity_postsCollection }) => {
+          if (insertIntocommunity_postsCollection) {
+            Alert.alert('Posted!', 'Your Post submit successfully', [
+              {
+                text: 'OK',
+                onPress: () => {
+                  router.back();
+                },
+              },
+            ]);
+          }
+        },
+        onError: console.log,
+      });
+    } catch (e: unknown) {
+      console.error('create community post error', e);
+    }
+  }, [createPosts, form.content, form.contentImageUrl, profile.id]);
 
   return (
     <ScreenContainer>
@@ -58,10 +113,10 @@ export default function NewPostScreen() {
       <View className={classes.container}>
         <Label className={classes.title}>What’s on your mind?</Label>
         <KeyboardView>
-          {!!form.imageUrl && (
+          {!!form.contentImageUrl && (
             <View className={classes.imageContainer}>
               <Image
-                source={{ uri: form.imageUrl }}
+                source={{ uri: form.contentImageUrl }}
                 className={classes.image}
                 resizeMode="cover"
               />
@@ -74,7 +129,8 @@ export default function NewPostScreen() {
             </View>
           )}
           <TextArea
-            name="description"
+            name="content"
+            value={form.content}
             onChange={handleChange}
             label="Description"
           />
@@ -86,6 +142,15 @@ export default function NewPostScreen() {
       >
         <Icon name="paperclip" size={20} color={getColor('white')} />
       </TouchableOpacity>
+      <View className={classes.buttonContainer}>
+        <Button
+          onPress={handleSubmitPost}
+          loading={loading}
+          disabled={loading || !form.content}
+        >
+          Submit Post
+        </Button>
+      </View>
     </ScreenContainer>
   );
 }
@@ -94,7 +159,8 @@ const classes = {
   title: 'text-primary-500 text-xl font-medium',
   container: 'flex-1 mx-4.5 gap-8',
   image: 'w-full h-72 rounded-2xl',
-  attachment: 'bg-primary-500 rounded-full p-3 absolute bottom-16 right-6',
+  attachment: 'bg-primary-500 rounded-full p-3 absolute bottom-28 right-6',
   imageContainer: 'relative',
   closeIcon: 'absolute top-2 right-2 bg-white rounded-full p-1',
+  buttonContainer: 'p-4.5',
 };
