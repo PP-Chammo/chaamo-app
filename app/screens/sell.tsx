@@ -441,7 +441,7 @@ export default function SellScreen() {
 }
 
 const classes = {
-  container: 'flex-1 p-4.5 gap-4.5',
+  container: 'flex-1 p-4.5 mb-4.5 gap-4.5',
   pickerModal:
     'absolute left-0 right-0 bottom-0 bg-white p-4 rounded-t-2xl border-t border-gray-200 z-50',
   pickerOption: 'py-3',
