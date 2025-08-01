@@ -42,6 +42,7 @@ export default function TabLayout() {
         name="sell"
         options={{
           title: 'Sell',
+          href: '/screens/sell',
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <Icon size={28} name="crop-free" color={color} />
