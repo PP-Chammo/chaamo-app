@@ -1,22 +1,43 @@
 import React, { memo, useCallback, useRef, useState } from 'react';
 
+import { formatDistanceToNow } from 'date-fns';
 import { router } from 'expo-router';
+import pluralize from 'pluralize';
 import { Alert, Image, TouchableOpacity, View } from 'react-native';
 
 import { Button, ContextMenu, Icon, Label, Row } from '@/components/atoms';
-import { Post } from '@/types/post';
 import { getColor } from '@/utils/getColor';
 
 type PostCardProps = {
-  post: Post;
+  showContext: boolean;
+  postId: string;
+  userId: string;
+  username: string;
+  userImageUrl?: string;
+  contentImageUrl?: string;
+  content: string;
+  createdAt: string;
+  likeCount: number;
+  liked: boolean;
   onCommentPress?: () => void;
   onLikePress?: () => void;
+  onBlockPress?: () => void;
 };
 
 const PostCard: React.FC<PostCardProps> = memo(function PostCard({
-  post,
+  showContext = true,
+  postId,
+  userId,
+  username,
+  userImageUrl,
+  contentImageUrl,
+  content,
+  createdAt,
+  likeCount,
+  liked,
   onCommentPress,
   onLikePress,
+  onBlockPress,
 }) {
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
   const dotsRef = useRef<View>(null);
@@ -28,83 +49,91 @@ const PostCard: React.FC<PostCardProps> = memo(function PostCard({
 
   const handleBlockPress = useCallback(() => {
     handleContextMenuPress();
-    Alert.alert('Blocked', 'User Blocked');
-  }, [handleContextMenuPress]);
+    Alert.alert('Block Post', 'Are you sure block all post from this user?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Block',
+        onPress: onBlockPress,
+      },
+    ]);
+  }, [handleContextMenuPress, onBlockPress]);
 
   const handleReportPress = useCallback(() => {
     handleContextMenuPress();
-    router.push('/screens/report');
-  }, [handleContextMenuPress]);
-
-  const getDateByNow = useCallback((date: string) => {
-    const postDate = new Date(date);
-    const now = new Date();
-    const diffInSeconds = Math.floor(
-      (now.getTime() - postDate.getTime()) / 1000,
-    );
-    const diffInMinutes = Math.floor(diffInSeconds / 60);
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    const diffInDays = Math.floor(diffInHours / 24);
-    if (diffInDays > 0) {
-      return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
-    } else if (diffInHours > 0) {
-      return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
-    } else if (diffInMinutes > 0) {
-      return `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''} ago`;
-    } else {
-      return 'Just now';
-    }
-  }, []);
+    router.push({
+      pathname: '/screens/report',
+      params: { postId, userId },
+    });
+  }, [handleContextMenuPress, postId, userId]);
 
   return (
-    <View testID="post-card" key={post.id} className={classes.postCard}>
+    <View testID="post-card" className={classes.postCard}>
       <Row className={classes.postHeader}>
         <View className={classes.containerLeft}>
-          <View className={classes.avatar} />
+          {userImageUrl ? (
+            <Image source={{ uri: userImageUrl }} className={classes.avatar} />
+          ) : (
+            <View className={classes.avatar} />
+          )}
           <View className={classes.containerUser}>
-            <Label className={classes.postUser}>{post?.user?.name ?? ''}</Label>
+            <Label className={classes.postUser}>{username}</Label>
             <Row>
               <Icon name="earth" size={14} color={getColor('gray-400')} />
               <Label className={classes.postTime}>
-                Posted {getDateByNow(post.date)}
+                Posted{' '}
+                {formatDistanceToNow(new Date(createdAt), { addSuffix: true })}
               </Label>
             </Row>
           </View>
         </View>
-        <TouchableOpacity
-          testID="post-context-menu"
-          onPress={handleContextMenuPress}
-          className={classes.containerPostMenu}
-          ref={dotsRef}
-        >
-          <Icon name="dots-vertical" size={20} className={classes.postMenu} />
-        </TouchableOpacity>
-        <ContextMenu
-          visible={isContextMenuVisible}
-          onClose={handleContextMenuPress}
-          triggerRef={dotsRef}
-          menuHeight={20}
-        >
-          <TouchableOpacity
-            onPress={handleBlockPress}
-            className={classes.contextMenuItem}
-          >
-            <Label className={classes.contextMenuBlockLabel}>Block</Label>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleReportPress}
-            className={classes.contextMenuItem}
-          >
-            <Label className={classes.contextMenuReportLabel}>Report</Label>
-          </TouchableOpacity>
-        </ContextMenu>
+        {showContext && (
+          <>
+            <TouchableOpacity
+              testID="post-context-menu"
+              onPress={handleContextMenuPress}
+              className={classes.containerPostMenu}
+              ref={dotsRef}
+            >
+              <Icon
+                name="dots-vertical"
+                size={20}
+                className={classes.postMenu}
+              />
+            </TouchableOpacity>
+            <ContextMenu
+              visible={isContextMenuVisible}
+              onClose={handleContextMenuPress}
+              triggerRef={dotsRef}
+              menuHeight={20}
+            >
+              <TouchableOpacity
+                onPress={handleBlockPress}
+                className={classes.contextMenuItem}
+              >
+                <Label className={classes.contextMenuBlockLabel}>Block</Label>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleReportPress}
+                className={classes.contextMenuItem}
+              >
+                <Label className={classes.contextMenuReportLabel}>Report</Label>
+              </TouchableOpacity>
+            </ContextMenu>
+          </>
+        )}
       </Row>
-      {post.image && (
+      {contentImageUrl && (
         <View className={classes.containerPostImage}>
-          <Image source={{ uri: post.image }} className={classes.postImage} />
+          <Image
+            source={{ uri: contentImageUrl }}
+            className={classes.postImage}
+          />
         </View>
       )}
-      <Label className={classes.postText}>{post.text}</Label>
+      <Label className={classes.postText}>{content}</Label>
       <Row className={classes.postActions}>
         <Button
           testID="comment-button"
@@ -124,13 +153,13 @@ const PostCard: React.FC<PostCardProps> = memo(function PostCard({
           variant="ghost"
           size="small"
           onPress={onLikePress}
-          icon="heart-outline"
+          icon={liked ? 'heart' : 'heart-outline'}
           iconSize={22}
-          iconColor={getColor('gray-500')}
+          iconColor={getColor(liked ? 'red-500' : 'gray-500')}
           className={classes.actionButton}
           textClassName={classes.actionButtonText}
         >
-          Like
+          {pluralize('Like', likeCount, true)}
         </Button>
       </Row>
     </View>

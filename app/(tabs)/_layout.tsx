@@ -11,8 +11,6 @@ export default function TabLayout() {
       screenOptions={{
         tabBarStyle: {
           backgroundColor: getColor('white'),
-          paddingTop: 5,
-          paddingBottom: 3,
         },
         tabBarActiveTintColor: getColor('primary-500'),
         tabBarInactiveTintColor: getColor('gray-400'),

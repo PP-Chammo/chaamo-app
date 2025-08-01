@@ -12,6 +12,7 @@ interface TextAreaProps extends Omit<TextInputProps, 'onChange'> {
   onChange: ({ name, value }: TextChangeParams) => void;
   inputClassName?: string;
   required?: boolean;
+  rows?: number;
 }
 
 const TextArea: React.FC<TextAreaProps> = memo(function TextArea({
@@ -58,5 +59,5 @@ const classes = {
   label: 'text-slate-500 font-medium text-md ml-4',
   required: 'text-red-500',
   input:
-    'rounded-lg border border-slate-200 rounded-md p-4 bg-white min-h-[46px] max-h-56',
+    'rounded-lg border border-slate-200 rounded-md p-4 bg-white min-h-24 max-h-56',
 };

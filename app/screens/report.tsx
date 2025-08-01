@@ -1,16 +1,50 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { clsx } from 'clsx';
-import { router } from 'expo-router';
-import { ScrollView, View } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { Alert, ScrollView, View } from 'react-native';
 
 import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header, RadioInput, TextField } from '@/components/molecules';
 import { reportOptions } from '@/constants/reportOptions';
+import { useCreateReportedUsersMutation } from '@/generated/graphql';
+import { useProfileVar } from '@/hooks/useProfileVar';
 
 export default function ReportScreen() {
+  const [profile] = useProfileVar();
+  const { postId, userId } = useLocalSearchParams();
+
   const [selected, setSelected] = useState('');
   const [otherReason, setOtherReason] = useState('');
+
+  const [addReportedUsers] = useCreateReportedUsersMutation();
+
+  const handleSubmitReport = useCallback(() => {
+    addReportedUsers({
+      variables: {
+        objects: [
+          {
+            reporter_user_id: profile.id,
+            reported_user_id: userId,
+            reported_post_id: postId,
+            reason: selected === 'Other' ? otherReason : selected,
+          },
+        ],
+      },
+      onCompleted: ({ insertIntoreported_usersCollection }) => {
+        if (insertIntoreported_usersCollection?.records?.length) {
+          Alert.alert('Reported', 'Thank you, user reported successfully', [
+            {
+              text: 'OK',
+              onPress: () => {
+                router.back();
+              },
+            },
+          ]);
+        }
+      },
+    });
+  }, [addReportedUsers, otherReason, postId, profile.id, selected, userId]);
 
   return (
     <ScreenContainer classNameTop={classes.containerTop}>
@@ -57,7 +91,7 @@ export default function ReportScreen() {
       <View className={classes.buttonContainer}>
         <Button
           variant="primary"
-          onPress={() => router.back()}
+          onPress={handleSubmitReport}
           disabled={!selected}
         >
           Submit

@@ -28,7 +28,7 @@ export default function RootLayout() {
       if (!isDevelopment) {
         const timeout = setTimeout(() => {
           router.replace(route);
-        }, 6000);
+        }, 5000);
 
         return () => clearTimeout(timeout);
       }
