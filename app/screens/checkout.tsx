@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
 
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { Image, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import {
   Button,
@@ -45,7 +46,7 @@ export default function CheckoutScreen() {
             <Image
               source={{ uri: 'https://dummyimage.com/600x400/000/fff' }}
               className={classes.image}
-              resizeMode="cover"
+              contentFit="cover"
             />
           </View>
           <View className={classes.section}>

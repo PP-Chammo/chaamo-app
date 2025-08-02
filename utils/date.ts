@@ -1,4 +1,12 @@
-import { format, isThisWeek, isThisYear, isToday, isYesterday } from 'date-fns';
+import {
+  differenceInHours,
+  format,
+  isThisWeek,
+  isThisYear,
+  isToday,
+  isYesterday,
+  parseISO,
+} from 'date-fns';
 
 export const formatTime = (time: string) => {
   const date = new Date(time);
@@ -32,4 +40,16 @@ export const formatDateInput = (value: string) => {
     result = `${limited.slice(0, 2)}/${limited.slice(2, 4)}/${limited.slice(4)}`;
   }
   return result;
+};
+
+export const formatElapsedTime = (dateInput: string | Date): string => {
+  const now = new Date();
+  const inputDate =
+    typeof dateInput === 'string' ? parseISO(dateInput) : dateInput;
+
+  const totalHours = differenceInHours(inputDate, now);
+  const days = Math.floor(totalHours / 24);
+  const hours = totalHours % 24;
+
+  return `${days}d ${hours}h`;
 };

@@ -103,7 +103,7 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
           className={clsx(
             classes.input,
             inputClassName,
-            leftIcon && classes.inputWithLeftIcon,
+            (leftIcon || leftComponent) && classes.inputWithLeftIcon,
           )}
           onChangeText={handleChange}
           secureTextEntry={type === 'password' && hidePassword}

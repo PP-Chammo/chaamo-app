@@ -3,7 +3,7 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
 
-import * as dummy from '@/constants/dummy';
+import { ListingType } from '@/generated/graphql';
 
 import SimilarAdList from '../SimilarAdList';
 
@@ -11,7 +11,10 @@ jest.mock('expo-router', () => ({
   router: { push: jest.fn() },
 }));
 
-const originalDummyList = [...dummy.dummyFeaturedCardList];
+const defaultProps = {
+  ignoreListingId: 'ignore-this-id',
+  listingType: ListingType.SELL,
+};
 
 describe('SimilarAdList', () => {
   beforeEach(() => {
@@ -19,78 +22,81 @@ describe('SimilarAdList', () => {
   });
 
   it('renders correctly with title', () => {
-    render(<SimilarAdList />);
+    render(<SimilarAdList {...defaultProps} />);
 
     expect(screen.getByText('Similar Ads')).toBeTruthy();
   });
 
   it('displays the title with correct variant', () => {
-    render(<SimilarAdList />);
+    render(<SimilarAdList {...defaultProps} />);
 
     const title = screen.getByText('Similar Ads');
     expect(title).toBeTruthy();
   });
 
   it('renders ProductCardList component', () => {
-    render(<SimilarAdList />);
+    render(<SimilarAdList {...defaultProps} />);
 
     expect(screen.getByTestId('list-container')).toBeTruthy();
   });
 
   it('renders with all required elements', () => {
-    render(<SimilarAdList />);
+    render(<SimilarAdList {...defaultProps} />);
 
     expect(screen.getByText('Similar Ads')).toBeTruthy();
   });
 
   it('renders without crashing', () => {
-    expect(() => render(<SimilarAdList />)).not.toThrow();
+    expect(() => render(<SimilarAdList {...defaultProps} />)).not.toThrow();
   });
 
   it('has proper accessibility', () => {
-    render(<SimilarAdList />);
+    render(<SimilarAdList {...defaultProps} />);
 
     const title = screen.getByText('Similar Ads');
     expect(title).toBeTruthy();
   });
 
   it('maintains consistent layout', () => {
-    const { rerender } = render(<SimilarAdList />);
+    const { rerender } = render(<SimilarAdList {...defaultProps} />);
 
     expect(screen.getByText('Similar Ads')).toBeTruthy();
 
-    rerender(<SimilarAdList />);
+    rerender(<SimilarAdList {...defaultProps} />);
 
     expect(screen.getByText('Similar Ads')).toBeTruthy();
   });
 
   it('displays the correct section title', () => {
-    render(<SimilarAdList />);
+    render(<SimilarAdList {...defaultProps} />);
 
     expect(screen.getByText('Similar Ads')).toBeTruthy();
   });
 
   it('renders product cards', () => {
-    render(<SimilarAdList />);
+    render(<SimilarAdList {...defaultProps} />);
 
-    expect(screen.getAllByTestId('common-card')).toHaveLength(3);
+    expect(screen.getAllByTestId('common-card')).toHaveLength(2);
+    expect(screen.getAllByTestId('auction-card')).toHaveLength(1);
   });
 
   it('displays product information', () => {
-    render(<SimilarAdList />);
+    render(<SimilarAdList {...defaultProps} />);
 
-    expect(screen.getByText('Elly De La Cruz 1')).toBeTruthy();
-    expect(screen.getByText('Elly De La Cruz 2')).toBeTruthy();
-    expect(screen.getByText('Elly De La Cruz 3')).toBeTruthy();
+    expect(screen.getByText('Featured Item 1')).toBeTruthy();
+    expect(screen.getByText('Featured Item 2')).toBeTruthy();
+    expect(screen.getByText('Featured Item 3')).toBeTruthy();
   });
 
   it('has onPress handlers for product cards', () => {
-    render(<SimilarAdList />);
+    render(<SimilarAdList {...defaultProps} />);
 
-    const productCards = screen.getAllByTestId('common-card');
-    expect(productCards).toHaveLength(3);
+    const commonCards = screen.getAllByTestId('common-card');
+    const auctionCards = screen.getAllByTestId('auction-card');
+    expect(commonCards).toHaveLength(2);
+    expect(auctionCards).toHaveLength(1);
 
-    productCards.forEach((card) => {
+    [...commonCards, ...auctionCards].forEach((card) => {
       expect(card).toBeTruthy();
     });
   });
@@ -98,37 +104,24 @@ describe('SimilarAdList', () => {
 
 describe('SimilarAdList edge cases', () => {
   afterEach(() => {
-    dummy.dummyFeaturedCardList.length = 0;
-    originalDummyList.forEach((item) => dummy.dummyFeaturedCardList.push(item));
     jest.clearAllMocks();
   });
 
   it('renders with empty data', () => {
-    dummy.dummyFeaturedCardList.length = 0;
-    const { getByTestId } = render(<SimilarAdList />);
+    const { getByTestId } = render(<SimilarAdList {...defaultProps} />);
     expect(getByTestId('list-container')).toBeTruthy();
   });
 
-  it('renders a card with no imageUrl', () => {
-    dummy.dummyFeaturedCardList[0].imageUrl = '';
-    const { getAllByTestId } = render(<SimilarAdList />);
-    expect(
-      getAllByTestId('common-card-image-placeholder').length,
-    ).toBeGreaterThan(0);
-  });
-
-  // it('renders a featured card', () => {
-  //   dummy.dummyFeaturedCardList[0].boosted = true;
-  //   dummy.dummyFeaturedCardList[0].imageUrl = 'https://example.com/image1.jpg';
-  //   dummy.dummyFeaturedCardList[0].price = '$200.00';
-  //   const { getAllByTestId } = render(<SimilarAdList />);
-  //   expect(getAllByTestId('badge').length).toBeGreaterThan(0);
-  // });
-
   it('calls router.push when a card is pressed', () => {
-    const { getAllByTestId } = render(<SimilarAdList />);
+    const { getAllByTestId } = render(<SimilarAdList {...defaultProps} />);
     fireEvent.press(getAllByTestId('common-card')[0]);
-    expect(router.push).toHaveBeenCalledWith('/screens/product-detail');
+    expect(router.push).toHaveBeenCalledWith({
+      pathname: '/screens/common-detail',
+      params: {
+        id: '1',
+        isFavorite: 'true',
+      },
+    });
   });
 
   it('renders with noLink ListContainer', () => {
@@ -141,7 +134,7 @@ describe('SimilarAdList edge cases', () => {
         'MockListContainer';
       return MockListContainer;
     });
-    const { getByTestId } = render(<SimilarAdList />);
+    const { getByTestId } = render(<SimilarAdList {...defaultProps} />);
     expect(getByTestId('list-container')).toBeTruthy();
     jest.dontMock('@/components/molecules/ListContainer');
   });

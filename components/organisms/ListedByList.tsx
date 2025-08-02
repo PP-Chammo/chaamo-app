@@ -1,15 +1,32 @@
 import { memo } from 'react';
 
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 
 import { Label } from '@/components/atoms';
 import { People } from '@/components/molecules';
 
-const ListedByList = memo(function ListedByList() {
+type ListedByListProps = {
+  userId: string;
+  imageUrl: string;
+  username: string;
+};
+
+const ListedByList = memo(function ListedByList({
+  userId,
+  imageUrl,
+  username,
+}: ListedByListProps) {
   return (
     <View className={classes.listedByWrapper}>
       <Label variant="subtitle">Listed By</Label>
-      <People fullname="John Doe" onViewProfilePress={() => {}} />
+      <People
+        imageUrl={imageUrl}
+        fullname={username}
+        onViewProfilePress={() => {
+          Alert.alert('Coming soon');
+        }}
+        size="md"
+      />
     </View>
   );
 });

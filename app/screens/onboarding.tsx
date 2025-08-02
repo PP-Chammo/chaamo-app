@@ -1,9 +1,10 @@
 import { useState } from 'react';
 
 import { BlurView } from 'expo-blur';
+import { Image } from 'expo-image';
 import { Link, router } from 'expo-router';
 import { cssInterop } from 'nativewind';
-import { Image, ImageBackground, SafeAreaView, View } from 'react-native';
+import { ImageBackground, SafeAreaView, View } from 'react-native';
 
 import { Button, Label } from '@/components/atoms';
 import { Checkbox } from '@/components/molecules';

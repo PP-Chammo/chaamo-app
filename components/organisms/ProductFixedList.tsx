@@ -5,6 +5,7 @@ import { FlatList } from 'react-native';
 
 import { CardItem } from '@/components/molecules';
 import { dummyFeaturedCardList } from '@/constants/dummy';
+import { ListingType } from '@/generated/graphql';
 
 cssInterop(FlatList, {
   contentContainerClassName: {
@@ -21,6 +22,7 @@ const ProductFixedList = memo(function AllCards() {
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
         <CardItem
+          listingType={ListingType.SELL}
           imageUrl={item.imageUrl}
           title={item.title}
           subtitle={item.title}

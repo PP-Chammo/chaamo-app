@@ -1,13 +1,14 @@
-import React, { Fragment, memo, useState } from 'react';
+import React, { Fragment, memo, useMemo, useState } from 'react';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { clsx } from 'clsx';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
+import { TouchableOpacity, View } from 'react-native';
 
 import { getColor } from '@/utils/getColor';
 
 interface AvatarProps {
-  size: number;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
   imageUrl?: string;
   imageContainerClassName?: string;
@@ -16,7 +17,7 @@ interface AvatarProps {
 }
 
 const Avatar = memo(function Avatar({
-  size,
+  size = 'md',
   className,
   imageContainerClassName,
   imageUrl,
@@ -25,6 +26,14 @@ const Avatar = memo(function Avatar({
 }: AvatarProps) {
   const [imageError, setImageError] = useState(false);
 
+  const getPlusIconSize = useMemo(() => {
+    if (size === 'xs') return 18;
+    if (size === 'sm') return 32;
+    if (size === 'md') return 36;
+    if (size === 'lg') return 70;
+    if (size === 'xl') return 96;
+  }, [size]);
+
   return (
     <TouchableOpacity
       testID={testID}
@@ -32,7 +41,13 @@ const Avatar = memo(function Avatar({
       className={className}
       disabled={!onPress}
     >
-      <View className={clsx(classes.imageContainer, imageContainerClassName)}>
+      <View
+        className={clsx(
+          classes.imageContainer,
+          classes.imageSize[size],
+          imageContainerClassName,
+        )}
+      >
         {imageUrl && !imageError ? (
           <Fragment>
             <Image
@@ -40,10 +55,12 @@ const Avatar = memo(function Avatar({
               onError={() => {
                 setImageError(true);
               }}
-              width={size}
-              height={size}
-              className={clsx(classes.image)}
-              resizeMode="cover"
+              className={clsx(
+                classes.imageSize[size],
+                classes.image,
+                imageContainerClassName,
+              )}
+              contentFit="cover"
             />
             {onPress && (
               <MaterialCommunityIcons
@@ -56,7 +73,11 @@ const Avatar = memo(function Avatar({
           </Fragment>
         ) : (
           <Fragment>
-            <MaterialCommunityIcons name="account" size={size} color="white" />
+            <MaterialCommunityIcons
+              name="account"
+              size={getPlusIconSize}
+              color="white"
+            />
             {onPress && (
               <MaterialCommunityIcons
                 name="plus"
@@ -73,10 +94,17 @@ const Avatar = memo(function Avatar({
 });
 
 const classes = {
+  imageSize: {
+    xs: 'w-10 h-10',
+    sm: 'w-14 h-14',
+    md: 'w-16 h-16',
+    lg: 'w-24 h-24',
+    xl: 'w-32 h-32',
+  },
   imageContainer:
-    'items-center justify-center bg-slate-300 rounded-full self-center',
+    'flex items-center justify-center bg-slate-300 rounded-full self-center',
   modifyIcon: 'absolute bottom-1 right-1 bg-green-50 rounded-full p-1',
-  image: 'rounded-full border border-blue-50',
+  image: 'rounded-full border-2 border-white',
 };
 
 export default Avatar;

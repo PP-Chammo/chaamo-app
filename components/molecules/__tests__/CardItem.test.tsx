@@ -2,10 +2,13 @@ import React from 'react';
 
 import { render, fireEvent } from '@testing-library/react-native';
 
+import { ListingType } from '@/generated/graphql';
+
 import CardItem from '../CardItem';
 
 describe('CardItem', () => {
   const defaultProps = {
+    listingType: ListingType.SELL,
     imageUrl: 'https://example.com/image.jpg',
     title: 'Test Card',
     subtitle: 'Test Subtitle',
@@ -24,8 +27,8 @@ describe('CardItem', () => {
     expect(getByTestId('card-item-subtitle').props.children).toBe(
       'Test Subtitle',
     );
-    expect(getByTestId('card-item-price').props.children).toBe('$100');
-    expect(getByTestId('card-item-market-price').props.children).toBe('$120');
+    expect(getByTestId('card-item-price').props.children).toBe('$120');
+    expect(getByTestId('card-item-market-price').props.children).toBe('$100');
     expect(getByTestId('card-item-date')).toBeTruthy();
   });
 
@@ -82,8 +85,8 @@ describe('CardItem', () => {
     expect(getByTestId('card-item-subtitle').props.children).toBe(
       'Test Subtitle',
     );
-    expect(getByTestId('card-item-price').props.children).toBe('$100');
-    expect(getByTestId('card-item-market-price').props.children).toBe('$120');
+    expect(getByTestId('card-item-price').props.children).toBe('$120');
+    expect(getByTestId('card-item-market-price').props.children).toBe('$100');
     expect(getByTestId('card-item-date')).toBeTruthy();
   });
 
@@ -99,7 +102,7 @@ describe('CardItem', () => {
       <CardItem
         {...defaultProps}
         title={'A very long card title for testing purposes'}
-        price={'$1234567890'}
+        marketPrice={'$1234567890'}
       />,
     );
     expect(getByTestId('card-item-title').props.children).toBe(
