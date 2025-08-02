@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 
 import { router } from 'expo-router';
 
@@ -6,11 +6,12 @@ import { AuctionCard, ListContainer } from '@/components/molecules';
 import {
   GetFavoritesQuery,
   ListingType,
-  useGetAuctionListingsQuery,
+  useGetVwChaamoListingsQuery,
   useInsertFavoritesMutation,
   useRemoveFavoritesMutation,
 } from '@/generated/graphql';
-import { useProfileVar } from '@/hooks/useProfileVar';
+import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { useUserVar } from '@/hooks/useUserVar';
 import { DeepGet } from '@/types/helper';
 import { getColor } from '@/utils/getColor';
 
@@ -26,8 +27,10 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
   favoriteList = [],
   refreshFavoriteCount,
 }) {
-  const [profile] = useProfileVar();
-  const { data, loading } = useGetAuctionListingsQuery({
+  const [user] = useUserVar();
+  const { formatCurrencyDisplay } = useCurrencyDisplay();
+
+  const { data, loading } = useGetVwChaamoListingsQuery({
     fetchPolicy: 'cache-and-network',
     variables: {
       filter: {
@@ -35,10 +38,14 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
       },
     },
   });
-  const cards = data?.listingsCollection?.edges ?? [];
 
   const [insertFavorites] = useInsertFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
+
+  const cards = useMemo(
+    () => data?.vw_chaamo_cardsCollection?.edges ?? [],
+    [data?.vw_chaamo_cardsCollection?.edges],
+  );
 
   const getIsFavorite = useCallback(
     (listingId: string) =>
@@ -52,7 +59,7 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
         removeFavorites({
           variables: {
             filter: {
-              user_id: { eq: profile?.id },
+              user_id: { eq: user?.id },
               listing_id: { eq: listing_id },
             },
           },
@@ -65,7 +72,7 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
           variables: {
             objects: [
               {
-                user_id: profile?.id,
+                user_id: user?.id,
                 listing_id,
               },
             ],
@@ -79,7 +86,7 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
     [
       getIsFavorite,
       insertFavorites,
-      profile?.id,
+      user?.id,
       refreshFavoriteCount,
       removeFavorites,
     ],
@@ -103,15 +110,26 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
         <AuctionCard
           key={card.node.id}
           id={card.node.id}
-          imageUrl={card.node.user_cards?.user_images ?? ''}
-          title={card.node.user_cards?.master_cards?.name ?? ''}
-          price={`${card.node.currency?.trim()}${card.node.start_price?.trim()}`}
+          imageUrl={card.node?.image_url ?? ''}
+          title={card.node?.name ?? ''}
+          price={formatCurrencyDisplay(
+            card.node?.currency,
+            card.node?.start_price,
+          )}
+          onPress={() =>
+            router.push({
+              pathname: '/screens/auction-detail',
+              params: {
+                id: card.node.id,
+                isFavorite: String(getIsFavorite(card.node.id)),
+              },
+            })
+          }
           rightIcon={getIsFavorite(card.node.id) ? 'heart' : 'heart-outline'}
           rightIconColor={
             getIsFavorite(card.node.id) ? getColor('red-600') : undefined
           }
           rightIconSize={18}
-          onPress={() => router.push('/screens/auction-detail')}
           onRightIconPress={handleToggleFavorite(card.node.id)}
         />
       )}

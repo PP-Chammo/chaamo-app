@@ -1,8 +1,9 @@
 import { memo, useMemo } from 'react';
 
 import { clsx } from 'clsx';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 import { Divider, Icon, Label, Row } from '@/components/atoms';
 import { getColor } from '@/utils/getColor';
@@ -42,7 +43,7 @@ const OrderItem: React.FC<OrderItemProps> = memo(function OrderItem({
                 uri: imageUrl,
               }}
               className={classes.image}
-              resizeMode="cover"
+              contentFit="cover"
             />
             <View className={classes.statusContainer}>
               <View

@@ -22,7 +22,7 @@ const Review: React.FC<ReviewProps> = memo(function Review({
     <View testID="review-item" className={classes.container}>
       <View className={classes.header}>
         <View className={classes.imageContainer}>
-          <Avatar testID="avatar" imageUrl={imageUrl} size={50} />
+          <Avatar testID="avatar" imageUrl={imageUrl} size="sm" />
           <Label variant="subtitle" className={classes.name}>
             {name}
           </Label>

@@ -5,18 +5,28 @@ import { fireEvent, render } from '@testing-library/react-native';
 import PlaceOfferModalContent from '../PlaceOfferModalContent';
 
 describe('PlaceOfferModalContent', () => {
+  const defaultProps = {
+    id: 'test-id',
+    sellerId: 'seller-id',
+    onDismiss: jest.fn(),
+  };
+
   it('renders all labels and input', () => {
-    const { getByText, getByDisplayValue } = render(<PlaceOfferModalContent />);
+    const { getByText, getByDisplayValue } = render(
+      <PlaceOfferModalContent {...defaultProps} />,
+    );
     expect(getByText('Place your custom offer')).toBeTruthy();
     expect(getByText('Your Offer')).toBeTruthy();
-    expect(getByDisplayValue('$5000')).toBeTruthy();
+    expect(getByDisplayValue('$ ')).toBeTruthy();
     expect(getByText('Send Offer')).toBeTruthy();
   });
 
   it('updates input value on change', () => {
-    const { getByDisplayValue } = render(<PlaceOfferModalContent />);
-    const input = getByDisplayValue('$5000');
+    const { getByDisplayValue } = render(
+      <PlaceOfferModalContent {...defaultProps} />,
+    );
+    const input = getByDisplayValue('$ ');
     fireEvent.changeText(input, '1234');
-    expect(getByDisplayValue('$1234')).toBeTruthy();
+    expect(getByDisplayValue('$ 1234')).toBeTruthy();
   });
 });

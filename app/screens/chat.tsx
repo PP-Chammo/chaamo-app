@@ -47,7 +47,7 @@ export default function ChatScreen() {
       <Header
         leftComponent={
           <View className={classes.leftComponent}>
-            <Avatar size={26} />
+            <Avatar size="sm" />
             <Label className={classes.name}>{name}</Label>
           </View>
         }
@@ -84,7 +84,7 @@ export default function ChatScreen() {
           return (
             <View className={classes.messageContainerOther}>
               <View className={classes.messageOtherContent}>
-                <Avatar size={26} />
+                <Avatar size="sm" />
                 <View className={classes.messagesGroup}>
                   {group.messages.map((message) => (
                     <ChatMessage key={message.id} message={message.message} />

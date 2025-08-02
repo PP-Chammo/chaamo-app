@@ -10,6 +10,7 @@ export const getProfiles = gql`
           profile_image_url
           phone_number
           country_code
+          currency
         }
       }
     }

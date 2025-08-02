@@ -47,4 +47,3 @@ export { default as SwitchInput } from './SwitchInput';
 export { default as TabView } from './TabView';
 export { default as TextArea } from './TextArea';
 export { default as TextField } from './TextField';
-export { default as WishListItem } from './WishListItem';

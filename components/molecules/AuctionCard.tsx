@@ -1,7 +1,8 @@
 import { memo } from 'react';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
+import { TouchableOpacity, View } from 'react-native';
 
 import { Icon, Label, Tag } from '@/components/atoms';
 import { AuctionCardType } from '@/types/card';
@@ -45,25 +46,27 @@ const AuctionCard: React.FC<AuctionCardProps> = memo(function CategoryItem({
           />
         </TouchableOpacity>
       )}
-      {imageUrl ? (
-        <Image
-          testID="auction-image"
-          source={{ uri: imageUrl }}
-          className={classes.image}
-        />
-      ) : (
-        <View testID="auction-image-placeholder" className={classes.image}>
-          <Icon name="cards-outline" size={40} color={getColor('red-100')} />
-        </View>
-      )}
-      <Label
-        variant="subtitle"
-        className={classes.title}
-        testID="auction-title"
-      >
-        {title}
-      </Label>
-      <Tag title="Highest Bid" />
+      <View className={classes.titleContainer}>
+        {imageUrl ? (
+          <Image
+            testID="auction-image"
+            source={{ uri: imageUrl }}
+            className={classes.image}
+          />
+        ) : (
+          <View testID="auction-image-placeholder" className={classes.image}>
+            <Icon name="cards-outline" size={40} color={getColor('red-100')} />
+          </View>
+        )}
+        <Label
+          variant="subtitle"
+          className={classes.title}
+          testID="auction-title"
+        >
+          {title}
+        </Label>
+        <Tag title="Highest Bid" />
+      </View>
       <Label
         variant="subtitle"
         className={classes.price}
@@ -78,7 +81,8 @@ const AuctionCard: React.FC<AuctionCardProps> = memo(function CategoryItem({
 const classes = {
   container: 'w-36 flex flex-col gap-2',
   image:
-    'w-36 min-h-[170px] h-auto flex items-center justify-center bg-gray-200 rounded-lg',
+    'w-36 aspect-[7/10] h-auto flex items-center justify-center bg-gray-200 rounded',
+  titleContainer: 'flex-1 gap-1',
   title: 'text-sm !text-gray-800',
   price: 'text-sm !text-gray-800',
   rightIconButton:

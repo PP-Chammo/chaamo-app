@@ -1,17 +1,18 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 
 import { router } from 'expo-router';
 
 import { AuctionCard, CommonCard, ListContainer } from '@/components/molecules';
 import {
+  GetVwChaamoListingsQuery,
   GetFavoritesQuery,
-  GetRecentlyAddedListingsQuery,
   ListingType,
-  useGetRecentlyAddedListingsQuery,
+  useGetVwChaamoListingsQuery,
   useInsertFavoritesMutation,
   useRemoveFavoritesMutation,
 } from '@/generated/graphql';
-import { useProfileVar } from '@/hooks/useProfileVar';
+import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { useUserVar } from '@/hooks/useUserVar';
 import { DeepGet } from '@/types/helper';
 import { getColor } from '@/utils/getColor';
 
@@ -25,8 +26,10 @@ type RecentlyAddedListProps = {
 
 const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
   function RecentlyAddedList({ favoriteList = [], refreshFavoriteCount }) {
-    const [profile] = useProfileVar();
-    const { data, loading } = useGetRecentlyAddedListingsQuery({
+    const [user] = useUserVar();
+    const { formatCurrencyDisplay } = useCurrencyDisplay();
+
+    const { data, loading } = useGetVwChaamoListingsQuery({
       fetchPolicy: 'cache-and-network',
       variables: {
         filter: {
@@ -38,10 +41,14 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
         last: 10,
       },
     });
-    const cards = data?.chaamo_cardsCollection?.edges ?? [];
 
     const [insertFavorites] = useInsertFavoritesMutation();
     const [removeFavorites] = useRemoveFavoritesMutation();
+
+    const cards = useMemo(
+      () => data?.vw_chaamo_cardsCollection?.edges ?? [],
+      [data?.vw_chaamo_cardsCollection?.edges],
+    );
 
     const getIsFavorite = useCallback(
       (listingId: string) =>
@@ -55,7 +62,7 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
           removeFavorites({
             variables: {
               filter: {
-                user_id: { eq: profile?.id },
+                user_id: { eq: user?.id },
                 listing_id: { eq: listing_id },
               },
             },
@@ -68,7 +75,7 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
             variables: {
               objects: [
                 {
-                  user_id: profile?.id,
+                  user_id: user?.id,
                   listing_id,
                 },
               ],
@@ -82,7 +89,7 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
       [
         getIsFavorite,
         insertFavorites,
-        profile?.id,
+        user?.id,
         refreshFavoriteCount,
         removeFavorites,
       ],
@@ -95,8 +102,8 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
     return (
       <ListContainer<
         DeepGet<
-          GetRecentlyAddedListingsQuery,
-          ['chaamo_cardsCollection', 'edges', number]
+          GetVwChaamoListingsQuery,
+          ['vw_chaamo_cardsCollection', 'edges', number]
         >
       >
         title="Recently Added"
@@ -110,7 +117,19 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
               id={card.node.id}
               imageUrl={card.node?.image_url ?? ''}
               title={card.node?.name ?? ''}
-              price={`${card.node?.currency?.trim()}${card.node?.start_price?.trim()}`}
+              price={formatCurrencyDisplay(
+                card.node?.currency,
+                card.node?.start_price,
+              )}
+              onPress={() =>
+                router.push({
+                  pathname: '/screens/auction-detail',
+                  params: {
+                    id: card.node.id,
+                    isFavorite: String(getIsFavorite(card.node.id)),
+                  },
+                })
+              }
               rightIcon={
                 getIsFavorite(card.node.id) ? 'heart' : 'heart-outline'
               }
@@ -118,7 +137,6 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
                 getIsFavorite(card.node.id) ? getColor('red-600') : undefined
               }
               rightIconSize={18}
-              onPress={() => router.push('/screens/auction-detail')}
               onRightIconPress={handleToggleFavorite(card.node.id)}
             />
           ) : (
@@ -127,16 +145,25 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
               id={card.node.id}
               imageUrl={card.node?.image_url ?? ''}
               title={card.node?.name ?? ''}
-              price={`${card.node?.currency?.trim()}${card.node?.price?.trim()}`}
-              marketPrice={
-                card?.node?.price
-                  ? `${card.node.currency?.trim()}${card.node.price?.trim()}`
-                  : ''
-              }
-              marketType={
-                card.node.listing_type === ListingType.EBAY ? 'eBay' : 'chaamo'
-              }
+              price={formatCurrencyDisplay(
+                card.node?.currency,
+                card.node?.price,
+              )}
+              marketType="eBay"
+              marketPrice={formatCurrencyDisplay(
+                card.node?.currency,
+                card.node?.price,
+              )}
               indicator="up"
+              onPress={() =>
+                router.push({
+                  pathname: '/screens/common-detail',
+                  params: {
+                    id: card.node.id,
+                    isFavorite: String(getIsFavorite(card.node.id)),
+                  },
+                })
+              }
               rightIcon={
                 getIsFavorite(card.node.id) ? 'heart' : 'heart-outline'
               }

@@ -3,6 +3,7 @@ import { forwardRef, memo, useCallback } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { clsx } from 'clsx';
 import {
+  Pressable,
   TextInput,
   TextInputProps,
   TouchableOpacity,
@@ -49,17 +50,18 @@ const SearchField = forwardRef<TextInput, SearchFieldProps>(
 
     return (
       <View testID={testID} className={clsx(classes.container, className)}>
-        <TextInput
-          ref={ref}
-          value={value}
-          placeholder="Search"
-          className={clsx(classes.input, inputClassName)}
-          onChangeText={handleChange}
-          enterKeyHint="search"
-          onPress={onPress}
-          onSubmitEditing={() => onSubmit?.()}
-          {...props}
-        />
+        <Pressable onPress={onPress} className={classes.inputContainer}>
+          <TextInput
+            ref={ref}
+            value={value}
+            placeholder="Search"
+            className={clsx(classes.input, inputClassName)}
+            onChangeText={handleChange}
+            enterKeyHint="search"
+            onSubmitEditing={() => onSubmit?.()}
+            {...props}
+          />
+        </Pressable>
         <TouchableOpacity
           accessibilityRole="button"
           onPress={handleClear}
@@ -78,6 +80,7 @@ const SearchField = forwardRef<TextInput, SearchFieldProps>(
 
 const classes = {
   container: 'relative flex-1 h-11',
+  inputContainer: 'h-[38px]',
   input:
     'flex-1 rounded-lg border border-primary-100/60 rounded-md px-4 bg-gray-50 h-[38px]',
   clearButton: 'absolute right-0 top-1/2 -translate-y-1/2 p-3',

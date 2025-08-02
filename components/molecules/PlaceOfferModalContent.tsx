@@ -1,11 +1,64 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
-import { TextInput, View } from 'react-native';
+import { Alert, TextInput, View } from 'react-native';
 
 import { Button, Label, Row } from '@/components/atoms';
+import { currencySymbolMap } from '@/constants/currencies';
+import { useCreateOffersMutation } from '@/generated/graphql';
+import { useUserVar } from '@/hooks/useUserVar';
 
-const PlaceOfferModalContent: React.FC = () => {
-  const [offer, setOffer] = useState('5000');
+interface PlaceOfferModalContentProps {
+  id: string;
+  sellerId: string;
+  onDismiss: () => void;
+}
+
+const PlaceOfferModalContent: React.FC<PlaceOfferModalContentProps> = ({
+  id,
+  sellerId,
+  onDismiss,
+}) => {
+  const [user] = useUserVar();
+
+  const [offer, setOffer] = useState('');
+
+  const [createOffers, { loading }] = useCreateOffersMutation();
+
+  const currencySymbol = useMemo(() => {
+    return currencySymbolMap[user.profile?.currency ?? 'USD'];
+  }, [user.profile?.currency]);
+
+  const handleSubmitOffer = useCallback(() => {
+    createOffers({
+      variables: {
+        objects: [
+          {
+            listing_id: id,
+            buyer_id: user.id,
+            seller_id: sellerId,
+            offer_amount: Number(offer).toFixed(2),
+          },
+        ],
+      },
+      onCompleted: () => {
+        Alert.alert('Success', 'Your offer has been sent successfully', [
+          {
+            text: 'OK',
+            onPress: onDismiss,
+          },
+        ]);
+        onDismiss();
+      },
+      onError: (e) => {
+        Alert.alert('Failed', e.message, [
+          {
+            text: 'OK',
+            onPress: onDismiss,
+          },
+        ]);
+      },
+    });
+  }, [createOffers, id, offer, onDismiss, sellerId, user.id]);
 
   return (
     <View className={classes.container}>
@@ -15,7 +68,7 @@ const PlaceOfferModalContent: React.FC = () => {
       <Label className={classes.label}>Your Offer</Label>
       <TextInput
         className={classes.input}
-        value={`$${offer}`}
+        value={`${currencySymbol} ${offer}`}
         onChangeText={(v) => setOffer(v.replace(/\D/g, ''))}
         keyboardType="numeric"
         placeholder="$0"
@@ -24,9 +77,10 @@ const PlaceOfferModalContent: React.FC = () => {
       />
       <Button
         variant="white-light"
-        size="small"
         className={classes.placeOfferBtn}
-        textClassName={classes.placeOfferBtnText}
+        onPress={handleSubmitOffer}
+        loading={loading}
+        disabled={loading || !offer}
       >
         Send Offer
       </Button>
@@ -41,7 +95,6 @@ const classes = {
   label: 'text-white text-base font-semibold mb-1',
   input: 'text-white text-3xl font-bold border-b border-white/70 mb-2 pb-1',
   placeOfferBtn: 'mt-4.5',
-  placeOfferBtnText: 'text-white text-lg font-bold',
 };
 
 export default PlaceOfferModalContent;

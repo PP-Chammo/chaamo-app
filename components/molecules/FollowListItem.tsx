@@ -50,7 +50,7 @@ const FollowListItem: React.FC<FollowListItemProps> = memo(
       <Fragment>
         <Row testID="follow-list-item" between>
           <Row className={classes.row}>
-            <Avatar testID="avatar" imageUrl={imageUrl} size={50} />
+            <Avatar testID="avatar" imageUrl={imageUrl} size="md" />
             <Label>{name}</Label>
           </Row>
           <Row className={classes.row}>

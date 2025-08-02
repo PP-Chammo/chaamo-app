@@ -39,7 +39,13 @@ describe('AuctionList', () => {
 
     fireEvent.press(firstCard);
 
-    expect(router.push).toHaveBeenCalledWith('/screens/auction-detail');
+    expect(router.push).toHaveBeenCalledWith({
+      pathname: '/screens/auction-detail',
+      params: {
+        id: '1',
+        isFavorite: 'false',
+      },
+    });
   });
 
   it('handles right icon press on auction card', () => {

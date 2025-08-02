@@ -20,11 +20,11 @@ import {
   SoldItemsProfile,
 } from '@/components/organisms';
 import { profileTabs } from '@/constants/tabs';
-import { useProfileVar } from '@/hooks/useProfileVar';
+import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
 
 export default function ProfileScreen() {
-  const [profileState] = useProfileVar();
+  const [user] = useUserVar();
 
   const handleSettingsPress = useCallback(() => {
     router.push('/screens/settings');
@@ -55,17 +55,14 @@ export default function ProfileScreen() {
       />
       <View className={classes.profileContainer}>
         <Avatar
-          size={80}
-          imageContainerClassName={classes.avatarImageContainer}
+          size="lg"
           imageUrl={
-            profileState?.profile?.profile_image_url ??
-            profileState?.user_metadata?.avatar_url
+            user?.profile?.profile_image_url ?? user?.user_metadata?.avatar_url
           }
         />
         <View className={classes.profileInfoContainer}>
           <Label variant="title" className={classes.profileName}>
-            {profileState?.profile?.username ??
-              profileState?.user_metadata?.name}
+            {user?.profile?.username ?? user?.user_metadata?.name}
           </Label>
           <View className={classes.portfolioContainer}>
             <Label className={classes.portfolioValueLabel}>
@@ -125,7 +122,6 @@ export default function ProfileScreen() {
 const classes = {
   container: 'flex-1',
   profileContainer: 'flex-row gap-5 mt-2 px-4.5 items-center',
-  avatarImageContainer: 'border-2 border-white',
   profileInfoContainer: 'gap-2',
   profileName: 'text-3xl font-bold',
   portfolioContainer: 'flex-row items-center gap-1',

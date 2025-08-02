@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from 'react';
 
+import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-import { Alert, Image, TouchableOpacity, View } from 'react-native';
+import { Alert, TouchableOpacity, View } from 'react-native';
 
 import {
   Button,
@@ -14,7 +15,7 @@ import {
 import { Header, TextArea } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
 import { useCreateCommunityPostsMutation } from '@/generated/graphql';
-import { useProfileVar } from '@/hooks/useProfileVar';
+import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
 import { uploadToBucket } from '@/utils/supabase';
 
@@ -29,7 +30,7 @@ const initialForm: Form = {
 };
 
 export default function NewPostScreen() {
-  const [profile] = useProfileVar();
+  const [user] = useUserVar();
   const [createPosts, { loading }] = useCreateCommunityPostsMutation();
 
   const [form, setForm] = useState<Form>(initialForm);
@@ -78,7 +79,7 @@ export default function NewPostScreen() {
         variables: {
           objects: [
             {
-              user_id: profile.id,
+              user_id: user.id,
               content: form.content,
               ...(uploadedUrl
                 ? {
@@ -105,7 +106,7 @@ export default function NewPostScreen() {
     } catch (e: unknown) {
       console.error('create community post error', e);
     }
-  }, [createPosts, form.content, form.contentImageUrl, profile.id]);
+  }, [createPosts, form.content, form.contentImageUrl, user.id]);
 
   return (
     <ScreenContainer>
@@ -118,7 +119,7 @@ export default function NewPostScreen() {
               <Image
                 source={{ uri: form.contentImageUrl }}
                 className={classes.image}
-                resizeMode="cover"
+                contentFit="cover"
               />
               <TouchableOpacity
                 className={classes.closeIcon}

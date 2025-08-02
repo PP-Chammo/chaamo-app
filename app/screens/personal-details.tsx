@@ -16,15 +16,15 @@ import {
   useUpdateProfileMutation,
   useUpdateUserAddressMutation,
 } from '@/generated/graphql';
-import { useProfileVar } from '@/hooks/useProfileVar';
-import { ProfileStore } from '@/stores/profileStore';
+import { useUserVar } from '@/hooks/useUserVar';
+import { UserStore } from '@/stores/userStore';
 import { DeepGet } from '@/types/helper';
 import { validateRequired, ValidationErrors } from '@/utils/validate';
 
 export default function PersonalDetailsScreen() {
-  const [form, setForm] = useProfileVar();
+  const [form, setForm] = useUserVar();
   const [errors, setErrors] = useState<
-    ValidationErrors<DeepGet<ProfileStore, ['profile']>>
+    ValidationErrors<DeepGet<UserStore, ['profile']>>
   >({});
   const [updateProfile] = useUpdateProfileMutation();
   const [updateUserAddress] = useUpdateUserAddressMutation();
@@ -39,7 +39,7 @@ export default function PersonalDetailsScreen() {
       setForm({
         ...form,
         profile: { ...form.profile, [name]: value } as DeepGet<
-          ProfileStore,
+          UserStore,
           ['profile']
         >,
       });
@@ -48,7 +48,7 @@ export default function PersonalDetailsScreen() {
   );
 
   const handleUpdateProfile = () => {
-    const requiredFields: (keyof DeepGet<ProfileStore, ['profile']>)[] = [
+    const requiredFields: (keyof DeepGet<UserStore, ['profile']>)[] = [
       'city',
       'state_province',
       'country',

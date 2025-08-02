@@ -1,6 +1,7 @@
 import { memo } from 'react';
 
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
+import { TouchableOpacity, View } from 'react-native';
 
 import { Icon, Label, Row } from '@/components/atoms';
 

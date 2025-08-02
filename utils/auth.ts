@@ -4,7 +4,7 @@ import { Alert } from 'react-native';
 
 import { getProfiles } from '@/graphql/profiles';
 import { getUserAddresses } from '@/graphql/user_addresses';
-import { ProfileStore } from '@/stores/profileStore';
+import { UserStore } from '@/stores/userStore';
 import { DeepGet } from '@/types/helper';
 
 import client from './apollo';
@@ -59,7 +59,7 @@ export async function loginWithGoogle() {
 }
 
 export const updateProfileSession = async (
-  setProfile: (value: Partial<ProfileStore>) => void,
+  setUser: (value: Partial<UserStore>) => void,
   callback: (success: boolean, userId?: string) => void,
 ) => {
   const errorAlert = () => {
@@ -115,10 +115,10 @@ export const updateProfileSession = async (
       const addressData =
         selectedUserAddress?.data?.user_addressesCollection?.edges[0]?.node;
 
-      setProfile({
+      setUser({
         ...data?.session?.user,
         profile: { ...profileData, ...addressData } as DeepGet<
-          ProfileStore,
+          UserStore,
           ['profile']
         >,
       });

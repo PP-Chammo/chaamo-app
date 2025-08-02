@@ -2,7 +2,7 @@ import { Fragment, memo, useMemo, useState } from 'react';
 
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
-import { Icon, Row } from '@/components/atoms';
+import { Icon } from '@/components/atoms';
 import { TextField } from '@/components/molecules';
 import { getColor } from '@/utils/getColor';
 
@@ -33,7 +33,7 @@ const SelectableList: React.FC<SelectableListProps> = memo(
             placeholder="Search"
             value={search}
             onChange={({ value }) => setSearch(value)}
-            leftIcon={
+            leftComponent={
               <Icon name="magnify" size={24} color={getColor('slate-700')} />
             }
           />
@@ -48,18 +48,17 @@ const SelectableList: React.FC<SelectableListProps> = memo(
                 onPress={() => onSelect(item)}
                 className={classes.stateItem}
               >
-                <Row between>
-                  <Text>{item}</Text>
-                  {value === item && (
-                    <Icon
-                      name="check"
-                      size={24}
-                      color={getColor('primary-500')}
-                    />
-                  )}
-                </Row>
+                <Text>{item}</Text>
+                {value === item && (
+                  <Icon
+                    name="check"
+                    size={24}
+                    color={getColor('primary-500')}
+                  />
+                )}
               </TouchableOpacity>
             )}
+            ItemSeparatorComponent={Separator}
           />
         </View>
       </Fragment>
@@ -67,11 +66,16 @@ const SelectableList: React.FC<SelectableListProps> = memo(
   },
 );
 
+const Separator = memo(function Separator() {
+  return <View className={classes.separator} />;
+});
+
 const classes = {
   searchContainer: 'px-4.5',
   listContainer: 'px-4.5 mt-4.5 bg-white',
-  stateItem: 'border-b border-gray-200 p-4.5',
+  stateItem: 'flex flex-row items-center justify-between px-4.5 h-16',
   listContentContainer: 'gap-2.5',
+  separator: 'w-full bg-slate-200 h-px',
 };
 
 export default SelectableList;

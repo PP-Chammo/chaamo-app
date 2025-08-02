@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { ScrollView, View } from 'react-native';
 
@@ -16,7 +16,7 @@ import {
 } from '@/components/organisms';
 import { TextChangeParams } from '@/domains';
 import { useGetFavoritesQuery } from '@/generated/graphql';
-import { useProfileVar } from '@/hooks/useProfileVar';
+import { useUserVar } from '@/hooks/useUserVar';
 
 cssInterop(ScrollView, {
   contentContainerClassName: {
@@ -25,20 +25,24 @@ cssInterop(ScrollView, {
 });
 
 export default function HomeScreen() {
-  const [profile] = useProfileVar();
+  const [user] = useUserVar();
   const { data: favoritesData, refetch: refetchFavorites } =
     useGetFavoritesQuery({
-      skip: !profile?.id,
+      skip: !user?.id,
       variables: {
         filter: {
-          user_id: { eq: profile?.id },
+          user_id: { eq: user?.id },
         },
       },
       onError: console.log,
     });
-  const favorites = favoritesData?.favorite_listingsCollection?.edges ?? [];
 
   const [searchText, setSearchText] = useState<string>('');
+
+  const favorites = useMemo(
+    () => favoritesData?.favorite_listingsCollection?.edges ?? [],
+    [favoritesData?.favorite_listingsCollection?.edges],
+  );
 
   const favoriteCount = useMemo(() => {
     if (favorites?.length > 0) {
@@ -59,6 +63,12 @@ export default function HomeScreen() {
       params: { focus: 'true', search: searchText },
     });
   }, [searchText]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetchFavorites();
+    }, [refetchFavorites]),
+  );
 
   return (
     <ScreenContainer classNameTop={classes.containerTop}>

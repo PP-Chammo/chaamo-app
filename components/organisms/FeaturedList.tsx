@@ -1,18 +1,18 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 
 import { router } from 'expo-router';
 
 import { AuctionCard, CommonCard, ListContainer } from '@/components/molecules';
 import {
   GetFavoritesQuery,
-  GetFeaturedListingsQuery,
+  GetVwFeaturedListingsQuery,
   ListingType,
-  useGetFeaturedListingsQuery,
+  useGetVwFeaturedListingsQuery,
   useInsertFavoritesMutation,
   useRemoveFavoritesMutation,
-  UserTier,
 } from '@/generated/graphql';
-import { useProfileVar } from '@/hooks/useProfileVar';
+import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { useUserVar } from '@/hooks/useUserVar';
 import { DeepGet } from '@/types/helper';
 import { getColor } from '@/utils/getColor';
 
@@ -28,28 +28,29 @@ const FeaturedList: React.FC<FeaturedListProps> = memo(function FeaturedList({
   favoriteList = [],
   refreshFavoriteCount,
 }) {
-  const [profile] = useProfileVar();
-  const { data, loading } = useGetFeaturedListingsQuery({
+  const [user] = useUserVar();
+  const { formatCurrencyDisplay } = useCurrencyDisplay();
+
+  const { data, loading } = useGetVwFeaturedListingsQuery({
     fetchPolicy: 'cache-and-network',
     variables: {
       filter: {
-        and: [
-          { subscription_tier: { eq: UserTier.GOLD } },
-          {
-            or: [
-              { listing_type: { eq: ListingType.SELL } },
-              { listing_type: { eq: ListingType.AUCTION } },
-            ],
-          },
+        or: [
+          { listing_type: { eq: ListingType.SELL } },
+          { listing_type: { eq: ListingType.AUCTION } },
         ],
       },
       last: 10,
     },
   });
-  const cards = data?.featured_cardsCollection?.edges ?? [];
 
   const [insertFavorites] = useInsertFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
+
+  const cards = useMemo(
+    () => data?.vw_featured_cardsCollection?.edges ?? [],
+    [data?.vw_featured_cardsCollection?.edges],
+  );
 
   const getIsFavorite = useCallback(
     (listingId: string) =>
@@ -63,7 +64,7 @@ const FeaturedList: React.FC<FeaturedListProps> = memo(function FeaturedList({
         removeFavorites({
           variables: {
             filter: {
-              user_id: { eq: profile?.id },
+              user_id: { eq: user?.id },
               listing_id: { eq: listing_id },
             },
           },
@@ -76,7 +77,7 @@ const FeaturedList: React.FC<FeaturedListProps> = memo(function FeaturedList({
           variables: {
             objects: [
               {
-                user_id: profile?.id,
+                user_id: user?.id,
                 listing_id,
               },
             ],
@@ -90,7 +91,7 @@ const FeaturedList: React.FC<FeaturedListProps> = memo(function FeaturedList({
     [
       getIsFavorite,
       insertFavorites,
-      profile?.id,
+      user?.id,
       refreshFavoriteCount,
       removeFavorites,
     ],
@@ -103,8 +104,8 @@ const FeaturedList: React.FC<FeaturedListProps> = memo(function FeaturedList({
   return (
     <ListContainer<
       DeepGet<
-        GetFeaturedListingsQuery,
-        ['featured_cardsCollection', 'edges', number]
+        GetVwFeaturedListingsQuery,
+        ['vw_featured_cardsCollection', 'edges', number]
       >
     >
       title="Featured"
@@ -118,13 +119,24 @@ const FeaturedList: React.FC<FeaturedListProps> = memo(function FeaturedList({
             id={card.node.id}
             imageUrl={card.node?.image_url ?? ''}
             title={card.node?.name ?? ''}
-            price={`${card.node?.currency?.trim()}${card.node?.start_price?.trim()}`}
+            price={formatCurrencyDisplay(
+              card.node?.currency,
+              card.node?.start_price,
+            )}
+            onPress={() =>
+              router.push({
+                pathname: '/screens/auction-detail',
+                params: {
+                  id: card.node.id,
+                  isFavorite: String(getIsFavorite(card.node.id)),
+                },
+              })
+            }
             rightIcon={getIsFavorite(card.node.id) ? 'heart' : 'heart-outline'}
             rightIconColor={
               getIsFavorite(card.node.id) ? getColor('red-600') : undefined
             }
             rightIconSize={18}
-            onPress={() => router.push('/screens/auction-detail')}
             onRightIconPress={handleToggleFavorite(card.node.id)}
           />
         ) : (
@@ -133,16 +145,24 @@ const FeaturedList: React.FC<FeaturedListProps> = memo(function FeaturedList({
             id={card.node.id}
             imageUrl={card.node?.image_url ?? ''}
             title={card.node?.name ?? ''}
-            price={`${card.node?.currency?.trim()}${card.node?.price?.trim()}`}
-            marketPrice={
-              card?.node?.price
-                ? `${card.node.currency?.trim()}${card.node.price?.trim()}`
-                : ''
-            }
+            price={formatCurrencyDisplay(card.node?.currency, card.node?.price)}
+            marketPrice={formatCurrencyDisplay(
+              card.node?.currency,
+              card.node?.price,
+            )}
             marketType={
               card.node.listing_type === ListingType.EBAY ? 'eBay' : 'chaamo'
             }
             indicator="up"
+            onPress={() =>
+              router.push({
+                pathname: '/screens/common-detail',
+                params: {
+                  id: card.node.id,
+                  isFavorite: String(getIsFavorite(card.node.id)),
+                },
+              })
+            }
             rightIcon={getIsFavorite(card.node.id) ? 'heart' : 'heart-outline'}
             rightIconColor={
               getIsFavorite(card.node.id) ? getColor('red-600') : undefined

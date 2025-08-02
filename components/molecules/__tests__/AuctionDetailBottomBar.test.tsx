@@ -7,6 +7,9 @@ import AuctionDetailBottomBar from '../AuctionDetailBottomBar';
 describe('AuctionDetailBottomBar', () => {
   const defaultProps = {
     showModal: false,
+    endDate: new Date(
+      Date.now() + 7 * 24 * 60 * 60 * 1000 + 15 * 60 * 60 * 1000,
+    ).toISOString(),
     onBidNowPress: jest.fn(),
   };
 
@@ -16,7 +19,7 @@ describe('AuctionDetailBottomBar', () => {
 
   it('renders all labels and button', () => {
     const { getByText } = render(<AuctionDetailBottomBar {...defaultProps} />);
-    expect(getByText('7d 15h')).toBeTruthy();
+    expect(getByText(/7d \d+h/)).toBeTruthy();
     expect(getByText('Highest Bid')).toBeTruthy();
     expect(getByText('$400')).toBeTruthy();
     expect(getByText('Bid Now')).toBeTruthy();

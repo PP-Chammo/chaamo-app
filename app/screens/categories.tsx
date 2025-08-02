@@ -68,5 +68,5 @@ const classes = {
   header: 'bg-white',
   headerCategory: 'py-5',
   list: 'pb-4.5',
-  contentContainer: 'gap-5 px-4.5 pb-5',
+  contentContainer: 'gap-5 px-4.5 pb-10',
 };

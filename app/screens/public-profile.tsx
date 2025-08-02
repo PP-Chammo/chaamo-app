@@ -57,7 +57,7 @@ export default function PublicProfileScreen() {
         />
         <View className={classes.profileContainer}>
           <Avatar
-            size={80}
+            size="xl"
             imageContainerClassName={classes.avatarImageContainer}
           />
           <View className={classes.profileInfoContainer}>

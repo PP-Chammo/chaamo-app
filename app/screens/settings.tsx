@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useState } from 'react';
+import { Fragment, useCallback, useMemo, useState } from 'react';
 
 import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
@@ -11,12 +11,19 @@ import {
   ScreenContainer,
 } from '@/components/atoms';
 import { Header, SettingItem } from '@/components/molecules';
+import { currencyMap } from '@/constants/currencies';
+import { useUserVar } from '@/hooks/useUserVar';
 import { logout } from '@/utils/auth';
 import { getColor } from '@/utils/getColor';
 
 export default function SettingsScreen() {
+  const [user] = useUserVar();
   const [isDeleteAccountModalVisible, setIsDeleteAccountModalVisible] =
     useState<boolean>(false);
+
+  const currencyLabel = useMemo(() => {
+    return currencyMap?.[user?.profile?.currency ?? 'USD'];
+  }, [user?.profile?.currency]);
 
   const handleDeleteAccount = useCallback(() => {
     setIsDeleteAccountModalVisible(!isDeleteAccountModalVisible);
@@ -53,7 +60,7 @@ export default function SettingsScreen() {
             <SettingItem
               iconName="currency-usd"
               title="Currency"
-              value="USD"
+              value={currencyLabel}
               onPress={() => router.push('/screens/change-currency')}
             />
             <Divider position="horizontal" className={classes.divider} />

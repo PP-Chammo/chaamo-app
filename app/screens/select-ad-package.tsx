@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { Image, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Button, Icon, Label, Row, ScreenContainer } from '@/components/atoms';
 import { Header, RadioInput } from '@/components/molecules';

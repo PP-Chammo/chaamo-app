@@ -2,7 +2,8 @@ import { memo, useCallback } from 'react';
 
 import { clsx } from 'clsx';
 import { formatDistanceToNow } from 'date-fns';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
+import { TouchableOpacity, View } from 'react-native';
 
 import EBayLogo from '@/assets/svg/ebay.svg';
 import { Icon, Label, PriceIndicator, Row, Tag } from '@/components/atoms';

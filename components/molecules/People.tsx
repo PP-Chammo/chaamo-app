@@ -1,20 +1,24 @@
-import { memo } from 'react';
+import { ComponentProps, memo } from 'react';
 
 import { Pressable, TouchableOpacity, View } from 'react-native';
 
 import { Avatar, Button, Label } from '@/components/atoms';
 
 interface PeopleProps {
+  followed?: boolean;
   fullname: string;
   imageUrl?: string;
+  size?: ComponentProps<typeof Avatar>['size'];
   onPress?: () => void;
   onFollowPress?: () => void;
   onViewProfilePress?: () => void;
 }
 
 const People: React.FC<PeopleProps> = memo(function People({
+  followed,
   fullname,
   imageUrl,
+  size,
   onPress,
   onFollowPress,
   onViewProfilePress,
@@ -26,7 +30,7 @@ const People: React.FC<PeopleProps> = memo(function People({
       className={classes.container}
     >
       <View className={classes.imageContainer}>
-        <Avatar testID="avatar" imageUrl={imageUrl} size={50} />
+        <Avatar testID="avatar" imageUrl={imageUrl} size={size} />
         <View>
           <Label variant="subtitle" className={classes.fullname}>
             {fullname}
@@ -39,8 +43,14 @@ const People: React.FC<PeopleProps> = memo(function People({
         </View>
       </View>
       {onFollowPress && (
-        <Button size="small" onPress={onFollowPress} testID="follow-button">
-          Follow
+        <Button
+          size="small"
+          variant={followed ? 'primary-light' : 'primary'}
+          className={classes.followButton}
+          onPress={onFollowPress}
+          testID="follow-button"
+        >
+          {followed ? 'Unfollow' : 'Follow'}
         </Button>
       )}
     </Pressable>
@@ -52,6 +62,7 @@ const classes = {
   imageContainer: 'flex flex-row items-center gap-3',
   fullname: '!text-gray-700',
   viewProfile: 'text-primary-500 underline',
+  followButton: '!min-w-28',
 };
 
 export default People;

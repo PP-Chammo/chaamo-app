@@ -34,7 +34,7 @@ const ChatListItem: React.FC<ChatListItemProps> = memo(function ChatListItem({
     >
       <View className={classes.leftContainer}>
         <View className={classes.avatarContainer}>
-          <Avatar size={40} imageUrl={imageUrl} />
+          <Avatar size="sm" imageUrl={imageUrl} />
           <View className={classes.statusIndicator} />
         </View>
         <View className={classes.chatInfoContainer}>
@@ -64,7 +64,7 @@ const classes = {
   avatarContainer: 'relative',
   rightContainer: 'items-end gap-1',
   statusIndicator:
-    'h-3 w-3 bg-green-500 rounded-full absolute bottom-1 -right-0.5 border border-white',
+    'h-3 w-3 bg-green-500 rounded-full absolute bottom-1.5 right-0 border border-white',
   chatInfoContainer: 'gap-1',
   name: 'text-slate-800 font-semibold',
   message: 'text-slate-500',

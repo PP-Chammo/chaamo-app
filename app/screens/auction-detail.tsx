@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 
-import { router } from 'expo-router';
+import { Image } from 'expo-image';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 
@@ -14,7 +15,15 @@ import { Chart, Header, ProductDetailInfo } from '@/components/molecules';
 import AuctionBottomBar from '@/components/molecules/AuctionDetailBottomBar';
 import PlaceBidModalContent from '@/components/molecules/PlaceBidModalContent';
 import { ListedByList, SimilarAdList } from '@/components/organisms';
-import { dummyAuctionDetail, dummyPortfolioValueData } from '@/constants/dummy';
+import { dummyPortfolioValueData } from '@/constants/dummy';
+import {
+  ListingType,
+  useGetVwAuctionDetailQuery,
+  useInsertFavoritesMutation,
+  useRemoveFavoritesMutation,
+} from '@/generated/graphql';
+import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
 
 cssInterop(ScrollView, {
@@ -24,17 +33,75 @@ cssInterop(ScrollView, {
 });
 
 export default function AuctionDetailScreen() {
-  const card = dummyAuctionDetail;
+  const [user] = useUserVar();
+  const { formatCurrencyDisplay } = useCurrencyDisplay();
+
+  const { id, isFavorite } = useLocalSearchParams();
+  const { data } = useGetVwAuctionDetailQuery({
+    skip: !id,
+    variables: {
+      filter: {
+        id: { eq: id },
+      },
+    },
+  });
+  const [insertFavorites] = useInsertFavoritesMutation();
+  const [removeFavorites] = useRemoveFavoritesMutation();
 
   const [showModal, setShowModal] = React.useState(false);
+  const [isFavoriteState, setIsFavoriteState] = React.useState(false);
 
-  const handleToggleFavorite = React.useCallback(() => {
-    console.log('toggle favorite');
-  }, []);
+  const detail = useMemo(
+    () => data?.vw_chaamo_cardsCollection?.edges?.[0]?.node,
+    [data],
+  );
 
-  const handleBidNow = React.useCallback(() => {
+  const handleToggleFavorite = useCallback(() => {
+    if (isFavoriteState) {
+      removeFavorites({
+        variables: {
+          filter: {
+            user_id: { eq: user?.id },
+            listing_id: { eq: id },
+          },
+        },
+        onCompleted: () => {
+          setIsFavoriteState(false);
+        },
+      });
+    } else {
+      insertFavorites({
+        variables: {
+          objects: [
+            {
+              user_id: user?.id,
+              listing_id: id,
+            },
+          ],
+        },
+        onCompleted: () => {
+          setIsFavoriteState(true);
+        },
+      });
+    }
+  }, [id, insertFavorites, isFavoriteState, user?.id, removeFavorites]);
+
+  const handleReport = useCallback(() => {
+    router.push({
+      pathname: '/screens/report',
+      params: { listingId: detail?.id, userId: detail?.seller_id },
+    });
+  }, [detail?.id, detail?.seller_id]);
+
+  const handleBidNow = useCallback(() => {
     setShowModal(true);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsFavoriteState(isFavorite === 'true');
+    }, [isFavorite]),
+  );
 
   return (
     <ScreenContainer classNameBottom={classes.containerBottom}>
@@ -46,41 +113,74 @@ export default function AuctionDetailScreen() {
         <Header
           onBackPress={() => router.back()}
           className={classes.header}
-          rightIcon="heart-outline"
-          rightIconColor={getColor('gray-600')}
+          rightIcon={isFavoriteState ? 'heart' : 'heart-outline'}
+          rightIconColor={getColor(isFavoriteState ? 'red-500' : 'gray-600')}
           rightIconSize={28}
           onRightPress={handleToggleFavorite}
         />
         <View className={classes.cardImageWrapper}>
-          <View className={classes.cardImage}>
-            <Icon name="cards-outline" size={64} color={getColor('gray-400')} />
-          </View>
+          {detail?.image_url ? (
+            <Image
+              source={{ uri: detail?.image_url }}
+              className={classes.cardImage}
+            />
+          ) : (
+            <View className={classes.cardImage}>
+              <Icon
+                name="cards-outline"
+                size={64}
+                color={getColor('gray-400')}
+              />
+            </View>
+          )}
         </View>
         <ProductDetailInfo
-          price={card.currentPrice}
-          date={card.date}
-          title={card.title}
-          marketPrice={card.bidPrice}
-          description={card.description}
+          price={formatCurrencyDisplay(detail?.currency, detail?.start_price)}
+          date={detail?.created_at ?? new Date().toISOString()}
+          title={detail?.name ?? ''}
+          marketPrice={formatCurrencyDisplay(
+            detail?.currency,
+            detail?.ebay_highest_price ?? 0,
+          )}
+          description={detail?.description ?? ''}
         />
         <View className={classes.chartWrapper}>
           <Chart data={dummyPortfolioValueData} />
         </View>
-        <ListedByList />
-        <TouchableOpacity className={classes.reportButton}>
+        <ListedByList
+          userId={detail?.seller_id ?? ''}
+          imageUrl={detail?.seller_image_url ?? ''}
+          username={detail?.seller_username ?? ''}
+        />
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={handleReport}
+          className={classes.reportButton}
+        >
           <Icon name="flag" size={18} />
           <Label variant="subtitle">Report this Ad</Label>
         </TouchableOpacity>
-        <SimilarAdList />
+        <SimilarAdList
+          ignoreListingId={detail?.id ?? ''}
+          listingType={ListingType.AUCTION}
+        />
       </ScrollView>
-      <AuctionBottomBar showModal={showModal} onBidNowPress={handleBidNow} />
+      <AuctionBottomBar
+        showModal={showModal}
+        endDate={detail?.ends_at ?? new Date()}
+        onBidNowPress={handleBidNow}
+      />
       <BottomSheetModal
         show={showModal}
         onDismiss={() => setShowModal(false)}
         className={classes.bottomSheet}
-        height={390}
+        height={440}
       >
-        <PlaceBidModalContent />
+        <PlaceBidModalContent
+          id={detail?.id ?? ''}
+          endDate={detail?.ends_at ?? new Date()}
+          onDismiss={() => setShowModal(false)}
+        />
       </BottomSheetModal>
     </ScreenContainer>
   );
@@ -89,10 +189,10 @@ export default function AuctionDetailScreen() {
 const classes = {
   containerBottom: 'bg-primary-500',
   header: '!bg-transparent',
-  scrollView: 'gap-4.5 pb-32',
+  scrollView: 'gap-4.5 pb-36',
   cardImageWrapper: 'items-center',
   cardImage:
-    'w-56 h-80 rounded-xl border border-gray-200 bg-gray-200 items-center justify-center',
+    'w-56 aspect-[7/10] rounded-lg border border-gray-200 bg-gray-200 items-center justify-center',
   chartWrapper: 'px-4.5',
   priceValueLabel: 'text-sm text-gray-500',
   priceValue: 'text-sm text-gray-700 font-bold',
@@ -113,5 +213,5 @@ const classes = {
   timeBarInner:
     'absolute -top-7 left-0 right-0 bg-amber-50 py-1 flex flex-row justify-center items-center rounded-t-xl',
   timeText: 'text-sm font-bold',
-  bottomSheet: 'bg-primary-500',
+  bottomSheet: 'bg-primary-500 pb-4.5',
 };
