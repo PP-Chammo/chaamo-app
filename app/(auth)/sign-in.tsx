@@ -6,7 +6,7 @@ import { Text, View } from 'react-native';
 import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header, PhoneInput, TextField } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
-import { useProfileVar } from '@/hooks/useProfileVar';
+import { useUserVar } from '@/hooks/useUserVar';
 import { loginWithGoogle, updateProfileSession } from '@/utils/auth';
 
 interface SignInForm {
@@ -15,7 +15,7 @@ interface SignInForm {
 }
 
 export default function SignInScreen() {
-  const [, setProfile] = useProfileVar();
+  const [, setUser] = useUserVar();
   const [form, setForm] = useState<SignInForm>({
     phone: '',
     password: '',
@@ -38,7 +38,7 @@ export default function SignInScreen() {
   const handleGoogleLogin = useCallback(async () => {
     try {
       await loginWithGoogle();
-      await updateProfileSession(setProfile, (isSuccess) => {
+      await updateProfileSession(setUser, (isSuccess) => {
         if (isSuccess) {
           router.replace('/(tabs)/home');
         }
@@ -46,7 +46,7 @@ export default function SignInScreen() {
     } catch (e: unknown) {
       console.error(e);
     }
-  }, [setProfile]);
+  }, [setUser]);
 
   return (
     <ScreenContainer>

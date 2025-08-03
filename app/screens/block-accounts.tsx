@@ -12,16 +12,23 @@ import {
   useGetBlockedAccountsQuery,
   useGetProfilesQuery,
 } from '@/generated/graphql';
-import { useProfileVar } from '@/hooks/useProfileVar';
+import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
 
 export default function BlockedAccounts() {
   const [search, setSearch] = useState<string>('');
-  const [user] = useProfileVar();
+  const [user] = useUserVar();
 
   const { data: blockedData, refetch: refetchBlockedAccount } =
     useGetBlockedAccountsQuery({
       fetchPolicy: 'cache-and-network',
+      variables: {
+        filter: {
+          blocked_user_id: {
+            neq: user?.id,
+          },
+        },
+      },
     });
 
   const blockedIds = useMemo(

@@ -1,7 +1,8 @@
 import { memo } from 'react';
 
 import { MaterialIcons } from '@expo/vector-icons';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 import { getColor } from '@/utils/getColor';
 

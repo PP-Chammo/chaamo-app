@@ -22,7 +22,7 @@ const BlockListItem: React.FC<BlockListItemProps> = ({
   return (
     <Row testID="block-list-item" between>
       <Row className={classes.row}>
-        <Avatar testID="avatar" imageUrl={profile_image_url} size={50} />
+        <Avatar testID="avatar" imageUrl={profile_image_url} size="sm" />
         <Label>{username}</Label>
       </Row>
       <Row className={classes.row}>
@@ -41,6 +41,7 @@ const BlockListItem: React.FC<BlockListItemProps> = ({
 
 const classes = {
   row: 'gap-3',
+  button: '!py-2',
 };
 
 export default BlockListItem;

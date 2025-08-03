@@ -76,6 +76,15 @@ jest.mock('@apollo/client', () => ({
     { loading: false, error: null, data: null },
   ]),
   gql: jest.fn(),
+  makeVar: jest.fn((initialValue) => {
+    let value = initialValue;
+    const getter = () => value;
+    const setter = (newValue) => {
+      value = newValue;
+    };
+    return Object.assign(getter, { set: setter });
+  }),
+  useReactiveVar: jest.fn((varFn) => varFn()),
 }));
 
 // Mock generated GraphQL hooks
@@ -191,6 +200,156 @@ jest.mock('@/generated/graphql', () => ({
     loading: false,
     error: null,
   })),
+  useGetFollowersQuery: jest.fn(() => ({
+    data: { followersCollection: { edges: [] } },
+    loading: false,
+    error: null,
+    refetch: jest.fn(),
+  })),
+  useGetVwFilteredProfilesQuery: jest.fn(() => ({
+    data: {
+      vw_filtered_profilesCollection: {
+        edges: [
+          {
+            node: {
+              id: '1',
+              username: 'John Doe',
+              profile_image_url: 'https://example.com/avatar1.jpg',
+            },
+          },
+          {
+            node: {
+              id: '2',
+              username: 'Jane Smith',
+              profile_image_url: 'https://example.com/avatar2.jpg',
+            },
+          },
+          {
+            node: {
+              id: '3',
+              username: 'Alice Johnson',
+              profile_image_url: 'https://example.com/avatar3.jpg',
+            },
+          },
+        ],
+      },
+    },
+    loading: false,
+    error: null,
+  })),
+  useCreateBidsMutation: jest.fn(() => [
+    jest.fn(),
+    { loading: false, error: null, data: null },
+  ]),
+  useCreateOffersMutation: jest.fn(() => [
+    jest.fn(),
+    { loading: false, error: null, data: null },
+  ]),
+  useGetVwChaamoListingsQuery: jest.fn(() => ({
+    data: {
+      vw_chaamo_cardsCollection: {
+        edges: [
+          {
+            node: {
+              id: '1',
+              name: 'Auction Item 1',
+              image_url: 'https://example.com/image1.jpg',
+              currency: '$',
+              start_price: '100',
+              listing_type: 'AUCTION',
+            },
+          },
+          {
+            node: {
+              id: '2',
+              name: 'Common Item 2',
+              image_url: 'https://example.com/image2.jpg',
+              currency: '$',
+              price: '200',
+              listing_type: 'SELL',
+            },
+          },
+          {
+            node: {
+              id: '3',
+              name: 'Common Item 3',
+              image_url: 'https://example.com/image3.jpg',
+              currency: '$',
+              price: '300',
+              listing_type: 'SELL',
+            },
+          },
+        ],
+      },
+    },
+    loading: false,
+    error: null,
+  })),
+  useGetVwFeaturedListingsQuery: jest.fn(() => ({
+    data: {
+      vw_featured_cardsCollection: {
+        edges: [
+          {
+            node: {
+              id: '1',
+              name: 'Featured Item 1',
+              image_url: 'https://example.com/image1.jpg',
+              currency: '$',
+              price: '100',
+              listing_type: 'SELL',
+            },
+          },
+          {
+            node: {
+              id: '2',
+              name: 'Featured Item 2',
+              image_url: 'https://example.com/image2.jpg',
+              currency: '$',
+              start_price: '200',
+              listing_type: 'AUCTION',
+            },
+          },
+          {
+            node: {
+              id: '3',
+              name: 'Featured Item 3',
+              image_url: 'https://example.com/image3.jpg',
+              currency: '$',
+              price: '300',
+              listing_type: 'SELL',
+            },
+          },
+        ],
+      },
+    },
+    loading: false,
+    error: null,
+  })),
+  useCreateFollowersMutation: jest.fn(() => [
+    jest.fn(),
+    { loading: false, error: null, data: null },
+  ]),
+  useRemoveFollowersMutation: jest.fn(() => [
+    jest.fn(),
+    { loading: false, error: null, data: null },
+  ]),
+  useGetFavoritesQuery: jest.fn(() => ({
+    data: {
+      favorite_listingsCollection: {
+        edges: [
+          {
+            node: {
+              id: '1',
+              listing_id: '1',
+              user_id: 'test-user-id',
+            },
+          },
+        ],
+      },
+    },
+    loading: false,
+    error: null,
+  })),
   useInsertFavoritesMutation: jest.fn(() => [
     jest.fn(),
     { loading: false, error: null, data: null },
@@ -271,8 +430,8 @@ jest.mock('@/hooks/useImageCapturedVar', () => ({
   }),
 }));
 
-jest.mock('@/hooks/useProfileVar', () => ({
-  useProfileVar: jest.fn(() => [
+jest.mock('@/hooks/useUserVar', () => ({
+  useUserVar: jest.fn(() => [
     {
       id: 'test-user-id',
       fullname: 'Shireen',

@@ -12,13 +12,23 @@ import {
   useGetBlockedAccountsQuery,
   useRemoveBlockedUsersMutation,
 } from '@/generated/graphql';
+import { useUserVar } from '@/hooks/useUserVar';
 import { DeepGet } from '@/types/helper';
 import { cache } from '@/utils/apollo';
 import { getColor } from '@/utils/getColor';
 
 export default function BlockedAccounts() {
+  const [user] = useUserVar();
+
   const { data, loading } = useGetBlockedAccountsQuery({
     fetchPolicy: 'cache-and-network',
+    variables: {
+      filter: {
+        blocked_user_id: {
+          neq: user?.id,
+        },
+      },
+    },
   });
   const [removeBlockedUsers, { loading: loadingRemove }] =
     useRemoveBlockedUsersMutation();

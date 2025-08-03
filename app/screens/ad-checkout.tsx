@@ -16,8 +16,8 @@ import {
   useUpdatePaymentsMutation,
   useUpdateUserCardMutation,
 } from '@/generated/graphql';
-import { useProfileVar } from '@/hooks/useProfileVar';
 import { initialSellFormState, useSellFormVar } from '@/hooks/useSellFormVar';
+import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
 import { structuredClone } from '@/utils/structuredClone';
 
@@ -31,7 +31,7 @@ cssInterop(ScrollView, {
 const hasPaymentMethods = true;
 
 export default function AdCheckoutScreen() {
-  const [profile] = useProfileVar();
+  const [user] = useUserVar();
   const [form, setForm] = useSellFormVar();
 
   const [loading, setLoading] = useState(false);
@@ -62,7 +62,7 @@ export default function AdCheckoutScreen() {
           variables: {
             objects: [
               {
-                user_id: profile.id,
+                user_id: user.id,
                 gateway: 'fake',
                 gateway_transaction_id: 'fake_transaction_id',
                 status: PaymentStatus.PENDING,
@@ -158,7 +158,7 @@ export default function AdCheckoutScreen() {
     form.listing_id,
     form.selectedPackageDays,
     form.user_card_id,
-    profile.id,
+    user.id,
     selectedPackage?.price,
     setForm,
     updatePayment,

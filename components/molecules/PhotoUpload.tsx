@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
+import { TouchableOpacity, View } from 'react-native';
 
 import { Label } from '@/components/atoms';
 import Icon from '@/components/atoms/Icon';
@@ -26,7 +27,7 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({
           <Image
             source={{ uri: imageUrl }}
             className={classes.image}
-            resizeMode="cover"
+            contentFit="cover"
           />
           {onRemove && (
             <TouchableOpacity

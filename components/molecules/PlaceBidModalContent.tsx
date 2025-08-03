@@ -1,31 +1,84 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
-import { TextInput, View } from 'react-native';
+import { Alert, TextInput, View } from 'react-native';
 
 import { Button, Label, Row } from '@/components/atoms';
+import { currencySymbolMap } from '@/constants/currencies';
+import { useCreateBidsMutation } from '@/generated/graphql';
+import { useUserVar } from '@/hooks/useUserVar';
+import { formatElapsedTime } from '@/utils/date';
 
-const quickBids = [5000, 6000, 7000];
+const quickBids = [100, 200, 300];
 
-const PlaceBidModalContent: React.FC = () => {
+interface PlaceBidModalContentProps {
+  id: string;
+  endDate: string;
+  onDismiss: () => void;
+}
+
+const PlaceBidModalContent: React.FC<PlaceBidModalContentProps> = ({
+  id,
+  endDate,
+  onDismiss,
+}) => {
+  const [user] = useUserVar();
+
   const [bid, setBid] = useState('5000');
   const [selected, setSelected] = useState(0);
+
+  const [createBids, { loading }] = useCreateBidsMutation();
+
+  const currencySymbol = useMemo(() => {
+    return currencySymbolMap[user.profile?.currency ?? 'USD'];
+  }, [user.profile?.currency]);
 
   const handleQuickBid = (value: number, idx: number) => {
     setBid(value.toString());
     setSelected(idx);
   };
 
+  const handleSubmitBid = useCallback(() => {
+    createBids({
+      variables: {
+        objects: [
+          {
+            listing_id: id,
+            user_id: user.id,
+            bid_amount: Number(bid).toFixed(2),
+          },
+        ],
+      },
+      onCompleted: () => {
+        Alert.alert('Success', 'Your bid has been placed successfully', [
+          {
+            text: 'OK',
+            onPress: onDismiss,
+          },
+        ]);
+        onDismiss();
+      },
+      onError: (e) => {
+        Alert.alert('Failed', e.message, [
+          {
+            text: 'OK',
+            onPress: onDismiss,
+          },
+        ]);
+      },
+    });
+  }, [bid, createBids, id, onDismiss, user.id]);
+
   return (
     <View className={classes.container}>
       <Row between className={classes.headerRow}>
         <Label className={classes.title}>Place Bid</Label>
-        <Label className={classes.time}>7d 15h</Label>
+        <Label className={classes.time}>{formatElapsedTime(endDate)}</Label>
       </Row>
       <View className={classes.maxBidRow}>
         <Label className={classes.label}>Max Bid</Label>
         <TextInput
           className={classes.input}
-          value={`$${bid}`}
+          value={`${currencySymbol} ${bid}`}
           onChangeText={(v) => setBid(v.replace(/\D/g, ''))}
           keyboardType="numeric"
           placeholder="$0"
@@ -54,8 +107,10 @@ const PlaceBidModalContent: React.FC = () => {
       </Label>
       <Button
         variant="white-light"
-        size="small"
         className={classes.placeBidBtn}
+        onPress={handleSubmitBid}
+        loading={loading}
+        disabled={loading || !bid}
       >
         Place Bid
       </Button>
