@@ -12,7 +12,7 @@ import { useProfileVar } from '@/hooks/useProfileVar';
 
 export default function ReportScreen() {
   const [profile] = useProfileVar();
-  const { postId, userId } = useLocalSearchParams();
+  const { userId } = useLocalSearchParams();
 
   const [selected, setSelected] = useState('');
   const [otherReason, setOtherReason] = useState('');
@@ -26,7 +26,6 @@ export default function ReportScreen() {
           {
             reporter_user_id: profile.id,
             reported_user_id: userId,
-            reported_post_id: postId,
             reason: selected === 'Other' ? otherReason : selected,
           },
         ],
@@ -44,7 +43,7 @@ export default function ReportScreen() {
         }
       },
     });
-  }, [addReportedUsers, otherReason, postId, profile.id, selected, userId]);
+  }, [addReportedUsers, otherReason, profile.id, selected, userId]);
 
   return (
     <ScreenContainer classNameTop={classes.containerTop}>

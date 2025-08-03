@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { router } from 'expo-router';
 import { View } from 'react-native';
@@ -6,13 +6,68 @@ import { View } from 'react-native';
 import { Icon, Label, ScreenContainer } from '@/components/atoms';
 import { Header } from '@/components/molecules';
 import { BlockList } from '@/components/organisms';
-import { dummyBlockedAccounts } from '@/constants/dummy';
+import { BlockedUsers } from '@/domains/user.types';
+import {
+  GetBlockedAccountsQuery,
+  useGetBlockedAccountsQuery,
+  useRemoveBlockedUsersMutation,
+} from '@/generated/graphql';
+import { DeepGet } from '@/types/helper';
+import { cache } from '@/utils/apollo';
 import { getColor } from '@/utils/getColor';
 
 export default function BlockedAccounts() {
+  const { data, loading } = useGetBlockedAccountsQuery({
+    fetchPolicy: 'cache-and-network',
+  });
+  const [removeBlockedUsers, { loading: loadingRemove }] =
+    useRemoveBlockedUsersMutation();
+
+  const blockedAccounts = useMemo(() => {
+    return (
+      data?.blocked_usersCollection?.edges?.map(
+        (edge) => edge?.node?.profiles,
+      ) ?? []
+    );
+  }, [data]);
+
+  const handleRemove = useCallback(
+    (id: string) => {
+      removeBlockedUsers({
+        variables: { filter: { blocked_user_id: { eq: id } } },
+        onCompleted: ({ deleteFromblocked_usersCollection }) => {
+          if (deleteFromblocked_usersCollection?.records?.length) {
+            cache.modify({
+              fields: {
+                blocked_usersCollection(existing) {
+                  return existing.edges.filter(
+                    (
+                      item: DeepGet<
+                        GetBlockedAccountsQuery,
+                        ['blocked_usersCollection', 'edges', 0]
+                      >,
+                    ) => item.node.profiles?.id !== id,
+                  );
+                },
+              },
+            });
+          }
+        },
+      });
+    },
+    [removeBlockedUsers],
+  );
+
   const renderBlockedAccounts = useMemo(() => {
-    if (dummyBlockedAccounts.length)
-      return <BlockList isBlocked data={dummyBlockedAccounts} />;
+    if (blockedAccounts.length && !loading)
+      return (
+        <BlockList
+          isBlocked
+          onRemove={handleRemove}
+          isLoading={loadingRemove}
+          data={blockedAccounts as BlockedUsers}
+        />
+      );
 
     return (
       <View className={classes.emptyContainer}>
@@ -25,7 +80,7 @@ export default function BlockedAccounts() {
         <Label className={classes.emptyText}>No blocked accounts found</Label>
       </View>
     );
-  }, []);
+  }, [blockedAccounts, handleRemove, loading, loadingRemove]);
 
   return (
     <ScreenContainer>

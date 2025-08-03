@@ -1,19 +1,38 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 
 import { FlatList } from 'react-native';
 
 import { BlockListItem } from '@/components/molecules';
-import { BaseAccount } from '@/domains';
+import { BlockedUsers } from '@/domains/user.types';
 
 interface BlockListProps {
-  data: BaseAccount[];
+  data: BlockedUsers;
   isBlocked?: boolean;
+  onRemove?: (id: string) => void;
+  onBlock?: (id: string) => void;
+  isLoading?: boolean;
 }
 
 const BlockList: React.FC<BlockListProps> = memo(function BlockList({
   data,
   isBlocked = false,
+  onBlock,
+  onRemove,
+  isLoading,
 }) {
+  const [itemIdLoading, setItemIdLoading] = useState('');
+  const handlePress = useCallback(
+    (id: string) => {
+      setItemIdLoading(id);
+
+      if (isBlocked) {
+        onRemove?.(id);
+      } else {
+        onBlock?.(id);
+      }
+    },
+    [isBlocked, onBlock, onRemove],
+  );
   return (
     <FlatList
       testID="block-list"
@@ -22,10 +41,10 @@ const BlockList: React.FC<BlockListProps> = memo(function BlockList({
       contentContainerClassName={classes.contentContainer}
       renderItem={({ item }) => (
         <BlockListItem
-          name={item.name}
-          imageUrl={item.imageUrl}
+          {...item}
           isBlocked={isBlocked}
-          onPress={() => {}}
+          onPress={handlePress}
+          isLoading={itemIdLoading === item.id && isLoading}
         />
       )}
     />

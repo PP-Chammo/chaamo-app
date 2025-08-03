@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { router } from 'expo-router';
 import { View } from 'react-native';
@@ -6,21 +6,89 @@ import { View } from 'react-native';
 import { Icon, Label, ScreenContainer } from '@/components/atoms';
 import { HeaderSearch } from '@/components/molecules';
 import { BlockList } from '@/components/organisms';
-import { dummyBlockedAccounts } from '@/constants/dummy';
+import { BlockedUsers } from '@/domains/user.types';
+import {
+  useCreateBlockedUsersMutation,
+  useGetBlockedAccountsQuery,
+  useGetProfilesQuery,
+} from '@/generated/graphql';
+import { useProfileVar } from '@/hooks/useProfileVar';
 import { getColor } from '@/utils/getColor';
 
 export default function BlockedAccounts() {
   const [search, setSearch] = useState<string>('');
+  const [user] = useProfileVar();
+
+  const { data: blockedData, refetch: refetchBlockedAccount } =
+    useGetBlockedAccountsQuery({
+      fetchPolicy: 'cache-and-network',
+    });
+
+  const blockedIds = useMemo(
+    () =>
+      blockedData?.blocked_usersCollection?.edges?.map(
+        (item) => item?.node?.profiles?.id,
+      ) ?? [],
+    [blockedData?.blocked_usersCollection?.edges],
+  );
+
+  const { data, refetch: refetchProfiles } = useGetProfilesQuery({
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      filter: {
+        not: {
+          id: {
+            in: [user?.id, ...blockedIds],
+          },
+        },
+      },
+    },
+  });
+
+  const listUsers = useMemo(() => {
+    return data?.profilesCollection?.edges?.map((edge) => edge?.node) ?? [];
+  }, [data]);
+
+  const [addBlockedUsers, { loading: loadingBlock }] =
+    useCreateBlockedUsersMutation();
+
+  const handleBlock = useCallback(
+    (userId: string) => {
+      addBlockedUsers({
+        variables: {
+          objects: [
+            {
+              blocker_user_id: user?.id,
+              blocked_user_id: userId,
+            },
+          ],
+        },
+        onCompleted: ({ insertIntoblocked_usersCollection }) => {
+          if (insertIntoblocked_usersCollection?.records?.length) {
+            refetchBlockedAccount();
+            refetchProfiles();
+          }
+        },
+      });
+    },
+    [addBlockedUsers, refetchBlockedAccount, refetchProfiles, user?.id],
+  );
 
   const filteredBlockedAccounts = useMemo(() => {
-    return dummyBlockedAccounts.filter((account) =>
-      account.name.toLowerCase().includes(search.toLowerCase()),
+    return listUsers.filter((user) =>
+      user.username.toLowerCase().includes(search.toLowerCase()),
     );
-  }, [search]);
+  }, [listUsers, search]);
 
   const renderBlockedAccounts = useMemo(() => {
     if (filteredBlockedAccounts.length)
-      return <BlockList data={filteredBlockedAccounts} />;
+      return (
+        <BlockList
+          onBlock={handleBlock}
+          data={filteredBlockedAccounts as BlockedUsers}
+          isLoading={loadingBlock}
+        />
+      );
 
     return (
       <View className={classes.emptyContainer}>
@@ -33,7 +101,7 @@ export default function BlockedAccounts() {
         <Label className={classes.emptyText}>No accounts found</Label>
       </View>
     );
-  }, [filteredBlockedAccounts]);
+  }, [filteredBlockedAccounts, handleBlock, loadingBlock]);
 
   return (
     <ScreenContainer>

@@ -3,26 +3,37 @@ import React from 'react';
 import { Avatar, Button, Label, Row } from '@/components/atoms';
 
 interface BlockListItemProps {
-  name: string;
-  imageUrl: string;
+  id: string;
+  username: string;
+  profile_image_url: string;
+  isLoading: boolean;
   isBlocked: boolean;
-  onPress: () => void;
+  onPress: (id: string) => void;
 }
 
 const BlockListItem: React.FC<BlockListItemProps> = ({
-  name,
-  imageUrl,
+  id,
+  username,
+  profile_image_url,
+  isLoading,
   isBlocked,
   onPress,
 }) => {
   return (
     <Row testID="block-list-item" between>
       <Row className={classes.row}>
-        <Avatar testID="avatar" imageUrl={imageUrl} size={50} />
-        <Label>{name}</Label>
+        <Avatar testID="avatar" imageUrl={profile_image_url} size={50} />
+        <Label>{username}</Label>
       </Row>
       <Row className={classes.row}>
-        <Button onPress={onPress}>{isBlocked ? 'Unblock' : 'Block'}</Button>
+        <Button
+          testID="button"
+          loading={isLoading}
+          disabled={isLoading}
+          onPress={() => onPress(id)}
+        >
+          {isBlocked ? 'Unblock' : 'Block'}
+        </Button>
       </Row>
     </Row>
   );
