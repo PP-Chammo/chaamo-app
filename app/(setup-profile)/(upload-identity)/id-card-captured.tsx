@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
 
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { Image, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { Button, ScreenContainer, UploadInstruction } from '@/components/atoms';
 import { Header } from '@/components/molecules';

@@ -1,26 +1,91 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 
 import {
   ListContainer,
   ListContainerDirection,
   People,
 } from '@/components/molecules';
-import { useGetProfilesQuery } from '@/generated/graphql';
-import { useProfileVar } from '@/hooks/useProfileVar';
+import {
+  useCreateFollowersMutation,
+  useGetFollowersQuery,
+  useGetVwFilteredProfilesQuery,
+  useRemoveFollowersMutation,
+} from '@/generated/graphql';
+import { useUserVar } from '@/hooks/useUserVar';
 
 const PeopleList = memo(function PeopleList() {
-  const [profile] = useProfileVar();
-  const { data, loading } = useGetProfilesQuery({
-    skip: !profile?.id,
+  const [user] = useUserVar();
+
+  const { data: followedData, refetch: refetchFollowers } =
+    useGetFollowersQuery();
+  const { data, loading } = useGetVwFilteredProfilesQuery({
+    fetchPolicy: 'cache-and-network',
+    skip: !user?.id,
     variables: {
       filter: {
-        id: { neq: profile?.id },
+        id: { neq: user?.id },
       },
     },
   });
-  const peoples = data?.profilesCollection?.edges ?? [];
+  const [createFollowers] = useCreateFollowersMutation();
+  const [removeFollowers] = useRemoveFollowersMutation();
 
-  if (loading || !profile?.id) {
+  const followedPeoples = useMemo(
+    () => followedData?.followersCollection?.edges ?? [],
+    [followedData?.followersCollection?.edges],
+  );
+
+  const peoples = useMemo(
+    () => data?.vw_filtered_profilesCollection?.edges ?? [],
+    [data?.vw_filtered_profilesCollection?.edges],
+  );
+
+  const getIsFollowed = useCallback(
+    (userId: string) =>
+      followedPeoples.some((edge) => edge.node.followed_user_id === userId),
+    [followedPeoples],
+  );
+
+  const handleToggleFollow = useCallback(
+    (userId: string) => () => {
+      if (getIsFollowed(userId)) {
+        removeFollowers({
+          variables: {
+            filter: {
+              following_user_id: { eq: user?.id },
+              followed_user_id: { eq: userId },
+            },
+          },
+          onCompleted: () => {
+            refetchFollowers();
+          },
+        });
+      } else {
+        createFollowers({
+          variables: {
+            objects: [
+              {
+                following_user_id: user?.id,
+                followed_user_id: userId,
+              },
+            ],
+          },
+          onCompleted: () => {
+            refetchFollowers();
+          },
+        });
+      }
+    },
+    [
+      createFollowers,
+      getIsFollowed,
+      refetchFollowers,
+      removeFollowers,
+      user?.id,
+    ],
+  );
+
+  if (loading || !user?.id) {
     return null;
   }
 
@@ -34,14 +99,14 @@ const PeopleList = memo(function PeopleList() {
       {(people) => (
         <People
           key={people.node.id}
+          size="sm"
+          followed={getIsFollowed(people.node.id)}
           imageUrl={people.node.profile_image_url ?? ''}
-          fullname={people.node.username}
+          fullname={people.node.username ?? ''}
           onPress={() => {
             console.log(`People id ${people.node.id}`);
           }}
-          onFollowPress={() => {
-            console.log(`Follow people id ${people.node.id}`);
-          }}
+          onFollowPress={handleToggleFollow(people.node.id)}
         />
       )}
     </ListContainer>

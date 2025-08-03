@@ -1,9 +1,10 @@
 import React, { memo, useCallback, useRef, useState } from 'react';
 
 import { formatDistanceToNow } from 'date-fns';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import pluralize from 'pluralize';
-import { Alert, Image, TouchableOpacity, View } from 'react-native';
+import { Alert, TouchableOpacity, View } from 'react-native';
 
 import { Button, ContextMenu, Icon, Label, Row } from '@/components/atoms';
 import { getColor } from '@/utils/getColor';
@@ -159,7 +160,7 @@ const PostCard: React.FC<PostCardProps> = memo(function PostCard({
           className={classes.actionButton}
           textClassName={classes.actionButtonText}
         >
-          {pluralize('Like', likeCount, true)}
+          {likeCount > 0 ? pluralize('Like', likeCount, true) : 'Like'}
         </Button>
       </Row>
     </View>

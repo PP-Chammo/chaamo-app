@@ -9,15 +9,15 @@ import { EventList } from '@/components/organisms';
 import {
   useCreateBlockedUsersMutation,
   useCreatePostLikesMutation,
-  useGetUserPostsLazyQuery,
+  useGetVwUserPostsLazyQuery,
   useRemovePostLikesMutation,
 } from '@/generated/graphql';
-import { useProfileVar } from '@/hooks/useProfileVar';
+import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
 
 export default function CommunityScreen() {
-  const [profile] = useProfileVar();
-  const [getPosts, { data, refetch }] = useGetUserPostsLazyQuery({
+  const [user] = useUserVar();
+  const [getPosts, { data, refetch }] = useGetVwUserPostsLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
   const [addBlockedUsers] = useCreateBlockedUsersMutation();
@@ -31,8 +31,8 @@ export default function CommunityScreen() {
   );
 
   const posts = useMemo(
-    () => data?.user_postsCollection?.edges ?? [],
-    [data?.user_postsCollection?.edges],
+    () => data?.vw_user_postsCollection?.edges ?? [],
+    [data?.vw_user_postsCollection?.edges],
   );
 
   const handleComment = useCallback(() => {}, []);
@@ -44,7 +44,7 @@ export default function CommunityScreen() {
           variables: {
             filter: {
               post_id: { eq: post_id },
-              user_id: { eq: profile.id },
+              user_id: { eq: user.id },
             },
           },
           onCompleted: () => {
@@ -57,7 +57,7 @@ export default function CommunityScreen() {
           objects: [
             {
               post_id,
-              user_id: profile.id,
+              user_id: user.id,
             },
           ],
         },
@@ -66,7 +66,7 @@ export default function CommunityScreen() {
         },
       });
     },
-    [createPostLikes, profile.id, refetch, removePostLikes],
+    [createPostLikes, user.id, refetch, removePostLikes],
   );
 
   const handleBlock = useCallback(
@@ -75,7 +75,7 @@ export default function CommunityScreen() {
         variables: {
           objects: [
             {
-              blocker_user_id: profile.id,
+              blocker_user_id: user.id,
               blocked_user_id: userId,
             },
           ],
@@ -88,7 +88,7 @@ export default function CommunityScreen() {
         },
       });
     },
-    [addBlockedUsers, profile.id, refetch],
+    [addBlockedUsers, user.id, refetch],
   );
 
   return (
@@ -109,7 +109,7 @@ export default function CommunityScreen() {
         <EventList />
         {posts.map((post) => (
           <PostCard
-            showContext={post.node?.user_id !== profile.id}
+            showContext={post.node?.user_id !== user.id}
             key={post.node.id}
             postId={post.node?.id ?? ''}
             userId={post.node?.user_id ?? ''}

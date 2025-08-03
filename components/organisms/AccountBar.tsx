@@ -6,15 +6,15 @@ import { View } from 'react-native';
 import { Label, Row } from '@/components/atoms';
 import { ButtonIcon } from '@/components/molecules';
 import { useGetNotificationsQuery } from '@/generated/graphql';
-import { useProfileVar } from '@/hooks/useProfileVar';
+import { useUserVar } from '@/hooks/useUserVar';
 
 const AccountBar = memo(function AccountBar() {
-  const [profile] = useProfileVar();
+  const [user] = useUserVar();
   const { data } = useGetNotificationsQuery({
-    skip: !profile?.id,
+    skip: !user?.id,
     variables: {
       filter: {
-        id: { eq: profile?.id },
+        id: { eq: user?.id },
       },
     },
   });
@@ -31,7 +31,7 @@ const AccountBar = memo(function AccountBar() {
       <View testID="account-bar-left" className={classes.leftSpace}>
         <Label className="text-xl">Hi</Label>
         <Label className="text-xl font-bold">
-          {profile?.user_metadata?.name ?? profile?.email}!
+          {user?.user_metadata?.name ?? user?.email}!
         </Label>
       </View>
       <View testID="account-bar-right" className={classes.rightSpace}>

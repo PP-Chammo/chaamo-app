@@ -2,17 +2,20 @@ import { memo, useCallback } from 'react';
 
 import { clsx } from 'clsx';
 import { formatDistanceToNow } from 'date-fns';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
+import { TouchableOpacity, View } from 'react-native';
 
 import EBayLogo from '@/assets/svg/ebay.svg';
-import { Icon, Label, PriceIndicator, Row } from '@/components/atoms';
+import { Icon, Label, PriceIndicator, Row, Tag } from '@/components/atoms';
+import { ListingType } from '@/generated/graphql';
 import { getColor } from '@/utils/getColor';
 
 type CardItemProps = {
+  listingType: ListingType;
   imageUrl: string;
   title: string;
   subtitle?: string;
-  price: string;
+  price?: string;
   date: string;
   marketPrice: string;
   marketType: string;
@@ -25,9 +28,11 @@ type CardItemProps = {
   rightComponent?: React.ReactNode;
   featured?: boolean;
   className?: string;
+  onPress?: () => void;
 };
 
 const CardItem: React.FC<CardItemProps> = memo(function CardItem({
+  listingType,
   imageUrl,
   title,
   subtitle,
@@ -43,6 +48,7 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
   rightComponent,
   onRightIconPress,
   className,
+  onPress,
 }) {
   const renderRightIcon = useCallback(
     () =>
@@ -73,6 +79,7 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
     <TouchableOpacity
       testID="card-item"
       activeOpacity={0.8}
+      onPress={onPress}
       className={clsx(classes.container, className)}
     >
       {imageUrl ? (
@@ -87,50 +94,61 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
         </View>
       )}
       <View className={classes.contentContainer}>
-        <View className={classes.topContainer}>
-          <Row className={classes.titleContainer}>
-            <Label className={classes.title} testID="card-item-title">
-              {title}
+        <Row className={classes.titleContainer}>
+          <Label
+            className={classes.title}
+            testID="card-item-title"
+            numberOfLines={2}
+          >
+            {title}
+          </Label>
+          {rightComponent ?? renderRightIcon()}
+        </Row>
+
+        <View className={classes.dateContainer}>
+          {subtitle && (
+            <Label className={classes.text} testID="card-item-subtitle">
+              {subtitle}
             </Label>
-            {rightComponent ?? renderRightIcon()}
+          )}
+          <Row className={classes.rowDate}>
+            <Icon name="calendar" variant="SimpleLineIcons" size={14} />
+            <Label className={classes.text} testID="card-item-date">
+              {formatDistanceToNow(new Date(date), { addSuffix: true })}
+            </Label>
           </Row>
-          <View className={classes.dateContainer}>
-            {subtitle && (
-              <Label className={classes.text} testID="card-item-subtitle">
-                {subtitle}
-              </Label>
-            )}
-            <Row className={classes.rowDate}>
-              <Icon name="calendar" variant="SimpleLineIcons" size={14} />
-              <Label className={classes.text} testID="card-item-date">
-                {formatDistanceToNow(new Date(date), { addSuffix: true })}
-              </Label>
-            </Row>
-          </View>
         </View>
+
         <Row between className={classes.priceContainer}>
           <View>
             {marketType === 'eBay' && <EBayLogo />}
             <Row>
               <Label className={classes.text}>Price Value:</Label>
               <Label className={classes.textBold} testID="card-item-price">
-                {price}
+                {marketPrice}
               </Label>
               <PriceIndicator direction={indicator} />
             </Row>
           </View>
-          <View className={classes.bidContainer}>
+          <Row className={classes.bidContainer}>
+            {listingType === ListingType.AUCTION && (
+              <View className="absolute bottom-6 right-0">
+                <Tag title="Highest Bid" />
+              </View>
+            )}
             <Label
               className={classes.textBidPrice}
               testID="card-item-market-price"
             >
-              {marketPrice}
+              {price}
             </Label>
-          </View>
-          <Image
-            source={require('@/assets/images/logo.png')}
-            className={classes.logoImage}
-          />
+            {listingType === ListingType.SELL && (
+              <Image
+                source={require('@/assets/images/logo.png')}
+                className={classes.logoImage}
+              />
+            )}
+          </Row>
         </Row>
       </View>
     </TouchableOpacity>
@@ -138,23 +156,22 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
 });
 
 const classes = {
-  container: 'flex flex-row gap-3 mx-4.5 p-3 bg-white shadow rounded-lg',
+  container: 'flex flex-row gap-3 p-3 bg-white shadow rounded-lg',
   image:
-    'w-28 min-h-40 h-auto flex items-center justify-center bg-gray-200 rounded-lg',
-  contentContainer: 'flex-1 justify-between',
-  topContainer: 'gap-2',
-  titleContainer: 'py-1',
-  title: 'text-base font-bold !text-gray-800 truncate',
+    'w-28 aspect-[7/10] h-auto flex items-center justify-center bg-slate-200 rounded-lg',
+  contentContainer: 'flex-1 justify-between gap-0.5 py-1',
+  titleContainer: 'gap-2 !items-start',
+  title: 'flex-1 text-base font-bold !text-gray-800 truncate',
   rightIconButton:
-    'absolute top-0 right-0 z-10 w-8 h-8 bg-white rounded-full items-center justify-center',
-  dateContainer: 'py-1',
+    'z-10 w-8 h-8 bg-white rounded-full items-center justify-center',
+  dateContainer: 'flex flex-col gap-0.5 pb-1',
   text: 'text-sm !text-gray-700',
   textBold: 'text-sm font-semibold',
   rowDate: 'gap-2',
-  bidContainer: 'flex flex-col items-end justify-end',
-  textBidPrice: 'text-base font-semibold text-primary-500',
+  bidContainer: 'flex items-center justify-end gap-1',
+  textBidPrice: 'text-base text-right font-semibold text-primary-500 pr-1',
   priceContainer: '!items-end',
-  logoImage: 'w-8 h-8',
+  logoImage: 'w-6 h-6',
 };
 
 export default CardItem;

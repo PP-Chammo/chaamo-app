@@ -36,8 +36,8 @@ import {
   useGetMasterCardsAutocompleteLazyQuery,
 } from '@/generated/graphql';
 import useDebounce from '@/hooks/useDebounce';
-import { useProfileVar } from '@/hooks/useProfileVar';
 import { initialSellFormState, useSellFormVar } from '@/hooks/useSellFormVar';
+import { useUserVar } from '@/hooks/useUserVar';
 import { SellFormStore } from '@/stores/sellFormStore';
 import { getColor } from '@/utils/getColor';
 import { structuredClone } from '@/utils/structuredClone';
@@ -54,7 +54,7 @@ cssInterop(FlatList, {
 });
 
 export default function SellScreen() {
-  const [profile] = useProfileVar();
+  const [user] = useUserVar();
   const [form, setForm] = useSellFormVar();
 
   const { data: categoriesData } = useGetCategoriesQuery();
@@ -189,7 +189,7 @@ export default function SellScreen() {
         variables: {
           objects: [
             {
-              user_id: profile?.id,
+              user_id: user?.id,
               master_card_id: form.master_card_id,
               category_id: Number(form.category_id),
               condition: form.condition,
@@ -207,14 +207,14 @@ export default function SellScreen() {
                 objects: [
                   {
                     user_card_id: userCardId,
-                    seller_id: profile?.id,
+                    seller_id: user?.id,
                     listing_type: form.listing_type,
                     description: form.description,
 
                     // Sell
                     ...(form.listing_type === ListingType.SELL
                       ? {
-                          currency: form.currency ?? '$',
+                          currency: form.currency,
                           price: Number(form.price).toFixed(2),
                           accepts_offers: true,
                         }
@@ -223,7 +223,7 @@ export default function SellScreen() {
                     // Auction
                     ...(form.listing_type === ListingType.AUCTION
                       ? {
-                          currency: form.currency ?? '$',
+                          currency: form.currency,
                           start_price: Number(form.minPrice).toFixed(2),
                           reserve_price: Number(form.reservedPrice).toFixed(2),
                           start_time: formatISO(new Date()),
@@ -266,7 +266,7 @@ export default function SellScreen() {
     } else {
       setLoading(false);
     }
-  }, [form, createUserCard, profile?.id, setForm, createListings]);
+  }, [form, createUserCard, user?.id, setForm, createListings]);
 
   return (
     <ScreenContainer>
@@ -341,6 +341,7 @@ export default function SellScreen() {
               placeholder="Enter price"
               value={form.price}
               onChange={handleChange}
+              keyboardType="numeric"
               required
               inputClassName={classes.input}
               leftIcon="attach-money"
@@ -371,6 +372,7 @@ export default function SellScreen() {
                 label="Set Minimum Price"
                 value={form.minPrice}
                 onChange={handleChange}
+                keyboardType="numeric"
                 required
                 inputClassName={classes.input}
                 leftIcon="attach-money"
@@ -384,7 +386,7 @@ export default function SellScreen() {
                 label="Reserved Price"
                 value={form.reservedPrice}
                 onChange={handleChange}
-                keyboardType="number-pad"
+                keyboardType="numeric"
                 required
                 inputClassName={classes.input}
                 leftIcon="attach-money"
@@ -395,17 +397,17 @@ export default function SellScreen() {
               />
             </Fragment>
           )}
-          <Button
-            className={classes.submitBtn}
-            textClassName={classes.submitBtnText}
-            onPress={handleSubmit}
-            disabled={!isFormValid || !form.imageUrl || loading}
-            loading={loading}
-          >
-            Post Your Card
-          </Button>
         </View>
       </KeyboardView>
+      <View className={classes.buttonContainer}>
+        <Button
+          onPress={handleSubmit}
+          disabled={!isFormValid || !form.imageUrl || loading}
+          loading={loading}
+        >
+          Post Your Card
+        </Button>
+      </View>
       <Modal
         visible={showModal}
         onClose={() => setShowModal(false)}
@@ -441,17 +443,16 @@ export default function SellScreen() {
 }
 
 const classes = {
-  container: 'flex-1 p-4.5 mb-4.5 gap-4.5',
+  container: 'flex-1 p-4.5 mb-32 gap-4.5',
   pickerModal:
     'absolute left-0 right-0 bottom-0 bg-white p-4 rounded-t-2xl border-t border-gray-200 z-50',
   pickerOption: 'py-3',
   pickerOptionLabel: 'text-lg text-gray-800',
   pickerCancelBtn: 'mt-2',
-  submitBtn: 'mt-8 rounded-full bg-primary-100',
-  submitBtnText: 'text-primary-500 text-base font-semibold',
   input: 'bg-white leading-5',
   modalContainer: 'flex-1',
   modal: '!mx-4.5 w-[calc(100%-1rem)] h-[70%] p-4.5 !bg-slate-100 gap-4.5',
   list: 'flex-1',
   listContainer: 'gap-2',
+  buttonContainer: 'p-4.5 mb-4.5',
 };

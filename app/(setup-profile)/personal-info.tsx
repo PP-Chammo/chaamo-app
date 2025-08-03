@@ -102,7 +102,7 @@ export default function PersonalInfoScreen() {
         <SetupProfileTabs />
         <KeyboardView contentContainerClassName={classes.contentContainer}>
           <Avatar
-            size={120}
+            size="xl"
             onPress={handleImagePick}
             imageUrl={form.image}
             imageContainerClassName={classes.imageContainer}

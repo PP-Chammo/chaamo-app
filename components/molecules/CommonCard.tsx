@@ -2,7 +2,8 @@ import { memo, useCallback, useMemo } from 'react';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { clsx } from 'clsx';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
+import { TouchableOpacity, View } from 'react-native';
 
 import EBayImage from '@/assets/svg/ebay.svg';
 import { Icon, Label, PriceIndicator } from '@/components/atoms';
@@ -128,8 +129,8 @@ export default CommonCard;
 
 const classes = {
   container: 'w-36 flex flex-col gap-2 justify-between',
-  image: 'w-full h-[170px] h-auto  bg-gray-200 rounded-lg',
-  titleContainer: 'flex-1 flex flex-col gap-1 ',
+  image: 'w-36 aspect-[7/10] bg-gray-200 rounded',
+  titleContainer: 'flex-1 flex flex-col gap-1',
   price: 'text-sm text-primary-500 !font-bold',
   marketPrice: 'text-xs text-gray-500',
   title: 'text-sm !text-gray-800',
