@@ -7,7 +7,7 @@ module.exports = {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(react-native|@react-native|@expo|expo|@react-navigation|react-native-.*|@react-native-.*|expo-linear-gradient|d3-.*)/)',
+    'node_modules/(?!(react-native|@react-native|@expo|expo|@react-navigation|react-native-.*|@react-native-.*|expo-linear-gradient|expo-skeleton-loading|d3-.*)/)',
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',

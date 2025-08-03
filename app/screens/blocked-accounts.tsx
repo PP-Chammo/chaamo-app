@@ -4,23 +4,20 @@ import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import { Icon, Label, ScreenContainer } from '@/components/atoms';
-import { Header } from '@/components/molecules';
+import { Header, UserSkeletonList } from '@/components/molecules';
 import { BlockList } from '@/components/organisms';
 import { BlockedUsers } from '@/domains/user.types';
 import {
-  GetBlockedAccountsQuery,
   useGetBlockedAccountsQuery,
   useRemoveBlockedUsersMutation,
 } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
-import { DeepGet } from '@/types/helper';
-import { cache } from '@/utils/apollo';
 import { getColor } from '@/utils/getColor';
 
 export default function BlockedAccounts() {
   const [user] = useUserVar();
 
-  const { data, loading } = useGetBlockedAccountsQuery({
+  const { data, loading, refetch } = useGetBlockedAccountsQuery({
     fetchPolicy: 'cache-and-network',
     variables: {
       filter: {
@@ -47,29 +44,23 @@ export default function BlockedAccounts() {
         variables: { filter: { blocked_user_id: { eq: id } } },
         onCompleted: ({ deleteFromblocked_usersCollection }) => {
           if (deleteFromblocked_usersCollection?.records?.length) {
-            cache.modify({
-              fields: {
-                blocked_usersCollection(existing) {
-                  return existing.edges.filter(
-                    (
-                      item: DeepGet<
-                        GetBlockedAccountsQuery,
-                        ['blocked_usersCollection', 'edges', 0]
-                      >,
-                    ) => item.node.profiles?.id !== id,
-                  );
-                },
-              },
-            });
+            refetch();
           }
         },
       });
     },
-    [removeBlockedUsers],
+    [refetch, removeBlockedUsers],
   );
 
   const renderBlockedAccounts = useMemo(() => {
-    if (blockedAccounts.length && !loading)
+    if (loading)
+      return (
+        <View className={classes.containerSkeleton}>
+          <UserSkeletonList />
+        </View>
+      );
+
+    if (blockedAccounts.length)
       return (
         <BlockList
           isBlocked
@@ -111,4 +102,5 @@ const classes = {
   emptyContainer: 'flex-1 items-center gap-8 mt-16',
   emptyText: 'text-center text-slate-600',
   container: 'flex-1 px-4.5 mt-5',
+  containerSkeleton: 'flex-1',
 };

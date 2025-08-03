@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useMemo, useState } from 'react';
 
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 
 import {
@@ -12,6 +12,7 @@ import {
 } from '@/components/atoms';
 import { Header, SettingItem } from '@/components/molecules';
 import { currencyMap } from '@/constants/currencies';
+import { useGetBlockedAccountsQuery } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 import { logout } from '@/utils/auth';
 import { getColor } from '@/utils/getColor';
@@ -21,9 +22,32 @@ export default function SettingsScreen() {
   const [isDeleteAccountModalVisible, setIsDeleteAccountModalVisible] =
     useState<boolean>(false);
 
+  const { data: blockedData, refetch: refetchBlocked } =
+    useGetBlockedAccountsQuery({
+      fetchPolicy: 'network-only',
+      variables: {
+        filter: {
+          blocker_user_id: {
+            eq: user?.id,
+          },
+        },
+      },
+    });
+
+  useFocusEffect(
+    useCallback(() => {
+      refetchBlocked();
+    }, [refetchBlocked]),
+  );
+
   const currencyLabel = useMemo(() => {
     return currencyMap?.[user?.profile?.currency ?? 'USD'];
   }, [user?.profile?.currency]);
+
+  const countBlockedAcc = useMemo(
+    () => blockedData?.blocked_usersCollection?.edges?.length.toString() ?? '0',
+    [blockedData?.blocked_usersCollection?.edges?.length],
+  );
 
   const handleDeleteAccount = useCallback(() => {
     setIsDeleteAccountModalVisible(!isDeleteAccountModalVisible);
@@ -67,7 +91,7 @@ export default function SettingsScreen() {
             <SettingItem
               iconName="block-helper"
               title="Block"
-              value="0"
+              value={countBlockedAcc}
               onPress={() => router.push('/screens/blocked-accounts')}
             />
             <Divider position="horizontal" className={classes.divider} />

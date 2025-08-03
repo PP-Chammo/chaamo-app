@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import { Icon, Label, ScreenContainer } from '@/components/atoms';
-import { HeaderSearch } from '@/components/molecules';
+import { HeaderSearch, UserSkeletonList } from '@/components/molecules';
 import { BlockList } from '@/components/organisms';
 import { BlockedUsers } from '@/domains/user.types';
 import {
@@ -39,7 +39,11 @@ export default function BlockedAccounts() {
     [blockedData?.blocked_usersCollection?.edges],
   );
 
-  const { data, refetch: refetchProfiles } = useGetProfilesQuery({
+  const {
+    data,
+    refetch: refetchProfiles,
+    loading,
+  } = useGetProfilesQuery({
     fetchPolicy: 'cache-and-network',
     variables: {
       filter: {
@@ -88,6 +92,13 @@ export default function BlockedAccounts() {
   }, [listUsers, search]);
 
   const renderBlockedAccounts = useMemo(() => {
+    if (loading)
+      return (
+        <View className={classes.containerSkeleton}>
+          <UserSkeletonList />
+        </View>
+      );
+
     if (filteredBlockedAccounts.length)
       return (
         <BlockList
@@ -108,7 +119,7 @@ export default function BlockedAccounts() {
         <Label className={classes.emptyText}>No accounts found</Label>
       </View>
     );
-  }, [filteredBlockedAccounts, handleBlock, loadingBlock]);
+  }, [filteredBlockedAccounts, handleBlock, loading, loadingBlock]);
 
   return (
     <ScreenContainer>
@@ -126,4 +137,5 @@ const classes = {
   emptyContainer: 'flex-1 items-center gap-8 mt-16',
   emptyText: 'text-center text-slate-600',
   container: 'flex-1 px-4.5 mt-5',
+  containerSkeleton: 'flex-1',
 };
