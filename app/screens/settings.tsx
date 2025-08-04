@@ -12,7 +12,10 @@ import {
 } from '@/components/atoms';
 import { Header, SettingItem } from '@/components/molecules';
 import { currencyMap } from '@/constants/currencies';
-import { useGetBlockedAccountsQuery } from '@/generated/graphql';
+import {
+  useGetBlockedAccountsQuery,
+  useGetUserNotificationSettingsQuery,
+} from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 import { logout } from '@/utils/auth';
 import { getColor } from '@/utils/getColor';
@@ -34,10 +37,28 @@ export default function SettingsScreen() {
       },
     });
 
+  const {
+    data: userNotificationSettingsData,
+    refetch: refetchUserNotificationSettings,
+  } = useGetUserNotificationSettingsQuery({
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      filter: {
+        user_id: {
+          eq: user.id,
+        },
+        is_enabled: {
+          eq: true,
+        },
+      },
+    },
+  });
+
   useFocusEffect(
     useCallback(() => {
       refetchBlocked();
-    }, [refetchBlocked]),
+      refetchUserNotificationSettings();
+    }, [refetchBlocked, refetchUserNotificationSettings]),
   );
 
   const currencyLabel = useMemo(() => {
@@ -47,6 +68,16 @@ export default function SettingsScreen() {
   const countBlockedAcc = useMemo(
     () => blockedData?.blocked_usersCollection?.edges?.length.toString() ?? '0',
     [blockedData?.blocked_usersCollection?.edges?.length],
+  );
+
+  const countUserNotificationSettings = useMemo(
+    () =>
+      userNotificationSettingsData?.user_notification_settingsCollection?.edges?.length.toString() ??
+      '0',
+    [
+      userNotificationSettingsData?.user_notification_settingsCollection?.edges
+        ?.length,
+    ],
   );
 
   const handleDeleteAccount = useCallback(() => {
@@ -98,7 +129,7 @@ export default function SettingsScreen() {
             <SettingItem
               iconName="bell-outline"
               title="Personalize Notifications"
-              value="0"
+              value={countUserNotificationSettings}
               onPress={() => router.push('/screens/personalize-notification')}
             />
           </View>
