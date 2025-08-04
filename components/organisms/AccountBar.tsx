@@ -14,11 +14,15 @@ const AccountBar = memo(function AccountBar() {
     skip: !user?.id,
     variables: {
       filter: {
-        id: { eq: user?.id },
+        user_id: { eq: user?.id },
       },
     },
   });
-  const notifications = data?.notificationsCollection?.edges ?? [];
+
+  const notifications = useMemo(
+    () => data?.notificationsCollection?.edges ?? [],
+    [data?.notificationsCollection?.edges],
+  );
 
   const notificationCount = useMemo(() => {
     if (notifications?.length > 0) {

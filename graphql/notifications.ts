@@ -6,6 +6,11 @@ export const getNotifications = gql`
       edges {
         node {
           id
+          notification_types {
+            name
+          }
+          content
+          created_at
         }
       }
     }

@@ -8,7 +8,7 @@ import { ImageBackground, SafeAreaView, View } from 'react-native';
 
 import { Button, Label } from '@/components/atoms';
 import { Checkbox } from '@/components/molecules';
-import { BooleanChangeParams } from '@/domains/input.types';
+import { BooleanChangeParams } from '@/domains';
 
 export default function OnboardingScreen() {
   const [form, setForm] = useState({

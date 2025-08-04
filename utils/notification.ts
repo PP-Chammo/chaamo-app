@@ -1,11 +1,6 @@
 import { format } from 'date-fns';
 
-export interface Notification {
-  id: number;
-  category: 'Order Shipped' | 'New Bid' | 'Bid Ending';
-  message: string;
-  date: string;
-}
+import { Notification } from '@/domains';
 
 export interface DateGroupedNotifications {
   date: string;
@@ -20,7 +15,7 @@ export const groupNotificationsByDate = (
   const dateMap: Record<string, Notification[]> = {};
 
   for (const notif of notifications) {
-    const dateKey = format(new Date(notif.date), 'yyyy-MM-dd');
+    const dateKey = format(new Date(notif.created_at), 'yyyy-MM-dd');
     if (!dateMap[dateKey]) dateMap[dateKey] = [];
     dateMap[dateKey].push(notif);
   }

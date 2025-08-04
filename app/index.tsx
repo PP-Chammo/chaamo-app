@@ -78,6 +78,8 @@ export default function StartPage() {
     }
   }, [checkSession, hasCheckedSession]);
 
+  if (isDevelopment) return null;
+
   return (
     <View className={classes.container}>
       <Image

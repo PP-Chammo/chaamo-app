@@ -1,4 +1,6 @@
-import { groupNotificationsByDate, Notification } from '../notification';
+import { Notification } from '@/domains';
+
+import { groupNotificationsByDate } from '../notification';
 
 describe('groupNotificationsByDate', () => {
   it('should return empty array for empty input', () => {
@@ -9,9 +11,9 @@ describe('groupNotificationsByDate', () => {
     const notifications: Notification[] = [
       {
         id: 1,
-        category: 'Order Shipped',
-        message: 'Shipped!',
-        date: '2024-06-01T10:00:00Z',
+        content: 'Shipped!',
+        created_at: '2024-06-01T10:00:00Z',
+        notification_types: { name: 'Order Shipped' },
       },
     ];
     const result = groupNotificationsByDate(notifications);
@@ -23,21 +25,21 @@ describe('groupNotificationsByDate', () => {
     const notifications: Notification[] = [
       {
         id: 1,
-        category: 'Order Shipped',
-        message: 'Shipped!',
-        date: '2024-06-01T10:00:00Z',
+        content: 'Shipped!',
+        created_at: '2024-06-01T10:00:00Z',
+        notification_types: { name: 'Order Shipped' },
       },
       {
         id: 2,
-        category: 'New Bid',
-        message: 'Bid placed!',
-        date: '2024-06-01T12:00:00Z',
+        content: 'Bid placed!',
+        created_at: '2024-06-01T12:00:00Z',
+        notification_types: { name: 'New Bid' },
       },
       {
         id: 3,
-        category: 'Bid Ending',
-        message: 'Ending soon!',
-        date: '2024-06-02T09:00:00Z',
+        content: 'Ending soon!',
+        created_at: '2024-06-02T09:00:00Z',
+        notification_types: { name: 'Bid Ending' },
       },
     ];
     const result = groupNotificationsByDate(notifications);
@@ -50,15 +52,15 @@ describe('groupNotificationsByDate', () => {
     const notifications: Notification[] = [
       {
         id: 1,
-        category: 'Order Shipped',
-        message: 'Shipped!',
-        date: '2024-06-01T10:00:00Z',
+        content: 'Shipped!',
+        created_at: '2024-06-01T10:00:00Z',
+        notification_types: { name: 'Order Shipped' },
       },
       {
         id: 2,
-        category: 'Bid Ending',
-        message: 'Ending soon!',
-        date: '2024-06-02T09:00:00Z',
+        content: 'Ending soon!',
+        created_at: '2024-06-02T09:00:00Z',
+        notification_types: { name: 'Bid Ending' },
       },
     ];
     const result = groupNotificationsByDate(notifications);

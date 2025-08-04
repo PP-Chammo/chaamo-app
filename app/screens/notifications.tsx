@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Alert, TouchableOpacity, View } from 'react-native';
 
 import {
@@ -12,14 +12,34 @@ import {
 } from '@/components/atoms';
 import { Header } from '@/components/molecules';
 import { NotificationList } from '@/components/organisms';
-import { dummyNotifications } from '@/constants/dummy';
-import { FlatData } from '@/domains';
+import { FlatData, Notification } from '@/domains';
+import { useGetNotificationsQuery } from '@/generated/graphql';
+import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
-import { groupNotificationsByDate, Notification } from '@/utils/notification';
+import { groupNotificationsByDate } from '@/utils/notification';
 
 export default function Notifications() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [data, setData] = useState<FlatData<Notification>[]>([]);
+
+  const [user] = useUserVar();
+
+  const { data: notificationData } = useGetNotificationsQuery({
+    skip: !user?.id,
+    variables: {
+      filter: {
+        user_id: { eq: user?.id },
+      },
+    },
+  });
+
+  const notifications = useMemo(
+    () =>
+      notificationData?.notificationsCollection?.edges?.map(
+        (edge) => edge.node,
+      ) ?? [],
+    [notificationData?.notificationsCollection?.edges],
+  );
 
   const handlePress = useCallback(() => {
     console.log('PRESSED NOTIFICATION');
@@ -54,20 +74,27 @@ export default function Notifications() {
     );
   }, []);
 
-  useEffect(() => {
-    const groupedNotifications = groupNotificationsByDate(
-      dummyNotifications as Notification[],
-    );
-    const flatData: FlatData<Notification>[] = [];
-    groupedNotifications.forEach((dateGroup) => {
-      flatData.push({ type: 'date', date: dateGroup.date });
-      dateGroup.notifications.forEach((group) => {
-        flatData.push({ type: 'group', group, date: dateGroup.date });
-      });
-    });
+  useFocusEffect(
+    useCallback(() => {
+      const flatData: FlatData<Notification>[] = [];
 
-    setData(flatData);
-  }, []);
+      const groupedNotifications = groupNotificationsByDate(notifications);
+
+      groupedNotifications.forEach((dateGroup) => {
+        flatData.push({ type: 'date', date: dateGroup.date });
+
+        dateGroup.notifications.forEach((notification) => {
+          flatData.push({
+            type: 'group',
+            group: notification,
+            date: dateGroup.date,
+          });
+        });
+      });
+
+      setData(flatData);
+    }, [notifications]),
+  );
 
   const _renderContent = useMemo(() => {
     if (data.length)

@@ -4,7 +4,7 @@ import { clsx } from 'clsx';
 import { Text, TextInput, TextInputProps, View } from 'react-native';
 
 import { MasterCard, VisaCard } from '@/assets/svg';
-import { TextChangeParams } from '@/domains/input.types';
+import { TextChangeParams } from '@/domains';
 import { formatCardField, validateCardNumber } from '@/utils/card';
 
 interface CardFieldProps extends Omit<TextInputProps, 'onChange'> {
