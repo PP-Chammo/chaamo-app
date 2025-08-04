@@ -1,0 +1,90 @@
+[
+  {
+    "id": 14,
+    "name": "Australia",
+    "iso2": "AU",
+    "iso3": "AUS",
+    "phonecode": "61",
+    "capital": "Canberra",
+    "currency": "AUD",
+    "native": "Australia",
+    "emoji": "🇦🇺"
+  },
+  {
+    "id": 39,
+    "name": "Canada",
+    "iso2": "CA",
+    "iso3": "CAN",
+    "phonecode": "1",
+    "capital": "Ottawa",
+    "currency": "CAD",
+    "native": "Canada",
+    "emoji": "🇨🇦"
+  },
+  {
+    "id": 75,
+    "name": "France",
+    "iso2": "FR",
+    "iso3": "FRA",
+    "phonecode": "33",
+    "capital": "Paris",
+    "currency": "EUR",
+    "native": "France",
+    "emoji": "🇫🇷"
+  },
+  {
+    "id": 82,
+    "name": "Germany",
+    "iso2": "DE",
+    "iso3": "DEU",
+    "phonecode": "49",
+    "capital": "Berlin",
+    "currency": "EUR",
+    "native": "Deutschland",
+    "emoji": "🇩🇪"
+  },
+  {
+    "id": 107,
+    "name": "Italy",
+    "iso2": "IT",
+    "iso3": "ITA",
+    "phonecode": "39",
+    "capital": "Rome",
+    "currency": "EUR",
+    "native": "Italia",
+    "emoji": "🇮🇹"
+  },
+  {
+    "id": 207,
+    "name": "Spain",
+    "iso2": "ES",
+    "iso3": "ESP",
+    "phonecode": "34",
+    "capital": "Madrid",
+    "currency": "EUR",
+    "native": "España",
+    "emoji": "🇪🇸"
+  },
+  {
+    "id": 232,
+    "name": "United Kingdom",
+    "iso2": "GB",
+    "iso3": "GBR",
+    "phonecode": "44",
+    "capital": "London",
+    "currency": "GBP",
+    "native": "United Kingdom",
+    "emoji": "🇬🇧"
+  },
+  {
+    "id": 233,
+    "name": "United States",
+    "iso2": "US",
+    "iso3": "USA",
+    "phonecode": "1",
+    "capital": "Washington",
+    "currency": "USD",
+    "native": "United States",
+    "emoji": "🇺🇸"
+  }
+]
