@@ -1,0 +1,6372 @@
+[
+  {
+    "id": 866,
+    "name": "Ontario",
+    "country_id": 39,
+    "country_code": "CA",
+    "iso2": "ON",
+    "type": "province",
+    "latitude": "51.25377500",
+    "longitude": "-85.32321400"
+  },
+  {
+    "id": 867,
+    "name": "Manitoba",
+    "country_id": 39,
+    "country_code": "CA",
+    "iso2": "MB",
+    "type": "province",
+    "latitude": "53.76086080",
+    "longitude": "-98.81387620"
+  },
+  {
+    "id": 868,
+    "name": "New Brunswick",
+    "country_id": 39,
+    "country_code": "CA",
+    "iso2": "NB",
+    "type": "province",
+    "latitude": "46.56531630",
+    "longitude": "-66.46191640"
+  },
+  {
+    "id": 869,
+    "name": "Yukon",
+    "country_id": 39,
+    "country_code": "CA",
+    "iso2": "YT",
+    "type": "territory",
+    "latitude": "35.50672150",
+    "longitude": "-97.76254410"
+  },
+  {
+    "id": 870,
+    "name": "Saskatchewan",
+    "country_id": 39,
+    "country_code": "CA",
+    "iso2": "SK",
+    "type": "province",
+    "latitude": "52.93991590",
+    "longitude": "-106.45086390"
+  },
+  {
+    "id": 871,
+    "name": "Prince Edward Island",
+    "country_id": 39,
+    "country_code": "CA",
+    "iso2": "PE",
+    "type": "province",
+    "latitude": "46.51071200",
+    "longitude": "-63.41681360"
+  },
+  {
+    "id": 872,
+    "name": "Alberta",
+    "country_id": 39,
+    "country_code": "CA",
+    "iso2": "AB",
+    "type": "province",
+    "latitude": "53.93327060",
+    "longitude": "-116.57650350"
+  },
+  {
+    "id": 873,
+    "name": "Quebec",
+    "country_id": 39,
+    "country_code": "CA",
+    "iso2": "QC",
+    "type": "province",
+    "latitude": "52.93991590",
+    "longitude": "-73.54913610"
+  },
+  {
+    "id": 874,
+    "name": "Nova Scotia",
+    "country_id": 39,
+    "country_code": "CA",
+    "iso2": "NS",
+    "type": "province",
+    "latitude": "44.68198660",
+    "longitude": "-63.74431100"
+  },
+  {
+    "id": 875,
+    "name": "British Columbia",
+    "country_id": 39,
+    "country_code": "CA",
+    "iso2": "BC",
+    "type": "province",
+    "latitude": "53.72666830",
+    "longitude": "-127.64762050"
+  },
+  {
+    "id": 876,
+    "name": "Nunavut",
+    "country_id": 39,
+    "country_code": "CA",
+    "iso2": "NU",
+    "type": "territory",
+    "latitude": "70.29977110",
+    "longitude": "-83.10757700"
+  },
+  {
+    "id": 877,
+    "name": "Newfoundland and Labrador",
+    "country_id": 39,
+    "country_code": "CA",
+    "iso2": "NL",
+    "type": "province",
+    "latitude": "53.13550910",
+    "longitude": "-57.66043640"
+  },
+  {
+    "id": 878,
+    "name": "Northwest Territories",
+    "country_id": 39,
+    "country_code": "CA",
+    "iso2": "NT",
+    "type": "territory",
+    "latitude": "64.82554410",
+    "longitude": "-124.84573340"
+  },
+  {
+    "id": 1146,
+    "name": "Burgos",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "BU",
+    "type": "province",
+    "latitude": "42.33807580",
+    "longitude": "-3.58126920"
+  },
+  {
+    "id": 1147,
+    "name": "Salamanca",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "SA",
+    "type": "province",
+    "latitude": "40.95152630",
+    "longitude": "-6.23759470"
+  },
+  {
+    "id": 1157,
+    "name": "Palencia",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "P",
+    "type": "province",
+    "latitude": "42.00968320",
+    "longitude": "-4.52879490"
+  },
+  {
+    "id": 1158,
+    "name": "Madrid",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "M",
+    "type": "province",
+    "latitude": "40.41675150",
+    "longitude": "-3.70383220"
+  },
+  {
+    "id": 1160,
+    "name": "Asturias",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "O",
+    "type": "province",
+    "latitude": "43.36139530",
+    "longitude": "-5.85932670"
+  },
+  {
+    "id": 1161,
+    "name": "Zamora",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "ZA",
+    "type": "province",
+    "latitude": "41.60957440",
+    "longitude": "-5.89871390"
+  },
+  {
+    "id": 1167,
+    "name": "Pontevedra",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "PO",
+    "type": "province",
+    "latitude": "42.43385950",
+    "longitude": "-8.65685520"
+  },
+  {
+    "id": 1170,
+    "name": "Cantabria",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "S",
+    "type": "province",
+    "latitude": "43.18283960",
+    "longitude": "-3.98784270"
+  },
+  {
+    "id": 1171,
+    "name": "La Rioja",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "LO",
+    "type": "province",
+    "latitude": "42.28707330",
+    "longitude": "-2.53960300"
+  },
+  {
+    "id": 1174,
+    "name": "Islas Baleares",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "PM",
+    "type": "province",
+    "latitude": "39.35877590",
+    "longitude": "2.73563280"
+  },
+  {
+    "id": 1175,
+    "name": "Valencia",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "V",
+    "type": "province",
+    "latitude": "39.48401080",
+    "longitude": "-0.75328090"
+  },
+  {
+    "id": 1176,
+    "name": "Murcia",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "MU",
+    "type": "province",
+    "latitude": "38.13981410",
+    "longitude": "-1.36621600"
+  },
+  {
+    "id": 1177,
+    "name": "Huesca",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "HU",
+    "type": "province",
+    "latitude": "41.59762750",
+    "longitude": "-0.90566230"
+  },
+  {
+    "id": 1183,
+    "name": "Valladolid",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "VA",
+    "type": "province",
+    "latitude": "41.65173750",
+    "longitude": "-4.72449500"
+  },
+  {
+    "id": 1185,
+    "name": "Las Palmas",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "GC",
+    "type": "province",
+    "latitude": "28.29156370",
+    "longitude": "-16.62913040"
+  },
+  {
+    "id": 1189,
+    "name": "Ávila",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "AV",
+    "type": "province",
+    "latitude": "40.69345110",
+    "longitude": "-4.89356270"
+  },
+  {
+    "id": 1190,
+    "name": "Caceres",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "CC",
+    "type": "province",
+    "latitude": "39.47163130",
+    "longitude": "-6.42573840"
+  },
+  {
+    "id": 1191,
+    "name": "Gipuzkoa",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "SS",
+    "type": "province",
+    "latitude": "43.14523600",
+    "longitude": "-2.44618250"
+  },
+  {
+    "id": 1192,
+    "name": "Segovia",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "SG",
+    "type": "province",
+    "latitude": "40.94292960",
+    "longitude": "-4.10889420"
+  },
+  {
+    "id": 1193,
+    "name": "Sevilla",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "SE",
+    "type": "province",
+    "latitude": "37.37535010",
+    "longitude": "-6.02509730"
+  },
+  {
+    "id": 1200,
+    "name": "Léon",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "LE",
+    "type": "province",
+    "latitude": "42.59870410",
+    "longitude": "-5.56708390"
+  },
+  {
+    "id": 1203,
+    "name": "Tarragona",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "T",
+    "type": "province",
+    "latitude": "41.12586420",
+    "longitude": "1.20356420"
+  },
+  {
+    "id": 1204,
+    "name": "Navarra",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "NA",
+    "type": "province",
+    "latitude": "42.69539090",
+    "longitude": "-1.67606910"
+  },
+  {
+    "id": 1205,
+    "name": "Toledo",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "TO",
+    "type": "province",
+    "latitude": "39.86232000",
+    "longitude": "-4.06946920"
+  },
+  {
+    "id": 1208,
+    "name": "Soria",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "SO",
+    "type": "province",
+    "latitude": "41.76654640",
+    "longitude": "-2.47903060"
+  },
+  {
+    "id": 1398,
+    "name": "Howland Island",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "UM-84",
+    "type": "islands / groups of islands",
+    "latitude": "0.81132190",
+    "longitude": "-176.61827360"
+  },
+  {
+    "id": 1399,
+    "name": "Delaware",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "DE",
+    "type": "state",
+    "latitude": "38.91083250",
+    "longitude": "-75.52766990"
+  },
+  {
+    "id": 1400,
+    "name": "Alaska",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "AK",
+    "type": "state",
+    "latitude": "64.20084130",
+    "longitude": "-149.49367330"
+  },
+  {
+    "id": 1401,
+    "name": "Maryland",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "MD",
+    "type": "state",
+    "latitude": "39.04575490",
+    "longitude": "-76.64127120"
+  },
+  {
+    "id": 1402,
+    "name": "Baker Island",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "UM-81",
+    "type": "islands / groups of islands",
+    "latitude": "0.19362660",
+    "longitude": "-176.47690800"
+  },
+  {
+    "id": 1403,
+    "name": "Kingman Reef",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "UM-89",
+    "type": "islands / groups of islands",
+    "latitude": "6.38333300",
+    "longitude": "-162.41666700"
+  },
+  {
+    "id": 1404,
+    "name": "New Hampshire",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "NH",
+    "type": "state",
+    "latitude": "43.19385160",
+    "longitude": "-71.57239530"
+  },
+  {
+    "id": 1405,
+    "name": "Wake Island",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "UM-79",
+    "type": "islands / groups of islands",
+    "latitude": "19.27961900",
+    "longitude": "166.64993480"
+  },
+  {
+    "id": 1406,
+    "name": "Kansas",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "KS",
+    "type": "state",
+    "latitude": "39.01190200",
+    "longitude": "-98.48424650"
+  },
+  {
+    "id": 1407,
+    "name": "Texas",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "TX",
+    "type": "state",
+    "latitude": "31.96859880",
+    "longitude": "-99.90181310"
+  },
+  {
+    "id": 1408,
+    "name": "Nebraska",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "NE",
+    "type": "state",
+    "latitude": "41.49253740",
+    "longitude": "-99.90181310"
+  },
+  {
+    "id": 1409,
+    "name": "Vermont",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "VT",
+    "type": "state",
+    "latitude": "44.55880280",
+    "longitude": "-72.57784150"
+  },
+  {
+    "id": 1410,
+    "name": "Jarvis Island",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "UM-86",
+    "type": "islands / groups of islands",
+    "latitude": "-0.37435030",
+    "longitude": "-159.99672060"
+  },
+  {
+    "id": 1411,
+    "name": "Hawaii",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "HI",
+    "type": "state",
+    "latitude": "19.89676620",
+    "longitude": "-155.58278180"
+  },
+  {
+    "id": 1412,
+    "name": "Guam",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "GU",
+    "type": "outlying area",
+    "latitude": "13.44430400",
+    "longitude": "144.79373100"
+  },
+  {
+    "id": 1413,
+    "name": "United States Virgin Islands",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "VI",
+    "type": "outlying area",
+    "latitude": "18.33576500",
+    "longitude": "-64.89633500"
+  },
+  {
+    "id": 1414,
+    "name": "Utah",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "UT",
+    "type": "state",
+    "latitude": "39.32098010",
+    "longitude": "-111.09373110"
+  },
+  {
+    "id": 1415,
+    "name": "Oregon",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "OR",
+    "type": "state",
+    "latitude": "43.80413340",
+    "longitude": "-120.55420120"
+  },
+  {
+    "id": 1416,
+    "name": "California",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "CA",
+    "type": "state",
+    "latitude": "36.77826100",
+    "longitude": "-119.41793240"
+  },
+  {
+    "id": 1417,
+    "name": "New Jersey",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "NJ",
+    "type": "state",
+    "latitude": "40.05832380",
+    "longitude": "-74.40566120"
+  },
+  {
+    "id": 1418,
+    "name": "North Dakota",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "ND",
+    "type": "state",
+    "latitude": "47.55149260",
+    "longitude": "-101.00201190"
+  },
+  {
+    "id": 1419,
+    "name": "Kentucky",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "KY",
+    "type": "state",
+    "latitude": "37.83933320",
+    "longitude": "-84.27001790"
+  },
+  {
+    "id": 1420,
+    "name": "Minnesota",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "MN",
+    "type": "state",
+    "latitude": "46.72955300",
+    "longitude": "-94.68589980"
+  },
+  {
+    "id": 1421,
+    "name": "Oklahoma",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "OK",
+    "type": "state",
+    "latitude": "35.46756020",
+    "longitude": "-97.51642760"
+  },
+  {
+    "id": 1422,
+    "name": "Pennsylvania",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "PA",
+    "type": "state",
+    "latitude": "41.20332160",
+    "longitude": "-77.19452470"
+  },
+  {
+    "id": 1423,
+    "name": "New Mexico",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "NM",
+    "type": "state",
+    "latitude": "34.51994020",
+    "longitude": "-105.87009010"
+  },
+  {
+    "id": 1424,
+    "name": "American Samoa",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "AS",
+    "type": "outlying area",
+    "latitude": "-14.27097200",
+    "longitude": "-170.13221700"
+  },
+  {
+    "id": 1425,
+    "name": "Illinois",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "IL",
+    "type": "state",
+    "latitude": "40.63312490",
+    "longitude": "-89.39852830"
+  },
+  {
+    "id": 1426,
+    "name": "Michigan",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "MI",
+    "type": "state",
+    "latitude": "44.31484430",
+    "longitude": "-85.60236430"
+  },
+  {
+    "id": 1427,
+    "name": "Virginia",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "VA",
+    "type": "state",
+    "latitude": "37.43157340",
+    "longitude": "-78.65689420"
+  },
+  {
+    "id": 1428,
+    "name": "Johnston Atoll",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "UM-67",
+    "type": "islands / groups of islands",
+    "latitude": "16.72950350",
+    "longitude": "-169.53364770"
+  },
+  {
+    "id": 1429,
+    "name": "West Virginia",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "WV",
+    "type": "state",
+    "latitude": "38.59762620",
+    "longitude": "-80.45490260"
+  },
+  {
+    "id": 1430,
+    "name": "Mississippi",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "MS",
+    "type": "state",
+    "latitude": "32.35466790",
+    "longitude": "-89.39852830"
+  },
+  {
+    "id": 1431,
+    "name": "Northern Mariana Islands",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "MP",
+    "type": "outlying area",
+    "latitude": "15.09790000",
+    "longitude": "145.67390000"
+  },
+  {
+    "id": 1432,
+    "name": "United States Minor Outlying Islands",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "UM",
+    "type": "outlying area",
+    "latitude": "19.28231920",
+    "longitude": "166.64704700"
+  },
+  {
+    "id": 1433,
+    "name": "Massachusetts",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "MA",
+    "type": "state",
+    "latitude": "42.40721070",
+    "longitude": "-71.38243740"
+  },
+  {
+    "id": 1434,
+    "name": "Arizona",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "AZ",
+    "type": "state",
+    "latitude": "34.04892810",
+    "longitude": "-111.09373110"
+  },
+  {
+    "id": 1435,
+    "name": "Connecticut",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "CT",
+    "type": "state",
+    "latitude": "41.60322070",
+    "longitude": "-73.08774900"
+  },
+  {
+    "id": 1436,
+    "name": "Florida",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "FL",
+    "type": "state",
+    "latitude": "27.66482740",
+    "longitude": "-81.51575350"
+  },
+  {
+    "id": 1437,
+    "name": "District of Columbia",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "DC",
+    "type": "district",
+    "latitude": "38.90719230",
+    "longitude": "-77.03687070"
+  },
+  {
+    "id": 1438,
+    "name": "Midway Atoll",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "UM-71",
+    "type": "islands / groups of islands",
+    "latitude": "28.20721680",
+    "longitude": "-177.37349260"
+  },
+  {
+    "id": 1439,
+    "name": "Navassa Island",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "UM-76",
+    "type": "islands / groups of islands",
+    "latitude": "18.41006890",
+    "longitude": "-75.01146120"
+  },
+  {
+    "id": 1440,
+    "name": "Indiana",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "IN",
+    "type": "state",
+    "latitude": "40.26719410",
+    "longitude": "-86.13490190"
+  },
+  {
+    "id": 1441,
+    "name": "Wisconsin",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "WI",
+    "type": "state",
+    "latitude": "43.78443970",
+    "longitude": "-88.78786780"
+  },
+  {
+    "id": 1442,
+    "name": "Wyoming",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "WY",
+    "type": "state",
+    "latitude": "43.07596780",
+    "longitude": "-107.29028390"
+  },
+  {
+    "id": 1443,
+    "name": "South Carolina",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "SC",
+    "type": "state",
+    "latitude": "33.83608100",
+    "longitude": "-81.16372450"
+  },
+  {
+    "id": 1444,
+    "name": "Arkansas",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "AR",
+    "type": "state",
+    "latitude": "35.20105000",
+    "longitude": "-91.83183340"
+  },
+  {
+    "id": 1445,
+    "name": "South Dakota",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "SD",
+    "type": "state",
+    "latitude": "43.96951480",
+    "longitude": "-99.90181310"
+  },
+  {
+    "id": 1446,
+    "name": "Montana",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "MT",
+    "type": "state",
+    "latitude": "46.87968220",
+    "longitude": "-110.36256580"
+  },
+  {
+    "id": 1447,
+    "name": "North Carolina",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "NC",
+    "type": "state",
+    "latitude": "35.75957310",
+    "longitude": "-79.01929970"
+  },
+  {
+    "id": 1448,
+    "name": "Palmyra Atoll",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "UM-95",
+    "type": "islands / groups of islands",
+    "latitude": "5.88850260",
+    "longitude": "-162.07866560"
+  },
+  {
+    "id": 1449,
+    "name": "Puerto Rico",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "PR",
+    "type": "outlying area",
+    "latitude": "18.22083300",
+    "longitude": "-66.59014900"
+  },
+  {
+    "id": 1450,
+    "name": "Colorado",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "CO",
+    "type": "state",
+    "latitude": "39.55005070",
+    "longitude": "-105.78206740"
+  },
+  {
+    "id": 1451,
+    "name": "Missouri",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "MO",
+    "type": "state",
+    "latitude": "37.96425290",
+    "longitude": "-91.83183340"
+  },
+  {
+    "id": 1452,
+    "name": "New York",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "NY",
+    "type": "state",
+    "latitude": "40.71277530",
+    "longitude": "-74.00597280"
+  },
+  {
+    "id": 1453,
+    "name": "Maine",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "ME",
+    "type": "state",
+    "latitude": "45.25378300",
+    "longitude": "-69.44546890"
+  },
+  {
+    "id": 1454,
+    "name": "Tennessee",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "TN",
+    "type": "state",
+    "latitude": "35.51749130",
+    "longitude": "-86.58044730"
+  },
+  {
+    "id": 1455,
+    "name": "Georgia",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "GA",
+    "type": "state",
+    "latitude": "32.16562210",
+    "longitude": "-82.90007510"
+  },
+  {
+    "id": 1456,
+    "name": "Alabama",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "AL",
+    "type": "state",
+    "latitude": "32.31823140",
+    "longitude": "-86.90229800"
+  },
+  {
+    "id": 1457,
+    "name": "Louisiana",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "LA",
+    "type": "state",
+    "latitude": "30.98429770",
+    "longitude": "-91.96233270"
+  },
+  {
+    "id": 1458,
+    "name": "Nevada",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "NV",
+    "type": "state",
+    "latitude": "38.80260970",
+    "longitude": "-116.41938900"
+  },
+  {
+    "id": 1459,
+    "name": "Iowa",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "IA",
+    "type": "state",
+    "latitude": "41.87800250",
+    "longitude": "-93.09770200"
+  },
+  {
+    "id": 1460,
+    "name": "Idaho",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "ID",
+    "type": "state",
+    "latitude": "44.06820190",
+    "longitude": "-114.74204080"
+  },
+  {
+    "id": 1461,
+    "name": "Rhode Island",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "RI",
+    "type": "state",
+    "latitude": "41.58009450",
+    "longitude": "-71.47742910"
+  },
+  {
+    "id": 1462,
+    "name": "Washington",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "WA",
+    "type": "state",
+    "latitude": "47.75107410",
+    "longitude": "-120.74013850"
+  },
+  {
+    "id": 1664,
+    "name": "Tuscany",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "52",
+    "type": "region",
+    "latitude": "43.77105130",
+    "longitude": "11.24862080"
+  },
+  {
+    "id": 1665,
+    "name": "Padua",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "PD",
+    "type": "province",
+    "latitude": "45.36618640",
+    "longitude": "11.82091390"
+  },
+  {
+    "id": 1666,
+    "name": "Parma",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "PR",
+    "type": "province",
+    "latitude": "44.80153220",
+    "longitude": "10.32793540"
+  },
+  {
+    "id": 1667,
+    "name": "Siracusa",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "SR",
+    "type": "free municipal consortium",
+    "latitude": "37.06569240",
+    "longitude": "15.28571090"
+  },
+  {
+    "id": 1668,
+    "name": "Palermo",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "PA",
+    "type": "province",
+    "latitude": "38.11569000",
+    "longitude": "13.36148680"
+  },
+  {
+    "id": 1669,
+    "name": "Campania",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "72",
+    "type": "region",
+    "latitude": "40.66708870",
+    "longitude": "15.10681130"
+  },
+  {
+    "id": 1670,
+    "name": "Marche",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "57",
+    "type": "region",
+    "latitude": "43.30456200",
+    "longitude": "13.71947000"
+  },
+  {
+    "id": 1672,
+    "name": "Ancona",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "AN",
+    "type": "province",
+    "latitude": "43.54932450",
+    "longitude": "13.26634790"
+  },
+  {
+    "id": 1674,
+    "name": "Latina",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "LT",
+    "type": "province",
+    "latitude": "41.40874760",
+    "longitude": "13.08179030"
+  },
+  {
+    "id": 1675,
+    "name": "Lecce",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "LE",
+    "type": "province",
+    "latitude": "40.23473930",
+    "longitude": "18.14286690"
+  },
+  {
+    "id": 1676,
+    "name": "Pavia",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "PV",
+    "type": "province",
+    "latitude": "45.32181660",
+    "longitude": "8.84662360"
+  },
+  {
+    "id": 1677,
+    "name": "Lecco",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "LC",
+    "type": "province",
+    "latitude": "45.93829410",
+    "longitude": "9.38572900"
+  },
+  {
+    "id": 1678,
+    "name": "Lazio",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "62",
+    "type": "region",
+    "latitude": "41.81224100",
+    "longitude": "12.73851000"
+  },
+  {
+    "id": 1679,
+    "name": "Abruzzo",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "65",
+    "type": "region",
+    "latitude": "42.19201190",
+    "longitude": "13.72891670"
+  },
+  {
+    "id": 1681,
+    "name": "Ascoli Piceno",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "AP",
+    "type": "province",
+    "latitude": "42.86389330",
+    "longitude": "13.58997330"
+  },
+  {
+    "id": 1683,
+    "name": "Umbria",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "55",
+    "type": "region",
+    "latitude": "42.93800400",
+    "longitude": "12.62162110"
+  },
+  {
+    "id": 1685,
+    "name": "Pisa",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "PI",
+    "type": "province",
+    "latitude": "43.72283150",
+    "longitude": "10.40171940"
+  },
+  {
+    "id": 1686,
+    "name": "Barletta-Andria-Trani",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "BT",
+    "type": "province",
+    "latitude": "41.20045430",
+    "longitude": "16.20514840"
+  },
+  {
+    "id": 1687,
+    "name": "Pistoia",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "PT",
+    "type": "province",
+    "latitude": "43.95437330",
+    "longitude": "10.89030990"
+  },
+  {
+    "id": 1688,
+    "name": "Apulia",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "75",
+    "type": "region",
+    "latitude": "40.79283930",
+    "longitude": "17.10119310"
+  },
+  {
+    "id": 1689,
+    "name": "Belluno",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "BL",
+    "type": "province",
+    "latitude": "46.24976590",
+    "longitude": "12.19695650"
+  },
+  {
+    "id": 1690,
+    "name": "Pordenone",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "PN",
+    "type": "decentralized regional entity",
+    "latitude": "46.03788620",
+    "longitude": "12.71083500"
+  },
+  {
+    "id": 1691,
+    "name": "Perugia",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "PG",
+    "type": "province",
+    "latitude": "42.93800400",
+    "longitude": "12.62162110"
+  },
+  {
+    "id": 1692,
+    "name": "Avellino",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "AV",
+    "type": "province",
+    "latitude": "40.99645100",
+    "longitude": "15.12589550"
+  },
+  {
+    "id": 1693,
+    "name": "Pesaro and Urbino",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "PU",
+    "type": "province",
+    "latitude": "43.61301180",
+    "longitude": "12.71351210"
+  },
+  {
+    "id": 1694,
+    "name": "Pescara",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "PE",
+    "type": "province",
+    "latitude": "42.35706550",
+    "longitude": "13.96080910"
+  },
+  {
+    "id": 1695,
+    "name": "Molise",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "67",
+    "type": "region",
+    "latitude": "41.67388650",
+    "longitude": "14.75209390"
+  },
+  {
+    "id": 1696,
+    "name": "Piacenza",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "PC",
+    "type": "province",
+    "latitude": "44.82631120",
+    "longitude": "9.52914470"
+  },
+  {
+    "id": 1697,
+    "name": "Potenza",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "PZ",
+    "type": "province",
+    "latitude": "40.41821940",
+    "longitude": "15.87600400"
+  },
+  {
+    "id": 1700,
+    "name": "Prato",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "PO",
+    "type": "province",
+    "latitude": "44.04539000",
+    "longitude": "11.11644520"
+  },
+  {
+    "id": 1701,
+    "name": "Benevento",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "BN",
+    "type": "province",
+    "latitude": "41.20350930",
+    "longitude": "14.75209390"
+  },
+  {
+    "id": 1702,
+    "name": "Piedmont",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "21",
+    "type": "region",
+    "latitude": "45.05223660",
+    "longitude": "7.51538850"
+  },
+  {
+    "id": 1703,
+    "name": "Calabria",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "78",
+    "type": "region",
+    "latitude": "39.30877140",
+    "longitude": "16.34637910"
+  },
+  {
+    "id": 1704,
+    "name": "Bergamo",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "BG",
+    "type": "province",
+    "latitude": "45.69826420",
+    "longitude": "9.67726980"
+  },
+  {
+    "id": 1705,
+    "name": "Lombardy",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "25",
+    "type": "region",
+    "latitude": "45.47906710",
+    "longitude": "9.84524330"
+  },
+  {
+    "id": 1706,
+    "name": "Basilicata",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "77",
+    "type": "region",
+    "latitude": "40.64307660",
+    "longitude": "15.96998780"
+  },
+  {
+    "id": 1707,
+    "name": "Ravenna",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "RA",
+    "type": "province",
+    "latitude": "44.41844430",
+    "longitude": "12.20359980"
+  },
+  {
+    "id": 1708,
+    "name": "Reggio Emilia",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "RE",
+    "type": "province",
+    "latitude": "44.58565800",
+    "longitude": "10.55647360"
+  },
+  {
+    "id": 1709,
+    "name": "Sicily",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "82",
+    "type": "autonomous region",
+    "latitude": "37.59999380",
+    "longitude": "14.01535570"
+  },
+  {
+    "id": 1712,
+    "name": "Rieti",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "RI",
+    "type": "province",
+    "latitude": "42.36744050",
+    "longitude": "12.89750980"
+  },
+  {
+    "id": 1713,
+    "name": "Rimini",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "RN",
+    "type": "province",
+    "latitude": "44.06782880",
+    "longitude": "12.56951580"
+  },
+  {
+    "id": 1714,
+    "name": "Brindisi",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "BR",
+    "type": "province",
+    "latitude": "40.61126630",
+    "longitude": "17.76362100"
+  },
+  {
+    "id": 1715,
+    "name": "Sardinia",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "88",
+    "type": "autonomous region",
+    "latitude": "40.12087520",
+    "longitude": "9.01289260"
+  },
+  {
+    "id": 1716,
+    "name": "Aosta Valley",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "23",
+    "type": "autonomous region",
+    "latitude": "45.73888780",
+    "longitude": "7.42618660"
+  },
+  {
+    "id": 1717,
+    "name": "Brescia",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "BS",
+    "type": "province",
+    "latitude": "45.54155260",
+    "longitude": "10.21180190"
+  },
+  {
+    "id": 1718,
+    "name": "Caltanissetta",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "CL",
+    "type": "free municipal consortium",
+    "latitude": "37.48601300",
+    "longitude": "14.06149820"
+  },
+  {
+    "id": 1719,
+    "name": "Rovigo",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "RO",
+    "type": "province",
+    "latitude": "45.02418180",
+    "longitude": "11.82381620"
+  },
+  {
+    "id": 1720,
+    "name": "Salerno",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "SA",
+    "type": "province",
+    "latitude": "40.42878320",
+    "longitude": "15.21948080"
+  },
+  {
+    "id": 1721,
+    "name": "Campobasso",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "CB",
+    "type": "province",
+    "latitude": "41.67388650",
+    "longitude": "14.75209390"
+  },
+  {
+    "id": 1722,
+    "name": "Sassari",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "SS",
+    "type": "province",
+    "latitude": "40.79679070",
+    "longitude": "8.57504070"
+  },
+  {
+    "id": 1723,
+    "name": "Enna",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "EN",
+    "type": "free municipal consortium",
+    "latitude": "37.56762160",
+    "longitude": "14.27953490"
+  },
+  {
+    "id": 1725,
+    "name": "Trentino-South Tyrol",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "32",
+    "type": "autonomous region",
+    "latitude": "46.43366620",
+    "longitude": "11.16932960"
+  },
+  {
+    "id": 1726,
+    "name": "Verbano-Cusio-Ossola",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "VB",
+    "type": "province",
+    "latitude": "46.13996880",
+    "longitude": "8.27246490"
+  },
+  {
+    "id": 1727,
+    "name": "Agrigento",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "AG",
+    "type": "free municipal consortium",
+    "latitude": "37.31052020",
+    "longitude": "13.58579780"
+  },
+  {
+    "id": 1728,
+    "name": "Catanzaro",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "CZ",
+    "type": "province",
+    "latitude": "38.88963480",
+    "longitude": "16.44058720"
+  },
+  {
+    "id": 1729,
+    "name": "Ragusa",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "RG",
+    "type": "free municipal consortium",
+    "latitude": "36.92692730",
+    "longitude": "14.72551290"
+  },
+  {
+    "id": 1730,
+    "name": "South Sardinia",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "SU",
+    "type": "province",
+    "latitude": "39.38935350",
+    "longitude": "8.93970000"
+  },
+  {
+    "id": 1731,
+    "name": "Caserta",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "CE",
+    "type": "province",
+    "latitude": "41.20783540",
+    "longitude": "14.10013260"
+  },
+  {
+    "id": 1732,
+    "name": "Savona",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "SV",
+    "type": "province",
+    "latitude": "44.28879950",
+    "longitude": "8.26505800"
+  },
+  {
+    "id": 1733,
+    "name": "Trapani",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "TP",
+    "type": "free municipal consortium",
+    "latitude": "38.01831160",
+    "longitude": "12.51482650"
+  },
+  {
+    "id": 1734,
+    "name": "Siena",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "SI",
+    "type": "province",
+    "latitude": "43.29377320",
+    "longitude": "11.43391480"
+  },
+  {
+    "id": 1735,
+    "name": "Viterbo",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "VT",
+    "type": "province",
+    "latitude": "42.40024200",
+    "longitude": "11.88917210"
+  },
+  {
+    "id": 1736,
+    "name": "Verona",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "VR",
+    "type": "province",
+    "latitude": "45.44184980",
+    "longitude": "11.07353160"
+  },
+  {
+    "id": 1737,
+    "name": "Vibo Valentia",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "VV",
+    "type": "province",
+    "latitude": "38.63785650",
+    "longitude": "16.20514840"
+  },
+  {
+    "id": 1738,
+    "name": "Vicenza",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "VI",
+    "type": "province",
+    "latitude": "45.69839950",
+    "longitude": "11.56614650"
+  },
+  {
+    "id": 1739,
+    "name": "Chieti",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "CH",
+    "type": "province",
+    "latitude": "42.03344280",
+    "longitude": "14.37919120"
+  },
+  {
+    "id": 1740,
+    "name": "Como",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "CO",
+    "type": "province",
+    "latitude": "45.80804160",
+    "longitude": "9.08517930"
+  },
+  {
+    "id": 1741,
+    "name": "Sondrio",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "SO",
+    "type": "province",
+    "latitude": "46.17276360",
+    "longitude": "9.79949170"
+  },
+  {
+    "id": 1742,
+    "name": "Cosenza",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "CS",
+    "type": "province",
+    "latitude": "39.56441050",
+    "longitude": "16.25221430"
+  },
+  {
+    "id": 1743,
+    "name": "Taranto",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "TA",
+    "type": "province",
+    "latitude": "40.57409010",
+    "longitude": "17.24299760"
+  },
+  {
+    "id": 1744,
+    "name": "Fermo",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "FM",
+    "type": "province",
+    "latitude": "43.09313670",
+    "longitude": "13.58997330"
+  },
+  {
+    "id": 1745,
+    "name": "Livorno",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "LI",
+    "type": "province",
+    "latitude": "43.02398480",
+    "longitude": "10.66471010"
+  },
+  {
+    "id": 1746,
+    "name": "Ferrara",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "FE",
+    "type": "province",
+    "latitude": "44.76636800",
+    "longitude": "11.76440680"
+  },
+  {
+    "id": 1747,
+    "name": "Lodi",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "LO",
+    "type": "province",
+    "latitude": "45.24050360",
+    "longitude": "9.52925120"
+  },
+  {
+    "id": 1749,
+    "name": "Lucca",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "LU",
+    "type": "province",
+    "latitude": "43.83767360",
+    "longitude": "10.49505300"
+  },
+  {
+    "id": 1750,
+    "name": "Macerata",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "MC",
+    "type": "province",
+    "latitude": "43.24593220",
+    "longitude": "13.26634790"
+  },
+  {
+    "id": 1751,
+    "name": "Cremona",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "CR",
+    "type": "province",
+    "latitude": "45.20143750",
+    "longitude": "9.98365820"
+  },
+  {
+    "id": 1752,
+    "name": "Teramo",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "TE",
+    "type": "province",
+    "latitude": "42.58956080",
+    "longitude": "13.63627150"
+  },
+  {
+    "id": 1753,
+    "name": "Veneto",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "34",
+    "type": "region",
+    "latitude": "45.44146620",
+    "longitude": "12.31525950"
+  },
+  {
+    "id": 1754,
+    "name": "Crotone",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "KR",
+    "type": "province",
+    "latitude": "39.13098560",
+    "longitude": "17.00670310"
+  },
+  {
+    "id": 1755,
+    "name": "Terni",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "TR",
+    "type": "province",
+    "latitude": "42.56345340",
+    "longitude": "12.52980280"
+  },
+  {
+    "id": 1756,
+    "name": "Friuli–Venezia Giulia",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "36",
+    "type": "autonomous region",
+    "latitude": "46.22591770",
+    "longitude": "13.10336460"
+  },
+  {
+    "id": 1757,
+    "name": "Modena",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "MO",
+    "type": "province",
+    "latitude": "44.55137990",
+    "longitude": "10.91804800"
+  },
+  {
+    "id": 1758,
+    "name": "Mantua",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "MN",
+    "type": "province",
+    "latitude": "45.16677280",
+    "longitude": "10.77536130"
+  },
+  {
+    "id": 1759,
+    "name": "Massa and Carrara",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "MS",
+    "type": "province",
+    "latitude": "44.22139980",
+    "longitude": "10.03596610"
+  },
+  {
+    "id": 1760,
+    "name": "Matera",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "MT",
+    "type": "province",
+    "latitude": "40.66634960",
+    "longitude": "16.60436360"
+  },
+  {
+    "id": 1761,
+    "name": "Medio Campidano",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "VS",
+    "type": "province",
+    "latitude": "39.53173890",
+    "longitude": "8.70407500"
+  },
+  {
+    "id": 1762,
+    "name": "Treviso",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "TV",
+    "type": "province",
+    "latitude": "45.66685170",
+    "longitude": "12.24306170"
+  },
+  {
+    "id": 1763,
+    "name": "Trieste",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "TS",
+    "type": "decentralized regional entity",
+    "latitude": "45.68948230",
+    "longitude": "13.78330720"
+  },
+  {
+    "id": 1764,
+    "name": "Udine",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "UD",
+    "type": "decentralized regional entity",
+    "latitude": "46.14079720",
+    "longitude": "13.16628960"
+  },
+  {
+    "id": 1765,
+    "name": "Varese",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "VA",
+    "type": "province",
+    "latitude": "45.79902600",
+    "longitude": "8.73009450"
+  },
+  {
+    "id": 1768,
+    "name": "Liguria",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "42",
+    "type": "region",
+    "latitude": "44.31679170",
+    "longitude": "8.39649380"
+  },
+  {
+    "id": 1769,
+    "name": "Monza and Brianza",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "MB",
+    "type": "province",
+    "latitude": "45.62359900",
+    "longitude": "9.25880150"
+  },
+  {
+    "id": 1771,
+    "name": "Foggia",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "FG",
+    "type": "province",
+    "latitude": "41.63844800",
+    "longitude": "15.59433880"
+  },
+  {
+    "id": 1773,
+    "name": "Emilia-Romagna",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "45",
+    "type": "region",
+    "latitude": "44.59676070",
+    "longitude": "11.21863960"
+  },
+  {
+    "id": 1774,
+    "name": "Novara",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "NO",
+    "type": "province",
+    "latitude": "45.54851330",
+    "longitude": "8.51507930"
+  },
+  {
+    "id": 1775,
+    "name": "Cuneo",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "CN",
+    "type": "province",
+    "latitude": "44.59703140",
+    "longitude": "7.61142170"
+  },
+  {
+    "id": 1776,
+    "name": "Frosinone",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "FR",
+    "type": "province",
+    "latitude": "41.65765280",
+    "longitude": "13.63627150"
+  },
+  {
+    "id": 1777,
+    "name": "Gorizia",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "GO",
+    "type": "decentralized regional entity",
+    "latitude": "45.90538990",
+    "longitude": "13.51637250"
+  },
+  {
+    "id": 1778,
+    "name": "Biella",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "BI",
+    "type": "province",
+    "latitude": "45.56281760",
+    "longitude": "8.05827170"
+  },
+  {
+    "id": 1779,
+    "name": "Forlì-Cesena",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "FC",
+    "type": "province",
+    "latitude": "43.99476810",
+    "longitude": "11.98046130"
+  },
+  {
+    "id": 1780,
+    "name": "Asti",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "AT",
+    "type": "province",
+    "latitude": "44.90076520",
+    "longitude": "8.20643150"
+  },
+  {
+    "id": 1781,
+    "name": "L'Aquila",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "AQ",
+    "type": "province",
+    "latitude": "42.12563170",
+    "longitude": "13.63627150"
+  },
+  {
+    "id": 1783,
+    "name": "Alessandria",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "AL",
+    "type": "province",
+    "latitude": "44.81755870",
+    "longitude": "8.70466270"
+  },
+  {
+    "id": 1785,
+    "name": "Vercelli",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "VC",
+    "type": "province",
+    "latitude": "45.32022040",
+    "longitude": "8.41850800"
+  },
+  {
+    "id": 1786,
+    "name": "Oristano",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "OR",
+    "type": "province",
+    "latitude": "40.05990680",
+    "longitude": "8.74811670"
+  },
+  {
+    "id": 1787,
+    "name": "Grosseto",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "GR",
+    "type": "province",
+    "latitude": "42.85180070",
+    "longitude": "11.25237920"
+  },
+  {
+    "id": 1788,
+    "name": "Imperia",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "IM",
+    "type": "province",
+    "latitude": "43.94186600",
+    "longitude": "7.82863680"
+  },
+  {
+    "id": 1789,
+    "name": "Isernia",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "IS",
+    "type": "province",
+    "latitude": "41.58915550",
+    "longitude": "14.19309180"
+  },
+  {
+    "id": 1790,
+    "name": "Nuoro",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "NU",
+    "type": "province",
+    "latitude": "40.32869040",
+    "longitude": "9.45615500"
+  },
+  {
+    "id": 1791,
+    "name": "La Spezia",
+    "country_id": 107,
+    "country_code": "IT",
+    "iso2": "SP",
+    "type": "province",
+    "latitude": "44.24479130",
+    "longitude": "9.76786870"
+  },
+  {
+    "id": 2289,
+    "name": "Isle of Wight",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "IOW",
+    "type": null,
+    "latitude": "50.69384790",
+    "longitude": "-1.30473400"
+  },
+  {
+    "id": 2290,
+    "name": "St Helens",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SHN",
+    "type": null,
+    "latitude": "45.85896100",
+    "longitude": "-122.82123560"
+  },
+  {
+    "id": 2291,
+    "name": "London Borough of Brent",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BEN",
+    "type": null,
+    "latitude": "51.56728080",
+    "longitude": "-0.27105680"
+  },
+  {
+    "id": 2292,
+    "name": "Walsall",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WLL",
+    "type": null,
+    "latitude": "52.58621400",
+    "longitude": "-1.98291900"
+  },
+  {
+    "id": 2293,
+    "name": "Trafford",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "TRF",
+    "type": null,
+    "latitude": "40.38562460",
+    "longitude": "-79.75893470"
+  },
+  {
+    "id": 2294,
+    "name": "City of Southampton",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "STH",
+    "type": null,
+    "latitude": "50.90970040",
+    "longitude": "-1.40435090"
+  },
+  {
+    "id": 2295,
+    "name": "Sheffield",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SHF",
+    "type": null,
+    "latitude": "36.09507430",
+    "longitude": "-80.27884660"
+  },
+  {
+    "id": 2296,
+    "name": "West Sussex",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WSX",
+    "type": null,
+    "latitude": "50.92801430",
+    "longitude": "-0.46170750"
+  },
+  {
+    "id": 2297,
+    "name": "City of Peterborough",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "PTE",
+    "type": null,
+    "latitude": "44.30936360",
+    "longitude": "-78.32015300"
+  },
+  {
+    "id": 2298,
+    "name": "Caerphilly County Borough",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CAY",
+    "type": null,
+    "latitude": "51.66044650",
+    "longitude": "-3.21787240"
+  },
+  {
+    "id": 2299,
+    "name": "Vale of Glamorgan",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "VGL",
+    "type": null,
+    "latitude": "51.40959580",
+    "longitude": "-3.48481670"
+  },
+  {
+    "id": 2300,
+    "name": "Shetland Islands",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ZET",
+    "type": null,
+    "latitude": "60.52965070",
+    "longitude": "-1.26594090"
+  },
+  {
+    "id": 2301,
+    "name": "Rhondda Cynon Taf",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "RCT",
+    "type": null,
+    "latitude": "51.64902070",
+    "longitude": "-3.42886920"
+  },
+  {
+    "id": 2302,
+    "name": "Poole",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "POL",
+    "type": null,
+    "latitude": "50.71505000",
+    "longitude": "-1.98724800"
+  },
+  {
+    "id": 2303,
+    "name": "Central Bedfordshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CBF",
+    "type": null,
+    "latitude": "52.00297440",
+    "longitude": "-0.46513890"
+  },
+  {
+    "id": 2304,
+    "name": "Down District Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "DOW",
+    "type": null,
+    "latitude": "54.24342870",
+    "longitude": "-5.95779590"
+  },
+  {
+    "id": 2305,
+    "name": "City of Portsmouth",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "POR",
+    "type": null,
+    "latitude": "36.83291500",
+    "longitude": "-76.29755490"
+  },
+  {
+    "id": 2306,
+    "name": "London Borough of Haringey",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "HRY",
+    "type": null,
+    "latitude": "51.59061130",
+    "longitude": "-0.11097090"
+  },
+  {
+    "id": 2307,
+    "name": "London Borough of Bexley",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BEX",
+    "type": null,
+    "latitude": "51.45190210",
+    "longitude": "0.11717860"
+  },
+  {
+    "id": 2308,
+    "name": "Rotherham",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ROT",
+    "type": null,
+    "latitude": "53.43260350",
+    "longitude": "-1.36350090"
+  },
+  {
+    "id": 2309,
+    "name": "Hartlepool",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "HPL",
+    "type": null,
+    "latitude": "54.69174500",
+    "longitude": "-1.21292600"
+  },
+  {
+    "id": 2310,
+    "name": "Telford and Wrekin",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "TFW",
+    "type": null,
+    "latitude": "52.74099160",
+    "longitude": "-2.48685860"
+  },
+  {
+    "id": 2311,
+    "name": "Belfast district",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BFS",
+    "type": null,
+    "latitude": "54.61703660",
+    "longitude": "-5.95318610"
+  },
+  {
+    "id": 2312,
+    "name": "Cornwall",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CON",
+    "type": null,
+    "latitude": "50.26604710",
+    "longitude": "-5.05271250"
+  },
+  {
+    "id": 2313,
+    "name": "London Borough of Sutton",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "STN",
+    "type": null,
+    "latitude": "51.35737620",
+    "longitude": "-0.17527960"
+  },
+  {
+    "id": 2314,
+    "name": "Omagh District Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "OMH",
+    "type": null,
+    "latitude": "54.45135240",
+    "longitude": "-7.71250180"
+  },
+  {
+    "id": 2315,
+    "name": "Banbridge",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BNB",
+    "type": null,
+    "latitude": "54.34872900",
+    "longitude": "-6.27048030"
+  },
+  {
+    "id": 2316,
+    "name": "Causeway Coast and Glens",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CCG",
+    "type": null,
+    "latitude": "55.04318300",
+    "longitude": "-6.67412880"
+  },
+  {
+    "id": 2317,
+    "name": "Newtownabbey Borough Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NTA",
+    "type": null,
+    "latitude": "54.67924220",
+    "longitude": "-5.95911020"
+  },
+  {
+    "id": 2318,
+    "name": "City of Leicester",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "LCE",
+    "type": null,
+    "latitude": "52.63687780",
+    "longitude": "-1.13975920"
+  },
+  {
+    "id": 2319,
+    "name": "London Borough of Islington",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ISL",
+    "type": null,
+    "latitude": "51.54650630",
+    "longitude": "-0.10580580"
+  },
+  {
+    "id": 2320,
+    "name": "Metropolitan Borough of Wigan",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WGN",
+    "type": null,
+    "latitude": "53.51348120",
+    "longitude": "-2.61069990"
+  },
+  {
+    "id": 2321,
+    "name": "Oxfordshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "OXF",
+    "type": null,
+    "latitude": "51.76120560",
+    "longitude": "-1.24646740"
+  },
+  {
+    "id": 2322,
+    "name": "Magherafelt District Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "MFT",
+    "type": null,
+    "latitude": "54.75532790",
+    "longitude": "-6.60774870"
+  },
+  {
+    "id": 2323,
+    "name": "Southend-on-Sea",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SOS",
+    "type": null,
+    "latitude": "51.54592690",
+    "longitude": "0.70771230"
+  },
+  {
+    "id": 2324,
+    "name": "Armagh, Banbridge and Craigavon",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ABC",
+    "type": null,
+    "latitude": "54.39325920",
+    "longitude": "-6.45634010"
+  },
+  {
+    "id": 2325,
+    "name": "Perth and Kinross",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "PKN",
+    "type": null,
+    "latitude": "56.39538170",
+    "longitude": "-3.42835470"
+  },
+  {
+    "id": 2326,
+    "name": "London Borough of Waltham Forest",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WFT",
+    "type": null,
+    "latitude": "51.58863830",
+    "longitude": "-0.01176250"
+  },
+  {
+    "id": 2327,
+    "name": "Rochdale",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "RCH",
+    "type": null,
+    "latitude": "53.60971360",
+    "longitude": "-2.15610000"
+  },
+  {
+    "id": 2328,
+    "name": "Merthyr Tydfil County Borough",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "MTY",
+    "type": null,
+    "latitude": "51.74674740",
+    "longitude": "-3.38132750"
+  },
+  {
+    "id": 2329,
+    "name": "Blackburn with Darwen",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BBD",
+    "type": null,
+    "latitude": "53.69575220",
+    "longitude": "-2.46829850"
+  },
+  {
+    "id": 2330,
+    "name": "Knowsley",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "KWL",
+    "type": null,
+    "latitude": "53.45459400",
+    "longitude": "-2.85290700"
+  },
+  {
+    "id": 2331,
+    "name": "Armagh City and District Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ARM",
+    "type": null,
+    "latitude": "54.39325920",
+    "longitude": "-6.45634010"
+  },
+  {
+    "id": 2332,
+    "name": "Middlesbrough",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "MDB",
+    "type": null,
+    "latitude": "54.57422700",
+    "longitude": "-1.23495600"
+  },
+  {
+    "id": 2333,
+    "name": "East Renfrewshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ERW",
+    "type": null,
+    "latitude": "55.77047350",
+    "longitude": "-4.33598210"
+  },
+  {
+    "id": 2334,
+    "name": "Cumbria",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CMA",
+    "type": null,
+    "latitude": "54.57723230",
+    "longitude": "-2.79748350"
+  },
+  {
+    "id": 2335,
+    "name": "Scotland",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SCT",
+    "type": null,
+    "latitude": "56.49067120",
+    "longitude": "-4.20264580"
+  },
+  {
+    "id": 2336,
+    "name": "England",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ENG",
+    "type": null,
+    "latitude": "52.35551770",
+    "longitude": "-1.17431970"
+  },
+  {
+    "id": 2337,
+    "name": "Northern Ireland",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NIR",
+    "type": null,
+    "latitude": "54.78771490",
+    "longitude": "-6.49231450"
+  },
+  {
+    "id": 2338,
+    "name": "Wales",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WLS",
+    "type": null,
+    "latitude": "52.13066070",
+    "longitude": "-3.78371170"
+  },
+  {
+    "id": 2339,
+    "name": "Bath and North East Somerset",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BAS",
+    "type": null,
+    "latitude": "51.32501020",
+    "longitude": "-2.47662410"
+  },
+  {
+    "id": 2340,
+    "name": "Liverpool",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "LIV",
+    "type": null,
+    "latitude": "32.65649810",
+    "longitude": "-115.47632410"
+  },
+  {
+    "id": 2341,
+    "name": "Sandwell",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SAW",
+    "type": null,
+    "latitude": "52.53616740",
+    "longitude": "-2.01079300"
+  },
+  {
+    "id": 2342,
+    "name": "Bournemouth",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BMH",
+    "type": null,
+    "latitude": "50.71916400",
+    "longitude": "-1.88076900"
+  },
+  {
+    "id": 2343,
+    "name": "Isles of Scilly",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "IOS",
+    "type": null,
+    "latitude": "49.92772610",
+    "longitude": "-6.32749660"
+  },
+  {
+    "id": 2344,
+    "name": "Falkirk",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "FAL",
+    "type": null,
+    "latitude": "56.00187750",
+    "longitude": "-3.78391310"
+  },
+  {
+    "id": 2345,
+    "name": "Dorset",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "DOR",
+    "type": null,
+    "latitude": "50.74876350",
+    "longitude": "-2.34447860"
+  },
+  {
+    "id": 2346,
+    "name": "Scottish Borders",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SCB",
+    "type": null,
+    "latitude": "55.54856970",
+    "longitude": "-2.78613880"
+  },
+  {
+    "id": 2347,
+    "name": "London Borough of Havering",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "HAV",
+    "type": null,
+    "latitude": "51.57792400",
+    "longitude": "0.21208290"
+  },
+  {
+    "id": 2348,
+    "name": "Moyle District Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "MYL",
+    "type": null,
+    "latitude": "55.20473270",
+    "longitude": "-6.25317400"
+  },
+  {
+    "id": 2349,
+    "name": "London Borough of Camden",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CMD",
+    "type": null,
+    "latitude": "51.54547360",
+    "longitude": "-0.16279020"
+  },
+  {
+    "id": 2350,
+    "name": "Newry and Mourne District Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NYM",
+    "type": null,
+    "latitude": "54.17425050",
+    "longitude": "-6.33919920"
+  },
+  {
+    "id": 2351,
+    "name": "Neath Port Talbot County Borough",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NTL",
+    "type": null,
+    "latitude": "51.59785190",
+    "longitude": "-3.78396680"
+  },
+  {
+    "id": 2352,
+    "name": "Conwy County Borough",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CWY",
+    "type": null,
+    "latitude": "53.29350130",
+    "longitude": "-3.72651610"
+  },
+  {
+    "id": 2353,
+    "name": "Outer Hebrides",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ELS",
+    "type": null,
+    "latitude": "57.75989180",
+    "longitude": "-7.01940340"
+  },
+  {
+    "id": 2354,
+    "name": "West Lothian",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WLN",
+    "type": null,
+    "latitude": "55.90701980",
+    "longitude": "-3.55171670"
+  },
+  {
+    "id": 2355,
+    "name": "Lincolnshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "LIN",
+    "type": null,
+    "latitude": "52.94518890",
+    "longitude": "-0.16012460"
+  },
+  {
+    "id": 2356,
+    "name": "London Borough of Barking and Dagenham",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BDG",
+    "type": null,
+    "latitude": "51.55406660",
+    "longitude": "0.13401700"
+  },
+  {
+    "id": 2357,
+    "name": "City of Westminster",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WSM",
+    "type": null,
+    "latitude": "39.57659770",
+    "longitude": "-76.99721260"
+  },
+  {
+    "id": 2358,
+    "name": "London Borough of Lewisham",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "LEW",
+    "type": null,
+    "latitude": "51.44145790",
+    "longitude": "-0.01170060"
+  },
+  {
+    "id": 2359,
+    "name": "City of Nottingham",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NGM",
+    "type": null,
+    "latitude": "52.95478320",
+    "longitude": "-1.15810860"
+  },
+  {
+    "id": 2360,
+    "name": "Moray",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "MRY",
+    "type": null,
+    "latitude": "57.64984760",
+    "longitude": "-3.31680390"
+  },
+  {
+    "id": 2361,
+    "name": "Ballymoney",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BLY",
+    "type": null,
+    "latitude": "55.07048880",
+    "longitude": "-6.51737080"
+  },
+  {
+    "id": 2362,
+    "name": "South Lanarkshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SLK",
+    "type": null,
+    "latitude": "55.67359090",
+    "longitude": "-3.78196610"
+  },
+  {
+    "id": 2363,
+    "name": "Ballymena Borough",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BLA",
+    "type": null,
+    "latitude": "54.86426000",
+    "longitude": "-6.27910740"
+  },
+  {
+    "id": 2364,
+    "name": "Doncaster",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "DNC",
+    "type": null,
+    "latitude": "53.52282000",
+    "longitude": "-1.12846200"
+  },
+  {
+    "id": 2365,
+    "name": "Northumberland",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NBL",
+    "type": null,
+    "latitude": "55.20825420",
+    "longitude": "-2.07841380"
+  },
+  {
+    "id": 2366,
+    "name": "Fermanagh and Omagh",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "FMO",
+    "type": null,
+    "latitude": "54.45135240",
+    "longitude": "-7.71250180"
+  },
+  {
+    "id": 2367,
+    "name": "Tameside",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "TAM",
+    "type": null,
+    "latitude": "53.48058280",
+    "longitude": "-2.08098910"
+  },
+  {
+    "id": 2368,
+    "name": "Royal Borough of Kensington and Chelsea",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "KEC",
+    "type": null,
+    "latitude": "51.49908050",
+    "longitude": "-0.19382530"
+  },
+  {
+    "id": 2369,
+    "name": "Hertfordshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "HRT",
+    "type": null,
+    "latitude": "51.80978230",
+    "longitude": "-0.23767440"
+  },
+  {
+    "id": 2370,
+    "name": "East Riding of Yorkshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ERY",
+    "type": null,
+    "latitude": "53.84161680",
+    "longitude": "-0.43441060"
+  },
+  {
+    "id": 2371,
+    "name": "Kirklees",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "KIR",
+    "type": null,
+    "latitude": "53.59334320",
+    "longitude": "-1.80095090"
+  },
+  {
+    "id": 2372,
+    "name": "City of Sunderland",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SND",
+    "type": null,
+    "latitude": "54.88614890",
+    "longitude": "-1.47857970"
+  },
+  {
+    "id": 2373,
+    "name": "Gloucestershire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "GLS",
+    "type": null,
+    "latitude": "51.86421120",
+    "longitude": "-2.23803350"
+  },
+  {
+    "id": 2374,
+    "name": "East Ayrshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "EAY",
+    "type": null,
+    "latitude": "55.45184960",
+    "longitude": "-4.26444780"
+  },
+  {
+    "id": 2375,
+    "name": "United Kingdom",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "UKM",
+    "type": null,
+    "latitude": "55.37805100",
+    "longitude": "-3.43597300"
+  },
+  {
+    "id": 2376,
+    "name": "London Borough of Hillingdon",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "HIL",
+    "type": null,
+    "latitude": "51.53518320",
+    "longitude": "-0.44813780"
+  },
+  {
+    "id": 2377,
+    "name": "South Ayrshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SAY",
+    "type": null,
+    "latitude": "55.45889880",
+    "longitude": "-4.62919940"
+  },
+  {
+    "id": 2378,
+    "name": "Ascension Island",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SH-AC",
+    "type": null,
+    "latitude": "-7.94671660",
+    "longitude": "-14.35591580"
+  },
+  {
+    "id": 2379,
+    "name": "Gwynedd",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "GWN",
+    "type": null,
+    "latitude": "52.92772660",
+    "longitude": "-4.13348360"
+  },
+  {
+    "id": 2380,
+    "name": "London Borough of Hounslow",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "HNS",
+    "type": null,
+    "latitude": "51.48283580",
+    "longitude": "-0.38820620"
+  },
+  {
+    "id": 2381,
+    "name": "Medway",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "MDW",
+    "type": null,
+    "latitude": "42.14176410",
+    "longitude": "-71.39672560"
+  },
+  {
+    "id": 2382,
+    "name": "Limavady Borough Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "LMV",
+    "type": null,
+    "latitude": "55.05168200",
+    "longitude": "-6.94919440"
+  },
+  {
+    "id": 2383,
+    "name": "Highland",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "HLD",
+    "type": null,
+    "latitude": "36.29675080",
+    "longitude": "-95.83803660"
+  },
+  {
+    "id": 2384,
+    "name": "North East Lincolnshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NEL",
+    "type": null,
+    "latitude": "53.56682010",
+    "longitude": "-0.08150660"
+  },
+  {
+    "id": 2385,
+    "name": "London Borough of Harrow",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "HRW",
+    "type": null,
+    "latitude": "51.58816270",
+    "longitude": "-0.34228510"
+  },
+  {
+    "id": 2386,
+    "name": "Somerset",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SOM",
+    "type": null,
+    "latitude": "51.10509700",
+    "longitude": "-2.92623070"
+  },
+  {
+    "id": 2387,
+    "name": "Angus",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ANS",
+    "type": null,
+    "latitude": "37.27578860",
+    "longitude": "-95.65010330"
+  },
+  {
+    "id": 2388,
+    "name": "Inverclyde",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "IVC",
+    "type": null,
+    "latitude": "55.93165690",
+    "longitude": "-4.68001580"
+  },
+  {
+    "id": 2389,
+    "name": "Darlington",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "DAL",
+    "type": null,
+    "latitude": "34.29987620",
+    "longitude": "-79.87617410"
+  },
+  {
+    "id": 2390,
+    "name": "London Borough of Tower Hamlets",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "TWH",
+    "type": null,
+    "latitude": "51.52026070",
+    "longitude": "-0.02933960"
+  },
+  {
+    "id": 2391,
+    "name": "Wiltshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WIL",
+    "type": null,
+    "latitude": "51.34919960",
+    "longitude": "-1.99271050"
+  },
+  {
+    "id": 2392,
+    "name": "Argyll and Bute",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "AGB",
+    "type": null,
+    "latitude": "56.40062140",
+    "longitude": "-5.48074800"
+  },
+  {
+    "id": 2393,
+    "name": "Strabane District Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "STB",
+    "type": null,
+    "latitude": "54.82738650",
+    "longitude": "-7.46331030"
+  },
+  {
+    "id": 2394,
+    "name": "Stockport",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SKP",
+    "type": null,
+    "latitude": "53.41063160",
+    "longitude": "-2.15753320"
+  },
+  {
+    "id": 2395,
+    "name": "Brighton and Hove",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BNH",
+    "type": null,
+    "latitude": "50.82262880",
+    "longitude": "-0.13704700"
+  },
+  {
+    "id": 2396,
+    "name": "London Borough of Lambeth",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "LBH",
+    "type": null,
+    "latitude": "51.45714770",
+    "longitude": "-0.12306810"
+  },
+  {
+    "id": 2397,
+    "name": "London Borough of Redbridge",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "RDB",
+    "type": null,
+    "latitude": "51.58861210",
+    "longitude": "0.08239820"
+  },
+  {
+    "id": 2398,
+    "name": "Manchester",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "MAN",
+    "type": null,
+    "latitude": "53.48075930",
+    "longitude": "-2.24263050"
+  },
+  {
+    "id": 2399,
+    "name": "Mid Ulster",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "MUL",
+    "type": null,
+    "latitude": "54.64113010",
+    "longitude": "-6.75225490"
+  },
+  {
+    "id": 2400,
+    "name": "South Gloucestershire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SGC",
+    "type": null,
+    "latitude": "51.52643610",
+    "longitude": "-2.47284870"
+  },
+  {
+    "id": 2401,
+    "name": "Aberdeenshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ABD",
+    "type": null,
+    "latitude": "57.28687230",
+    "longitude": "-2.38156840"
+  },
+  {
+    "id": 2402,
+    "name": "Monmouthshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "MON",
+    "type": null,
+    "latitude": "51.81161000",
+    "longitude": "-2.71634170"
+  },
+  {
+    "id": 2403,
+    "name": "Derbyshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "DBY",
+    "type": null,
+    "latitude": "53.10467820",
+    "longitude": "-1.56238850"
+  },
+  {
+    "id": 2404,
+    "name": "Glasgow",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "GLG",
+    "type": null,
+    "latitude": "55.86423700",
+    "longitude": "-4.25180600"
+  },
+  {
+    "id": 2405,
+    "name": "Buckinghamshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BKM",
+    "type": null,
+    "latitude": "51.80722040",
+    "longitude": "-0.81276640"
+  },
+  {
+    "id": 2406,
+    "name": "County Durham",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "DUR",
+    "type": null,
+    "latitude": "54.72940990",
+    "longitude": "-1.88115980"
+  },
+  {
+    "id": 2407,
+    "name": "Shropshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SHR",
+    "type": null,
+    "latitude": "52.70636570",
+    "longitude": "-2.74178490"
+  },
+  {
+    "id": 2408,
+    "name": "Wirral",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WRL",
+    "type": null,
+    "latitude": "53.37271810",
+    "longitude": "-3.07375400"
+  },
+  {
+    "id": 2409,
+    "name": "South Tyneside",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "STY",
+    "type": null,
+    "latitude": "54.96366930",
+    "longitude": "-1.44186340"
+  },
+  {
+    "id": 2410,
+    "name": "Essex",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ESS",
+    "type": null,
+    "latitude": "51.57424470",
+    "longitude": "0.48567810"
+  },
+  {
+    "id": 2411,
+    "name": "London Borough of Hackney",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "HCK",
+    "type": null,
+    "latitude": "51.57344500",
+    "longitude": "-0.07243760"
+  },
+  {
+    "id": 2412,
+    "name": "Antrim and Newtownabbey",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ANN",
+    "type": null,
+    "latitude": "54.69568870",
+    "longitude": "-5.94810690"
+  },
+  {
+    "id": 2413,
+    "name": "City of Bristol",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BST",
+    "type": null,
+    "latitude": "41.67352200",
+    "longitude": "-72.94653750"
+  },
+  {
+    "id": 2414,
+    "name": "East Sussex",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ESX",
+    "type": null,
+    "latitude": "50.90859550",
+    "longitude": "0.24941660"
+  },
+  {
+    "id": 2415,
+    "name": "Dumfries and Galloway",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "DGY",
+    "type": null,
+    "latitude": "55.07010730",
+    "longitude": "-3.60525810"
+  },
+  {
+    "id": 2416,
+    "name": "Milton Keynes",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "MIK",
+    "type": null,
+    "latitude": "52.08520380",
+    "longitude": "-0.73331330"
+  },
+  {
+    "id": 2417,
+    "name": "Derry City Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "DRY",
+    "type": null,
+    "latitude": "54.96907780",
+    "longitude": "-7.19583510"
+  },
+  {
+    "id": 2418,
+    "name": "London Borough of Newham",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NWM",
+    "type": null,
+    "latitude": "51.52551620",
+    "longitude": "0.03521630"
+  },
+  {
+    "id": 2419,
+    "name": "Wokingham",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WOK",
+    "type": null,
+    "latitude": "51.41045700",
+    "longitude": "-0.83386100"
+  },
+  {
+    "id": 2420,
+    "name": "Warrington",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WRT",
+    "type": null,
+    "latitude": "40.24927410",
+    "longitude": "-75.13406040"
+  },
+  {
+    "id": 2421,
+    "name": "Stockton-on-Tees",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "STT",
+    "type": null,
+    "latitude": "54.57045510",
+    "longitude": "-1.32898210"
+  },
+  {
+    "id": 2422,
+    "name": "Swindon",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SWD",
+    "type": null,
+    "latitude": "51.55577390",
+    "longitude": "-1.77971760"
+  },
+  {
+    "id": 2423,
+    "name": "Cambridgeshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CAM",
+    "type": null,
+    "latitude": "52.20529730",
+    "longitude": "0.12181950"
+  },
+  {
+    "id": 2424,
+    "name": "City of London",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "LND",
+    "type": null,
+    "latitude": "51.51234430",
+    "longitude": "-0.09098520"
+  },
+  {
+    "id": 2425,
+    "name": "Birmingham",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BIR",
+    "type": null,
+    "latitude": "33.51858920",
+    "longitude": "-86.81035670"
+  },
+  {
+    "id": 2426,
+    "name": "City of York",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "YOR",
+    "type": null,
+    "latitude": "53.95996510",
+    "longitude": "-1.08729790"
+  },
+  {
+    "id": 2427,
+    "name": "Slough",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SLG",
+    "type": null,
+    "latitude": "51.51053840",
+    "longitude": "-0.59504060"
+  },
+  {
+    "id": 2428,
+    "name": "Edinburgh",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "EDH",
+    "type": null,
+    "latitude": "55.95325200",
+    "longitude": "-3.18826700"
+  },
+  {
+    "id": 2429,
+    "name": "Mid and East Antrim",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "MEA",
+    "type": null,
+    "latitude": "54.93993410",
+    "longitude": "-6.11374230"
+  },
+  {
+    "id": 2430,
+    "name": "North Somerset",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NSM",
+    "type": null,
+    "latitude": "51.38790280",
+    "longitude": "-2.77810910"
+  },
+  {
+    "id": 2431,
+    "name": "Gateshead",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "GAT",
+    "type": null,
+    "latitude": "54.95268000",
+    "longitude": "-1.60341100"
+  },
+  {
+    "id": 2432,
+    "name": "London Borough of Southwark",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SWK",
+    "type": null,
+    "latitude": "51.48805720",
+    "longitude": "-0.07628380"
+  },
+  {
+    "id": 2433,
+    "name": "City and County of Swansea",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SWA",
+    "type": null,
+    "latitude": "51.62144000",
+    "longitude": "-3.94364600"
+  },
+  {
+    "id": 2434,
+    "name": "London Borough of Wandsworth",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WND",
+    "type": null,
+    "latitude": "51.45682740",
+    "longitude": "-0.18966380"
+  },
+  {
+    "id": 2435,
+    "name": "Hampshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "HAM",
+    "type": null,
+    "latitude": "51.05769480",
+    "longitude": "-1.30806290"
+  },
+  {
+    "id": 2436,
+    "name": "Wrexham County Borough",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WRX",
+    "type": null,
+    "latitude": "53.03013780",
+    "longitude": "-3.02614870"
+  },
+  {
+    "id": 2437,
+    "name": "Flintshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "FLN",
+    "type": null,
+    "latitude": "53.16686580",
+    "longitude": "-3.14189080"
+  },
+  {
+    "id": 2438,
+    "name": "Coventry",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "COV",
+    "type": null,
+    "latitude": "52.40682200",
+    "longitude": "-1.51969300"
+  },
+  {
+    "id": 2439,
+    "name": "Carrickfergus Borough Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CKF",
+    "type": null,
+    "latitude": "54.72568430",
+    "longitude": "-5.80937190"
+  },
+  {
+    "id": 2440,
+    "name": "West Dunbartonshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WDU",
+    "type": null,
+    "latitude": "55.94509250",
+    "longitude": "-4.56462590"
+  },
+  {
+    "id": 2441,
+    "name": "Powys",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "POW",
+    "type": null,
+    "latitude": "52.64642490",
+    "longitude": "-3.32609040"
+  },
+  {
+    "id": 2442,
+    "name": "Cheshire West and Chester",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CHW",
+    "type": null,
+    "latitude": "53.23029740",
+    "longitude": "-2.71511170"
+  },
+  {
+    "id": 2443,
+    "name": "Renfrewshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "RFW",
+    "type": null,
+    "latitude": "55.84665400",
+    "longitude": "-4.53312590"
+  },
+  {
+    "id": 2444,
+    "name": "Cheshire East",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CHE",
+    "type": null,
+    "latitude": "53.16104460",
+    "longitude": "-2.21859320"
+  },
+  {
+    "id": 2445,
+    "name": "Cookstown District Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CKT",
+    "type": null,
+    "latitude": "54.64181580",
+    "longitude": "-6.74438950"
+  },
+  {
+    "id": 2446,
+    "name": "Derry City and Strabane",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "DRS",
+    "type": null,
+    "latitude": "55.00474430",
+    "longitude": "-7.32092220"
+  },
+  {
+    "id": 2447,
+    "name": "Staffordshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "STS",
+    "type": null,
+    "latitude": "52.87927450",
+    "longitude": "-2.05718680"
+  },
+  {
+    "id": 2448,
+    "name": "London Borough of Hammersmith and Fulham",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "HMF",
+    "type": null,
+    "latitude": "51.49901560",
+    "longitude": "-0.22915000"
+  },
+  {
+    "id": 2449,
+    "name": "Craigavon Borough Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CGV",
+    "type": null,
+    "latitude": "54.39325920",
+    "longitude": "-6.45634010"
+  },
+  {
+    "id": 2450,
+    "name": "Clackmannanshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CLK",
+    "type": null,
+    "latitude": "56.10753510",
+    "longitude": "-3.75294090"
+  },
+  {
+    "id": 2451,
+    "name": "Blackpool",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BPL",
+    "type": null,
+    "latitude": "53.81750530",
+    "longitude": "-3.03567480"
+  },
+  {
+    "id": 2452,
+    "name": "Bridgend County Borough",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BGE",
+    "type": null,
+    "latitude": "51.50831990",
+    "longitude": "-3.58120750"
+  },
+  {
+    "id": 2453,
+    "name": "North Lincolnshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NLN",
+    "type": null,
+    "latitude": "53.60555920",
+    "longitude": "-0.55965820"
+  },
+  {
+    "id": 2454,
+    "name": "East Dunbartonshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "EDU",
+    "type": null,
+    "latitude": "55.97431620",
+    "longitude": "-4.20229800"
+  },
+  {
+    "id": 2455,
+    "name": "Reading",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "RDG",
+    "type": null,
+    "latitude": "36.14866590",
+    "longitude": "-95.98400120"
+  },
+  {
+    "id": 2456,
+    "name": "Nottinghamshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NTT",
+    "type": null,
+    "latitude": "53.10031900",
+    "longitude": "-0.99363060"
+  },
+  {
+    "id": 2457,
+    "name": "Dudley",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "DUD",
+    "type": null,
+    "latitude": "42.04336610",
+    "longitude": "-71.92760330"
+  },
+  {
+    "id": 2458,
+    "name": "Newcastle upon Tyne",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NET",
+    "type": null,
+    "latitude": "54.97825200",
+    "longitude": "-1.61778000"
+  },
+  {
+    "id": 2459,
+    "name": "Bury",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BUR",
+    "type": null,
+    "latitude": "53.59334980",
+    "longitude": "-2.29660540"
+  },
+  {
+    "id": 2460,
+    "name": "Lisburn and Castlereagh",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "LBC",
+    "type": null,
+    "latitude": "54.49815840",
+    "longitude": "-6.13067910"
+  },
+  {
+    "id": 2461,
+    "name": "Coleraine Borough Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CLR",
+    "type": null,
+    "latitude": "55.14515700",
+    "longitude": "-6.67598140"
+  },
+  {
+    "id": 2462,
+    "name": "East Lothian",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ELN",
+    "type": null,
+    "latitude": "55.94933830",
+    "longitude": "-2.77044640"
+  },
+  {
+    "id": 2463,
+    "name": "Aberdeen",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ABE",
+    "type": null,
+    "latitude": "57.14971700",
+    "longitude": "-2.09427800"
+  },
+  {
+    "id": 2464,
+    "name": "Kent",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "KEN",
+    "type": null,
+    "latitude": "41.15366740",
+    "longitude": "-81.35788590"
+  },
+  {
+    "id": 2465,
+    "name": "Wakefield",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WKF",
+    "type": null,
+    "latitude": "42.50393950",
+    "longitude": "-71.07233910"
+  },
+  {
+    "id": 2466,
+    "name": "Halton",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "HAL",
+    "type": null,
+    "latitude": "43.53253720",
+    "longitude": "-79.87448360"
+  },
+  {
+    "id": 2467,
+    "name": "Suffolk",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SFK",
+    "type": null,
+    "latitude": "52.18724720",
+    "longitude": "0.97078010"
+  },
+  {
+    "id": 2468,
+    "name": "Thurrock",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "THR",
+    "type": null,
+    "latitude": "51.49345570",
+    "longitude": "0.35291970"
+  },
+  {
+    "id": 2469,
+    "name": "Solihull",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SOL",
+    "type": null,
+    "latitude": "52.41181100",
+    "longitude": "-1.77761000"
+  },
+  {
+    "id": 2470,
+    "name": "Bracknell Forest",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BRC",
+    "type": null,
+    "latitude": "51.41538280",
+    "longitude": "-0.75364950"
+  },
+  {
+    "id": 2471,
+    "name": "West Berkshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WBK",
+    "type": null,
+    "latitude": "51.43082550",
+    "longitude": "-1.14449270"
+  },
+  {
+    "id": 2472,
+    "name": "Rutland",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "RUT",
+    "type": null,
+    "latitude": "43.61062370",
+    "longitude": "-72.97260650"
+  },
+  {
+    "id": 2473,
+    "name": "Norfolk",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NFK",
+    "type": null,
+    "latitude": "36.85076890",
+    "longitude": "-76.28587260"
+  },
+  {
+    "id": 2474,
+    "name": "Orkney Islands",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ORK",
+    "type": null,
+    "latitude": "58.98094010",
+    "longitude": "-2.96052060"
+  },
+  {
+    "id": 2475,
+    "name": "City of Kingston upon Hull",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "KHL",
+    "type": null,
+    "latitude": "53.76762360",
+    "longitude": "-0.32741980"
+  },
+  {
+    "id": 2476,
+    "name": "London Borough of Enfield",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ENF",
+    "type": null,
+    "latitude": "51.66229090",
+    "longitude": "-0.11806510"
+  },
+  {
+    "id": 2477,
+    "name": "Oldham",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "OLD",
+    "type": null,
+    "latitude": "42.20405980",
+    "longitude": "-71.20481190"
+  },
+  {
+    "id": 2478,
+    "name": "Torbay",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "TOB",
+    "type": null,
+    "latitude": "50.43923290",
+    "longitude": "-3.53698990"
+  },
+  {
+    "id": 2479,
+    "name": "Fife",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "FIF",
+    "type": null,
+    "latitude": "56.20820780",
+    "longitude": "-3.14951750"
+  },
+  {
+    "id": 2480,
+    "name": "Northamptonshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NTH",
+    "type": null,
+    "latitude": "52.27299440",
+    "longitude": "-0.87555150"
+  },
+  {
+    "id": 2481,
+    "name": "Royal Borough of Kingston upon Thames",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "KTT",
+    "type": null,
+    "latitude": "51.37811700",
+    "longitude": "-0.29270900"
+  },
+  {
+    "id": 2482,
+    "name": "Windsor and Maidenhead",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WNM",
+    "type": null,
+    "latitude": "51.47997120",
+    "longitude": "-0.62425650"
+  },
+  {
+    "id": 2483,
+    "name": "London Borough of Merton",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "MRT",
+    "type": null,
+    "latitude": "51.40977420",
+    "longitude": "-0.21080840"
+  },
+  {
+    "id": 2484,
+    "name": "Carmarthenshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CMN",
+    "type": null,
+    "latitude": "51.85723090",
+    "longitude": "-4.31159590"
+  },
+  {
+    "id": 2485,
+    "name": "City of Derby",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "DER",
+    "type": null,
+    "latitude": "37.54837550",
+    "longitude": "-97.24851910"
+  },
+  {
+    "id": 2486,
+    "name": "Pembrokeshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "PEM",
+    "type": null,
+    "latitude": "51.67407800",
+    "longitude": "-4.90887850"
+  },
+  {
+    "id": 2487,
+    "name": "North Lanarkshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NLK",
+    "type": null,
+    "latitude": "55.86624320",
+    "longitude": "-3.96131440"
+  },
+  {
+    "id": 2488,
+    "name": "Stirling",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "STG",
+    "type": null,
+    "latitude": "56.11652270",
+    "longitude": "-3.93690290"
+  },
+  {
+    "id": 2489,
+    "name": "City of Wolverhampton",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WLV",
+    "type": null,
+    "latitude": "52.58891200",
+    "longitude": "-2.15646300"
+  },
+  {
+    "id": 2490,
+    "name": "London Borough of Bromley",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BRY",
+    "type": null,
+    "latitude": "51.36797050",
+    "longitude": "0.07006200"
+  },
+  {
+    "id": 2491,
+    "name": "Devon",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "DEV",
+    "type": null,
+    "latitude": "50.71555910",
+    "longitude": "-3.53087500"
+  },
+  {
+    "id": 2492,
+    "name": "Royal Borough of Greenwich",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "GRE",
+    "type": null,
+    "latitude": "51.48346270",
+    "longitude": "0.05862020"
+  },
+  {
+    "id": 2493,
+    "name": "Salford",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SLF",
+    "type": null,
+    "latitude": "53.48752350",
+    "longitude": "-2.29012640"
+  },
+  {
+    "id": 2494,
+    "name": "Lisburn City Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "LSB",
+    "type": null,
+    "latitude": "54.49815840",
+    "longitude": "-6.13067910"
+  },
+  {
+    "id": 2495,
+    "name": "Lancashire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "LAN",
+    "type": null,
+    "latitude": "53.76322540",
+    "longitude": "-2.70440520"
+  },
+  {
+    "id": 2496,
+    "name": "Torfaen",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "TOF",
+    "type": null,
+    "latitude": "51.70022530",
+    "longitude": "-3.04460150"
+  },
+  {
+    "id": 2497,
+    "name": "Denbighshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "DEN",
+    "type": null,
+    "latitude": "53.18422880",
+    "longitude": "-3.42249850"
+  },
+  {
+    "id": 2498,
+    "name": "Ards",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ARD",
+    "type": null,
+    "latitude": "42.13918510",
+    "longitude": "-87.86149720"
+  },
+  {
+    "id": 2499,
+    "name": "Barnsley",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BNS",
+    "type": null,
+    "latitude": "34.29949560",
+    "longitude": "-84.98458090"
+  },
+  {
+    "id": 2500,
+    "name": "Herefordshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "HEF",
+    "type": null,
+    "latitude": "52.07651640",
+    "longitude": "-2.65441820"
+  },
+  {
+    "id": 2501,
+    "name": "London Borough of Richmond upon Thames",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "RIC",
+    "type": null,
+    "latitude": "51.46130540",
+    "longitude": "-0.30377090"
+  },
+  {
+    "id": 2502,
+    "name": "Saint Helena",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SH-HL",
+    "type": null,
+    "latitude": "-15.96501040",
+    "longitude": "-5.70892410"
+  },
+  {
+    "id": 2503,
+    "name": "Leeds",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "LDS",
+    "type": null,
+    "latitude": "53.80075540",
+    "longitude": "-1.54907740"
+  },
+  {
+    "id": 2504,
+    "name": "Bolton",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BOL",
+    "type": null,
+    "latitude": "44.37264760",
+    "longitude": "-72.87876250"
+  },
+  {
+    "id": 2505,
+    "name": "Warwickshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WAR",
+    "type": null,
+    "latitude": "52.26713530",
+    "longitude": "-1.46752160"
+  },
+  {
+    "id": 2506,
+    "name": "City of Stoke-on-Trent",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "STE",
+    "type": null,
+    "latitude": "53.00266800",
+    "longitude": "-2.17940400"
+  },
+  {
+    "id": 2507,
+    "name": "Bedford",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BDF",
+    "type": null,
+    "latitude": "32.84401700",
+    "longitude": "-97.14306710"
+  },
+  {
+    "id": 2508,
+    "name": "Dungannon and South Tyrone Borough Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "DGN",
+    "type": null,
+    "latitude": "54.50826840",
+    "longitude": "-6.76658910"
+  },
+  {
+    "id": 2509,
+    "name": "Ceredigion",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CGN",
+    "type": null,
+    "latitude": "52.21914290",
+    "longitude": "-3.93212560"
+  },
+  {
+    "id": 2510,
+    "name": "Worcestershire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "WOR",
+    "type": null,
+    "latitude": "52.25452250",
+    "longitude": "-2.26683820"
+  },
+  {
+    "id": 2511,
+    "name": "Dundee",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "DND",
+    "type": null,
+    "latitude": "56.46201800",
+    "longitude": "-2.97072100"
+  },
+  {
+    "id": 2512,
+    "name": "London Borough of Croydon",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CRY",
+    "type": null,
+    "latitude": "51.38274460",
+    "longitude": "-0.09851630"
+  },
+  {
+    "id": 2513,
+    "name": "North Down Borough Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NDN",
+    "type": null,
+    "latitude": "54.65362970",
+    "longitude": "-5.67249250"
+  },
+  {
+    "id": 2514,
+    "name": "City of Plymouth",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "PLY",
+    "type": null,
+    "latitude": "42.37089410",
+    "longitude": "-83.46971410"
+  },
+  {
+    "id": 2515,
+    "name": "Larne Borough Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "LRN",
+    "type": null,
+    "latitude": "54.85780030",
+    "longitude": "-5.82362240"
+  },
+  {
+    "id": 2516,
+    "name": "Leicestershire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "LEC",
+    "type": null,
+    "latitude": "52.77257100",
+    "longitude": "-1.20521260"
+  },
+  {
+    "id": 2517,
+    "name": "Calderdale",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CLD",
+    "type": null,
+    "latitude": "53.72478450",
+    "longitude": "-1.86583570"
+  },
+  {
+    "id": 2518,
+    "name": "Sefton",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SFT",
+    "type": null,
+    "latitude": "53.50344490",
+    "longitude": "-2.97035900"
+  },
+  {
+    "id": 2519,
+    "name": "Midlothian",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "MLN",
+    "type": null,
+    "latitude": "32.47533500",
+    "longitude": "-97.01031810"
+  },
+  {
+    "id": 2520,
+    "name": "London Borough of Barnet",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BNE",
+    "type": null,
+    "latitude": "51.60496730",
+    "longitude": "-0.20762950"
+  },
+  {
+    "id": 2521,
+    "name": "North Tyneside",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NTY",
+    "type": null,
+    "latitude": "55.01823990",
+    "longitude": "-1.48584360"
+  },
+  {
+    "id": 2522,
+    "name": "North Yorkshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NYK",
+    "type": null,
+    "latitude": "53.99150280",
+    "longitude": "-1.54120150"
+  },
+  {
+    "id": 2523,
+    "name": "Ards and North Down",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "AND",
+    "type": null,
+    "latitude": "54.58996450",
+    "longitude": "-5.59849720"
+  },
+  {
+    "id": 2524,
+    "name": "Newport",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NWP",
+    "type": null,
+    "latitude": "37.52782340",
+    "longitude": "-94.10438760"
+  },
+  {
+    "id": 2525,
+    "name": "Castlereagh",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CSR",
+    "type": null,
+    "latitude": "54.57567900",
+    "longitude": "-5.88840280"
+  },
+  {
+    "id": 2526,
+    "name": "Surrey",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "SRY",
+    "type": null,
+    "latitude": "51.31475930",
+    "longitude": "-0.55995010"
+  },
+  {
+    "id": 2527,
+    "name": "Redcar and Cleveland",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "RCC",
+    "type": null,
+    "latitude": "54.59713440",
+    "longitude": "-1.07759970"
+  },
+  {
+    "id": 2528,
+    "name": "City and County of Cardiff",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "CRF",
+    "type": null,
+    "latitude": "51.48158100",
+    "longitude": "-3.17909000"
+  },
+  {
+    "id": 2529,
+    "name": "Bradford",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BRD",
+    "type": null,
+    "latitude": "53.79598400",
+    "longitude": "-1.75939800"
+  },
+  {
+    "id": 2530,
+    "name": "Blaenau Gwent County Borough",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "BGW",
+    "type": null,
+    "latitude": "51.78757790",
+    "longitude": "-3.20439310"
+  },
+  {
+    "id": 2531,
+    "name": "Fermanagh District Council",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "FER",
+    "type": null,
+    "latitude": "54.34479780",
+    "longitude": "-7.63842180"
+  },
+  {
+    "id": 2532,
+    "name": "London Borough of Ealing",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "EAL",
+    "type": null,
+    "latitude": "51.52503660",
+    "longitude": "-0.34139650"
+  },
+  {
+    "id": 2533,
+    "name": "Antrim",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "ANT",
+    "type": null,
+    "latitude": "54.71953380",
+    "longitude": "-6.20724980"
+  },
+  {
+    "id": 2534,
+    "name": "Newry, Mourne and Down",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NMD",
+    "type": null,
+    "latitude": "54.24342870",
+    "longitude": "-5.95779590"
+  },
+  {
+    "id": 2535,
+    "name": "North Ayrshire",
+    "country_id": 232,
+    "country_code": "GB",
+    "iso2": "NAY",
+    "type": null,
+    "latitude": "55.64167310",
+    "longitude": "-4.75946000"
+  },
+  {
+    "id": 3005,
+    "name": "Schleswig-Holstein",
+    "country_id": 82,
+    "country_code": "DE",
+    "iso2": "SH",
+    "type": null,
+    "latitude": "54.21936720",
+    "longitude": "9.69611670"
+  },
+  {
+    "id": 3006,
+    "name": "Baden-Württemberg",
+    "country_id": 82,
+    "country_code": "DE",
+    "iso2": "BW",
+    "type": null,
+    "latitude": "48.66160370",
+    "longitude": "9.35013360"
+  },
+  {
+    "id": 3007,
+    "name": "Mecklenburg-Vorpommern",
+    "country_id": 82,
+    "country_code": "DE",
+    "iso2": "MV",
+    "type": null,
+    "latitude": "53.61265050",
+    "longitude": "12.42959530"
+  },
+  {
+    "id": 3008,
+    "name": "Lower Saxony",
+    "country_id": 82,
+    "country_code": "DE",
+    "iso2": "NI",
+    "type": null,
+    "latitude": "52.63670360",
+    "longitude": "9.84507660"
+  },
+  {
+    "id": 3009,
+    "name": "Bavaria",
+    "country_id": 82,
+    "country_code": "DE",
+    "iso2": "BY",
+    "type": null,
+    "latitude": "48.79044720",
+    "longitude": "11.49788950"
+  },
+  {
+    "id": 3010,
+    "name": "Berlin",
+    "country_id": 82,
+    "country_code": "DE",
+    "iso2": "BE",
+    "type": null,
+    "latitude": "52.52000660",
+    "longitude": "13.40495400"
+  },
+  {
+    "id": 3011,
+    "name": "Saxony-Anhalt",
+    "country_id": 82,
+    "country_code": "DE",
+    "iso2": "ST",
+    "type": null,
+    "latitude": "51.95026490",
+    "longitude": "11.69227340"
+  },
+  {
+    "id": 3013,
+    "name": "Brandenburg",
+    "country_id": 82,
+    "country_code": "DE",
+    "iso2": "BB",
+    "type": null,
+    "latitude": "52.41252870",
+    "longitude": "12.53164440"
+  },
+  {
+    "id": 3014,
+    "name": "Bremen",
+    "country_id": 82,
+    "country_code": "DE",
+    "iso2": "HB",
+    "type": null,
+    "latitude": "53.07929620",
+    "longitude": "8.80169360"
+  },
+  {
+    "id": 3015,
+    "name": "Thuringia",
+    "country_id": 82,
+    "country_code": "DE",
+    "iso2": "TH",
+    "type": null,
+    "latitude": "51.01098920",
+    "longitude": "10.84534600"
+  },
+  {
+    "id": 3016,
+    "name": "Hamburg",
+    "country_id": 82,
+    "country_code": "DE",
+    "iso2": "HH",
+    "type": null,
+    "latitude": "53.55108460",
+    "longitude": "9.99368190"
+  },
+  {
+    "id": 3017,
+    "name": "North Rhine-Westphalia",
+    "country_id": 82,
+    "country_code": "DE",
+    "iso2": "NW",
+    "type": null,
+    "latitude": "51.43323670",
+    "longitude": "7.66159380"
+  },
+  {
+    "id": 3018,
+    "name": "Hesse",
+    "country_id": 82,
+    "country_code": "DE",
+    "iso2": "HE",
+    "type": null,
+    "latitude": "50.65205150",
+    "longitude": "9.16243760"
+  },
+  {
+    "id": 3019,
+    "name": "Rhineland-Palatinate",
+    "country_id": 82,
+    "country_code": "DE",
+    "iso2": "RP",
+    "type": null,
+    "latitude": "50.11834600",
+    "longitude": "7.30895270"
+  },
+  {
+    "id": 3020,
+    "name": "Saarland",
+    "country_id": 82,
+    "country_code": "DE",
+    "iso2": "SL",
+    "type": null,
+    "latitude": "49.39642340",
+    "longitude": "7.02296070"
+  },
+  {
+    "id": 3021,
+    "name": "Saxony",
+    "country_id": 82,
+    "country_code": "DE",
+    "iso2": "SN",
+    "type": null,
+    "latitude": "51.10454070",
+    "longitude": "13.20173840"
+  },
+  {
+    "id": 3903,
+    "name": "Victoria",
+    "country_id": 14,
+    "country_code": "AU",
+    "iso2": "VIC",
+    "type": "state",
+    "latitude": "-36.48564230",
+    "longitude": "140.97794250"
+  },
+  {
+    "id": 3904,
+    "name": "South Australia",
+    "country_id": 14,
+    "country_code": "AU",
+    "iso2": "SA",
+    "type": "state",
+    "latitude": "-30.00023150",
+    "longitude": "136.20915470"
+  },
+  {
+    "id": 3905,
+    "name": "Queensland",
+    "country_id": 14,
+    "country_code": "AU",
+    "iso2": "QLD",
+    "type": "state",
+    "latitude": "-20.91757380",
+    "longitude": "142.70279560"
+  },
+  {
+    "id": 3906,
+    "name": "Western Australia",
+    "country_id": 14,
+    "country_code": "AU",
+    "iso2": "WA",
+    "type": "state",
+    "latitude": "-27.67281680",
+    "longitude": "121.62830980"
+  },
+  {
+    "id": 3907,
+    "name": "Australian Capital Territory",
+    "country_id": 14,
+    "country_code": "AU",
+    "iso2": "ACT",
+    "type": "territory",
+    "latitude": "-35.47346790",
+    "longitude": "149.01236790"
+  },
+  {
+    "id": 3908,
+    "name": "Tasmania",
+    "country_id": 14,
+    "country_code": "AU",
+    "iso2": "TAS",
+    "type": "state",
+    "latitude": "-41.45451960",
+    "longitude": "145.97066470"
+  },
+  {
+    "id": 3909,
+    "name": "New South Wales",
+    "country_id": 14,
+    "country_code": "AU",
+    "iso2": "NSW",
+    "type": "state",
+    "latitude": "-31.25321830",
+    "longitude": "146.92109900"
+  },
+  {
+    "id": 3910,
+    "name": "Northern Territory",
+    "country_id": 14,
+    "country_code": "AU",
+    "iso2": "NT",
+    "type": "territory",
+    "latitude": "-19.49141080",
+    "longitude": "132.55096030"
+  },
+  {
+    "id": 4794,
+    "name": "Saint-Barthélemy",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "BL",
+    "type": "overseas collectivity",
+    "latitude": "17.90051340",
+    "longitude": "-62.82058710"
+  },
+  {
+    "id": 4795,
+    "name": "Nouvelle-Aquitaine",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "NAQ",
+    "type": "metropolitan region",
+    "latitude": "45.70871820",
+    "longitude": "0.62689100"
+  },
+  {
+    "id": 4796,
+    "name": "Île-de-France",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "IDF",
+    "type": "metropolitan region",
+    "latitude": "48.84991980",
+    "longitude": "2.63704110"
+  },
+  {
+    "id": 4797,
+    "name": "Mayotte",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "976",
+    "type": "overseas region",
+    "latitude": "-12.82750000",
+    "longitude": "45.16624400"
+  },
+  {
+    "id": 4798,
+    "name": "Auvergne-Rhône-Alpes",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "ARA",
+    "type": "metropolitan region",
+    "latitude": "45.44714310",
+    "longitude": "4.38525070"
+  },
+  {
+    "id": 4799,
+    "name": "Occitanie",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "OCC",
+    "type": "metropolitan region",
+    "latitude": "43.89272320",
+    "longitude": "3.28276250"
+  },
+  {
+    "id": 4802,
+    "name": "Pays-de-la-Loire",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "PDL",
+    "type": "metropolitan region",
+    "latitude": "47.76328360",
+    "longitude": "-0.32996870"
+  },
+  {
+    "id": 4804,
+    "name": "Normandie",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "NOR",
+    "type": "metropolitan region",
+    "latitude": "48.87987040",
+    "longitude": "0.17125290"
+  },
+  {
+    "id": 4806,
+    "name": "Corse",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "20R",
+    "type": "metropolitan collectivity with special status",
+    "latitude": "42.03960420",
+    "longitude": "9.01289260"
+  },
+  {
+    "id": 4807,
+    "name": "Bretagne",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "BRE",
+    "type": "metropolitan region",
+    "latitude": "48.20204710",
+    "longitude": "-2.93264350"
+  },
+  {
+    "id": 4809,
+    "name": "Saint-Martin",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "MF",
+    "type": "overseas collectivity",
+    "latitude": "18.07082980",
+    "longitude": "-63.05008090"
+  },
+  {
+    "id": 4810,
+    "name": "Wallis and Futuna",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "WF",
+    "type": "overseas collectivity",
+    "latitude": "-14.29380000",
+    "longitude": "-178.11650000"
+  },
+  {
+    "id": 4811,
+    "name": "Alsace",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "6AE",
+    "type": "European collectivity",
+    "latitude": "48.31817950",
+    "longitude": "7.44162410"
+  },
+  {
+    "id": 4812,
+    "name": "Provence-Alpes-Côte-d’Azur",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "PAC",
+    "type": "metropolitan region",
+    "latitude": "43.93516910",
+    "longitude": "6.06791940"
+  },
+  {
+    "id": 4816,
+    "name": "Paris",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "75C",
+    "type": "metropolitan collectivity with special status",
+    "latitude": "48.85661400",
+    "longitude": "2.35222190"
+  },
+  {
+    "id": 4818,
+    "name": "Centre-Val de Loire",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "CVL",
+    "type": "metropolitan region",
+    "latitude": "47.75156860",
+    "longitude": "1.67506310"
+  },
+  {
+    "id": 4820,
+    "name": "Grand-Est",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "GES",
+    "type": "metropolitan region",
+    "latitude": "48.69980300",
+    "longitude": "6.18780740"
+  },
+  {
+    "id": 4821,
+    "name": "Saint Pierre and Miquelon",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "PM",
+    "type": "overseas collectivity",
+    "latitude": "46.88520000",
+    "longitude": "-56.31590000"
+  },
+  {
+    "id": 4822,
+    "name": "French Guiana",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "973",
+    "type": "overseas region",
+    "latitude": "3.93388900",
+    "longitude": "-53.12578200"
+  },
+  {
+    "id": 4823,
+    "name": "La Réunion",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "974",
+    "type": "overseas region",
+    "latitude": "-21.11514100",
+    "longitude": "55.53638400"
+  },
+  {
+    "id": 4824,
+    "name": "French Polynesia",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "PF",
+    "type": "overseas collectivity",
+    "latitude": "-17.67974200",
+    "longitude": "-149.40684300"
+  },
+  {
+    "id": 4825,
+    "name": "Bourgogne-Franche-Comté",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "BFC",
+    "type": "metropolitan region",
+    "latitude": "47.28051270",
+    "longitude": "4.99943720"
+  },
+  {
+    "id": 4827,
+    "name": "Martinique",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "972",
+    "type": "overseas region",
+    "latitude": "14.64152800",
+    "longitude": "-61.02417400"
+  },
+  {
+    "id": 4828,
+    "name": "Hauts-de-France",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "HDF",
+    "type": "metropolitan region",
+    "latitude": "50.48011530",
+    "longitude": "2.79372650"
+  },
+  {
+    "id": 4829,
+    "name": "Guadeloupe",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "971",
+    "type": "overseas region",
+    "latitude": "16.26500000",
+    "longitude": "-61.55100000"
+  },
+  {
+    "id": 4851,
+    "name": "Ohio",
+    "country_id": 233,
+    "country_code": "US",
+    "iso2": "OH",
+    "type": "state",
+    "latitude": "40.41728710",
+    "longitude": "-82.90712300"
+  },
+  {
+    "id": 4967,
+    "name": "Ain",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "01",
+    "type": "metropolitan department",
+    "latitude": "46.06508600",
+    "longitude": "4.88861500"
+  },
+  {
+    "id": 4968,
+    "name": "Aisne",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "02",
+    "type": "metropolitan department",
+    "latitude": "49.45289210",
+    "longitude": "3.04651110"
+  },
+  {
+    "id": 4969,
+    "name": "Allier",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "03",
+    "type": "metropolitan department",
+    "latitude": "46.36708630",
+    "longitude": "2.58082770"
+  },
+  {
+    "id": 4970,
+    "name": "Alpes-de-Haute-Provence",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "04",
+    "type": "metropolitan department",
+    "latitude": "44.16377520",
+    "longitude": "5.67247800"
+  },
+  {
+    "id": 4971,
+    "name": "Hautes-Alpes",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "05",
+    "type": "metropolitan department",
+    "latitude": "44.65626820",
+    "longitude": "5.68732110"
+  },
+  {
+    "id": 4972,
+    "name": "Alpes-Maritimes",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "06",
+    "type": "metropolitan department",
+    "latitude": "43.92041700",
+    "longitude": "6.61678220"
+  },
+  {
+    "id": 4973,
+    "name": "Ardèche",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "07",
+    "type": "metropolitan department",
+    "latitude": "44.81486950",
+    "longitude": "3.81334830"
+  },
+  {
+    "id": 4974,
+    "name": "Ardennes",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "08",
+    "type": "metropolitan department",
+    "latitude": "49.69759510",
+    "longitude": "4.14895760"
+  },
+  {
+    "id": 4975,
+    "name": "Ariège",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "09",
+    "type": "metropolitan department",
+    "latitude": "42.94347830",
+    "longitude": "0.94048640"
+  },
+  {
+    "id": 4976,
+    "name": "Aube",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "10",
+    "type": "metropolitan department",
+    "latitude": "48.31975470",
+    "longitude": "3.56371040"
+  },
+  {
+    "id": 4977,
+    "name": "Aude",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "11",
+    "type": "metropolitan department",
+    "latitude": "43.05411400",
+    "longitude": "1.90384760"
+  },
+  {
+    "id": 4978,
+    "name": "Aveyron",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "12",
+    "type": "metropolitan department",
+    "latitude": "44.31563620",
+    "longitude": "2.08523790"
+  },
+  {
+    "id": 4979,
+    "name": "Bouches-du-Rhône",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "13",
+    "type": "metropolitan department",
+    "latitude": "43.54038650",
+    "longitude": "4.46138290"
+  },
+  {
+    "id": 4981,
+    "name": "Calvados",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "14",
+    "type": "metropolitan department",
+    "latitude": "49.09035140",
+    "longitude": "-0.91706480"
+  },
+  {
+    "id": 4982,
+    "name": "Cantal",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "15",
+    "type": "metropolitan department",
+    "latitude": "45.04921770",
+    "longitude": "2.15672720"
+  },
+  {
+    "id": 4983,
+    "name": "Charente",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "16",
+    "type": "metropolitan department",
+    "latitude": "45.66584790",
+    "longitude": "-0.31845770"
+  },
+  {
+    "id": 4984,
+    "name": "Charente-Maritime",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "17",
+    "type": "metropolitan department",
+    "latitude": "45.72968280",
+    "longitude": "-1.33881160"
+  },
+  {
+    "id": 4985,
+    "name": "Cher",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "18",
+    "type": "metropolitan department",
+    "latitude": "47.02436280",
+    "longitude": "1.86627320"
+  },
+  {
+    "id": 4986,
+    "name": "Corrèze",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "19",
+    "type": "metropolitan department",
+    "latitude": "45.34237070",
+    "longitude": "1.31717330"
+  },
+  {
+    "id": 4987,
+    "name": "Côte-d'Or",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "21",
+    "type": "metropolitan department",
+    "latitude": "47.46513020",
+    "longitude": "4.23154950"
+  },
+  {
+    "id": 4988,
+    "name": "Côtes-d'Armor",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "22",
+    "type": "metropolitan department",
+    "latitude": "48.46633360",
+    "longitude": "-3.34789610"
+  },
+  {
+    "id": 4989,
+    "name": "Creuse",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "23",
+    "type": "metropolitan department",
+    "latitude": "46.05903940",
+    "longitude": "1.43150500"
+  },
+  {
+    "id": 4990,
+    "name": "Dordogne",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "24",
+    "type": "metropolitan department",
+    "latitude": "45.14234160",
+    "longitude": "0.14274080"
+  },
+  {
+    "id": 4991,
+    "name": "Doubs",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "25",
+    "type": "metropolitan department",
+    "latitude": "46.93217740",
+    "longitude": "6.34762140"
+  },
+  {
+    "id": 4992,
+    "name": "Drôme",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "26",
+    "type": "metropolitan department",
+    "latitude": "44.72933570",
+    "longitude": "4.67821580"
+  },
+  {
+    "id": 4993,
+    "name": "Eure",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "27",
+    "type": "metropolitan department",
+    "latitude": "49.07540350",
+    "longitude": "0.48937320"
+  },
+  {
+    "id": 4994,
+    "name": "Eure-et-Loir",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "28",
+    "type": "metropolitan department",
+    "latitude": "48.44697840",
+    "longitude": "0.81470250"
+  },
+  {
+    "id": 4995,
+    "name": "Finistère",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "29",
+    "type": "metropolitan department",
+    "latitude": "48.22696100",
+    "longitude": "-4.82437330"
+  },
+  {
+    "id": 4996,
+    "name": "Corse-du-Sud",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "2A",
+    "type": "metropolitan department",
+    "latitude": "41.85720550",
+    "longitude": "8.41091830"
+  },
+  {
+    "id": 4997,
+    "name": "Haute-Corse",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "2B",
+    "type": "metropolitan department",
+    "latitude": "42.42958660",
+    "longitude": "8.50625610"
+  },
+  {
+    "id": 4998,
+    "name": "Gard",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "30",
+    "type": "metropolitan department",
+    "latitude": "43.95952760",
+    "longitude": "3.49356810"
+  },
+  {
+    "id": 4999,
+    "name": "Haute-Garonne",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "31",
+    "type": "metropolitan department",
+    "latitude": "43.30505550",
+    "longitude": "0.68455150"
+  },
+  {
+    "id": 5000,
+    "name": "Gers",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "32",
+    "type": "metropolitan department",
+    "latitude": "43.69505340",
+    "longitude": "-0.09997280"
+  },
+  {
+    "id": 5001,
+    "name": "Gironde",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "33",
+    "type": "metropolitan department",
+    "latitude": "44.89584690",
+    "longitude": "-1.59405320"
+  },
+  {
+    "id": 5002,
+    "name": "Hérault",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "34",
+    "type": "metropolitan department",
+    "latitude": "43.59111200",
+    "longitude": "2.80661080"
+  },
+  {
+    "id": 5003,
+    "name": "Ille-et-Vilaine",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "35",
+    "type": "metropolitan department",
+    "latitude": "48.17624840",
+    "longitude": "-2.21304010"
+  },
+  {
+    "id": 5004,
+    "name": "Indre",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "36",
+    "type": "metropolitan department",
+    "latitude": "46.81175500",
+    "longitude": "0.97555230"
+  },
+  {
+    "id": 5005,
+    "name": "Indre-et-Loire",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "37",
+    "type": "metropolitan department",
+    "latitude": "47.22285820",
+    "longitude": "0.14896190"
+  },
+  {
+    "id": 5006,
+    "name": "Isère",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "38",
+    "type": "metropolitan department",
+    "latitude": "45.28922710",
+    "longitude": "4.99023550"
+  },
+  {
+    "id": 5007,
+    "name": "Jura",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "39",
+    "type": "metropolitan department",
+    "latitude": "46.78287410",
+    "longitude": "5.16918440"
+  },
+  {
+    "id": 5008,
+    "name": "Landes",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "40",
+    "type": "metropolitan department",
+    "latitude": "44.00950800",
+    "longitude": "-1.25385790"
+  },
+  {
+    "id": 5009,
+    "name": "Loir-et-Cher",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "41",
+    "type": "metropolitan department",
+    "latitude": "47.65937600",
+    "longitude": "0.85376310"
+  },
+  {
+    "id": 5010,
+    "name": "Loire",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "42",
+    "type": "metropolitan department",
+    "latitude": "46.35228120",
+    "longitude": "-1.17563390"
+  },
+  {
+    "id": 5011,
+    "name": "Haute-Loire",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "43",
+    "type": "metropolitan department",
+    "latitude": "45.08538060",
+    "longitude": "3.22607070"
+  },
+  {
+    "id": 5012,
+    "name": "Loire-Atlantique",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "44",
+    "type": "metropolitan department",
+    "latitude": "47.34757210",
+    "longitude": "-2.34663120"
+  },
+  {
+    "id": 5013,
+    "name": "Loiret",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "45",
+    "type": "metropolitan department",
+    "latitude": "47.91354310",
+    "longitude": "1.76009900"
+  },
+  {
+    "id": 5014,
+    "name": "Lot",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "46",
+    "type": "metropolitan department",
+    "latitude": "44.62460700",
+    "longitude": "1.03576310"
+  },
+  {
+    "id": 5015,
+    "name": "Lot-et-Garonne",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "47",
+    "type": "metropolitan department",
+    "latitude": "44.36873140",
+    "longitude": "-0.09161690"
+  },
+  {
+    "id": 5016,
+    "name": "Lozère",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "48",
+    "type": "metropolitan department",
+    "latitude": "44.54227790",
+    "longitude": "2.92934590"
+  },
+  {
+    "id": 5017,
+    "name": "Maine-et-Loire",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "49",
+    "type": "metropolitan department",
+    "latitude": "47.38900340",
+    "longitude": "-1.12025270"
+  },
+  {
+    "id": 5018,
+    "name": "Manche",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "50",
+    "type": "metropolitan department",
+    "latitude": "49.08817340",
+    "longitude": "-2.46272090"
+  },
+  {
+    "id": 5019,
+    "name": "Marne",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "51",
+    "type": "metropolitan department",
+    "latitude": "48.96107450",
+    "longitude": "3.65737670"
+  },
+  {
+    "id": 5020,
+    "name": "Haute-Marne",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "52",
+    "type": "metropolitan department",
+    "latitude": "48.13248210",
+    "longitude": "4.69834990"
+  },
+  {
+    "id": 5021,
+    "name": "Mayenne",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "53",
+    "type": "metropolitan department",
+    "latitude": "48.30668420",
+    "longitude": "-0.64901820"
+  },
+  {
+    "id": 5022,
+    "name": "Meurthe-et-Moselle",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "54",
+    "type": "metropolitan department",
+    "latitude": "48.95566150",
+    "longitude": "5.71423500"
+  },
+  {
+    "id": 5023,
+    "name": "Meuse",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "55",
+    "type": "metropolitan department",
+    "latitude": "49.01246200",
+    "longitude": "4.81087340"
+  },
+  {
+    "id": 5024,
+    "name": "Morbihan",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "56",
+    "type": "metropolitan department",
+    "latitude": "47.74395180",
+    "longitude": "-3.44555240"
+  },
+  {
+    "id": 5025,
+    "name": "Moselle",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "57",
+    "type": "metropolitan department",
+    "latitude": "49.02045660",
+    "longitude": "6.20553220"
+  },
+  {
+    "id": 5026,
+    "name": "Nièvre",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "58",
+    "type": "metropolitan department",
+    "latitude": "47.11921640",
+    "longitude": "2.97797130"
+  },
+  {
+    "id": 5027,
+    "name": "Nord",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "59",
+    "type": "metropolitan department",
+    "latitude": "50.52854770",
+    "longitude": "2.60007760"
+  },
+  {
+    "id": 5028,
+    "name": "Oise",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "60",
+    "type": "metropolitan department",
+    "latitude": "49.41173350",
+    "longitude": "1.86688250"
+  },
+  {
+    "id": 5029,
+    "name": "Orne",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "61",
+    "type": "metropolitan department",
+    "latitude": "48.57576440",
+    "longitude": "-0.50242950"
+  },
+  {
+    "id": 5030,
+    "name": "Pas-de-Calais",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "62",
+    "type": "metropolitan department",
+    "latitude": "50.51446990",
+    "longitude": "1.81149800"
+  },
+  {
+    "id": 5031,
+    "name": "Puy-de-Dôme",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "63",
+    "type": "metropolitan department",
+    "latitude": "45.77141850",
+    "longitude": "2.62626760"
+  },
+  {
+    "id": 5032,
+    "name": "Pyrénées-Atlantiques",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "64",
+    "type": "metropolitan department",
+    "latitude": "43.18681700",
+    "longitude": "-1.44170710"
+  },
+  {
+    "id": 5033,
+    "name": "Hautes-Pyrénées",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "65",
+    "type": "metropolitan department",
+    "latitude": "43.14294620",
+    "longitude": "-0.40097360"
+  },
+  {
+    "id": 5034,
+    "name": "Pyrénées-Orientales",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "66",
+    "type": "metropolitan department",
+    "latitude": "42.62541790",
+    "longitude": "1.88929580"
+  },
+  {
+    "id": 5035,
+    "name": "Bas-Rhin",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "67",
+    "type": "metropolitan department",
+    "latitude": "48.59864440",
+    "longitude": "7.02666760"
+  },
+  {
+    "id": 5036,
+    "name": "Haut-Rhin",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "68",
+    "type": "metropolitan department",
+    "latitude": "47.86537740",
+    "longitude": "6.67113810"
+  },
+  {
+    "id": 5037,
+    "name": "Rhône",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "69",
+    "type": "metropolitan department",
+    "latitude": "44.93433000",
+    "longitude": "4.24093290"
+  },
+  {
+    "id": 5038,
+    "name": "Métropole de Lyon",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "69M",
+    "type": "metropolitan department",
+    "latitude": "45.74826290",
+    "longitude": "4.59584040"
+  },
+  {
+    "id": 5039,
+    "name": "Haute-Saône",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "70",
+    "type": "metropolitan department",
+    "latitude": "47.63789960",
+    "longitude": "5.53550550"
+  },
+  {
+    "id": 5040,
+    "name": "Saône-et-Loire",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "71",
+    "type": "metropolitan department",
+    "latitude": "46.65548830",
+    "longitude": "3.98350500"
+  },
+  {
+    "id": 5041,
+    "name": "Sarthe",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "72",
+    "type": "metropolitan department",
+    "latitude": "48.02627330",
+    "longitude": "-0.32613170"
+  },
+  {
+    "id": 5042,
+    "name": "Savoie",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "73",
+    "type": "metropolitan department",
+    "latitude": "45.49469900",
+    "longitude": "5.84329840"
+  },
+  {
+    "id": 5043,
+    "name": "Haute-Savoie",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "74",
+    "type": "metropolitan department",
+    "latitude": "46.04452770",
+    "longitude": "5.86413800"
+  },
+  {
+    "id": 5044,
+    "name": "Seine-Maritime",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "76",
+    "type": "metropolitan department",
+    "latitude": "49.66096810",
+    "longitude": "0.36775610"
+  },
+  {
+    "id": 5045,
+    "name": "Seine-et-Marne",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "77",
+    "type": "metropolitan department",
+    "latitude": "48.61853940",
+    "longitude": "2.41525610"
+  },
+  {
+    "id": 5046,
+    "name": "Yvelines",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "78",
+    "type": "metropolitan department",
+    "latitude": "48.76153010",
+    "longitude": "1.27729490"
+  },
+  {
+    "id": 5047,
+    "name": "Deux-Sèvres",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "79",
+    "type": "metropolitan department",
+    "latitude": "46.53868170",
+    "longitude": "-0.90199480"
+  },
+  {
+    "id": 5048,
+    "name": "Somme",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "80",
+    "type": "metropolitan department",
+    "latitude": "49.96859220",
+    "longitude": "1.73106960"
+  },
+  {
+    "id": 5049,
+    "name": "Tarn",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "81",
+    "type": "metropolitan department",
+    "latitude": "43.79149770",
+    "longitude": "1.67588930"
+  },
+  {
+    "id": 5050,
+    "name": "Tarn-et-Garonne",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "82",
+    "type": "metropolitan department",
+    "latitude": "44.08089500",
+    "longitude": "1.08916570"
+  },
+  {
+    "id": 5051,
+    "name": "Var",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "83",
+    "type": "metropolitan department",
+    "latitude": "43.39507300",
+    "longitude": "5.73424170"
+  },
+  {
+    "id": 5052,
+    "name": "Vaucluse",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "84",
+    "type": "metropolitan department",
+    "latitude": "44.04475000",
+    "longitude": "4.64277180"
+  },
+  {
+    "id": 5053,
+    "name": "Vendée",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "85",
+    "type": "metropolitan department",
+    "latitude": "46.67541030",
+    "longitude": "-2.02983920"
+  },
+  {
+    "id": 5054,
+    "name": "Vienne",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "86",
+    "type": "metropolitan department",
+    "latitude": "45.52213140",
+    "longitude": "4.84531360"
+  },
+  {
+    "id": 5055,
+    "name": "Haute-Vienne",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "87",
+    "type": "metropolitan department",
+    "latitude": "45.91868780",
+    "longitude": "0.70972060"
+  },
+  {
+    "id": 5056,
+    "name": "Vosges",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "88",
+    "type": "metropolitan department",
+    "latitude": "48.16301730",
+    "longitude": "5.73556000"
+  },
+  {
+    "id": 5057,
+    "name": "Yonne",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "89",
+    "type": "metropolitan department",
+    "latitude": "47.85476140",
+    "longitude": "3.03394040"
+  },
+  {
+    "id": 5058,
+    "name": "Territoire de Belfort",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "90",
+    "type": "metropolitan department",
+    "latitude": "47.62930720",
+    "longitude": "6.66962000"
+  },
+  {
+    "id": 5059,
+    "name": "Essonne",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "91",
+    "type": "metropolitan department",
+    "latitude": "48.53046150",
+    "longitude": "1.96990560"
+  },
+  {
+    "id": 5060,
+    "name": "Hauts-de-Seine",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "92",
+    "type": "metropolitan department",
+    "latitude": "48.84030080",
+    "longitude": "2.10125590"
+  },
+  {
+    "id": 5061,
+    "name": "Seine-Saint-Denis",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "93",
+    "type": "metropolitan department",
+    "latitude": "48.90993180",
+    "longitude": "2.30573790"
+  },
+  {
+    "id": 5062,
+    "name": "Val-de-Marne",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "94",
+    "type": "metropolitan department",
+    "latitude": "48.77470040",
+    "longitude": "2.32210390"
+  },
+  {
+    "id": 5063,
+    "name": "Val-d'Oise",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "95",
+    "type": "metropolitan department",
+    "latitude": "49.07518180",
+    "longitude": "1.82169140"
+  },
+  {
+    "id": 5064,
+    "name": "Clipperton",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "CP",
+    "type": "dependency",
+    "latitude": "10.28335410",
+    "longitude": "-109.22542150"
+  },
+  {
+    "id": 5065,
+    "name": "French Southern and Antarctic Lands",
+    "country_id": 75,
+    "country_code": "FR",
+    "iso2": "TF",
+    "type": "overseas territory",
+    "latitude": "-47.54466040",
+    "longitude": "51.28375420"
+  },
+  {
+    "id": 5089,
+    "name": "A Coruña",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "C",
+    "type": "province",
+    "latitude": "43.36190400",
+    "longitude": "-8.43019320"
+  },
+  {
+    "id": 5090,
+    "name": "Lugo",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "LU",
+    "type": "province",
+    "latitude": "43.01231370",
+    "longitude": "-7.57400960"
+  },
+  {
+    "id": 5091,
+    "name": "Ourense",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "OR",
+    "type": "province",
+    "latitude": "42.33836130",
+    "longitude": "-7.88119510"
+  },
+  {
+    "id": 5092,
+    "name": "Badajoz",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "BA",
+    "type": "province",
+    "latitude": "38.87937480",
+    "longitude": "-7.02269830"
+  },
+  {
+    "id": 5093,
+    "name": "Araba",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "VI",
+    "type": "province",
+    "latitude": "42.83951190",
+    "longitude": "-3.84237740"
+  },
+  {
+    "id": 5094,
+    "name": "Bizkaia",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "BI",
+    "type": "province",
+    "latitude": "43.21921990",
+    "longitude": "-3.21110870"
+  },
+  {
+    "id": 5095,
+    "name": "Almeria",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "AL",
+    "type": "province",
+    "latitude": "36.84152680",
+    "longitude": "-2.47462610"
+  },
+  {
+    "id": 5096,
+    "name": "Cádiz",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "CA",
+    "type": "province",
+    "latitude": "36.51638510",
+    "longitude": "-6.29997670"
+  },
+  {
+    "id": 5097,
+    "name": "Córdoba",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "CO",
+    "type": "province",
+    "latitude": "36.51638510",
+    "longitude": "-6.29997670"
+  },
+  {
+    "id": 5098,
+    "name": "Granada",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "GR",
+    "type": "province",
+    "latitude": "37.18094110",
+    "longitude": "-3.62629100"
+  },
+  {
+    "id": 5099,
+    "name": "Huelva",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "H",
+    "type": "province",
+    "latitude": "37.27086660",
+    "longitude": "-6.95719990"
+  },
+  {
+    "id": 5100,
+    "name": "Jaén",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "J",
+    "type": "province",
+    "latitude": "37.78009310",
+    "longitude": "-3.81437450"
+  },
+  {
+    "id": 5101,
+    "name": "Málaga",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "MA",
+    "type": "province",
+    "latitude": "36.71820150",
+    "longitude": "-4.51930600"
+  },
+  {
+    "id": 5102,
+    "name": "Barcelona",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "B",
+    "type": "province",
+    "latitude": "41.39266790",
+    "longitude": "2.14018910"
+  },
+  {
+    "id": 5103,
+    "name": "Girona",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "GI",
+    "type": "province",
+    "latitude": "41.98034450",
+    "longitude": "2.80115770"
+  },
+  {
+    "id": 5104,
+    "name": "Lleida",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "L",
+    "type": "province",
+    "latitude": "41.61837310",
+    "longitude": "0.60242530"
+  },
+  {
+    "id": 5105,
+    "name": "Ciudad Real",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "CR",
+    "type": "province",
+    "latitude": "38.98607580",
+    "longitude": "-3.94449750"
+  },
+  {
+    "id": 5106,
+    "name": "Cuenca",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "CU",
+    "type": "province",
+    "latitude": "40.06200360",
+    "longitude": "-2.16553440"
+  },
+  {
+    "id": 5107,
+    "name": "Guadalajara",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "GU",
+    "type": "province",
+    "latitude": "40.63222140",
+    "longitude": "-3.19068200"
+  },
+  {
+    "id": 5108,
+    "name": "Alicante",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "A",
+    "type": "province",
+    "latitude": "38.35795460",
+    "longitude": "-0.54256340"
+  },
+  {
+    "id": 5109,
+    "name": "Albacete",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "AB",
+    "type": "province",
+    "latitude": "38.99223120",
+    "longitude": "-1.87809890"
+  },
+  {
+    "id": 5110,
+    "name": "Castellón",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "CS",
+    "type": "province",
+    "latitude": "39.98114350",
+    "longitude": "0.00884070"
+  },
+  {
+    "id": 5111,
+    "name": "Teruel",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "TE",
+    "type": "province",
+    "latitude": "40.34504100",
+    "longitude": "-1.11847440"
+  },
+  {
+    "id": 5112,
+    "name": "Santa Cruz de Tenerife",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "TF",
+    "type": "province",
+    "latitude": "28.45789140",
+    "longitude": "-16.32135390"
+  },
+  {
+    "id": 5113,
+    "name": "Zaragoza",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "Z",
+    "type": "province",
+    "latitude": "41.65175010",
+    "longitude": "-0.93000020"
+  },
+  {
+    "id": 5222,
+    "name": "Canarias",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "CN",
+    "type": "autonomous community",
+    "latitude": "28.29160000",
+    "longitude": "16.62910000"
+  },
+  {
+    "id": 5223,
+    "name": "Ceuta",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "CE",
+    "type": "autonomous city in North Africa",
+    "latitude": "35.88900000",
+    "longitude": "-5.31870000"
+  },
+  {
+    "id": 5224,
+    "name": "Melilla",
+    "country_id": 207,
+    "country_code": "ES",
+    "iso2": "ML",
+    "type": "autonomous city in North Africa",
+    "latitude": "35.29370000",
+    "longitude": "-2.93830000"
+  }
+]
