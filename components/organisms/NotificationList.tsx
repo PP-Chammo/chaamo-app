@@ -4,9 +4,8 @@ import { FlatList } from 'react-native';
 
 import { Label } from '@/components/atoms';
 import { NotificationListItem } from '@/components/molecules';
-import { FlatData } from '@/domains';
+import { FlatData, Notification } from '@/domains';
 import { formatDate } from '@/utils/date';
-import { Notification } from '@/utils/notification';
 
 interface NotificationListProps {
   onPress: () => void;
@@ -36,9 +35,9 @@ const NotificationList: React.FC<NotificationListProps> = memo(
           const group = item.group;
           return (
             <NotificationListItem
-              category={group.category}
-              message={group.message}
-              date={group.date}
+              category={group.notification_types?.name || 'Unknown'}
+              message={group.content}
+              date={group.created_at}
               onPress={onPress}
               onLongPress={onLongPress}
             />

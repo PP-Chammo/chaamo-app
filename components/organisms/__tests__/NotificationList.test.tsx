@@ -2,8 +2,7 @@ import React from 'react';
 
 import { fireEvent, render } from '@testing-library/react-native';
 
-import { FlatData } from '@/domains/group-data.types';
-import { Notification } from '@/utils/notification';
+import { FlatData, Notification } from '@/domains';
 
 import NotificationList from '../NotificationList';
 
@@ -13,9 +12,9 @@ const mockNotifications: FlatData<Notification>[] = [
     type: 'group',
     group: {
       id: 1,
-      category: 'Order Shipped',
-      message: 'Test notification',
-      date: '2023-01-01',
+      content: 'Test notification',
+      notification_types: { name: 'Order Shipped' },
+      created_at: '2023-01-01',
     },
     date: '2023-01-01',
   },
@@ -113,9 +112,9 @@ describe('NotificationList', () => {
         type: 'group',
         group: {
           id: 1,
-          category: 'Order Shipped',
-          message: 'Test notification 1',
-          date: '2023-01-01',
+          content: 'Test notification',
+          notification_types: { name: 'Order Shipped' },
+          created_at: '2023-01-01',
         },
         date: '2023-01-01',
       },
@@ -123,9 +122,9 @@ describe('NotificationList', () => {
         type: 'group',
         group: {
           id: 2,
-          category: 'New Bid',
-          message: 'Test notification 2',
-          date: '2023-01-01',
+          content: 'Test notification',
+          notification_types: { name: 'Order Shipped' },
+          created_at: '2023-01-01',
         },
         date: '2023-01-01',
       },
