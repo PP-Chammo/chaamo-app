@@ -8,6 +8,8 @@ jest.mock('expo-router', () => ({
   }),
   useLocalSearchParams: () => ({}),
   useSegments: () => [],
+
+  useFocusEffect: jest.fn((callback) => callback()),
   Link: 'Link',
   router: {
     push: jest.fn(),
@@ -237,6 +239,40 @@ jest.mock('@/generated/graphql', () => ({
     loading: false,
     error: null,
   })),
+  useGetVwFilteredProfilesLazyQuery: jest.fn(() => [
+    jest.fn(),
+    {
+      data: {
+        vw_filtered_profilesCollection: {
+          edges: [
+            {
+              node: {
+                id: '1',
+                username: 'John Doe',
+                profile_image_url: 'https://example.com/avatar1.jpg',
+              },
+            },
+            {
+              node: {
+                id: '2',
+                username: 'Jane Smith',
+                profile_image_url: 'https://example.com/avatar2.jpg',
+              },
+            },
+            {
+              node: {
+                id: '3',
+                username: 'Alice Johnson',
+                profile_image_url: 'https://example.com/avatar3.jpg',
+              },
+            },
+          ],
+        },
+      },
+      loading: false,
+      error: null,
+    },
+  ]),
   useCreateBidsMutation: jest.fn(() => [
     jest.fn(),
     { loading: false, error: null, data: null },
@@ -437,6 +473,9 @@ jest.mock('@/hooks/useUserVar', () => ({
       fullname: 'Shireen',
       user_metadata: { name: 'Shireen' },
       email: 'shireen@example.com',
+      profile: {
+        username: 'Shireen',
+      },
     },
     jest.fn(),
   ]),

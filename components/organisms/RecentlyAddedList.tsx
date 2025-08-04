@@ -150,10 +150,7 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
                 card.node?.price,
               )}
               marketType="eBay"
-              marketPrice={formatCurrencyDisplay(
-                card.node?.currency,
-                card.node?.price,
-              )}
+              marketPrice={formatCurrencyDisplay(card.node?.currency, 0)}
               indicator="up"
               onPress={() =>
                 router.push({

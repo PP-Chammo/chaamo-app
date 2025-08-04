@@ -16,6 +16,8 @@ interface SignInForm {
 
 export default function SignInScreen() {
   const [, setUser] = useUserVar();
+
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<SignInForm>({
     phone: '',
     password: '',
@@ -37,13 +39,16 @@ export default function SignInScreen() {
 
   const handleGoogleLogin = useCallback(async () => {
     try {
+      setLoading(true);
       await loginWithGoogle();
       await updateProfileSession(setUser, (isSuccess) => {
+        setLoading(false);
         if (isSuccess) {
           router.replace('/(tabs)/home');
         }
       });
     } catch (e: unknown) {
+      setLoading(false);
       console.error(e);
     }
   }, [setUser]);
@@ -86,6 +91,8 @@ export default function SignInScreen() {
           icon="google"
           onPress={handleGoogleLogin}
           variant="primary-light"
+          loading={loading}
+          disabled={loading}
         >
           Continue with Google
         </Button>

@@ -1,5 +1,7 @@
 import React, { memo, useCallback, useMemo } from 'react';
 
+import { useFocusEffect } from 'expo-router';
+
 import {
   ListContainer,
   ListContainerDirection,
@@ -8,7 +10,7 @@ import {
 import {
   useCreateFollowersMutation,
   useGetFollowersQuery,
-  useGetVwFilteredProfilesQuery,
+  useGetVwFilteredProfilesLazyQuery,
   useRemoveFollowersMutation,
 } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
@@ -18,9 +20,8 @@ const PeopleList = memo(function PeopleList() {
 
   const { data: followedData, refetch: refetchFollowers } =
     useGetFollowersQuery();
-  const { data, loading } = useGetVwFilteredProfilesQuery({
+  const [getPeoples, { data, loading }] = useGetVwFilteredProfilesLazyQuery({
     fetchPolicy: 'cache-and-network',
-    skip: !user?.id,
     variables: {
       filter: {
         id: { neq: user?.id },
@@ -83,6 +84,14 @@ const PeopleList = memo(function PeopleList() {
       removeFollowers,
       user?.id,
     ],
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (user?.id) {
+        getPeoples();
+      }
+    }, [getPeoples, user?.id]),
   );
 
   if (loading || !user?.id) {

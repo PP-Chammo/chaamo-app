@@ -54,10 +54,11 @@ export default function StartPage() {
       await updateProfileSession(setUser, (isSuccess) => {
         if (isSuccess) {
           if (isDevelopment) {
-            router.replace('/(tabs)/home');
+            return router.replace('/(tabs)/home');
           }
-          setNavigatePage('/(tabs)/home');
+          return setNavigatePage('/(tabs)/home');
         }
+        return router.replace('/(auth)/sign-in');
       });
     } catch (error) {
       console.error('Unexpected error during session check:', error);

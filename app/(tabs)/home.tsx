@@ -26,6 +26,7 @@ cssInterop(ScrollView, {
 
 export default function HomeScreen() {
   const [user] = useUserVar();
+
   const { data: favoritesData, refetch: refetchFavorites } =
     useGetFavoritesQuery({
       skip: !user?.id,
