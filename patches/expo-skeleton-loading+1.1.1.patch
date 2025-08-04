@@ -1,0 +1,109 @@
+diff --git a/node_modules/expo-skeleton-loading/index.d.ts b/node_modules/expo-skeleton-loading/index.d.ts
+index 42f485d..3620827 100644
+--- a/node_modules/expo-skeleton-loading/index.d.ts
++++ b/node_modules/expo-skeleton-loading/index.d.ts
+@@ -1,11 +1 @@
+-export interface SkeletonLoading {
+-    /**
+-     * background of the loader componenet
+-     */
+-    background: string,
+-
+-    /**
+-     * highlight color of the loader component
+-     */
+-    highlight: string
+-}
++export { SkeletonProps } from './index';
+diff --git a/node_modules/expo-skeleton-loading/index.tsx b/node_modules/expo-skeleton-loading/index.tsx
+index f7b1da3..6cc643b 100644
+--- a/node_modules/expo-skeleton-loading/index.tsx
++++ b/node_modules/expo-skeleton-loading/index.tsx
+@@ -1,11 +1,11 @@
+-import React, {ReactElement} from "react";
+-import { View, StyleSheet } from "react-native";
+ import MaskedView from "@react-native-masked-view/masked-view";
+ import { LinearGradient } from "expo-linear-gradient";
+-import Reanimated,{ useSharedValue, withRepeat, useAnimatedStyle, withTiming, interpolate  } from "react-native-reanimated";
++import React, { ReactNode, isValidElement } from "react";
++import { LayoutChangeEvent, LayoutRectangle, StyleSheet, View } from "react-native";
++import Reanimated, { interpolate, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
+ 
+ 
+-interface SkeletonProps {
++export interface SkeletonProps {
+     /**
+      * background of the loader componenet hexcode
+      */
+@@ -19,31 +19,31 @@ interface SkeletonProps {
+     /**
+      * the children components inside SkeletonLoading
+      */
+-    children: ReactElement
++    children: ReactNode
+ 
+ }
+ 
+ 
+ const SkeletonLoading: React.FC<SkeletonProps> = ({
+-        children, 
+-        background, 
+-        highlight 
++    children,
++    background,
++    highlight
+ }) => {
+ 
+-    const [layout, setLayout] = React.useState();
++    const [layout, setLayout] = React.useState<LayoutRectangle | null>(null);
+     const shared = useSharedValue(0);
+ 
+     const animStyle = useAnimatedStyle(() => {
+-        const x = interpolate( shared.value, [0, 1], [layout ? -layout.width : 0, layout ? layout.width : 0], )
++        const x = interpolate(shared.value, [0, 1], [layout ? -layout.width : 0, layout ? layout.width : 0],)
+         return {
+-            transform: [ { translateX: x }, ]
++            transform: [{ translateX: x },]
+         }
+     });
+ 
+     React.useEffect(() => {
+         shared.value = withRepeat(
+-          withTiming(1, { duration: 1000 }),
+-          Infinity,
++            withTiming(1, { duration: 1000 }),
++            Infinity,
+         );
+ 
+     }, []);
+@@ -51,16 +51,16 @@ const SkeletonLoading: React.FC<SkeletonProps> = ({
+ 
+     if (!layout) {
+         return (
+-          <View onLayout={event => setLayout(event.nativeEvent.layout)}>
+-            {children}
+-          </View>
++            <View onLayout={(event: LayoutChangeEvent) => setLayout(event.nativeEvent.layout)}>
++                {children}
++            </View>
+         );
+     }
+ 
+ 
+-    return(
++    return (
+         <MaskedView
+-            maskElement={children}
++            maskElement={isValidElement(children) ? children : <View>{children}</View>}
+             style={{ width: layout.width, height: layout.height }}
+         >
+             <View style={[styles.container, { backgroundColor: background }]} />
+@@ -79,7 +79,7 @@ const SkeletonLoading: React.FC<SkeletonProps> = ({
+                         />
+                     }
+                 >
+-                    <View style={[ StyleSheet.absoluteFill, { backgroundColor: highlight } ]} />
++                    <View style={[StyleSheet.absoluteFill, { backgroundColor: highlight }]} />
+                 </MaskedView>
+             </Reanimated.View>
+         </MaskedView>

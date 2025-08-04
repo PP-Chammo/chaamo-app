@@ -1,14 +1,16 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import BlockListItem from '../BlockListItem';
 
 describe('BlockListItem', () => {
   const defaultProps = {
-    name: 'John Doe',
-    imageUrl: 'https://example.com/avatar.jpg',
+    id: '123',
+    username: 'John Doe',
+    profile_image_url: 'https://example.com/avatar.jpg',
     isBlocked: false,
+    isLoading: false,
     onPress: jest.fn(),
   };
 
@@ -38,9 +40,9 @@ describe('BlockListItem', () => {
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
-  it('renders with custom name', () => {
+  it('renders with custom username', () => {
     const { getByText } = render(
-      <BlockListItem {...defaultProps} name="Jane Smith" />,
+      <BlockListItem {...defaultProps} username="Jane Smith" />,
     );
     expect(getByText('Jane Smith')).toBeTruthy();
   });
@@ -49,7 +51,7 @@ describe('BlockListItem', () => {
     const { getByTestId } = render(
       <BlockListItem
         {...defaultProps}
-        imageUrl="https://example.com/custom.jpg"
+        profile_image_url="https://example.com/custom.jpg"
       />,
     );
     expect(getByTestId('avatar')).toBeTruthy();
@@ -90,8 +92,10 @@ describe('BlockListItem', () => {
     const onPress = jest.fn();
     const { getByText, getByTestId } = render(
       <BlockListItem
-        name="Alice Johnson"
-        imageUrl="https://example.com/alice.jpg"
+        id="123"
+        username="Alice Johnson"
+        profile_image_url="https://example.com/alice.jpg"
+        isLoading={false}
         isBlocked={true}
         onPress={onPress}
       />,
@@ -111,5 +115,33 @@ describe('BlockListItem', () => {
     const { getByTestId } = render(<BlockListItem {...defaultProps} />);
     const avatar = getByTestId('avatar');
     expect(avatar).toBeTruthy();
+  });
+
+  it('shows loading state when isLoading is true', () => {
+    const { getByTestId } = render(
+      <BlockListItem {...defaultProps} isLoading={true} />,
+    );
+    const button = getByTestId('button');
+    expect(button).toBeTruthy();
+  });
+
+  it('does not show loading state when isLoading is false', () => {
+    const { getByTestId } = render(
+      <BlockListItem {...defaultProps} isLoading={false} />,
+    );
+    const button = getByTestId('button');
+    expect(button).toBeTruthy();
+  });
+
+  it('prevents onPress from being called when loading', () => {
+    const onPress = jest.fn();
+    const { getByTestId } = render(
+      <BlockListItem {...defaultProps} isLoading={true} onPress={onPress} />,
+    );
+
+    const button = getByTestId('button');
+    fireEvent.press(button);
+
+    expect(onPress).not.toHaveBeenCalled();
   });
 });
