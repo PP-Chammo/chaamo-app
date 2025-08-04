@@ -112,7 +112,6 @@ export const updateProfileSession = async (
           },
         });
 
-        console.log({ createResult });
         profileData =
           createResult.data?.insertIntoprofilesCollection?.records?.[0];
 
@@ -133,8 +132,6 @@ export const updateProfileSession = async (
             },
           },
         });
-
-        console.log({ selectedProfile, userId });
 
         if (selectedProfile.error) {
           console.error('Profile fetch error:', selectedProfile.error);
@@ -158,8 +155,6 @@ export const updateProfileSession = async (
       const addressData =
         selectedUserAddress?.data?.user_addressesCollection?.edges?.[0]?.node;
 
-      console.log({ userId, profileData, addressData });
-
       await new Promise<void>((resolve) => {
         setUser({
           ...data?.session?.user,
@@ -169,13 +164,11 @@ export const updateProfileSession = async (
           } as DeepGet<UserStore, ['profile']>,
         });
 
-        // Pakai timeout 0 untuk menunggu render loop
         setTimeout(() => {
           resolve();
         }, 0);
       });
 
-      // Callback setelah semuanya selesai
       callback(true, userId);
     } else {
       callback(false);
