@@ -6,7 +6,7 @@ import { View } from 'react-native';
 import { Icon, Label, ScreenContainer } from '@/components/atoms';
 import { Header, UserSkeletonList } from '@/components/molecules';
 import { BlockList } from '@/components/organisms';
-import { BlockedUsers } from '@/domains/user.types';
+import { BlockedUsers } from '@/domains';
 import {
   useGetBlockedAccountsQuery,
   useRemoveBlockedUsersMutation,

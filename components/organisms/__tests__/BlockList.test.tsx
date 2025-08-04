@@ -2,7 +2,7 @@ import React from 'react';
 
 import { fireEvent, render } from '@testing-library/react-native';
 
-import { BlockedUsers } from '@/domains/user.types';
+import { BlockedUsers } from '@/domains';
 
 import BlockList from '../BlockList';
 

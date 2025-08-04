@@ -7,7 +7,7 @@ import { Icon, Label } from '@/components/atoms';
 import { getColor } from '@/utils/getColor';
 
 export interface NotificationCardProps {
-  category: 'Order Shipped' | 'New Bid' | 'Bid Ending';
+  category: string;
   message: string;
   date: string;
   onPress: () => void;
@@ -22,12 +22,21 @@ const NotificationCard: React.FC<NotificationCardProps> = memo(
     });
     time = time.replace(/\babout\s+/i, '');
 
-    const icon =
-      category === 'Order Shipped'
-        ? 'truck-outline'
-        : category === 'New Bid'
-          ? 'cart-outline'
-          : 'clock-outline';
+    // Map category names to appropriate icons
+    const getIcon = (cat: string) => {
+      const lowerCat = cat.toLowerCase();
+      if (lowerCat.includes('shipped') || lowerCat.includes('order')) {
+        return 'truck-outline';
+      } else if (lowerCat.includes('bid')) {
+        return 'cart-outline';
+      } else if (lowerCat.includes('ending') || lowerCat.includes('time')) {
+        return 'clock-outline';
+      }
+      return 'bell-outline'; // default icon
+    };
+
+    const icon = getIcon(category);
+
     return (
       <TouchableOpacity
         testID="notification-list-item"

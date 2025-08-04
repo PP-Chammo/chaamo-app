@@ -1,4 +1,7 @@
-import { GetNotificationTypesQuery } from '@/generated/graphql';
+import {
+  GetNotificationsQuery,
+  GetNotificationTypesQuery,
+} from '@/generated/graphql';
 import { DeepGet } from '@/types/helper';
 
 export interface NotificationSetting
@@ -9,3 +12,8 @@ export interface NotificationSetting
   value: boolean;
   hasNotificationSettingServer: boolean;
 }
+
+export type Notification = DeepGet<
+  GetNotificationsQuery,
+  ['notificationsCollection', 'edges', 0, 'node']
+>;

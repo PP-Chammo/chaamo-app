@@ -3,7 +3,7 @@ import React, { memo, useCallback, useState } from 'react';
 import { FlatList } from 'react-native';
 
 import { BlockListItem } from '@/components/molecules';
-import { BlockedUsers } from '@/domains/user.types';
+import { BlockedUsers } from '@/domains';
 
 interface BlockListProps {
   data: BlockedUsers;
