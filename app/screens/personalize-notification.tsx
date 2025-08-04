@@ -43,7 +43,8 @@ export default function SettingsScreen() {
 
   const notificationTypes = useMemo(() => {
     const userNotificationSettings =
-      userNotificationSettingsData?.user_notification_settingsCollection?.edges;
+      userNotificationSettingsData?.user_notification_settingsCollection
+        ?.edges ?? [];
 
     return notificationTypesData?.notification_typesCollection?.edges?.map(
       (edge) => {
