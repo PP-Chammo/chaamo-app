@@ -16,6 +16,25 @@ jest.mock('@/hooks/useSearchVar', () => ({
   useSearchVar: () => [mockUseSearchStore, jest.fn()],
 }));
 
+jest.mock('@/hooks/useUserVar', () => ({
+  useUserVar: () => [
+    {
+      profile: { currency: 'USD' },
+    },
+  ],
+}));
+
+jest.mock('@/hooks/useCurrencyDisplay', () => ({
+  useCurrencyDisplay: () => ({
+    formatDisplay: (currency: string, amount: string | number) => {
+      if (currency === 'USD') {
+        return `$${amount}`;
+      }
+      return `$${amount}`;
+    },
+  }),
+}));
+
 describe('FilterTags', () => {
   beforeEach(() => {
     mockUseSearchStore.query = '';
@@ -87,7 +106,7 @@ describe('FilterTags', () => {
   it('renders price range with empty min', () => {
     mockUseSearchStore.priceRange = ',500';
     const { getByText } = render(<FilterTags />);
-    expect(getByText('0 - $500')).toBeTruthy();
+    expect(getByText('$0 - $500')).toBeTruthy();
   });
 
   it('renders price range with empty max', () => {

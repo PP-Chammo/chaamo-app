@@ -10,14 +10,6 @@ type ExchangeRates = Partial<Record<SupportedCurrency, number>>;
 
 const exchangeRatesVar = createReactiveVar<ExchangeRates>({});
 
-const symbolToCurrencyMap: Record<string, SupportedCurrency> = (() => {
-  const map: Record<string, SupportedCurrency> = {};
-  for (const [code, symbol] of Object.entries(currencySymbolMap)) {
-    map[symbol] = code as SupportedCurrency;
-  }
-  return map;
-})();
-
 export function useCurrencyDisplay() {
   const [user] = useUserVar();
   const userCurrency: SupportedCurrency = user?.profile?.currency ?? 'USD';
@@ -47,41 +39,128 @@ export function useCurrencyDisplay() {
     fetchRates();
   }, [exchangeRates]);
 
-  function formatCurrencyDisplay(
-    inputSymbol?: string | null,
-    amount?: string | number | null | undefined,
+  function convertCurrencyToSymbol(
+    currencyCode?: SupportedCurrency | null,
   ): string {
-    if (!inputSymbol) return `? ${amount ?? 0}`;
+    if (!currencyCode) {
+      return '$';
+    }
+    return currencySymbolMap[currencyCode] ?? currencyCode;
+  }
 
-    const fromCurrency = symbolToCurrencyMap[inputSymbol];
-    const toCurrency = userCurrency;
-    const toSymbol = currencySymbolMap[toCurrency] ?? toCurrency;
+  function convertSymbolToCurrency(symbol?: string | null): SupportedCurrency {
+    if (!symbol) {
+      return 'USD';
+    }
+
+    const foundCode = Object.entries(currencySymbolMap).find(
+      ([_, currencySymbol]) => currencySymbol === symbol,
+    )?.[0] as SupportedCurrency;
+
+    return foundCode ?? 'USD';
+  }
+
+  function convertBaseToUser(
+    baseAmount?: string | number | null | undefined,
+    fromCurrency?: SupportedCurrency | null,
+  ): number {
+    if (!fromCurrency || !baseAmount) {
+      return 0;
+    }
 
     const numericAmount =
-      typeof amount === 'string' ? parseFloat(amount) : (amount ?? 0);
+      typeof baseAmount === 'string'
+        ? parseFloat(baseAmount)
+        : (baseAmount ?? 0);
 
-    if (!fromCurrency || isNaN(numericAmount)) {
-      return `${inputSymbol} ${amount}`;
+    if (isNaN(numericAmount)) {
+      return 0;
+    }
+
+    if (fromCurrency === userCurrency) {
+      return numericAmount;
     }
 
     const fromRate = exchangeRates[fromCurrency];
-    const toRate = exchangeRates[toCurrency];
+    const toRate = exchangeRates[userCurrency];
 
     if (!fromRate || !toRate) {
-      return `${inputSymbol} ${numericAmount.toFixed(2)}`;
+      return numericAmount;
     }
 
     const raw = numericAmount * (toRate / fromRate);
-    const convertedAmount = Math.round(raw * 100) / 100;
+    return Math.round(raw * 100) / 100;
+  }
+
+  function convertUserToBase(
+    userAmount?: string | number | null | undefined,
+    toCurrency: SupportedCurrency = 'USD',
+  ): number {
+    if (!toCurrency || !userAmount) {
+      return 0;
+    }
+
+    const numericAmount =
+      typeof userAmount === 'string'
+        ? parseFloat(userAmount)
+        : (userAmount ?? 0);
+
+    if (isNaN(numericAmount)) {
+      return 0;
+    }
+
+    if (toCurrency === userCurrency) {
+      return numericAmount;
+    }
+
+    const fromRate = exchangeRates[userCurrency];
+    const toRate = exchangeRates[toCurrency];
+
+    if (!fromRate || !toRate) {
+      console.warn('Exchange rates not available, returning original amount');
+      return numericAmount;
+    }
+
+    const raw = numericAmount * (toRate / fromRate);
+    const result = Math.round(raw * 100) / 100;
+
+    return result;
+  }
+
+  function formatDisplay(
+    baseCurrency?: string | SupportedCurrency | null,
+    amount?: string | number | null | undefined,
+    unfixed?: boolean,
+  ): string {
+    if (!baseCurrency) return `? ${amount ?? 0}`;
+
+    let currencyCode: SupportedCurrency;
+    if (baseCurrency in currencySymbolMap) {
+      currencyCode = baseCurrency as SupportedCurrency;
+    } else {
+      const foundCode = Object.entries(currencySymbolMap).find(
+        ([_, symbol]) => symbol === baseCurrency,
+      )?.[0] as SupportedCurrency;
+      currencyCode = foundCode ?? 'USD';
+    }
+
+    const convertedAmount = convertBaseToUser(amount, currencyCode);
+    const userSymbol = convertCurrencyToSymbol(userCurrency);
 
     const formatted = new Intl.NumberFormat(undefined, {
       style: 'decimal',
-      minimumFractionDigits: 2,
+      minimumFractionDigits: unfixed ? 0 : 2,
       maximumFractionDigits: 2,
     }).format(convertedAmount);
 
-    return `${toSymbol} ${formatted}`;
+    return `${userSymbol}${formatted}`;
   }
 
-  return { formatCurrencyDisplay };
+  return {
+    convertCurrencyToSymbol,
+    convertSymbolToCurrency,
+    convertBaseToUser,
+    convertUserToBase,
+    formatDisplay,
+  };
 }

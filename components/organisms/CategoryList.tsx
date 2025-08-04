@@ -5,18 +5,22 @@ import { router } from 'expo-router';
 import { Category, ListContainer } from '@/components/molecules';
 import { imageCategories } from '@/constants/categories';
 import { GetCategoriesQuery, useGetCategoriesQuery } from '@/generated/graphql';
+import { useSearchVar } from '@/hooks/useSearchVar';
 import { DeepGet } from '@/types/helper';
 
 const CategoryList = memo(function CategoryList() {
+  const [, setSearch] = useSearchVar();
   const { data, loading } = useGetCategoriesQuery({
     fetchPolicy: 'cache-and-network',
   });
   const edges = data?.categoriesCollection?.edges ?? [];
 
   const handleCtaCards = useCallback(
-    (category: string) =>
-      router.push({ pathname: '/screens/product-list', params: { category } }),
-    [],
+    (category: string) => {
+      setSearch({ category });
+      router.push({ pathname: '/screens/product-list' });
+    },
+    [setSearch],
   );
 
   if (loading) {

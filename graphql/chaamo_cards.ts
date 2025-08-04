@@ -12,6 +12,10 @@ export const getVwChaamoListings = gql`
           price
           start_price
           name
+          seller_username
+          seller_country
+          created_at
+          is_favorite
         }
       }
     }

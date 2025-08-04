@@ -2,7 +2,7 @@ import { memo } from 'react';
 
 import { TouchableOpacity } from 'react-native';
 
-import { Label, Row } from '@/components/atoms';
+import { Icon, Label, Row } from '@/components/atoms';
 import { ListContainer, ListContainerDirection } from '@/components/molecules';
 
 interface SearchHistoriesProps {
@@ -39,7 +39,7 @@ const SearchHistories: React.FC<SearchHistoriesProps> = memo(
               <Label className={classes.itemText}>{item}</Label>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => onRemovePress(item)}>
-              <Label>×</Label>
+              <Icon name="close" size={18} color="black" testID="icon" />
             </TouchableOpacity>
           </Row>
         )}

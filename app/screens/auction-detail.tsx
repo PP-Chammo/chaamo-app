@@ -34,7 +34,7 @@ cssInterop(ScrollView, {
 
 export default function AuctionDetailScreen() {
   const [user] = useUserVar();
-  const { formatCurrencyDisplay } = useCurrencyDisplay();
+  const { formatDisplay } = useCurrencyDisplay();
 
   const { id, isFavorite } = useLocalSearchParams();
   const { data } = useGetVwAuctionDetailQuery({
@@ -135,10 +135,10 @@ export default function AuctionDetailScreen() {
           )}
         </View>
         <ProductDetailInfo
-          price={formatCurrencyDisplay(detail?.currency, detail?.start_price)}
+          price={formatDisplay(detail?.currency, detail?.start_price)}
           date={detail?.created_at ?? new Date().toISOString()}
           title={detail?.name ?? ''}
-          marketPrice={formatCurrencyDisplay(
+          marketPrice={formatDisplay(
             detail?.currency,
             detail?.ebay_highest_price ?? 0,
           )}

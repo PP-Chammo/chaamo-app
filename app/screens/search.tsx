@@ -49,12 +49,15 @@ export default function CardsScreen() {
   );
 
   const handleSubmitSearch = useCallback(
-    (selectedQuery?: string) => {
+    (selectedQueryHistory?: string) => {
       const trimmedQuery = searchVar.query.trim();
-      if (selectedQuery) {
-        setSearchVar({ query: selectedQuery });
+      if (!selectedQueryHistory && trimmedQuery === '') {
+        return;
       }
-      if (!historyList.includes(trimmedQuery)) {
+      if (selectedQueryHistory) {
+        setSearchVar({ query: selectedQueryHistory });
+      }
+      if (trimmedQuery.length > 0 && !historyList.includes(trimmedQuery)) {
         appendStorage<string>('searchHistories', trimmedQuery);
       }
       router.push('/screens/product-list');

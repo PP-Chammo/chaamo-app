@@ -63,7 +63,7 @@ describe('SearchHistoryList', () => {
   });
 
   it('calls onRemovePress when remove icon is pressed', () => {
-    const { getAllByText } = render(
+    const { getAllByTestId } = render(
       <SearchHistoryList
         list={mockList}
         onRemovePress={onRemovePress}
@@ -71,7 +71,7 @@ describe('SearchHistoryList', () => {
         onHistoryPress={onHistoryPress}
       />,
     );
-    const removeIcons = getAllByText('×');
+    const removeIcons = getAllByTestId('icon');
     fireEvent.press(removeIcons[1]);
     expect(onRemovePress).toHaveBeenCalled();
   });
