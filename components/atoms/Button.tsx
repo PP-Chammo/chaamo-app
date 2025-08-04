@@ -101,32 +101,38 @@ const Button: React.FC<ButtonProps> = memo(function Button({
       )}
       {...props}
     >
-      {icon && (
-        <Icon
-          name={icon}
-          size={iconSize ?? iconSizeBase}
-          variant={iconVariant}
-          color={iconColor ?? iconColorBase}
-        />
-      )}
-      <Text
-        className={clsx(
-          classes.textBase,
-          classes.textSize[size],
-          classes.textVariant[variant],
-          textClassName,
-        )}
-        {...textProps}
-      >
-        {loading ? <ActivityIndicator color={iconColorBase} /> : children}
-      </Text>
-      {rightIcon && (
-        <Icon
-          name={rightIcon}
-          size={rightIconSize ?? iconSizeBase}
-          variant={rightIconVariant}
-          color={rightIconColor ?? iconColorBase}
-        />
+      {loading ? (
+        <ActivityIndicator color={iconColorBase} />
+      ) : (
+        <>
+          {icon && (
+            <Icon
+              name={icon}
+              size={iconSize ?? iconSizeBase}
+              variant={iconVariant}
+              color={iconColor ?? iconColorBase}
+            />
+          )}
+          <Text
+            className={clsx(
+              classes.textBase,
+              classes.textSize[size],
+              classes.textVariant[variant],
+              textClassName,
+            )}
+            {...textProps}
+          >
+            {children}
+          </Text>
+          {rightIcon && (
+            <Icon
+              name={rightIcon}
+              size={rightIconSize ?? iconSizeBase}
+              variant={rightIconVariant}
+              color={rightIconColor ?? iconColorBase}
+            />
+          )}
+        </>
       )}
     </TouchableOpacity>
   );

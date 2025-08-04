@@ -35,7 +35,7 @@ const AccountBar = memo(function AccountBar() {
       <View testID="account-bar-left" className={classes.leftSpace}>
         <Label className="text-xl">Hi</Label>
         <Label className="text-xl font-bold">
-          {user?.user_metadata?.name ?? user?.email}!
+          {user?.profile?.username?.split(' ')?.[0] ?? ''}!
         </Label>
       </View>
       <View testID="account-bar-right" className={classes.rightSpace}>

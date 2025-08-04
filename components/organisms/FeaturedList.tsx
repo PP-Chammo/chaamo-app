@@ -146,13 +146,10 @@ const FeaturedList: React.FC<FeaturedListProps> = memo(function FeaturedList({
             imageUrl={card.node?.image_url ?? ''}
             title={card.node?.name ?? ''}
             price={formatCurrencyDisplay(card.node?.currency, card.node?.price)}
-            marketPrice={formatCurrencyDisplay(
-              card.node?.currency,
-              card.node?.price,
-            )}
             marketType={
               card.node.listing_type === ListingType.EBAY ? 'eBay' : 'chaamo'
             }
+            marketPrice={formatCurrencyDisplay(card.node?.currency, 0)}
             indicator="up"
             onPress={() =>
               router.push({

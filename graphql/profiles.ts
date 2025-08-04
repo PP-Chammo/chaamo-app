@@ -38,6 +38,21 @@ export const getPersonalProfile = gql`
   }
 `;
 
+export const createProfiles = gql`
+  mutation CreateProfiles($objects: [profilesInsertInput!]!) {
+    insertIntoprofilesCollection(objects: $objects) {
+      records {
+        id
+        username
+        profile_image_url
+        phone_number
+        country_code
+        currency
+      }
+    }
+  }
+`;
+
 export const updateProfile = gql`
   mutation UpdateProfile($set: profilesUpdateInput!, $filter: profilesFilter) {
     updateprofilesCollection(set: $set, filter: $filter) {

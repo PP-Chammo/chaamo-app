@@ -2,7 +2,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { router } from 'expo-router';
 import { Alert } from 'react-native';
 
-import { getProfiles } from '@/graphql/profiles';
+import { createProfiles, getProfiles } from '@/graphql/profiles';
 import { getUserAddresses } from '@/graphql/user_addresses';
 import { UserStore } from '@/stores/userStore';
 import { DeepGet } from '@/types/helper';
@@ -43,7 +43,6 @@ export async function loginWithGoogle() {
         access_token: data.session.access_token,
         refresh_token: data.session.refresh_token,
       });
-      router.replace('/(tabs)/home');
     } else if (error) {
       console.error('❌ Login error:', error);
       Alert.alert('Login failed', error.message);
@@ -76,6 +75,8 @@ export const updateProfileSession = async (
 
   try {
     const { data, error } = await supabase.auth.getSession();
+    const userId = data?.session?.user?.id;
+    const username = data?.session?.user?.user_metadata?.full_name;
 
     if (error) {
       console.error('Session error:', error);
@@ -83,9 +84,8 @@ export const updateProfileSession = async (
       return;
     }
 
-    if (data.session) {
-      const userId = data?.session?.user.id;
-      const selectedProfile = await client.query({
+    if (data?.session) {
+      const profileResult = await client.query({
         query: getProfiles,
         variables: {
           filter: {
@@ -94,13 +94,57 @@ export const updateProfileSession = async (
         },
       });
 
-      if (selectedProfile.error) {
-        console.error('Profile fetch error:', selectedProfile.error);
-        errorAlert();
-        return;
-      }
+      const profileExists =
+        profileResult?.data?.profilesCollection?.edges?.length > 0;
 
-      const { profilesCollection } = selectedProfile.data || {};
+      let profileData;
+
+      if (userId && !profileExists) {
+        const createResult = await client.mutate({
+          mutation: createProfiles,
+          variables: {
+            objects: [
+              {
+                id: userId,
+                username,
+              },
+            ],
+          },
+        });
+
+        console.log({ createResult });
+        profileData =
+          createResult.data?.insertIntoprofilesCollection?.records?.[0];
+
+        if (createResult.errors) {
+          console.error(
+            'Create profile error:',
+            JSON.stringify(createResult.errors),
+          );
+          errorAlert();
+          return;
+        }
+      } else {
+        const selectedProfile = await client.query({
+          query: getProfiles,
+          variables: {
+            filter: {
+              id: { eq: userId },
+            },
+          },
+        });
+
+        console.log({ selectedProfile, userId });
+
+        if (selectedProfile.error) {
+          console.error('Profile fetch error:', selectedProfile.error);
+          errorAlert();
+          return;
+        }
+
+        profileData =
+          selectedProfile?.data?.profilesCollection?.edges?.[0]?.node;
+      }
 
       const selectedUserAddress = await client.query({
         query: getUserAddresses,
@@ -111,24 +155,34 @@ export const updateProfileSession = async (
         },
       });
 
-      const profileData = profilesCollection?.edges[0]?.node;
       const addressData =
-        selectedUserAddress?.data?.user_addressesCollection?.edges[0]?.node;
+        selectedUserAddress?.data?.user_addressesCollection?.edges?.[0]?.node;
 
-      setUser({
-        ...data?.session?.user,
-        profile: { ...profileData, ...addressData } as DeepGet<
-          UserStore,
-          ['profile']
-        >,
+      console.log({ userId, profileData, addressData });
+
+      await new Promise<void>((resolve) => {
+        setUser({
+          ...data?.session?.user,
+          profile: {
+            ...profileData,
+            ...addressData,
+          } as DeepGet<UserStore, ['profile']>,
+        });
+
+        // Pakai timeout 0 untuk menunggu render loop
+        setTimeout(() => {
+          resolve();
+        }, 0);
       });
 
+      // Callback setelah semuanya selesai
       callback(true, userId);
     } else {
       callback(false);
     }
   } catch (error) {
-    console.error('Data fetching error:', error);
+    supabase.auth.signOut();
+    console.error('Unexpected error in updateProfileSession:', error);
     callback(false);
     errorAlert();
   }
