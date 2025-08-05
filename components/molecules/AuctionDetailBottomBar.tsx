@@ -43,7 +43,7 @@ export default AuctionDetailBottomBar;
 
 const classes = {
   bottomBar:
-    'z-10 absolute left-0 right-0 bottom-0 flex-row items-center p-4.5 pb-10 bg-primary-500 z-50',
+    'z-10 absolute left-0 right-0 bottom-0 flex-row items-center p-4.5 pb-16 bg-primary-500 z-50',
   timeBarInner:
     'absolute -top-6 left-0 right-0 bg-amber-50 py-1 flex flex-row justify-center items-center rounded-t-xl',
   timeText: 'text-sm font-bold',

@@ -57,7 +57,7 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
           className="flex-1"
         >
           <SafeAreaView
-            edges={[]}
+            edges={['bottom']}
             className={clsx(classes.container, className)}
             {...props}
           >
