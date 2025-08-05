@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { router } from 'expo-router';
 import { Alert, View } from 'react-native';
@@ -10,8 +10,7 @@ import {
   SelectModal,
   TextField,
 } from '@/components/molecules';
-import { COUNTRIES, STATES } from '@/constants/dummy';
-import { TextChangeParams } from '@/domains';
+import { Country, State, TextChangeParams } from '@/domains';
 import {
   useUpdateProfileMutation,
   useUpdateUserAddressMutation,
@@ -23,11 +22,55 @@ import { validateRequired, ValidationErrors } from '@/utils/validate';
 
 export default function PersonalDetailsScreen() {
   const [form, setForm] = useUserVar();
+  const [originalForm, setOriginalForm] = useState<UserStore | null>(null);
   const [errors, setErrors] = useState<
     ValidationErrors<DeepGet<UserStore, ['profile']>>
   >({});
   const [updateProfile] = useUpdateProfileMutation();
   const [updateUserAddress] = useUpdateUserAddressMutation();
+
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [states, setStates] = useState<State[]>([]);
+
+  // Clone original form data on mount
+  useEffect(() => {
+    if (!originalForm) {
+      setOriginalForm(JSON.parse(JSON.stringify(form)));
+    }
+  }, [form, originalForm]);
+
+  const revertForm = useCallback(() => {
+    if (originalForm) {
+      setForm(originalForm);
+    }
+  }, [originalForm, setForm]);
+
+  const handleBackPress = useCallback(() => {
+    const hasChanges = JSON.stringify(form) !== JSON.stringify(originalForm);
+
+    if (hasChanges) {
+      Alert.alert(
+        'Unsaved Changes',
+        'You have unsaved changes. Do you want to discard them?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Discard',
+            style: 'destructive',
+            onPress: () => {
+              revertForm();
+              router.back();
+            },
+          },
+        ],
+      );
+    } else {
+      router.back();
+    }
+  }, [form, originalForm, revertForm]);
 
   const handleChange = useCallback(
     ({ name, value }: TextChangeParams) => {
@@ -107,6 +150,8 @@ export default function PersonalDetailsScreen() {
               },
               onCompleted: (data) => {
                 if (data?.updateuser_addressesCollection?.records.length) {
+                  // Update the original form after successful save
+                  setOriginalForm(JSON.parse(JSON.stringify(form)));
                   Alert.alert(
                     'Success',
                     'Personal details updated successfully',
@@ -122,9 +167,21 @@ export default function PersonalDetailsScreen() {
 
   const profile = form.profile;
 
+  const lazyLoad = useCallback(async () => {
+    const countriesData = await import('@/assets/data/countries.json');
+    const statesData = await import('@/assets/data/states.json');
+
+    setStates(statesData.default);
+    setCountries(countriesData.default);
+  }, []);
+
+  useEffect(() => {
+    lazyLoad();
+  }, [lazyLoad]);
+
   return (
     <ScreenContainer>
-      <Header title="Personal Details" onBackPress={() => router.back()} />
+      <Header title="Personal Details" onBackPress={handleBackPress} />
       <KeyboardView>
         <View className={classes.container}>
           <TextField
@@ -153,7 +210,39 @@ export default function PersonalDetailsScreen() {
             onChange={handleChange}
             name="address_line_1"
           />
+          <SelectModal
+            required
+            name="country"
+            label="Country"
+            value={profile?.country ?? ''}
+            onChange={handleChange}
+            options={{
+              data: countries,
+              label: 'name',
+              value: 'iso2',
+            }}
+            error={errors.country}
+            placeholder="--Select--"
+            className={classes.input}
+          />
           <Row between className={classes.row}>
+            <SelectModal
+              required
+              name="state_province"
+              label="State"
+              value={profile?.state_province ?? ''}
+              onChange={handleChange}
+              options={{
+                data: states.filter(
+                  (state) => state.country_code === profile?.country,
+                ),
+                label: 'name',
+                value: 'iso2',
+              }}
+              error={errors.state_province}
+              placeholder="--Select--"
+              className={classes.input}
+            />
             <TextField
               label="City"
               value={profile?.city}
@@ -163,29 +252,7 @@ export default function PersonalDetailsScreen() {
               required
               error={errors.city}
             />
-            <SelectModal
-              required
-              name="state_province"
-              label="State"
-              value={profile?.state_province ?? ''}
-              onChange={handleChange}
-              options={STATES}
-              error={errors.state_province}
-              placeholder="--Select--"
-              className={classes.input}
-            />
           </Row>
-          <SelectModal
-            required
-            name="country"
-            label="Country"
-            value={profile?.country ?? ''}
-            onChange={handleChange}
-            options={COUNTRIES}
-            error={errors.country}
-            placeholder="--Select--"
-            className={classes.input}
-          />
           <TextField
             label="Postal Code"
             value={profile?.postal_code ?? ''}
