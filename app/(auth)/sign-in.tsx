@@ -55,7 +55,10 @@ export default function SignInScreen() {
 
   return (
     <ScreenContainer>
-      <Header title="Login" onBackPress={() => router.back()} />
+      <Header
+        title="Login"
+        onBackPress={() => router.push('/screens/onboarding')}
+      />
       <View className={classes.form}>
         <Label className={classes.title} variant="title">
           Welcome Back!
