@@ -234,7 +234,10 @@ export default function ProductListScreen() {
   );
 
   return (
-    <ScreenContainer classNameTop={classes.containerTop}>
+    <ScreenContainer
+      classNameTop={classes.containerTop}
+      enableBottomSafeArea={false}
+    >
       <HeaderSearch
         value={searchText}
         onChange={handleChange}

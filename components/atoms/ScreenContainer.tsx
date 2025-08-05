@@ -20,6 +20,7 @@ interface ScreenContainerProps extends ViewProps {
   children: React.ReactNode;
   classNameTop?: string;
   classNameBottom?: string;
+  enableBottomSafeArea?: boolean;
 }
 
 const StyledGradient = cssInterop(LinearGradient, {
@@ -32,10 +33,12 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
     className,
     classNameTop,
     classNameBottom,
+    enableBottomSafeArea = true,
     style,
     ...props
   }) {
     const insets = useSafeAreaInsets();
+
     return (
       <>
         {Platform.OS === 'ios' ? (
@@ -57,7 +60,7 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
           className="flex-1"
         >
           <SafeAreaView
-            edges={['bottom']}
+            edges={enableBottomSafeArea ? ['bottom'] : []}
             className={clsx(classes.container, className)}
             {...props}
           >

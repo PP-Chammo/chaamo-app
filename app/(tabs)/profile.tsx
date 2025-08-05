@@ -47,7 +47,7 @@ export default function ProfileScreen() {
   }, []);
 
   return (
-    <ScreenContainer className={classes.container}>
+    <ScreenContainer className={classes.container} enableBottomSafeArea={false}>
       <Header
         title="Profile"
         rightIcon="menu"
