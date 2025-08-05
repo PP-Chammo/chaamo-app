@@ -30,6 +30,7 @@ export default function OnboardingScreen() {
       <ImageBackground
         source={require('@/assets/images/bg-onboarding.png')}
         className={classes.background}
+        resizeMode="stretch"
       >
         <View className={classes.content}>
           <BlurView intensity={100} className={classes.blurView}>
