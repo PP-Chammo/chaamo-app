@@ -132,7 +132,7 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
           </View>
           <Row className={classes.bidContainer}>
             {listingType === ListingType.AUCTION && (
-              <View className="absolute bottom-6 right-0">
+              <View className="absolute bottom-7 right-0">
                 <Tag title="Highest Bid" />
               </View>
             )}
@@ -168,7 +168,7 @@ const classes = {
   text: 'text-sm !text-gray-700',
   textBold: 'text-sm font-semibold',
   rowDate: 'gap-2',
-  bidContainer: 'flex items-center justify-end gap-1',
+  bidContainer: 'flex items-center justify-end gap-1.5',
   textBidPrice: 'text-base text-right font-semibold text-primary-500 pr-1',
   priceContainer: '!items-end',
   logoImage: 'w-6 h-6',

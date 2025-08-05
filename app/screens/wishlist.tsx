@@ -16,7 +16,7 @@ import { getColor } from '@/utils/getColor';
 
 export default function WishlistScreen() {
   const [user] = useUserVar();
-  const { formatCurrencyDisplay } = useCurrencyDisplay();
+  const { formatDisplay } = useCurrencyDisplay();
 
   const { data, refetch } = useGetVwMyFavoriteListingsQuery({
     fetchPolicy: 'cache-and-network',
@@ -85,7 +85,7 @@ export default function WishlistScreen() {
               imageUrl={item.node?.image_url ?? ''}
               title={item.node?.name ?? ''}
               subtitle={item.node?.seller_username ?? ''}
-              price={formatCurrencyDisplay(
+              price={formatDisplay(
                 item.node?.currency,
                 item.node?.listing_type === ListingType.AUCTION
                   ? (item.node?.start_price ?? 0)
@@ -93,7 +93,7 @@ export default function WishlistScreen() {
               )}
               date={item.node?.created_at ?? ''}
               marketType="eBay"
-              marketPrice={formatCurrencyDisplay(item.node?.currency, 0)}
+              marketPrice={formatDisplay(item.node?.currency, 0)}
               indicator="up"
               rightIcon="heart"
               rightIconColor={getColor('red-500')}

@@ -35,6 +35,24 @@ describe('FilterLocationInput', () => {
     expect(button).toBeTruthy();
   });
 
+  it('calls onChange when a country is selected', () => {
+    const onChange = jest.fn();
+    const { getByTestId, getAllByText } = render(
+      <FilterLocationInput value="" onChange={onChange} />,
+    );
+
+    // Open dropdown
+    const button = getByTestId('filter-location-button');
+    fireEvent.press(button);
+
+    // Select a country
+    const countryOptions = getAllByText('United Kingdom');
+    if (countryOptions.length > 0) {
+      fireEvent.press(countryOptions[0]);
+      expect(onChange).toHaveBeenCalledWith('United Kingdom');
+    }
+  });
+
   it('applies correct styling classes', () => {
     const { getByTestId } = render(<FilterLocationInput {...defaultProps} />);
     expect(getByTestId('filter-location-input')).toBeTruthy();

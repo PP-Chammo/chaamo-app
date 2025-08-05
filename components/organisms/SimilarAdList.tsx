@@ -20,7 +20,7 @@ interface SimilarAdListProps {
 const SimilarAdList: React.FC<SimilarAdListProps> = memo(
   function SimilarAdList({ ignoreListingId, listingType }) {
     const [user] = useUserVar();
-    const { formatCurrencyDisplay } = useCurrencyDisplay();
+    const { formatDisplay } = useCurrencyDisplay();
 
     const { data: favoritesData } = useGetFavoritesQuery({
       skip: !user?.id,
@@ -70,10 +70,7 @@ const SimilarAdList: React.FC<SimilarAdListProps> = memo(
               id={card.node.id}
               imageUrl={card.node?.image_url ?? ''}
               title={card.node?.name ?? ''}
-              price={formatCurrencyDisplay(
-                card.node?.currency,
-                card.node?.start_price,
-              )}
+              price={formatDisplay(card.node?.currency, card.node?.start_price)}
               rightIcon={
                 getIsFavorite(card.node.id) ? 'heart' : 'heart-outline'
               }

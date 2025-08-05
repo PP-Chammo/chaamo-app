@@ -27,7 +27,7 @@ type RecentlyAddedListProps = {
 const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
   function RecentlyAddedList({ favoriteList = [], refreshFavoriteCount }) {
     const [user] = useUserVar();
-    const { formatCurrencyDisplay } = useCurrencyDisplay();
+    const { formatDisplay } = useCurrencyDisplay();
 
     const { data, loading } = useGetVwChaamoListingsQuery({
       fetchPolicy: 'cache-and-network',
@@ -117,10 +117,7 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
               id={card.node.id}
               imageUrl={card.node?.image_url ?? ''}
               title={card.node?.name ?? ''}
-              price={formatCurrencyDisplay(
-                card.node?.currency,
-                card.node?.start_price,
-              )}
+              price={formatDisplay(card.node?.currency, card.node?.start_price)}
               onPress={() =>
                 router.push({
                   pathname: '/screens/auction-detail',
@@ -145,12 +142,9 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
               id={card.node.id}
               imageUrl={card.node?.image_url ?? ''}
               title={card.node?.name ?? ''}
-              price={formatCurrencyDisplay(
-                card.node?.currency,
-                card.node?.price,
-              )}
+              price={formatDisplay(card.node?.currency, card.node?.price)}
               marketType="eBay"
-              marketPrice={formatCurrencyDisplay(card.node?.currency, 0)}
+              marketPrice={formatDisplay(card.node?.currency, 0)}
               indicator="up"
               onPress={() =>
                 router.push({

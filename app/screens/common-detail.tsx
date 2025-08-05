@@ -39,7 +39,7 @@ cssInterop(ScrollView, {
 
 export default function ProductDetailScreen() {
   const [user] = useUserVar();
-  const { formatCurrencyDisplay } = useCurrencyDisplay();
+  const { formatDisplay } = useCurrencyDisplay();
 
   const { id, isFavorite } = useLocalSearchParams();
   const { data } = useGetVwCommonDetailQuery({
@@ -149,10 +149,10 @@ export default function ProductDetailScreen() {
           )}
         </View>
         <ProductDetailInfo
-          price={formatCurrencyDisplay(detail?.currency, detail?.price)}
+          price={formatDisplay(detail?.currency, detail?.price)}
           date={detail?.created_at ?? new Date().toISOString()}
           title={detail?.name ?? ''}
-          marketPrice={formatCurrencyDisplay(
+          marketPrice={formatDisplay(
             detail?.currency,
             detail?.ebay_highest_price ?? 0,
           )}

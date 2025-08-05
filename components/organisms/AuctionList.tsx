@@ -28,7 +28,7 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
   refreshFavoriteCount,
 }) {
   const [user] = useUserVar();
-  const { formatCurrencyDisplay } = useCurrencyDisplay();
+  const { formatDisplay } = useCurrencyDisplay();
 
   const { data, loading } = useGetVwChaamoListingsQuery({
     fetchPolicy: 'cache-and-network',
@@ -112,10 +112,7 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
           id={card.node.id}
           imageUrl={card.node?.image_url ?? ''}
           title={card.node?.name ?? ''}
-          price={formatCurrencyDisplay(
-            card.node?.currency,
-            card.node?.start_price,
-          )}
+          price={formatDisplay(card.node?.currency, card.node?.start_price)}
           onPress={() =>
             router.push({
               pathname: '/screens/auction-detail',

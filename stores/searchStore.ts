@@ -1,5 +1,6 @@
 export interface SearchStore {
   query: string;
+  category: string;
   location: string;
   priceRange: string;
   condition: string;
@@ -8,6 +9,7 @@ export interface SearchStore {
 
 export const searchStore: SearchStore = {
   query: '',
+  category: '',
   location: '',
   priceRange: '',
   condition: '',

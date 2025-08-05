@@ -9,6 +9,7 @@ import { Label, ScreenContainer } from '@/components/atoms';
 import { Category, Header } from '@/components/molecules';
 import { imageCategories } from '@/constants/categories';
 import { useGetCategoriesQuery } from '@/generated/graphql';
+import { useSearchVar } from '@/hooks/useSearchVar';
 
 cssInterop(FlatList, {
   className: {
@@ -20,15 +21,17 @@ cssInterop(FlatList, {
 });
 
 export default function CategoriesScreen() {
+  const [, setSearch] = useSearchVar();
   const { data } = useGetCategoriesQuery();
   const edges = data?.categoriesCollection?.edges ?? [];
 
-  const handleCtaCards = useCallback((query: string) => {
-    router.push({
-      pathname: '/screens/product-list',
-      params: { category: query },
-    });
-  }, []);
+  const handleCtaCards = useCallback(
+    (category: string) => {
+      setSearch({ category });
+      router.push('/screens/product-list');
+    },
+    [setSearch],
+  );
 
   return (
     <ScreenContainer classNameTop={classes.containerTop}>

@@ -45,6 +45,8 @@ const FilterPriceRangeInput: React.FC<FilterPriceRangeInputProps> = memo(
             placeholder="0"
             onChangeText={handleChange(0)}
             className={classes.input}
+            keyboardType="numeric"
+            textAlign="center"
           />
           <Label>to</Label>
           <TextInput
@@ -53,6 +55,8 @@ const FilterPriceRangeInput: React.FC<FilterPriceRangeInputProps> = memo(
             placeholder="Any"
             onChangeText={handleChange(1)}
             className={classes.input}
+            keyboardType="numeric"
+            textAlign="center"
           />
         </Row>
       </View>
@@ -67,7 +71,7 @@ const classes = {
   inputContainer:
     'flex flex-row items-center justify-between self-end gap-4 pl-11 pt-2',
   input:
-    'flex-1 bg-white text-gray-800 text-center h-9 leading-5 text-base border border-gray-200 rounded',
+    'flex-1 bg-white text-gray-800 text-center h-12 text-base border border-gray-200 rounded',
 };
 
 export default FilterPriceRangeInput;
