@@ -30,6 +30,7 @@ export default function OnboardingScreen() {
       <ImageBackground
         source={require('@/assets/images/bg-onboarding.png')}
         className={classes.background}
+        resizeMode="stretch"
       >
         <View className={classes.content}>
           <BlurView intensity={100} className={classes.blurView}>
@@ -89,7 +90,6 @@ export default function OnboardingScreen() {
               </Checkbox>
             </View>
           </BlurView>
-          <BlurView intensity={100} className={classes.bottomBlurView} />
           <View className={classes.footer} />
         </View>
       </ImageBackground>
@@ -112,5 +112,4 @@ const classes = {
   termsContainer:
     'my-5 bg-primary-100 border border-primary-400 py-3 px-2 rounded-xl',
   footer: 'h-56 w-full absolute bottom-0 z-0 bg-white',
-  bottomBlurView: 'absolute bottom-56 h-56 left-0 right-0 z-0',
 };
