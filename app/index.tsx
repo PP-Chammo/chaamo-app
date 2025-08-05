@@ -57,8 +57,13 @@ export default function StartPage() {
             return router.replace('/(tabs)/home');
           }
           return setNavigatePage('/(tabs)/home');
+        } else {
+          if (isDevelopment) {
+            return router.replace('/(auth)/sign-in');
+          }
+
+          return setNavigatePage('/screens/onboarding');
         }
-        return router.replace('/(auth)/sign-in');
       });
     } catch (error) {
       console.error('Unexpected error during session check:', error);
