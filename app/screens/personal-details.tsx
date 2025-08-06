@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
+import { isEqual } from 'lodash';
 import { Alert, View } from 'react-native';
 
 import { Button, KeyboardView, Row, ScreenContainer } from '@/components/atoms';
@@ -18,6 +19,7 @@ import {
 import { useUserVar } from '@/hooks/useUserVar';
 import { UserStore } from '@/stores/userStore';
 import { DeepGet } from '@/types/helper';
+import { structuredClone } from '@/utils/structuredClone';
 import { validateRequired, ValidationErrors } from '@/utils/validate';
 
 export default function PersonalDetailsScreen() {
@@ -32,10 +34,9 @@ export default function PersonalDetailsScreen() {
   const [countries, setCountries] = useState<Country[]>([]);
   const [states, setStates] = useState<State[]>([]);
 
-  // Clone original form data on mount
   useEffect(() => {
     if (!originalForm) {
-      setOriginalForm(JSON.parse(JSON.stringify(form)));
+      setOriginalForm(structuredClone(form));
     }
   }, [form, originalForm]);
 
@@ -46,7 +47,7 @@ export default function PersonalDetailsScreen() {
   }, [originalForm, setForm]);
 
   const handleBackPress = useCallback(() => {
-    const hasChanges = JSON.stringify(form) !== JSON.stringify(originalForm);
+    const hasChanges = !isEqual(form, originalForm);
 
     if (hasChanges) {
       Alert.alert(
@@ -151,7 +152,7 @@ export default function PersonalDetailsScreen() {
               onCompleted: (data) => {
                 if (data?.updateuser_addressesCollection?.records.length) {
                   // Update the original form after successful save
-                  setOriginalForm(JSON.parse(JSON.stringify(form)));
+                  setOriginalForm(structuredClone(form));
                   Alert.alert(
                     'Success',
                     'Personal details updated successfully',
@@ -167,6 +168,11 @@ export default function PersonalDetailsScreen() {
 
   const profile = form.profile;
 
+  const filteredStates = useMemo(
+    () => states.filter((state) => state.country_code === profile?.country),
+    [profile?.country, states],
+  );
+
   const lazyLoad = useCallback(async () => {
     const countriesData = await import('@/assets/data/countries.json');
     const statesData = await import('@/assets/data/states.json');
@@ -175,9 +181,9 @@ export default function PersonalDetailsScreen() {
     setCountries(countriesData.default);
   }, []);
 
-  useEffect(() => {
+  useFocusEffect(() => {
     lazyLoad();
-  }, [lazyLoad]);
+  });
 
   return (
     <ScreenContainer>
@@ -222,7 +228,7 @@ export default function PersonalDetailsScreen() {
               value: 'iso2',
             }}
             error={errors.country}
-            placeholder="--Select--"
+            placeholder="--Select Country--"
             className={classes.input}
           />
           <Row between className={classes.row}>
@@ -233,14 +239,12 @@ export default function PersonalDetailsScreen() {
               value={profile?.state_province ?? ''}
               onChange={handleChange}
               options={{
-                data: states.filter(
-                  (state) => state.country_code === profile?.country,
-                ),
+                data: filteredStates,
                 label: 'name',
                 value: 'iso2',
               }}
               error={errors.state_province}
-              placeholder="--Select--"
+              placeholder="--Select State--"
               className={classes.input}
             />
             <TextField

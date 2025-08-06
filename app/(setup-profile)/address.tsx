@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { View } from 'react-native';
 
 import { Button, KeyboardView, Row, ScreenContainer } from '@/components/atoms';
@@ -72,9 +72,9 @@ export default function AddressScreen() {
     setCountries(countriesData.default);
   }, []);
 
-  useEffect(() => {
+  useFocusEffect(() => {
     lazyLoad();
-  }, [lazyLoad]);
+  });
 
   return (
     <ScreenContainer>
@@ -111,7 +111,7 @@ export default function AddressScreen() {
               value: 'iso2',
             }}
             error={errors['country']}
-            placeholder="--Select--"
+            placeholder="--Select Country--"
             className={classes.input}
           />
           <Row className="gap-3">
@@ -129,7 +129,7 @@ export default function AddressScreen() {
                 value: 'iso2',
               }}
               error={errors['state']}
-              placeholder="--Select--"
+              placeholder="--Select State--"
               className={classes.input}
             />
             <TextField
