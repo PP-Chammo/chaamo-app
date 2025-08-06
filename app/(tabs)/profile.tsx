@@ -1,6 +1,7 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
+import pluralize from 'pluralize';
 import { TouchableOpacity, View } from 'react-native';
 
 import {
@@ -20,11 +21,42 @@ import {
   SoldItemsProfile,
 } from '@/components/organisms';
 import { profileTabs } from '@/constants/tabs';
+import { useGetFollowsLazyQuery } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
 
 export default function ProfileScreen() {
   const [user] = useUserVar();
+
+  const [getFollowers, { data: followersData }] = useGetFollowsLazyQuery();
+  const [getFollowings, { data: followingData }] = useGetFollowsLazyQuery();
+
+  useFocusEffect(
+    useCallback(() => {
+      getFollowers({
+        variables: {
+          filter: {
+            followee_user_id: { eq: user?.id },
+          },
+        },
+      });
+      getFollowings({
+        variables: {
+          filter: {
+            follower_user_id: { eq: user?.id },
+          },
+        },
+      });
+    }, [getFollowers, getFollowings, user?.id]),
+  );
+
+  const followersCount = useMemo(() => {
+    return followersData?.followsCollection?.edges?.length ?? [];
+  }, [followersData?.followsCollection?.edges]);
+
+  const followingsCount = useMemo(() => {
+    return followingData?.followsCollection?.edges?.length ?? [];
+  }, [followingData?.followsCollection?.edges]);
 
   const handleSettingsPress = useCallback(() => {
     router.push('/screens/settings');
@@ -90,14 +122,14 @@ export default function ProfileScreen() {
         <ProfileStat title="Listing" value="5" />
         <Divider />
         <ProfileStat
-          title="Followers"
-          value="8"
+          title={pluralize('Followers', Number(followersCount))}
+          value={followersCount.toString()}
           onPress={handleFollowersPress}
         />
         <Divider />
         <ProfileStat
-          title="Following"
-          value="51"
+          title={pluralize('Following', Number(followingsCount))}
+          value={followingsCount.toString()}
           onPress={handleFollowingPress}
         />
       </View>

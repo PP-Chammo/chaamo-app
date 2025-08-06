@@ -1,13 +1,13 @@
 import {
   ApolloClient,
+  ApolloLink,
   ApolloProvider,
   HttpLink,
   InMemoryCache,
-  ApolloLink,
-  NormalizedCacheObject,
-  Operation,
   NextLink,
+  NormalizedCacheObject,
   Observable,
+  Operation,
 } from '@apollo/client';
 import { Session } from '@supabase/supabase-js';
 
