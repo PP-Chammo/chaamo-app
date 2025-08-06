@@ -188,7 +188,7 @@ export default function ProductDetailScreen() {
         show={showModal}
         onDismiss={() => setShowModal(false)}
         className={classes.bottomSheet}
-        height={264}
+        height={300}
       >
         <PlaceOfferModalContent
           id={detail?.id ?? ''}
@@ -201,7 +201,7 @@ export default function ProductDetailScreen() {
 }
 
 const classes = {
-  containerBottom: 'bg-white',
+  containerBottom: 'bg-white mb-8',
   containerBottomPrimary: 'bg-primary-500',
   header: '!bg-transparent',
   scrollView: 'gap-4.5 pb-36',

@@ -92,7 +92,10 @@ export default function CommunityScreen() {
   );
 
   return (
-    <ScreenContainer classNameTop={classes.containerTop}>
+    <ScreenContainer
+      classNameTop={classes.containerTop}
+      enableBottomSafeArea={false}
+    >
       <Header
         title="Community"
         onBackPress={() => router.back()}

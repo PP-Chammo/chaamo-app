@@ -72,7 +72,10 @@ export default function HomeScreen() {
   );
 
   return (
-    <ScreenContainer classNameTop={classes.containerTop}>
+    <ScreenContainer
+      classNameTop={classes.containerTop}
+      enableBottomSafeArea={false}
+    >
       <View className={classes.headerContainer}>
         <AccountBar />
         <Row className={classes.headerRow}>

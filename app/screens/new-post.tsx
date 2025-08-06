@@ -149,7 +149,7 @@ export default function NewPostScreen() {
           loading={loading}
           disabled={loading || !form.content}
         >
-          Submit Post
+          Submit Posts
         </Button>
       </View>
     </ScreenContainer>
@@ -160,8 +160,8 @@ const classes = {
   title: 'text-primary-500 text-xl font-medium',
   container: 'flex-1 mx-4.5 gap-8',
   image: 'w-full h-72 rounded-2xl',
-  attachment: 'bg-primary-500 rounded-full p-3 absolute bottom-28 right-6',
+  attachment: 'bg-primary-500 rounded-full p-3 absolute bottom-36 right-6',
   imageContainer: 'relative',
   closeIcon: 'absolute top-2 right-2 bg-white rounded-full p-1',
-  buttonContainer: 'p-4.5',
+  buttonContainer: 'px-4.5 pb-8 pt-4.5',
 };

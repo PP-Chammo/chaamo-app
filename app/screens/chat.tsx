@@ -2,7 +2,13 @@ import { useState } from 'react';
 
 import { format } from 'date-fns';
 import { router, useLocalSearchParams } from 'expo-router';
-import { FlatList, Text, View } from 'react-native';
+import {
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  View,
+} from 'react-native';
 
 import {
   Avatar,
@@ -95,23 +101,28 @@ export default function ChatScreen() {
           );
         }}
       />
-      <View className={classes.bottomContainer}>
-        <Icon
-          variant="FontAwesome6"
-          name="add"
-          size={24}
-          color={getColor('slate-500')}
-        />
-        <View className={classes.messageInputContainer}>
-          <TextField
-            className={classes.messageInput}
-            name="message"
-            onChange={handleChangeMessage}
-            value={message}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 0}
+      >
+        <View className={classes.bottomContainer}>
+          <Icon
+            variant="FontAwesome6"
+            name="add"
+            size={24}
+            color={getColor('slate-500')}
           />
+          <View className={classes.messageInputContainer}>
+            <TextField
+              className={classes.messageInput}
+              name="message"
+              onChange={handleChangeMessage}
+              value={message}
+            />
+          </View>
+          <Icon name="send" size={24} color={getColor('slate-500')} />
         </View>
-        <Icon name="send" size={24} color={getColor('slate-500')} />
-      </View>
+      </KeyboardAvoidingView>
     </ScreenContainer>
   );
 }
@@ -131,4 +142,5 @@ const classes = {
   messageInputContainer: 'flex-1',
   header: 'bg-white',
   containerTop: 'bg-white',
+  keyboardAvoidingView: 'bg-white',
 };

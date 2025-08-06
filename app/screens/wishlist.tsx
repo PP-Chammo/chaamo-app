@@ -69,7 +69,7 @@ export default function WishlistScreen() {
   );
 
   return (
-    <ScreenContainer>
+    <ScreenContainer enableBottomSafeArea={false}>
       <Header title="Wishlist" onBackPress={() => router.back()} />
       <View className={classes.container}>
         <Label variant="title" className={classes.title}>

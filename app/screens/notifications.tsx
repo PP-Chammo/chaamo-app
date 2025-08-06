@@ -116,7 +116,7 @@ export default function Notifications() {
   }, [data, handleLongPress, handlePress]);
 
   return (
-    <ScreenContainer>
+    <ScreenContainer enableBottomSafeArea={false}>
       <Header title="Notifications" onBackPress={() => router.back()} />
       {_renderContent}
       <BottomSheetModal

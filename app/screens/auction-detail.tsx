@@ -174,7 +174,7 @@ export default function AuctionDetailScreen() {
         show={showModal}
         onDismiss={() => setShowModal(false)}
         className={classes.bottomSheet}
-        height={440}
+        height={460}
       >
         <PlaceBidModalContent
           id={detail?.id ?? ''}

@@ -9,7 +9,10 @@ export default function InboxLayout() {
     router.push(`/screens/chat?id=${id}&name=${name}`);
   };
   return (
-    <ScreenContainer classNameTop={classes.containerTop}>
+    <ScreenContainer
+      classNameTop={classes.containerTop}
+      enableBottomSafeArea={false}
+    >
       <Header title="Inbox" className={classes.header} />
       <ChatList onPress={handlePress} />
     </ScreenContainer>

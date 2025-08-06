@@ -100,7 +100,10 @@ export default function CardsScreen() {
   );
 
   return (
-    <ScreenContainer classNameTop={classes.containerTop}>
+    <ScreenContainer
+      classNameTop={classes.containerTop}
+      enableBottomSafeArea={false}
+    >
       <HeaderSearch
         value={searchVar.query}
         onChange={handleChange}
