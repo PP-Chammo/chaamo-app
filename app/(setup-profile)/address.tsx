@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { View } from 'react-native';
 
 import { Button, KeyboardView, Row, ScreenContainer } from '@/components/atoms';
@@ -10,8 +10,7 @@ import {
   SetupProfileTabs,
   TextField,
 } from '@/components/molecules';
-import { COUNTRIES, STATES } from '@/constants/dummy';
-import { TextChangeParams } from '@/domains';
+import { Country, State, TextChangeParams } from '@/domains';
 import {
   validateRequired,
   ValidationErrors,
@@ -38,6 +37,8 @@ export default function AddressScreen() {
   });
 
   const [errors, setErrors] = useState<ValidationErrors<Form>>({});
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [states, setStates] = useState<State[]>([]);
 
   const handleChange = ({ name, value }: TextChangeParams) => {
     setErrors((prev) => {
@@ -63,6 +64,18 @@ export default function AddressScreen() {
     router.push('/(setup-profile)/(upload-identity)/proof-identity');
   };
 
+  const lazyLoad = useCallback(async () => {
+    const countriesData = await import('@/assets/data/countries.json');
+    const statesData = await import('@/assets/data/states.json');
+
+    setStates(statesData.default);
+    setCountries(countriesData.default);
+  }, []);
+
+  useFocusEffect(() => {
+    lazyLoad();
+  });
+
   return (
     <ScreenContainer>
       <Header title="Setting Up Profile" onBackPress={() => router.back()} />
@@ -86,7 +99,39 @@ export default function AddressScreen() {
             value={form.addressLine2}
             error={errors['addressLine2']}
           />
+          <SelectModal
+            required
+            name="country"
+            label="Country"
+            value={form.country}
+            onChange={handleChange}
+            options={{
+              data: countries,
+              label: 'name',
+              value: 'iso2',
+            }}
+            error={errors['country']}
+            placeholder="--Select Country--"
+            className={classes.input}
+          />
           <Row className="gap-3">
+            <SelectModal
+              required
+              name="state"
+              label="State"
+              value={form.state}
+              onChange={handleChange}
+              options={{
+                data: states.filter(
+                  (state) => state.country_code === form.country,
+                ),
+                label: 'name',
+                value: 'iso2',
+              }}
+              error={errors['state']}
+              placeholder="--Select State--"
+              className={classes.input}
+            />
             <TextField
               name="city"
               label="City"
@@ -97,29 +142,7 @@ export default function AddressScreen() {
               error={errors['city']}
               className={classes.input}
             />
-            <SelectModal
-              required
-              name="state"
-              label="State"
-              value={form.state}
-              onChange={handleChange}
-              options={STATES}
-              error={errors['state']}
-              placeholder="--Select--"
-              className={classes.input}
-            />
           </Row>
-          <SelectModal
-            required
-            name="country"
-            label="Country"
-            value={form.country}
-            onChange={handleChange}
-            options={COUNTRIES}
-            error={errors['country']}
-            placeholder="--Select--"
-            className={classes.input}
-          />
           <TextField
             name="postalCode"
             label="Postal Code"
