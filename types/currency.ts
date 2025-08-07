@@ -1,1 +1,1 @@
-export type SupportedCurrency = 'USD' | 'EUR' | 'GBP' | 'PKR' | 'CAD' | 'AUD';
+export type SupportedCurrency = 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD';

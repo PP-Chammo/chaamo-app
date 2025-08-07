@@ -6,7 +6,7 @@ import { View } from 'react-native';
 import { Button, ScreenContainer } from '@/components/atoms';
 import { Header } from '@/components/molecules';
 import { SelectableList } from '@/components/organisms';
-import { currencyMap } from '@/constants/currencies';
+import { currencyCountryMap, currencyMap } from '@/constants/currencies';
 import { useUpdateProfileMutation } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 
@@ -16,12 +16,17 @@ export default function ChangeCurrencyScreen() {
   const [updateProfile, { loading }] = useUpdateProfileMutation();
 
   const currencyList = useMemo(() => {
-    return Object.keys(currencyMap);
+    return Object.keys(currencyMap).map((currency) => {
+      const flag =
+        currencyCountryMap[currency as keyof typeof currencyCountryMap] || '';
+      return `${flag} ${currency}`;
+    });
   }, []);
 
   const handleSelect = useCallback(
     (value: string) => {
-      setUser({ 'profile.currency': value });
+      const currencyCode = value.split(' ')[1];
+      setUser({ 'profile.currency': currencyCode });
     },
     [setUser],
   );
@@ -42,12 +47,20 @@ export default function ChangeCurrencyScreen() {
     });
   }, [updateProfile, user.id, user.profile?.currency]);
 
+  const currentValue = useMemo(() => {
+    const currency = user?.profile?.currency;
+    if (!currency) return '';
+    const flag =
+      currencyCountryMap[currency as keyof typeof currencyCountryMap] || '';
+    return `${flag} ${currency}`;
+  }, [user?.profile?.currency]);
+
   return (
     <ScreenContainer>
       <Header title="Change Currency" onBackPress={() => router.back()} />
       <View className="flex-1">
         <SelectableList
-          value={user?.profile?.currency ?? ''}
+          value={currentValue}
           data={currencyList}
           onSelect={handleSelect}
         />
