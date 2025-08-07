@@ -15,10 +15,10 @@ import {
 } from '@/components/atoms';
 import { Header, TabView } from '@/components/molecules';
 import {
-  AboutProfile,
   PortfolioProfile,
   ReviewsProfile,
   SoldItemsProfile,
+  StatsProfile,
 } from '@/components/organisms';
 import { profileTabs } from '@/constants/tabs';
 import { useGetProfilesQuery } from '@/generated/graphql';
@@ -117,7 +117,7 @@ export default function PublicProfileScreen() {
         <TabView className={classes.tabView} tabs={profileTabs}>
           <PortfolioProfile />
           <SoldItemsProfile />
-          <AboutProfile />
+          <StatsProfile />
           <ReviewsProfile />
         </TabView>
       </ScreenContainer>

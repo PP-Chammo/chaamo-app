@@ -91,6 +91,24 @@ jest.mock('@apollo/client', () => ({
 
 // Mock generated GraphQL hooks
 jest.mock('@/generated/graphql', () => ({
+  useGetUserAddressesQuery: jest.fn(() => ({
+    data: {
+      user_addressesCollection: {
+        edges: [
+          {
+            node: {
+              id: '1',
+              city: 'London',
+              country: 'UK',
+              state: 'England',
+            },
+          },
+        ],
+      },
+    },
+    loading: false,
+    error: null,
+  })),
   useGetAuctionListingsQuery: jest.fn(() => ({
     data: {
       listingsCollection: {
@@ -202,8 +220,8 @@ jest.mock('@/generated/graphql', () => ({
     loading: false,
     error: null,
   })),
-  useGetFollowersQuery: jest.fn(() => ({
-    data: { followersCollection: { edges: [] } },
+  useGetFollowsQuery: jest.fn(() => ({
+    data: { followsCollection: { edges: [] } },
     loading: false,
     error: null,
     refetch: jest.fn(),
@@ -301,7 +319,7 @@ jest.mock('@/generated/graphql', () => ({
               name: 'Common Item 2',
               image_url: 'https://example.com/image2.jpg',
               currency: '$',
-              price: '200',
+              price: '200.00',
               listing_type: 'SELL',
             },
           },
@@ -311,8 +329,19 @@ jest.mock('@/generated/graphql', () => ({
               name: 'Common Item 3',
               image_url: 'https://example.com/image3.jpg',
               currency: '$',
-              price: '300',
+              price: '300.00',
               listing_type: 'SELL',
+              status: 'SOLD',
+            },
+          },
+          {
+            node: {
+              id: '4',
+              name: 'Common Item 3',
+              image_url: 'https://example.com/image3.jpg',
+              currency: '$',
+              price: '300.00',
+              listing_type: 'PORTFOLIO',
             },
           },
         ],
@@ -361,11 +390,11 @@ jest.mock('@/generated/graphql', () => ({
     loading: false,
     error: null,
   })),
-  useCreateFollowersMutation: jest.fn(() => [
+  useCreateFollowsMutation: jest.fn(() => [
     jest.fn(),
     { loading: false, error: null, data: null },
   ]),
-  useRemoveFollowersMutation: jest.fn(() => [
+  useRemoveFollowsMutation: jest.fn(() => [
     jest.fn(),
     { loading: false, error: null, data: null },
   ]),
@@ -408,6 +437,11 @@ jest.mock('@/generated/graphql', () => ({
     RAW: 'RAW',
     GRADED: 'GRADED',
   },
+  ListingStatus: {
+    SOLD: 'SOLD',
+    ACTIVE: 'ACTIVE',
+    PENDING: 'PENDING',
+  },
 }));
 
 // Mock hooks with reactive behavior
@@ -431,6 +465,14 @@ jest.mock('@/hooks/useAuthVar', () => ({
     });
     return [mockAuthState, mockSetAuthVar];
   }),
+}));
+
+jest.mock('@/hooks/useCurrencyDisplay', () => ({
+  useCurrencyDisplay: jest.fn(() => ({
+    formatDisplay: jest.fn((currency, value) => value),
+    convertSymbolToCurrency: jest.fn(() => 'USD'),
+    convertCurrencyToSymbol: jest.fn(() => '$'),
+  })),
 }));
 
 jest.mock('@/hooks/useSearchVar', () => ({
@@ -476,6 +518,7 @@ jest.mock('@/hooks/useUserVar', () => ({
       profile: {
         username: 'Shireen',
       },
+      created_at: '2025-07-24',
     },
     jest.fn(),
   ]),

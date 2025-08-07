@@ -24,7 +24,7 @@ interface SelectModalProps {
   required?: boolean;
   name: string;
   onChange: ({ name, value }: TextChangeParams) => void;
-  options?: Option[];
+  options?: Option;
   error?: string;
   inputClassName?: string;
   className?: string;
@@ -32,6 +32,7 @@ interface SelectModalProps {
 }
 
 interface Option {
+  data: Record<string, string | number>[];
   label: string;
   value: string;
 }
@@ -43,7 +44,7 @@ const SelectModal: React.FC<SelectModalProps> = memo(function SelectModal({
   required,
   onChange,
   name,
-  options = [],
+  options,
   error,
   className,
   inputClassName,
@@ -53,8 +54,9 @@ const SelectModal: React.FC<SelectModalProps> = memo(function SelectModal({
   const [search, setSearch] = useState('');
 
   const filteredData = useMemo(() => {
-    return options.filter((option) =>
-      option.label.toLowerCase().includes(search.toLowerCase()),
+    if (!options || !options.data) return [];
+    return options.data.filter((item) =>
+      String(item[options.label]).toLowerCase().includes(search.toLowerCase()),
     );
   }, [options, search]);
 
@@ -66,10 +68,13 @@ const SelectModal: React.FC<SelectModalProps> = memo(function SelectModal({
     [onChange, name],
   );
 
-  const selectedLabel = useMemo(
-    () => options.find((o) => o.value === value)?.label || '',
-    [options, value],
-  );
+  const selectedLabel = useMemo(() => {
+    if (!options || !options.data) return '';
+    const selectedItem = options.data.find(
+      (item) => String(item[options.value]) === value,
+    );
+    return selectedItem ? String(selectedItem[options.label]) : '';
+  }, [options, value]);
 
   const listSeparator = useCallback(
     () => <View className={classes.listDivider} />,
@@ -142,17 +147,19 @@ const SelectModal: React.FC<SelectModalProps> = memo(function SelectModal({
           <View className={classes.listContainer}>
             <FlatList
               data={filteredData}
-              keyExtractor={(item) => item.label}
+              keyExtractor={(item) => String(item[options?.label || 'label'])}
               contentContainerClassName={classes.listContentContainer}
               ItemSeparatorComponent={listSeparator}
               renderItem={({ item }) => (
                 <TouchableOpacity
-                  onPress={() => handleSelect(item.value)}
+                  onPress={() =>
+                    handleSelect(String(item[options?.value || 'value']))
+                  }
                   className={classes.listItem}
                 >
                   <Row between>
-                    <Text>{item.label}</Text>
-                    {value === item.value && (
+                    <Text>{String(item[options?.label || 'label'])}</Text>
+                    {value === String(item[options?.value || 'value']) && (
                       <Icon
                         name="check"
                         size={24}

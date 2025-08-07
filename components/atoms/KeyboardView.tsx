@@ -48,7 +48,7 @@ const KeyboardView: React.FC<KeyboardViewProps> = ({
 
 const classes = {
   container: 'flex-1 gap-3',
-  contentContainer: 'flex-grow gap-3 pb-20',
+  contentContainer: 'gap-3 pb-20',
 };
 
 export default KeyboardView;
