@@ -218,8 +218,8 @@ jest.mock('@/generated/graphql', () => ({
     loading: false,
     error: null,
   })),
-  useGetFollowersQuery: jest.fn(() => ({
-    data: { followersCollection: { edges: [] } },
+  useGetFollowsQuery: jest.fn(() => ({
+    data: { followsCollection: { edges: [] } },
     loading: false,
     error: null,
     refetch: jest.fn(),
@@ -377,11 +377,11 @@ jest.mock('@/generated/graphql', () => ({
     loading: false,
     error: null,
   })),
-  useCreateFollowersMutation: jest.fn(() => [
+  useCreateFollowsMutation: jest.fn(() => [
     jest.fn(),
     { loading: false, error: null, data: null },
   ]),
-  useRemoveFollowersMutation: jest.fn(() => [
+  useRemoveFollowsMutation: jest.fn(() => [
     jest.fn(),
     { loading: false, error: null, data: null },
   ]),

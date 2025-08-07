@@ -33,7 +33,7 @@ describe('FollowListItem', () => {
       <FollowListItem
         {...defaultProps}
         isFollowing={true}
-        onPressFollow={onPressFollow}
+        onUnfollowPress={onPressFollow}
       />,
     );
     expect(getByText('Unfollow')).toBeTruthy();
@@ -52,7 +52,7 @@ describe('FollowListItem', () => {
       <FollowListItem
         {...defaultProps}
         isFollowing={true}
-        onPressFollow={onPressFollow}
+        onUnfollowPress={onPressFollow}
       />,
     );
 
@@ -90,7 +90,7 @@ describe('FollowListItem', () => {
   it('calls onBlock when block option is pressed', () => {
     const onBlock = jest.fn();
     const { getByTestId, getByText } = render(
-      <FollowListItem {...defaultProps} onBlock={onBlock} />,
+      <FollowListItem {...defaultProps} onBlockPress={onBlock} />,
     );
 
     const dotsButton = getByTestId('dots-menu-button');
@@ -105,7 +105,7 @@ describe('FollowListItem', () => {
   it('closes context menu after blocking', () => {
     const onBlock = jest.fn();
     const { getByTestId, getByText, queryByTestId } = render(
-      <FollowListItem {...defaultProps} onBlock={onBlock} />,
+      <FollowListItem {...defaultProps} onBlockPress={onBlock} />,
     );
 
     const dotsButton = getByTestId('dots-menu-button');
@@ -126,8 +126,8 @@ describe('FollowListItem', () => {
         name="Alice Johnson"
         imageUrl="https://example.com/alice.jpg"
         isFollowing={true}
-        onPressFollow={onPressFollow}
-        onBlock={onBlock}
+        onUnfollowPress={onPressFollow}
+        onBlockPress={onBlock}
       />,
     );
 
@@ -149,8 +149,8 @@ describe('FollowListItem', () => {
       <FollowListItem
         {...defaultProps}
         isFollowing={true}
-        onPressFollow={onPressFollow}
-        onBlock={onBlock}
+        onUnfollowPress={onPressFollow}
+        onBlockPress={onBlock}
       />,
     );
 

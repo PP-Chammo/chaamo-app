@@ -14,18 +14,18 @@ import {
 interface FollowListItemProps {
   name: string;
   imageUrl: string;
+  onUnfollowPress?: () => void;
+  onBlockPress?: () => void;
   isFollowing?: boolean;
-  onPressFollow?: () => void;
-  onBlock?: () => void;
 }
 
 const FollowListItem: React.FC<FollowListItemProps> = memo(
   function FollowListItem({
     name,
     imageUrl,
+    onUnfollowPress,
+    onBlockPress,
     isFollowing,
-    onPressFollow,
-    onBlock,
   }) {
     const [isContextMenuVisible, setIsContextMenuVisible] =
       useState<boolean>(false);
@@ -42,9 +42,9 @@ const FollowListItem: React.FC<FollowListItemProps> = memo(
 
     const handleBlock = useCallback(() => {
       Alert.alert('Blocked', 'User Blocked');
-      onBlock?.();
+      onBlockPress?.();
       handleCloseContextMenu();
-    }, [handleCloseContextMenu, onBlock]);
+    }, [handleCloseContextMenu, onBlockPress]);
 
     return (
       <Fragment>
@@ -54,7 +54,7 @@ const FollowListItem: React.FC<FollowListItemProps> = memo(
             <Label>{name}</Label>
           </Row>
           <Row className={classes.row}>
-            {isFollowing && <Button onPress={onPressFollow}>Unfollow</Button>}
+            {isFollowing && <Button onPress={onUnfollowPress}>Unfollow</Button>}
             <TouchableOpacity
               testID="dots-menu-button"
               ref={dotsRef}
