@@ -2,10 +2,8 @@ android/
 ios/
 assets/
 .*
-app.json
-babel.config.js
-codegen.yml
-svg.d.ts
-tailwind.config.js
-TESTING_GUIDE.md
-tsconfig.json
+*.json
+*.yml
+*.d.ts
+*.md
+*.js
