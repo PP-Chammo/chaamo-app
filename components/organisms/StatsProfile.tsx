@@ -1,13 +1,22 @@
 import { useMemo } from 'react';
 
-import { ScrollView, Text, View } from 'react-native';
+import { format } from 'date-fns';
+import { ScrollView, View } from 'react-native';
 
 import { Icon, Label, ProfileStat } from '@/components/atoms';
-import { useGetUserAddressesQuery } from '@/generated/graphql';
+import {
+  ListingStatus,
+  ListingType,
+  useGetUserAddressesQuery,
+  useGetVwChaamoListingsQuery,
+} from '@/generated/graphql';
+import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useUserVar } from '@/hooks/useUserVar';
 
 export default function StatsProfile() {
   const [user] = useUserVar();
+  const { formatDisplay, convertSymbolToCurrency, convertCurrencyToSymbol } =
+    useCurrencyDisplay();
 
   const { data: addressData } = useGetUserAddressesQuery({
     variables: {
@@ -17,10 +26,79 @@ export default function StatsProfile() {
     },
   });
 
+  const { data: listingsData } = useGetVwChaamoListingsQuery({
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      filter: {
+        seller_id: { eq: user?.id },
+      },
+    },
+  });
+
   const address = useMemo(
     () => addressData?.user_addressesCollection?.edges?.[0]?.node,
     [addressData?.user_addressesCollection?.edges],
   );
+
+  const allListingCount = useMemo(() => {
+    return (
+      listingsData?.vw_chaamo_cardsCollection?.edges
+        ?.filter(
+          (listing) => listing.node.listing_type === ListingType.PORTFOLIO,
+        )
+        .length?.toString() ?? '0'
+    );
+  }, [listingsData?.vw_chaamo_cardsCollection?.edges]);
+
+  const auctionItemCount = useMemo(() => {
+    return (
+      listingsData?.vw_chaamo_cardsCollection?.edges
+        ?.filter((listing) => listing.node.listing_type === ListingType.AUCTION)
+        .length?.toString() ?? '0'
+    );
+  }, [listingsData?.vw_chaamo_cardsCollection?.edges]);
+
+  const soldItemCount = useMemo(() => {
+    return (
+      listingsData?.vw_chaamo_cardsCollection?.edges
+        ?.filter((listing) => listing.node.status === ListingStatus.SOLD)
+        .length?.toString() ?? '0'
+    );
+  }, [listingsData?.vw_chaamo_cardsCollection?.edges]);
+
+  const buyNowItemCount = useMemo(() => {
+    return (
+      listingsData?.vw_chaamo_cardsCollection?.edges
+        ?.filter((listing) => listing.node.listing_type === ListingType.SELL)
+        .length?.toString() ?? '0'
+    );
+  }, [listingsData?.vw_chaamo_cardsCollection?.edges]);
+
+  const totalEarnings = useMemo(() => {
+    return (
+      listingsData?.vw_chaamo_cardsCollection?.edges
+        ?.filter((listing) => listing.node.status === ListingStatus.SOLD)
+        ?.reduce(
+          (acc, listing) =>
+            acc +
+            Number(
+              formatDisplay(
+                convertSymbolToCurrency('USD'),
+                listing.node.price,
+                {
+                  showSymbol: false,
+                },
+              ),
+            ),
+          0,
+        )
+        ?.toString() ?? '0'
+    );
+  }, [
+    convertSymbolToCurrency,
+    formatDisplay,
+    listingsData?.vw_chaamo_cardsCollection?.edges,
+  ]);
 
   return (
     <ScrollView testID="stats-profile" showsVerticalScrollIndicator={false}>
@@ -29,27 +107,36 @@ export default function StatsProfile() {
           <ProfileStat
             className={classes.stat}
             title="Portfolio Listings"
-            value="5"
+            value={allListingCount}
+            testID="portfolio"
           />
-          <ProfileStat className={classes.stat} title="Sold Items" value="5" />
+          <ProfileStat
+            className={classes.stat}
+            title="Sold Items"
+            value={soldItemCount}
+            testID="sold"
+          />
         </View>
         <View className={classes.statContainer}>
           <ProfileStat
             className={classes.stat}
             title="Auction Items"
-            value="5"
+            value={auctionItemCount}
+            testID="auction"
           />
           <ProfileStat
             className={classes.stat}
             title="Buy Now Items"
-            value="5"
+            value={buyNowItemCount}
+            testID="buy-now"
           />
         </View>
         <View className={classes.statContainer}>
           <ProfileStat
             className={classes.stat}
             title="Total Earnings"
-            value="5"
+            value={`${convertCurrencyToSymbol(user?.profile?.currency)}${totalEarnings}`}
+            testID="total-earnings"
           />
         </View>
 
@@ -68,9 +155,9 @@ export default function StatsProfile() {
           </View>
         </View>
       </View>
-      <Text className={classes.memberSinceText}>
-        member since: jan 12, 2019
-      </Text>
+      <Label className={classes.memberSinceText}>
+        member since: {format(new Date(user.created_at), 'MMM d, yyyy')}
+      </Label>
     </ScrollView>
   );
 }

@@ -50,7 +50,7 @@ const FilterTags = memo(function FilterTags() {
         ...filters,
         {
           key: 'priceRange',
-          value: `${formatDisplay(user?.profile?.currency, min.length > 0 ? min : 0, true)} - ${max.length > 0 ? formatDisplay(user?.profile?.currency, max, true) : 'Any'}`,
+          value: `${formatDisplay(user?.profile?.currency, min.length > 0 ? min : 0, { unfixed: true })} - ${max.length > 0 ? formatDisplay(user?.profile?.currency, max, { unfixed: true }) : 'Any'}`,
         },
       ];
     }
@@ -89,8 +89,6 @@ const FilterTags = memo(function FilterTags() {
     search.query,
     user?.profile?.currency,
   ]);
-
-  console.log(filters);
 
   return (
     <Row testID="filter-tags" className={classes.container}>

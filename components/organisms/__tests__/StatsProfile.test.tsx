@@ -35,9 +35,21 @@ describe('StatsProfile', () => {
     expect(getByText('Total Earnings')).toBeTruthy();
   });
 
-  it('displays all stat values correctly', () => {
-    const { getAllByText } = render(<StatsProfile />);
-    expect(getAllByText('5')).toHaveLength(5);
+  it('displays correct stats values', () => {
+    const { getByTestId } = render(<StatsProfile />);
+    expect(getByTestId('portfolio').props.children[0][0].props.children).toBe(
+      '1',
+    );
+    expect(getByTestId('sold').props.children[0][0].props.children).toBe('1');
+    expect(getByTestId('auction').props.children[0][0].props.children).toBe(
+      '1',
+    );
+    expect(getByTestId('buy-now').props.children[0][0].props.children).toBe(
+      '2',
+    );
+    expect(
+      getByTestId('total-earnings').props.children[0][0].props.children,
+    ).toBe('$300');
   });
 
   it('displays location information', () => {
@@ -48,11 +60,29 @@ describe('StatsProfile', () => {
 
   it('displays member since information', () => {
     const { getByText } = render(<StatsProfile />);
-    expect(getByText('member since: jan 12, 2019')).toBeTruthy();
+    expect(getByText('member since: Jul 24, 2025')).toBeTruthy();
   });
 
   it('renders location icon', () => {
     const { getByTestId } = render(<StatsProfile />);
     expect(getByTestId('location-icon')).toBeTruthy();
+  });
+
+  it('displays all required stats with correct structure', () => {
+    const { getByText, getAllByText } = render(<StatsProfile />);
+
+    const statLabels = [
+      'Portfolio Listings',
+      'Sold Items',
+      'Auction Items',
+      'Buy Now Items',
+      'Total Earnings',
+    ];
+    statLabels.forEach((label) => {
+      expect(getByText(label)).toBeTruthy();
+    });
+
+    const statValues = getAllByText(/\d+/);
+    expect(statValues.length).toBeGreaterThanOrEqual(4);
   });
 });

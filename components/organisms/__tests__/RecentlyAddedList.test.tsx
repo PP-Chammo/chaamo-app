@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent } from '@testing-library/react-native';
-
-import { dummyFeaturedCardList } from '@/constants/dummy';
+import { fireEvent, render } from '@testing-library/react-native';
 
 import RecentlyAddedList from '../RecentlyAddedList';
 
@@ -22,7 +20,7 @@ describe('RecentlyAddedList', () => {
     const commonCards = getAllByTestId('common-card');
     const auctionCards = getAllByTestId('auction-card');
     const totalCards = commonCards.length + auctionCards.length;
-    expect(totalCards).toBe(dummyFeaturedCardList.length);
+    expect(totalCards).toBe(4);
   });
 
   it('displays recently added title', () => {

@@ -97,8 +97,10 @@ jest.mock('@/generated/graphql', () => ({
         edges: [
           {
             node: {
+              id: '1',
               city: 'London',
               country: 'UK',
+              state: 'England',
             },
           },
         ],
@@ -317,7 +319,7 @@ jest.mock('@/generated/graphql', () => ({
               name: 'Common Item 2',
               image_url: 'https://example.com/image2.jpg',
               currency: '$',
-              price: '200',
+              price: '200.00',
               listing_type: 'SELL',
             },
           },
@@ -327,8 +329,19 @@ jest.mock('@/generated/graphql', () => ({
               name: 'Common Item 3',
               image_url: 'https://example.com/image3.jpg',
               currency: '$',
-              price: '300',
+              price: '300.00',
               listing_type: 'SELL',
+              status: 'SOLD',
+            },
+          },
+          {
+            node: {
+              id: '4',
+              name: 'Common Item 3',
+              image_url: 'https://example.com/image3.jpg',
+              currency: '$',
+              price: '300.00',
+              listing_type: 'PORTFOLIO',
             },
           },
         ],
@@ -424,6 +437,11 @@ jest.mock('@/generated/graphql', () => ({
     RAW: 'RAW',
     GRADED: 'GRADED',
   },
+  ListingStatus: {
+    SOLD: 'SOLD',
+    ACTIVE: 'ACTIVE',
+    PENDING: 'PENDING',
+  },
 }));
 
 // Mock hooks with reactive behavior
@@ -447,6 +465,14 @@ jest.mock('@/hooks/useAuthVar', () => ({
     });
     return [mockAuthState, mockSetAuthVar];
   }),
+}));
+
+jest.mock('@/hooks/useCurrencyDisplay', () => ({
+  useCurrencyDisplay: jest.fn(() => ({
+    formatDisplay: jest.fn((currency, value) => value),
+    convertSymbolToCurrency: jest.fn(() => 'USD'),
+    convertCurrencyToSymbol: jest.fn(() => '$'),
+  })),
 }));
 
 jest.mock('@/hooks/useSearchVar', () => ({
@@ -492,6 +518,7 @@ jest.mock('@/hooks/useUserVar', () => ({
       profile: {
         username: 'Shireen',
       },
+      created_at: '2025-07-24',
     },
     jest.fn(),
   ]),
