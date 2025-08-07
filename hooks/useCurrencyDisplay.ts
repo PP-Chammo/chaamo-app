@@ -130,7 +130,13 @@ export function useCurrencyDisplay() {
   function formatDisplay(
     baseCurrency?: string | SupportedCurrency | null,
     amount?: string | number | null | undefined,
-    unfixed?: boolean,
+    options: {
+      unfixed?: boolean;
+      showSymbol?: boolean;
+    } = {
+      unfixed: false,
+      showSymbol: true,
+    },
   ): string {
     if (!baseCurrency) return `? ${amount ?? 0}`;
 
@@ -149,11 +155,11 @@ export function useCurrencyDisplay() {
 
     const formatted = new Intl.NumberFormat(undefined, {
       style: 'decimal',
-      minimumFractionDigits: unfixed ? 0 : 2,
+      minimumFractionDigits: options?.unfixed ? 0 : 2,
       maximumFractionDigits: 2,
     }).format(convertedAmount);
 
-    return `${userSymbol}${formatted}`;
+    return options?.showSymbol ? `${userSymbol}${formatted}` : formatted;
   }
 
   return {

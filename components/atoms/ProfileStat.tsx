@@ -1,9 +1,9 @@
 import { memo } from 'react';
 
 import { clsx } from 'clsx';
-import { Pressable, Text } from 'react-native';
+import { Pressable, PressableProps, Text } from 'react-native';
 
-interface ProfileStatProps {
+interface ProfileStatProps extends PressableProps {
   title: string;
   value: string;
   className?: string;
@@ -15,9 +15,14 @@ const ProfileStat: React.FC<ProfileStatProps> = memo(function ProfileStat({
   value,
   className,
   onPress,
+  ...props
 }) {
   return (
-    <Pressable onPress={onPress} className={clsx(classes.container, className)}>
+    <Pressable
+      onPress={onPress}
+      className={clsx(classes.container, className)}
+      {...props}
+    >
       <Text className={classes.value}>{value}</Text>
       <Text className={classes.title}>{title}</Text>
     </Pressable>

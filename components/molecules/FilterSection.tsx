@@ -21,7 +21,7 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
     const priceRange = useMemo(() => {
       if (!search?.priceRange) return '';
       const [min, max] = search.priceRange.split(',');
-      return `${formatDisplay(user?.profile?.currency, min.length > 0 ? min : '0', true)} - ${max.length > 0 ? formatDisplay(user?.profile?.currency, max, true) : 'Any'}`;
+      return `${formatDisplay(user?.profile?.currency, min.length > 0 ? min : '0', { unfixed: true })} - ${max.length > 0 ? formatDisplay(user?.profile?.currency, max, { unfixed: true }) : 'Any'}`;
     }, [formatDisplay, search.priceRange, user?.profile?.currency]);
 
     const conditions = useMemo(() => {
