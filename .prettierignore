@@ -1,0 +1,9 @@
+android/
+ios/
+assets/
+.*
+*.json
+*.yml
+*.d.ts
+*.md
+*.js
