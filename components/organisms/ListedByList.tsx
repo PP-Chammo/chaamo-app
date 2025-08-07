@@ -1,9 +1,11 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 
-import { Alert, View } from 'react-native';
+import { router } from 'expo-router';
+import { View } from 'react-native';
 
 import { Label } from '@/components/atoms';
 import { People } from '@/components/molecules';
+import { useUserVar } from '@/hooks/useUserVar';
 
 type ListedByListProps = {
   userId: string;
@@ -16,15 +18,23 @@ const ListedByList = memo(function ListedByList({
   imageUrl,
   username,
 }: ListedByListProps) {
+  const [user] = useUserVar();
+
+  const handleViewProfilePress = useCallback(() => {
+    if (user.id === userId) {
+      router.push('/(tabs)/profile');
+    } else {
+      router.push(`/screens/public-profile?userId=${userId}`);
+    }
+  }, [userId, user.id]);
+
   return (
     <View className={classes.listedByWrapper}>
       <Label variant="subtitle">Listed By</Label>
       <People
         imageUrl={imageUrl}
         fullname={username}
-        onViewProfilePress={() => {
-          Alert.alert('Coming soon');
-        }}
+        onViewProfilePress={handleViewProfilePress}
         size="md"
       />
     </View>

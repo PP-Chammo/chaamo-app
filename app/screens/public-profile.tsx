@@ -1,6 +1,6 @@
-import { Fragment, useCallback, useRef, useState } from 'react';
+import { Fragment, useCallback, useMemo, useRef, useState } from 'react';
 
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Alert, TouchableOpacity, View } from 'react-native';
 
 import {
@@ -21,8 +21,23 @@ import {
   SoldItemsProfile,
 } from '@/components/organisms';
 import { profileTabs } from '@/constants/tabs';
+import { useGetProfilesQuery } from '@/generated/graphql';
 
 export default function PublicProfileScreen() {
+  const { userId } = useLocalSearchParams();
+
+  const { data } = useGetProfilesQuery({
+    variables: {
+      filter: {
+        id: { eq: userId },
+      },
+    },
+  });
+
+  const profile = useMemo(() => {
+    return data?.profilesCollection?.edges?.[0]?.node;
+  }, [data]);
+
   const [isContextMenuVisible, setIsContextMenuVisible] =
     useState<boolean>(false);
 
@@ -59,10 +74,11 @@ export default function PublicProfileScreen() {
           <Avatar
             size="xl"
             imageContainerClassName={classes.avatarImageContainer}
+            imageUrl={profile?.profile_image_url ?? ''}
           />
           <View className={classes.profileInfoContainer}>
             <Label variant="title" className={classes.profileName}>
-              John Doe
+              {profile?.username}
             </Label>
           </View>
         </View>
@@ -88,7 +104,7 @@ export default function PublicProfileScreen() {
             icon="adduser"
             className={classes.button}
           >
-            Follow
+            Unfollow
           </Button>
           <Button
             variant="light"
@@ -110,7 +126,7 @@ export default function PublicProfileScreen() {
         visible={isContextMenuVisible}
         onClose={handleCloseContextMenu}
         triggerRef={dotsRef}
-        menuHeight={20}
+        menuHeight={60}
       >
         <TouchableOpacity onPress={handleUnfollow}>
           <Label className={classes.unfollowText}>Remove from followers</Label>
@@ -138,6 +154,6 @@ const classes = {
   tabView: 'mt-10',
   buttonContainer: 'gap-4 px-4.5',
   button: 'flex-1',
-  blockText: '!text-red-600 text-sm',
-  unfollowText: '!text-slate-600 text-sm',
+  blockText: '!text-red-600 text-md font-medium',
+  unfollowText: '!text-slate-600 text-md font-medium',
 };

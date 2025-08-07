@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useMemo } from 'react';
 
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 
 import {
   ListContainer,
@@ -113,7 +113,8 @@ const PeopleList = memo(function PeopleList() {
           imageUrl={people.node.profile_image_url ?? ''}
           fullname={people.node.username ?? ''}
           onPress={() => {
-            console.log(`People id ${people.node.id}`);
+            const userId = people.node.id;
+            router.push(`/screens/public-profile?userId=${userId}`);
           }}
           onFollowPress={handleToggleFollow(people.node.id)}
         />
