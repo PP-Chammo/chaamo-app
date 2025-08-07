@@ -19,7 +19,7 @@ export default function ChangeCurrencyScreen() {
     return Object.keys(currencyMap).map((currency) => {
       const flag =
         currencyCountryMap[currency as keyof typeof currencyCountryMap] || '';
-      return `${flag}  ${currency}`;
+      return `${flag} ${currency}`;
     });
   }, []);
 
@@ -47,7 +47,6 @@ export default function ChangeCurrencyScreen() {
     });
   }, [updateProfile, user.id, user.profile?.currency]);
 
-  // Get the current formatted value for display
   const currentValue = useMemo(() => {
     const currency = user?.profile?.currency;
     if (!currency) return '';
