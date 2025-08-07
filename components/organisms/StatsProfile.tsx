@@ -1,10 +1,29 @@
+import { useMemo } from 'react';
+
 import { ScrollView, Text, View } from 'react-native';
 
 import { Icon, Label, ProfileStat } from '@/components/atoms';
+import { useGetUserAddressesQuery } from '@/generated/graphql';
+import { useUserVar } from '@/hooks/useUserVar';
 
-export default function AboutProfile() {
+export default function StatsProfile() {
+  const [user] = useUserVar();
+
+  const { data: addressData } = useGetUserAddressesQuery({
+    variables: {
+      filter: {
+        user_id: { eq: user?.id },
+      },
+    },
+  });
+
+  const address = useMemo(
+    () => addressData?.user_addressesCollection?.edges?.[0]?.node,
+    [addressData?.user_addressesCollection?.edges],
+  );
+
   return (
-    <ScrollView testID="about-profile" showsVerticalScrollIndicator={false}>
+    <ScrollView testID="stats-profile" showsVerticalScrollIndicator={false}>
       <View className={classes.contentContainer}>
         <View className={classes.statContainer}>
           <ProfileStat
@@ -15,8 +34,23 @@ export default function AboutProfile() {
           <ProfileStat className={classes.stat} title="Sold Items" value="5" />
         </View>
         <View className={classes.statContainer}>
-          <ProfileStat className={classes.stat} title="Followers" value="5" />
-          <ProfileStat className={classes.stat} title="Following" value="5" />
+          <ProfileStat
+            className={classes.stat}
+            title="Auction Items"
+            value="5"
+          />
+          <ProfileStat
+            className={classes.stat}
+            title="Buy Now Items"
+            value="5"
+          />
+        </View>
+        <View className={classes.statContainer}>
+          <ProfileStat
+            className={classes.stat}
+            title="Total Earnings"
+            value="5"
+          />
         </View>
 
         <View className={classes.locationContainer}>
@@ -28,7 +62,9 @@ export default function AboutProfile() {
               color="black"
               testID="location-icon"
             />
-            <Label>London, UK</Label>
+            <Label>
+              {address?.city}, {address?.country}
+            </Label>
           </View>
         </View>
       </View>

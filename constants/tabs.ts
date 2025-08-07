@@ -6,7 +6,7 @@ export const setupProfileTabs = [
   { title: 'ID Verification', route: '(upload-identity)/proof-identity' },
 ];
 
-export const profileTabs = ['Portfolio', 'Sold Items', 'About', 'Reviews'];
+export const profileTabs = ['Portfolio', 'Sold Items', 'My Stats', 'Reviews'];
 
 export const inboxTabs = ['All', 'Buying', 'My Bids'];
 

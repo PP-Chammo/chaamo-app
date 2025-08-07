@@ -1,4 +1,3 @@
-export { default as AboutProfile } from './AboutProfile';
 export { default as AccountBar } from './AccountBar';
 export { default as AuctionList } from './AuctionList';
 export { default as BlockList } from './BlockList';
@@ -23,3 +22,4 @@ export { default as SelectableList } from './SelectableList';
 export { default as SimilarAdList } from './SimilarAdList';
 export { default as SoldItemsProfile } from './SoldItemsProfile';
 export { default as SoldOrder } from './SoldOrder';
+export { default as StatsProfile } from './StatsProfile';

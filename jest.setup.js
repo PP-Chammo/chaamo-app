@@ -91,6 +91,22 @@ jest.mock('@apollo/client', () => ({
 
 // Mock generated GraphQL hooks
 jest.mock('@/generated/graphql', () => ({
+  useGetUserAddressesQuery: jest.fn(() => ({
+    data: {
+      user_addressesCollection: {
+        edges: [
+          {
+            node: {
+              city: 'London',
+              country: 'UK',
+            },
+          },
+        ],
+      },
+    },
+    loading: false,
+    error: null,
+  })),
   useGetAuctionListingsQuery: jest.fn(() => ({
     data: {
       listingsCollection: {
