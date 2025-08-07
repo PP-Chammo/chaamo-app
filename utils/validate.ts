@@ -14,3 +14,11 @@ export function validateRequired<T extends ValidationValues>(
   });
   return errors;
 }
+
+export function areFieldsEmpty<T extends ValidationValues>(obj: T): boolean {
+  return Object.values(obj).every((value) => {
+    if (typeof value === 'string') return value.trim() === '';
+
+    return !value;
+  });
+}
