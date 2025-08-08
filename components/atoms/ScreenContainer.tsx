@@ -37,11 +37,12 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
     style,
     ...props
   }) {
+    const isAndroid = Platform.OS === 'android';
     const insets = useSafeAreaInsets();
 
     return (
       <>
-        {Platform.OS === 'ios' ? (
+        {!isAndroid ? (
           <RNSafeAreaView
             className={clsx(classNameTop, {
               'bg-slate-50': !classNameTop?.includes('bg-'),
@@ -52,7 +53,7 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
             className={clsx(classNameTop, {
               'bg-slate-50': !classNameTop?.includes('bg-'),
             })}
-            style={Platform.OS === 'android' ? { paddingTop: insets.top } : {}}
+            style={isAndroid ? { paddingTop: insets.top } : {}}
           />
         )}
         <StyledGradient
@@ -60,7 +61,7 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
           className="flex-1"
         >
           <SafeAreaView
-            edges={enableBottomSafeArea ? ['bottom'] : []}
+            edges={enableBottomSafeArea && isAndroid ? ['bottom'] : []}
             className={clsx(classes.container, className)}
             {...props}
           >
