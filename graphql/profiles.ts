@@ -11,27 +11,7 @@ export const getProfiles = gql`
           phone_number
           country_code
           currency
-        }
-      }
-    }
-  }
-`;
-
-export const getPersonalProfile = gql`
-  query GetPersonalProfile($filter: user_addressesFilter) {
-    user_addressesCollection(filter: $filter) {
-      edges {
-        node {
-          address_line_1
-          city
-          state_province
-          country
-          postal_code
-          profiles {
-            username
-            country_code
-            phone_number
-          }
+          created_at
         }
       }
     }

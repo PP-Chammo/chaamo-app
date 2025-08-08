@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Alert, View } from 'react-native';
 
 import { ScreenContainer } from '@/components/atoms';
@@ -14,12 +14,13 @@ import {
 import { useUserVar } from '@/hooks/useUserVar';
 
 export default function FollowingsScreen() {
+  const { publicUserId } = useLocalSearchParams();
   const [user] = useUserVar();
 
   const { data, refetch } = useGetFollowsQuery({
     variables: {
       filter: {
-        follower_user_id: { eq: user?.id },
+        follower_user_id: { eq: publicUserId ?? user?.id },
       },
     },
   });
@@ -33,7 +34,7 @@ export default function FollowingsScreen() {
         variables: {
           filter: {
             followee_user_id: { eq: userId },
-            follower_user_id: { eq: user?.id },
+            follower_user_id: { eq: publicUserId ?? user?.id },
           },
         },
         onCompleted: () => {
@@ -41,7 +42,7 @@ export default function FollowingsScreen() {
         },
       });
     },
-    [refetch, removeFollowing, user?.id],
+    [publicUserId, refetch, removeFollowing, user?.id],
   );
 
   const handleBlock = useCallback(

@@ -24,7 +24,7 @@ const ListedByList = memo(function ListedByList({
     if (user.id === userId) {
       router.push('/(tabs)/profile');
     } else {
-      router.push(`/screens/public-profile?userId=${userId}`);
+      router.push(`/screens/public-profile?publicUserId=${userId}`);
     }
   }, [userId, user.id]);
 

@@ -1,12 +1,14 @@
 import { useMemo } from 'react';
 
 import { format } from 'date-fns';
+import { useLocalSearchParams } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 
 import { Icon, Label, ProfileStat } from '@/components/atoms';
 import {
   ListingStatus,
   ListingType,
+  useGetProfilesQuery,
   useGetUserAddressesQuery,
   useGetVwChaamoListingsQuery,
 } from '@/generated/graphql';
@@ -14,14 +16,26 @@ import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useUserVar } from '@/hooks/useUserVar';
 
 export default function StatsProfile() {
+  const { publicUserId } = useLocalSearchParams();
   const [user] = useUserVar();
   const { formatDisplay, convertSymbolToCurrency, convertCurrencyToSymbol } =
     useCurrencyDisplay();
 
+  console.log('laazyyy');
+
+  const { data: publicUserData } = useGetProfilesQuery({
+    skip: !publicUserId,
+    variables: {
+      filter: {
+        id: { eq: publicUserId },
+      },
+    },
+  });
+
   const { data: addressData } = useGetUserAddressesQuery({
     variables: {
       filter: {
-        user_id: { eq: user?.id },
+        user_id: { eq: publicUserId ?? user?.id },
       },
     },
   });
@@ -30,10 +44,14 @@ export default function StatsProfile() {
     fetchPolicy: 'cache-and-network',
     variables: {
       filter: {
-        seller_id: { eq: user?.id },
+        seller_id: { eq: publicUserId ?? user?.id },
       },
     },
   });
+
+  const publicUser = useMemo(() => {
+    return publicUserData?.profilesCollection?.edges?.[0]?.node;
+  }, [publicUserData?.profilesCollection?.edges]);
 
   const address = useMemo(
     () => addressData?.user_addressesCollection?.edges?.[0]?.node,
@@ -149,14 +167,22 @@ export default function StatsProfile() {
               color="black"
               testID="location-icon"
             />
-            <Label>
-              {address?.city}, {address?.country}
-            </Label>
+            {address ? (
+              <Label>
+                {address?.city}, {address?.country}
+              </Label>
+            ) : (
+              <Label>No location</Label>
+            )}
           </View>
         </View>
       </View>
       <Label className={classes.memberSinceText}>
-        member since: {format(new Date(user.created_at), 'MMM d, yyyy')}
+        member since:{' '}
+        {format(
+          new Date(publicUser?.created_at ?? user?.created_at),
+          'MMM d, yyyy',
+        )}
       </Label>
     </ScrollView>
   );

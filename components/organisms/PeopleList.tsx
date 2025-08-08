@@ -114,7 +114,7 @@ const PeopleList = memo(function PeopleList() {
           fullname={people.node.username ?? ''}
           onPress={() => {
             const userId = people.node.id;
-            router.push(`/screens/public-profile?userId=${userId}`);
+            router.push(`/screens/public-profile?publicUserId=${userId}`);
           }}
           onFollowPress={handleToggleFollow(people.node.id)}
         />
