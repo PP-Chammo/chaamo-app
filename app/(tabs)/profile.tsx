@@ -13,13 +13,7 @@ import {
   ProfileStat,
   ScreenContainer,
 } from '@/components/atoms';
-import { Header, TabView } from '@/components/molecules';
-import {
-  PortfolioProfile,
-  ReviewsProfile,
-  SoldItemsProfile,
-  StatsProfile,
-} from '@/components/organisms';
+import { Header, Lazy, TabView } from '@/components/molecules';
 import { profileTabs } from '@/constants/tabs';
 import { useGetFollowsLazyQuery } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
@@ -75,7 +69,7 @@ export default function ProfileScreen() {
   }, []);
 
   const handleEditProfilePress = useCallback(() => {
-    console.log('Edit profile pressed');
+    router.push('/screens/personal-details');
   }, []);
 
   return (
@@ -142,10 +136,22 @@ export default function ProfileScreen() {
         Edit Profile
       </Button>
       <TabView className={classes.tabView} tabs={profileTabs}>
-        <PortfolioProfile />
-        <SoldItemsProfile />
-        <StatsProfile />
-        <ReviewsProfile />
+        <Lazy
+          load={() => import('@/components/organisms/PortfolioProfile')}
+          fallback={<Label>Loading...</Label>}
+        />
+        <Lazy
+          load={() => import('@/components/organisms/SoldItemsProfile')}
+          fallback={<Label>Loading...</Label>}
+        />
+        <Lazy
+          load={() => import('@/components/organisms/StatsProfile')}
+          fallback={<Label>Loading...</Label>}
+        />
+        <Lazy
+          load={() => import('@/components/organisms/ReviewsProfile')}
+          fallback={<Label>Loading...</Label>}
+        />
       </TabView>
     </ScreenContainer>
   );

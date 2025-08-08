@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useRef, useState } from 'react';
+import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
 
 import { clsx } from 'clsx';
 import { cssInterop } from 'nativewind';
@@ -39,10 +39,14 @@ const TabView: React.FC<TabViewProps> = memo(function TabView({
   children,
 }) {
   const [activeTab, setActiveTab] = useState(initialPage);
+  const [mountedTabs, setMountedTabs] = useState<Record<number, boolean>>({
+    [initialPage]: true,
+  });
   const pagerRef = useRef<PagerView>(null);
 
   const handleTabPress = useCallback((index: number) => {
     setActiveTab(index);
+    setMountedTabs((prev) => ({ ...prev, [index]: true }));
     pagerRef.current?.setPage(index);
   }, []);
 
@@ -50,9 +54,19 @@ const TabView: React.FC<TabViewProps> = memo(function TabView({
     (event: PagerViewOnPageSelectedEvent) => {
       const page = event.nativeEvent.position;
       setActiveTab(page);
+      setMountedTabs((prev) => ({ ...prev, [page]: true }));
     },
     [],
   );
+
+  const pages = useMemo(() => {
+    const childrenArray = React.Children.toArray(children);
+    return childrenArray.map((child, index) => (
+      <View key={index} className={classes.pagerView}>
+        {mountedTabs[index] ? child : null}
+      </View>
+    ));
+  }, [children, mountedTabs]);
 
   return (
     <View className={classes.container}>
@@ -100,7 +114,7 @@ const TabView: React.FC<TabViewProps> = memo(function TabView({
         initialPage={initialPage}
         onPageSelected={handlePageChange}
       >
-        {children}
+        {pages}
       </PagerView>
     </View>
   );

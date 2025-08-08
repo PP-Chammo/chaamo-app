@@ -1,6 +1,6 @@
-import { Fragment, useCallback, useRef, useState } from 'react';
+import { Fragment, useCallback, useMemo, useRef, useState } from 'react';
 
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Alert, TouchableOpacity, View } from 'react-native';
 
 import {
@@ -13,16 +13,92 @@ import {
   Row,
   ScreenContainer,
 } from '@/components/atoms';
-import { Header, TabView } from '@/components/molecules';
-import {
-  PortfolioProfile,
-  ReviewsProfile,
-  SoldItemsProfile,
-  StatsProfile,
-} from '@/components/organisms';
+import { Header, Lazy, TabView } from '@/components/molecules';
 import { profileTabs } from '@/constants/tabs';
+import {
+  useCreateBlockedUsersMutation,
+  useCreateFollowsMutation,
+  useGetFollowsQuery,
+  useGetProfilesQuery,
+  useRemoveFollowsMutation,
+} from '@/generated/graphql';
+import { useUserVar } from '@/hooks/useUserVar';
 
 export default function PublicProfileScreen() {
+  const { publicUserId } = useLocalSearchParams();
+  const [user] = useUserVar();
+
+  const { data } = useGetProfilesQuery({
+    variables: {
+      filter: {
+        id: { eq: publicUserId },
+      },
+    },
+  });
+
+  // query to check if the user is following the profile
+  const { data: followsData, refetch: refetchFollows } = useGetFollowsQuery({
+    variables: {
+      filter: {
+        follower_user_id: { eq: user?.id },
+        followee_user_id: { eq: publicUserId },
+      },
+    },
+  });
+
+  // query to get number of followers
+  const { data: followersData, refetch: refetchFollowers } = useGetFollowsQuery(
+    {
+      variables: {
+        filter: {
+          followee_user_id: { eq: publicUserId },
+        },
+      },
+    },
+  );
+
+  // query to get number of followings
+  const { data: followingsData, refetch: refetchFollowings } =
+    useGetFollowsQuery({
+      variables: {
+        filter: {
+          follower_user_id: { eq: publicUserId },
+        },
+      },
+    });
+
+  const [removeFollowing, { loading: loadingUnfollow }] =
+    useRemoveFollowsMutation();
+  const [addFollowing, { loading: loadingFollow }] = useCreateFollowsMutation();
+  const [addBlockedUsers] = useCreateBlockedUsersMutation();
+
+  const isFollowing = useMemo(
+    () => !!followsData?.followsCollection?.edges?.length,
+    [followsData?.followsCollection?.edges?.length],
+  );
+
+  const isProfileMyFollower = useMemo(
+    () =>
+      followersData?.followsCollection?.edges?.some(
+        (follower) => follower?.node?.followee_user?.id === user?.id,
+      ),
+    [followersData?.followsCollection?.edges, user?.id],
+  );
+
+  const followersCount = useMemo(
+    () => followersData?.followsCollection?.edges?.length?.toString() ?? '0',
+    [followersData?.followsCollection?.edges?.length],
+  );
+
+  const followingsCount = useMemo(
+    () => followingsData?.followsCollection?.edges?.length?.toString() ?? '0',
+    [followingsData?.followsCollection?.edges?.length],
+  );
+
+  const profile = useMemo(() => {
+    return data?.profilesCollection?.edges?.[0]?.node;
+  }, [data]);
+
   const [isContextMenuVisible, setIsContextMenuVisible] =
     useState<boolean>(false);
 
@@ -36,15 +112,82 @@ export default function PublicProfileScreen() {
     setIsContextMenuVisible(false);
   }, []);
 
-  const handleBlock = useCallback(() => {
-    Alert.alert('Blocked', 'User Blocked');
-    handleCloseContextMenu();
-  }, [handleCloseContextMenu]);
-
   const handleUnfollow = useCallback(() => {
-    Alert.alert('Unfollowed', 'User Unfollowed');
+    removeFollowing({
+      variables: {
+        filter: {
+          followee_user_id: { eq: publicUserId },
+          follower_user_id: { eq: user?.id },
+        },
+      },
+      onCompleted: ({ deleteFromfollowsCollection }) => {
+        if (deleteFromfollowsCollection?.records?.length) {
+          refetchFollows();
+          refetchFollowers();
+          refetchFollowings();
+        }
+      },
+      onError: () => {
+        Alert.alert('Error', 'Failed to unfollow user');
+      },
+    });
+
     handleCloseContextMenu();
-  }, [handleCloseContextMenu]);
+  }, [
+    handleCloseContextMenu,
+    refetchFollowers,
+    refetchFollowings,
+    refetchFollows,
+    removeFollowing,
+    user?.id,
+    publicUserId,
+  ]);
+
+  const handleFollow = useCallback(() => {
+    addFollowing({
+      variables: {
+        objects: [
+          { follower_user_id: user?.id, followee_user_id: publicUserId },
+        ],
+      },
+      onCompleted: ({ insertIntofollowsCollection }) => {
+        if (insertIntofollowsCollection?.records?.length) {
+          refetchFollows();
+          refetchFollowers();
+          refetchFollowings();
+        }
+      },
+      onError: () => {
+        Alert.alert('Error', 'Failed to follow user');
+      },
+    });
+  }, [
+    addFollowing,
+    refetchFollowers,
+    refetchFollowings,
+    refetchFollows,
+    user?.id,
+    publicUserId,
+  ]);
+
+  const handleBlock = useCallback(() => {
+    addBlockedUsers({
+      variables: {
+        objects: [
+          {
+            blocker_user_id: user?.id,
+            blocked_user_id: publicUserId,
+          },
+        ],
+      },
+      onCompleted: ({ insertIntoblocked_usersCollection }) => {
+        if (insertIntoblocked_usersCollection?.records?.length) {
+          handleCloseContextMenu();
+          Alert.alert('Blocked', 'User blocked successfully');
+        }
+      },
+    });
+  }, [addBlockedUsers, user?.id, publicUserId, handleCloseContextMenu]);
 
   return (
     <Fragment>
@@ -59,10 +202,11 @@ export default function PublicProfileScreen() {
           <Avatar
             size="xl"
             imageContainerClassName={classes.avatarImageContainer}
+            imageUrl={profile?.profile_image_url ?? ''}
           />
           <View className={classes.profileInfoContainer}>
             <Label variant="title" className={classes.profileName}>
-              John Doe
+              {profile?.username}
             </Label>
           </View>
         </View>
@@ -72,37 +216,57 @@ export default function PublicProfileScreen() {
           <Divider />
           <ProfileStat
             title="Followers"
-            value="8"
-            onPress={() => router.push('/screens/followers')}
+            value={followersCount}
+            onPress={() =>
+              router.push(`/screens/followers?publicUserId=${publicUserId}`)
+            }
           />
           <Divider />
           <ProfileStat
             title="Following"
-            value="51"
-            onPress={() => router.push('/screens/followings')}
+            value={followingsCount}
+            onPress={() =>
+              router.push(`/screens/followings?publicUserId=${publicUserId}`)
+            }
           />
         </View>
         <Row className={classes.buttonContainer}>
           <Button
-            iconVariant="AntDesign"
-            icon="adduser"
+            iconVariant="SimpleLineIcons"
+            icon={isFollowing ? 'user-following' : 'user-follow'}
             className={classes.button}
+            onPress={isFollowing ? handleUnfollow : handleFollow}
+            disabled={loadingFollow || loadingUnfollow}
+            loading={loadingFollow || loadingUnfollow}
           >
-            Follow
+            {isFollowing ? 'Unfollow' : 'Follow'}
           </Button>
           <Button
             variant="light"
             icon="message-processing-outline"
             className={classes.button}
+            onPress={() => router.push(`/screens/chat?userId=${publicUserId}`)}
           >
             Message
           </Button>
         </Row>
         <TabView className={classes.tabView} tabs={profileTabs}>
-          <PortfolioProfile />
-          <SoldItemsProfile />
-          <StatsProfile />
-          <ReviewsProfile />
+          <Lazy
+            load={() => import('@/components/organisms/PortfolioProfile')}
+            fallback={<Label>Loading...</Label>}
+          />
+          <Lazy
+            load={() => import('@/components/organisms/SoldItemsProfile')}
+            fallback={<Label>Loading...</Label>}
+          />
+          <Lazy
+            load={() => import('@/components/organisms/StatsProfile')}
+            fallback={<Label>Loading...</Label>}
+          />
+          <Lazy
+            load={() => import('@/components/organisms/ReviewsProfile')}
+            fallback={<Label>Loading...</Label>}
+          />
         </TabView>
       </ScreenContainer>
 
@@ -110,12 +274,18 @@ export default function PublicProfileScreen() {
         visible={isContextMenuVisible}
         onClose={handleCloseContextMenu}
         triggerRef={dotsRef}
-        menuHeight={20}
+        menuHeight={60}
       >
-        <TouchableOpacity onPress={handleUnfollow}>
-          <Label className={classes.unfollowText}>Remove from followers</Label>
-        </TouchableOpacity>
-        <Divider position="horizontal" />
+        {isProfileMyFollower && (
+          <>
+            <TouchableOpacity onPress={handleUnfollow}>
+              <Label className={classes.unfollowText}>
+                Remove from followers
+              </Label>
+            </TouchableOpacity>
+            <Divider position="horizontal" />
+          </>
+        )}
         <TouchableOpacity onPress={handleBlock}>
           <Label className={classes.blockText}>Block</Label>
         </TouchableOpacity>
@@ -138,6 +308,6 @@ const classes = {
   tabView: 'mt-10',
   buttonContainer: 'gap-4 px-4.5',
   button: 'flex-1',
-  blockText: '!text-red-600 text-sm',
-  unfollowText: '!text-slate-600 text-sm',
+  blockText: '!text-red-600 text-md font-medium',
+  unfollowText: '!text-slate-600 text-md font-medium',
 };
