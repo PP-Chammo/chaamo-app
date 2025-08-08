@@ -69,7 +69,7 @@ export default function ProfileScreen() {
   }, []);
 
   const handleEditProfilePress = useCallback(() => {
-    console.log('Edit profile pressed');
+    router.push('/screens/personal-details');
   }, []);
 
   return (
