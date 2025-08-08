@@ -1,73 +1,84 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
-import { remapProps } from 'nativewind';
+import { router } from 'expo-router';
+import { cssInterop } from 'nativewind';
 import { FlatList, View } from 'react-native';
 
 import { Icon, Label } from '@/components/atoms';
-import { CommonCard, Select } from '@/components/molecules';
-import { dummyPortfolioList } from '@/constants/dummy';
-import { portfolioFilters } from '@/constants/filters';
+import { CommonCard } from '@/components/molecules';
+import {
+  ListingType,
+  useGetVwChaamoListingsQuery,
+  useInsertFavoritesMutation,
+  useRemoveFavoritesMutation,
+} from '@/generated/graphql';
+import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
 
-const FlatListRemapped = remapProps(FlatList, {
-  contentContainerClassName: 'contentContainerStyle',
-  columnWrapperClassName: 'columnWrapperStyle',
-}) as typeof FlatList;
+cssInterop(FlatList, {
+  contentContainerClassName: { target: 'contentContainerStyle' },
+});
 
 export default function Portfolio() {
-  const [filter, setFilter] = useState('all');
+  const [user] = useUserVar();
 
-  const filteredList = useMemo(
+  const { formatDisplay } = useCurrencyDisplay();
+
+  const { data, refetch } = useGetVwChaamoListingsQuery({
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      filter: {
+        seller_id: { eq: user?.id },
+        listing_type: { eq: ListingType.PORTFOLIO },
+      },
+    },
+  });
+  const [insertFavorites] = useInsertFavoritesMutation();
+  const [removeFavorites] = useRemoveFavoritesMutation();
+
+  const portfolios = useMemo(
     () =>
-      dummyPortfolioList.filter((item) => {
-        if (filter === 'buy-now') return item.listing_type === 'buy-now';
-        if (filter === 'auction') return item.listing_type === 'auction';
-        if (filter === 'portfolio') return item.listing_type === 'portfolio';
-        if (filter === 'boosted') return item.boosted;
-        return true;
-      }),
-    [filter],
+      data?.vw_chaamo_cardsCollection?.edges?.filter(
+        (card) => card?.node?.listing_type === ListingType.PORTFOLIO,
+      ),
+    [data?.vw_chaamo_cardsCollection?.edges],
   );
 
-  const _renderContent = useMemo(() => {
-    if (filteredList.length)
-      return (
-        <FlatListRemapped
-          testID="portfolio-profile-list"
-          data={filteredList}
-          keyExtractor={(_, index) => index.toString()}
-          numColumns={2}
-          horizontal={false}
-          showsVerticalScrollIndicator={false}
-          contentContainerClassName={classes.contentContainer}
-          columnWrapperClassName={classes.columnWrapper}
-          renderItem={({ item, index }) => {
-            const isLast = index === filteredList.length - 1;
-            const isOdd = filteredList.length % 2 !== 0;
-            const shouldNotBeFullWidth = isLast && isOdd;
+  const handleToggleFavorite = useCallback(
+    (listing_id: string, isFavorite: boolean) => () => {
+      if (isFavorite) {
+        removeFavorites({
+          variables: {
+            filter: {
+              user_id: { eq: user?.id },
+              listing_id: { eq: listing_id },
+            },
+          },
+          onCompleted: () => {
+            refetch();
+          },
+        });
+      } else {
+        insertFavorites({
+          variables: {
+            objects: [
+              {
+                user_id: user?.id,
+                listing_id,
+              },
+            ],
+          },
+          onCompleted: () => {
+            refetch();
+          },
+        });
+      }
+    },
+    [insertFavorites, user?.id, refetch, removeFavorites],
+  );
 
-            return (
-              <CommonCard
-                key={item.id}
-                id={item.id}
-                imageUrl={item.imageUrl}
-                title={item.title}
-                marketPrice={item.marketPrice}
-                marketType={item.marketType}
-                indicator={item.indicator}
-                rightIcon="heart-outline"
-                onRightIconPress={() => {
-                  console.log(`Favorite pressed for card ${item.id}`);
-                }}
-                className={
-                  shouldNotBeFullWidth ? classes.lastCard : classes.card
-                }
-              />
-            );
-          }}
-        />
-      );
-
+  if (!portfolios?.length) {
     return (
       <View className={classes.emptyContainer}>
         <Icon name="cards-outline" size={65} color={getColor('gray-300')} />
@@ -76,29 +87,55 @@ export default function Portfolio() {
         </Label>
       </View>
     );
-  }, [filteredList]);
+  }
 
   return (
-    <>
-      <Select
-        name="filter"
-        required
-        value={filter}
-        onChange={({ value }) => setFilter(value)}
-        options={portfolioFilters}
-        className={classes.filterInput}
-      />
-      {_renderContent}
-    </>
+    <FlatList
+      testID="portfolio-profile-list"
+      data={portfolios}
+      keyExtractor={(item) => item.node.id.toString()}
+      numColumns={2}
+      horizontal={false}
+      showsVerticalScrollIndicator={false}
+      contentContainerClassName={classes.contentContainer}
+      renderItem={({ item }) => {
+        return (
+          <View className={classes.cardContainer}>
+            <CommonCard
+              id={item.node.id}
+              imageUrl={item.node.image_url ?? ''}
+              title={item.node.name ?? ''}
+              marketType="eBay"
+              marketPrice={formatDisplay(item.node.currency, 0)}
+              indicator="up"
+              onPress={() =>
+                router.push({
+                  pathname: '/screens/common-detail',
+                  params: {
+                    id: item.node.id,
+                  },
+                })
+              }
+              onRightIconPress={handleToggleFavorite(
+                item.node.id,
+                item.node.is_favorite ?? false,
+              )}
+              rightIcon={item.node.is_favorite ? 'heart' : 'heart-outline'}
+              rightIconColor={
+                item.node.is_favorite ? getColor('red-600') : undefined
+              }
+              rightIconSize={18}
+            />
+          </View>
+        );
+      }}
+    />
   );
 }
 
 const classes = {
   emptyContainer: 'flex-1 items-center mt-24',
-  contentContainer: '!p-4.5 !gap-4.5',
-  columnWrapper: '!gap-4.5',
-  lastCard: 'flex-[0.5] mr-6',
-  card: 'flex-1',
-  filterInput: 'w-44 mx-4.5 mt-4.5',
+  contentContainer: 'py-4.5 gap-10',
+  cardContainer: 'flex-1 items-center justify-center',
   emptyNotificationText: '!text-lg mt-5 text-slate-400',
 };

@@ -14,7 +14,7 @@ Chaamo is a feature-rich mobile application designed for seamless user experienc
 
 - Atomic Design: Atoms, Molecules, Organisms for reusable UI
 - File-based routing with Expo Router
-- State management with Zustand
+- State management with Apollo Client reactiveVar
 - TypeScript for type safety
 - Tailwind CSS for utility-first styling
 - Modular, scalable folder structure
@@ -26,7 +26,7 @@ Chaamo is a feature-rich mobile application designed for seamless user experienc
 
 - **React Native** (0.79.4) & **Expo** (53.x)
 - **TypeScript**
-- **Zustand** (state management)
+- **Apollo Client** (GraphQL client & state management)
 - **Tailwind CSS** (via NativeWind)
 - **Expo Router** (file-based navigation)
 - **Jest** (recommended for testing)
@@ -44,7 +44,7 @@ Chaamo is a feature-rich mobile application designed for seamless user experienc
 - `constants/` — App-wide constants
 - `domains/` — Type definitions and domain models
 - `hooks/` — Custom React hooks
-- `stores/` — Zustand stores for state management
+- `stores/` — Apollo Client reactive variables for state management
 - `utils/` — Utility functions
 - `assets/` — Images, fonts, SVGs
 - `scripts/` — Project scripts (e.g., reset-project)

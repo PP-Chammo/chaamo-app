@@ -36,6 +36,7 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
       filter: {
         listing_type: { eq: ListingType.AUCTION },
       },
+      last: 10,
     },
   });
 
@@ -118,7 +119,6 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
               pathname: '/screens/auction-detail',
               params: {
                 id: card.node.id,
-                isFavorite: String(getIsFavorite(card.node.id)),
               },
             })
           }

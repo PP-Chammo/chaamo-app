@@ -72,7 +72,7 @@ describe('ProductAuctionList', () => {
     fireEvent.press(auctionItems[0]);
     expect(router.push).toHaveBeenCalledWith({
       pathname: '/screens/auction-detail',
-      params: { id: 'card-0', isFavorite: 'false' },
+      params: { id: 'card-0' },
     });
   });
 

@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { ActivityIndicator, FlatList, View } from 'react-native';
 
+import { Label } from '@/components/atoms';
 import { CardItem } from '@/components/molecules';
 import { GetVwChaamoListingsQuery, ListingType } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
@@ -31,8 +32,9 @@ const ProductAuctionList: React.FC<ProductAuctionListProps> = memo(
 
     if (loading) {
       return (
-        <View className={classes.loadinContainer}>
-          <ActivityIndicator size="large" color={getColor('primary-500')} />
+        <View className={classes.loadingContainer}>
+          <ActivityIndicator color={getColor('primary-500')} />
+          <Label className={classes.loadingText}>Loading...</Label>
         </View>
       );
     }
@@ -62,7 +64,6 @@ const ProductAuctionList: React.FC<ProductAuctionListProps> = memo(
                     : '/screens/common-detail',
                 params: {
                   id: item.node?.id,
-                  isFavorite: String(item.node?.is_favorite),
                 },
               })
             }
@@ -83,7 +84,8 @@ const ProductAuctionList: React.FC<ProductAuctionListProps> = memo(
 );
 
 const classes = {
-  loadinContainer: 'flex-1 items-center justify-center',
+  loadingContainer: 'flex-1 flex-row items-center justify-center gap-2',
+  loadingText: 'text-center',
   contentContainer: 'gap-4 py-4.5',
 };
 

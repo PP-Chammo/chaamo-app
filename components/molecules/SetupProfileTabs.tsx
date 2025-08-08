@@ -12,10 +12,7 @@ const SetupProfileTabs = memo(function SetupProfileTabs() {
   const activeRoute = segments[segments.length - 1];
 
   return (
-    <View
-      testID="setup-profile-tabs"
-      className="flex-row justify-between my-4.5 gap-8"
-    >
+    <View testID="setup-profile-tabs" className={classes.container}>
       {setupProfileTabs.map((tab, idx) => {
         const isActive = activeRoute === tab.route;
         const isPrevious =
@@ -36,7 +33,7 @@ const SetupProfileTabs = memo(function SetupProfileTabs() {
           <Pressable
             key={tab.route}
             testID={`tab-${tab.route}`}
-            className="flex-1 items-center"
+            className={classes.tabContainer}
             onPress={() => router.push(`/${tab.route}` as Href)}
           >
             <Text
@@ -63,10 +60,12 @@ const classes = {
     inactive: 'text-slate-500 font-medium mb-2',
   },
   TabIndicator: {
-    active: 'h-1 bg-primary-500 w-full rounded-full',
-    previous: 'h-1 bg-primary-500/30 w-full rounded-full',
-    inactive: 'h-1 bg-slate-400 w-full rounded-full',
+    active: 'w-12 h-1 bg-primary-500 rounded-full mt-2',
+    previous: 'w-12 h-1 bg-primary-300 rounded-full mt-2',
+    inactive: 'w-12 h-1 bg-slate-200 rounded-full mt-2',
   },
+  container: 'flex-row justify-between my-4.5 gap-8',
+  tabContainer: 'flex-1 items-center',
 };
 
 export default SetupProfileTabs;

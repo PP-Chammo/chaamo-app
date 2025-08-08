@@ -48,9 +48,7 @@ const Checkbox: React.FC<CheckboxProps> = memo(function Checkbox({
           <Icon name="check-bold" size={16} color={getColor('primary-500')} />
         )}
       </View>
-      {label && (
-        <Label className="Label-slate-500 font-medium text-md">{label}</Label>
-      )}
+      {label && <Label className={classes.label}>{label}</Label>}
       {children}
     </Pressable>
   );
@@ -62,5 +60,6 @@ const classes = {
     'w-5 h-5 rounded border border-slate-300 flex items-center justify-center bg-white',
   checked: 'bg-primary-500 border-primary-500',
   disabled: 'opacity-50',
+  label: 'text-slate-500 font-medium text-md',
 };
 export default Checkbox;

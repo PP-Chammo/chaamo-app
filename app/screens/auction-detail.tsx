@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { Image } from 'expo-image';
-import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 
@@ -36,8 +36,9 @@ export default function AuctionDetailScreen() {
   const [user] = useUserVar();
   const { formatDisplay } = useCurrencyDisplay();
 
-  const { id, isFavorite } = useLocalSearchParams();
-  const { data } = useGetVwAuctionDetailQuery({
+  const { id } = useLocalSearchParams();
+  const { data, refetch } = useGetVwAuctionDetailQuery({
+    fetchPolicy: 'cache-and-network',
     skip: !id,
     variables: {
       filter: {
@@ -49,15 +50,19 @@ export default function AuctionDetailScreen() {
   const [removeFavorites] = useRemoveFavoritesMutation();
 
   const [showModal, setShowModal] = React.useState(false);
-  const [isFavoriteState, setIsFavoriteState] = React.useState(false);
 
   const detail = useMemo(
     () => data?.vw_chaamo_cardsCollection?.edges?.[0]?.node,
     [data],
   );
 
+  const isNotSeller = useMemo(
+    () => user?.id !== detail?.seller_id,
+    [detail?.seller_id, user?.id],
+  );
+
   const handleToggleFavorite = useCallback(() => {
-    if (isFavoriteState) {
+    if (detail?.is_favorite) {
       removeFavorites({
         variables: {
           filter: {
@@ -66,7 +71,7 @@ export default function AuctionDetailScreen() {
           },
         },
         onCompleted: () => {
-          setIsFavoriteState(false);
+          refetch();
         },
       });
     } else {
@@ -80,11 +85,18 @@ export default function AuctionDetailScreen() {
           ],
         },
         onCompleted: () => {
-          setIsFavoriteState(true);
+          refetch();
         },
       });
     }
-  }, [id, insertFavorites, isFavoriteState, user?.id, removeFavorites]);
+  }, [
+    detail?.is_favorite,
+    removeFavorites,
+    user?.id,
+    id,
+    refetch,
+    insertFavorites,
+  ]);
 
   const handleReport = useCallback(() => {
     router.push({
@@ -97,12 +109,6 @@ export default function AuctionDetailScreen() {
     setShowModal(true);
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      setIsFavoriteState(isFavorite === 'true');
-    }, [isFavorite]),
-  );
-
   return (
     <ScreenContainer classNameBottom={classes.containerBottom}>
       <ScrollView
@@ -113,8 +119,10 @@ export default function AuctionDetailScreen() {
         <Header
           onBackPress={() => router.back()}
           className={classes.header}
-          rightIcon={isFavoriteState ? 'heart' : 'heart-outline'}
-          rightIconColor={getColor(isFavoriteState ? 'red-500' : 'gray-600')}
+          rightIcon={detail?.is_favorite ? 'heart' : 'heart-outline'}
+          rightIconColor={getColor(
+            detail?.is_favorite ? 'red-500' : 'gray-600',
+          )}
           rightIconSize={28}
           onRightPress={handleToggleFavorite}
         />
@@ -152,24 +160,30 @@ export default function AuctionDetailScreen() {
           imageUrl={detail?.seller_image_url ?? ''}
           username={detail?.seller_username ?? ''}
         />
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={handleReport}
-          className={classes.reportButton}
-        >
-          <Icon name="flag" size={18} />
-          <Label variant="subtitle">Report this Ad</Label>
-        </TouchableOpacity>
-        <SimilarAdList
-          ignoreListingId={detail?.id ?? ''}
-          listingType={ListingType.AUCTION}
-        />
+        {isNotSeller && (
+          <>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={handleReport}
+              className={classes.reportButton}
+            >
+              <Icon name="flag" size={18} />
+              <Label variant="subtitle">Report this Ad</Label>
+            </TouchableOpacity>
+            <SimilarAdList
+              ignoreListingId={detail?.id ?? ''}
+              listingType={ListingType.AUCTION}
+            />
+          </>
+        )}
       </ScrollView>
-      <AuctionBottomBar
-        showModal={showModal}
-        endDate={detail?.ends_at ?? new Date()}
-        onBidNowPress={handleBidNow}
-      />
+      {isNotSeller && (
+        <AuctionBottomBar
+          showModal={showModal}
+          endDate={detail?.ends_at ?? new Date()}
+          onBidNowPress={handleBidNow}
+        />
+      )}
       <BottomSheetModal
         show={showModal}
         onDismiss={() => setShowModal(false)}

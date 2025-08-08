@@ -49,7 +49,7 @@ const CategoryItem: React.FC<CategoryProps> = memo(function CategoryItem({
             />
           )}
         </View>
-        <Label className="text-sm text-gray-700 mt-1">{title}</Label>
+        <Label className={classes.categoryLabel}>{title}</Label>
       </View>
       {horizontal && (
         <Icon
@@ -57,7 +57,7 @@ const CategoryItem: React.FC<CategoryProps> = memo(function CategoryItem({
           name="chevron-right"
           size={20}
           color={getColor('gray-400')}
-          className="justify-self-end-safe"
+          className={classes.arrowIcon}
         />
       )}
     </TouchableOpacity>
@@ -68,8 +68,10 @@ const classes = {
   container: 'flex flex-row items-center gap-2',
   logoContainer: 'flex flex-col gap-2 items-center',
   horizontalContainer: '!justify-between',
+  categoryLabel: 'text-sm text-gray-700 mt-1',
   horizontalLogo: '!flex-row items-center gap-2',
   logo: 'bg-white w-20 h-20 flex items-center justify-center rounded-full',
+  arrowIcon: 'justify-self-end-safe',
 };
 
 export default CategoryItem;

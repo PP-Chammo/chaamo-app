@@ -1,19 +1,21 @@
+import { ListingType } from '@/generated/graphql';
+
 export const portfolioFilters = [
   {
     label: 'All',
     value: 'all',
   },
   {
-    label: 'Buy Now',
-    value: 'buy-now',
+    label: 'Sell',
+    value: ListingType.SELL,
   },
   {
     label: 'Auction',
-    value: 'auction',
+    value: ListingType.AUCTION,
   },
   {
     label: 'Portfolio',
-    value: 'portfolio',
+    value: ListingType.PORTFOLIO,
   },
   {
     label: 'Boosted',
