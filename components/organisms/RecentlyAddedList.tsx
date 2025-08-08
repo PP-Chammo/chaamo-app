@@ -123,7 +123,6 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
                   pathname: '/screens/auction-detail',
                   params: {
                     id: card.node.id,
-                    isFavorite: String(getIsFavorite(card.node.id)),
                   },
                 })
               }
@@ -151,7 +150,6 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
                   pathname: '/screens/common-detail',
                   params: {
                     id: card.node.id,
-                    isFavorite: String(getIsFavorite(card.node.id)),
                   },
                 })
               }

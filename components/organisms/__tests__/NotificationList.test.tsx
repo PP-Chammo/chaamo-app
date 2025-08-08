@@ -59,7 +59,7 @@ describe('NotificationList', () => {
         onLongPress={onLongPressMock}
       />,
     );
-    expect(getByText('Jan 1, 2023')).toBeTruthy();
+    expect(getByText('01/01/2023')).toBeTruthy();
   });
 
   it('calls onPress when a notification is pressed', () => {

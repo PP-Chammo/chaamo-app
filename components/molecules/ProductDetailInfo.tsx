@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { clsx } from 'clsx';
 import { formatDistanceToNow } from 'date-fns';
 import { View } from 'react-native';
 
@@ -7,7 +8,7 @@ import EBayImage from '@/assets/svg/ebay.svg';
 import { Icon, Label, PriceIndicator, Row } from '@/components/atoms';
 
 interface ProductDetailInfoProps {
-  price: string | number;
+  price?: string | number;
   date: string | Date;
   title: string;
   marketPrice: string | number;
@@ -41,7 +42,10 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
           </Label>
         </Row>
       </View>
-      <Label variant="subtitle" className={classes.name}>
+      <Label
+        variant="subtitle"
+        className={clsx(classes.name, { '-mt-7': !price })}
+      >
         {title}
       </Label>
       <View className={classes.ebayRow}>

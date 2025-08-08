@@ -11,7 +11,7 @@ interface AutocompleteCardItemProps {
   className?: string;
   name: string;
   imageUrl?: string;
-  category: string;
+  category?: string;
 }
 
 const AutocompleteCardItem = memo(function AutocompleteItem({
@@ -32,7 +32,7 @@ const AutocompleteCardItem = memo(function AutocompleteItem({
       )}
       <View className={classes.infoContainer}>
         <Label className={classes.name}>{name}</Label>
-        <Label className={classes.category}>{category}</Label>
+        {category && <Label className={classes.category}>{category}</Label>}
       </View>
     </TouchableOpacity>
   );

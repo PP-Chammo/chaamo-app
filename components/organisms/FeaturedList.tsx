@@ -125,7 +125,6 @@ const FeaturedList: React.FC<FeaturedListProps> = memo(function FeaturedList({
                 pathname: '/screens/auction-detail',
                 params: {
                   id: card.node.id,
-                  isFavorite: String(getIsFavorite(card.node.id)),
                 },
               })
             }
@@ -153,7 +152,6 @@ const FeaturedList: React.FC<FeaturedListProps> = memo(function FeaturedList({
                 pathname: '/screens/common-detail',
                 params: {
                   id: card.node.id,
-                  isFavorite: String(getIsFavorite(card.node.id)),
                 },
               })
             }

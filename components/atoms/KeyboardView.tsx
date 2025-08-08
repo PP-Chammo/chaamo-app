@@ -12,6 +12,7 @@ interface KeyboardViewProps {
   extraHeight?: number;
   contentContainerClassName?: string;
   className?: string;
+  keyboardShouldPersistTaps?: 'always' | 'never' | 'handled';
 }
 
 const KeyboardView: React.FC<KeyboardViewProps> = ({
@@ -22,6 +23,7 @@ const KeyboardView: React.FC<KeyboardViewProps> = ({
   extraHeight = 250,
   contentContainerClassName,
   className,
+  keyboardShouldPersistTaps = 'handled',
   ...props
 }) => {
   return (
@@ -37,7 +39,7 @@ const KeyboardView: React.FC<KeyboardViewProps> = ({
         )}
         className={clsx(classes.container, className)}
         showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
+        keyboardShouldPersistTaps={keyboardShouldPersistTaps}
         {...props}
       >
         {children}

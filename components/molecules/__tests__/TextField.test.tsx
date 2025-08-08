@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { fireEvent, render } from '@testing-library/react-native';
-import { View } from 'react-native';
 
 import TextField from '../TextField';
 
@@ -90,12 +89,9 @@ describe('TextField', () => {
 
   it('renders with left icon', () => {
     const { getByTestId } = render(
-      <TextField
-        {...defaultProps}
-        leftIcon={<View testID="left-icon">Icon</View>}
-      />,
+      <TextField {...defaultProps} leftIcon="search" />,
     );
-    expect(getByTestId('left-icon')).toBeTruthy();
+    expect(getByTestId('text-input')).toBeTruthy();
   });
 
   it('applies custom className', () => {

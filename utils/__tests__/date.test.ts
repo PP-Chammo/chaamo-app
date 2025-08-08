@@ -55,32 +55,32 @@ describe('date utils', () => {
   describe('formatDate', () => {
     it('should return Today if today', () => {
       isToday.mockReturnValue(true);
-      expect(formatDate('2024-06-01T10:00:00Z')).toBe('Today');
+      expect(formatDate('2024-06-01T10:00:00Z', 'friendly')).toBe('Today');
     });
     it('should return Yesterday if yesterday', () => {
       isToday.mockReturnValue(false);
       isYesterday.mockReturnValue(true);
-      expect(formatDate('2024-06-01T10:00:00Z')).toBe('Yesterday');
+      expect(formatDate('2024-06-01T10:00:00Z', 'friendly')).toBe('Yesterday');
     });
     it('should return formatted day if this week', () => {
       isToday.mockReturnValue(false);
       isYesterday.mockReturnValue(false);
       isThisWeek.mockReturnValue(true);
-      expect(formatDate('2024-06-01T10:00:00Z')).toBe('formatted');
+      expect(formatDate('2024-06-01T10:00:00Z', 'friendly')).toBe('formatted');
     });
     it('should return formatted month/day if this year', () => {
       isToday.mockReturnValue(false);
       isYesterday.mockReturnValue(false);
       isThisWeek.mockReturnValue(false);
       isThisYear.mockReturnValue(true);
-      expect(formatDate('2024-06-01T10:00:00Z')).toBe('formatted');
+      expect(formatDate('2024-06-01T10:00:00Z', 'friendly')).toBe('formatted');
     });
-    it('should return formatted full date if not this year', () => {
+    it('should return full date if not this year', () => {
       isToday.mockReturnValue(false);
       isYesterday.mockReturnValue(false);
       isThisWeek.mockReturnValue(false);
       isThisYear.mockReturnValue(false);
-      expect(formatDate('2024-06-01T10:00:00Z')).toBe('formatted');
+      expect(formatDate('2024-06-01T10:00:00Z', 'friendly')).toBe('formatted');
     });
   });
 });

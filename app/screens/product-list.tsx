@@ -117,13 +117,12 @@ export default function ProductListScreen() {
     }, [search.query]),
   );
 
-  console.log(search.location);
-
   useFocusEffect(
     useCallback(() => {
       getChaamoCards({
         variables: {
           filter: {
+            listing_type: { neq: ListingType.PORTFOLIO },
             and: [
               ...(!!search.query
                 ? [{ name: { ilike: `%${search.query}%` } }]
@@ -231,6 +230,38 @@ export default function ProductListScreen() {
       search.priceRange,
       search.query,
     ]),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (search?.query) {
+        setSearchText(search.query);
+      }
+      return () => {
+        setSearchText('');
+      };
+    }, [search.query]),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (searchText) {
+        getChaamoCards({
+          variables: {
+            filter: {
+              and: [
+                ...(!!search.query
+                  ? [{ name: { ilike: `%${search.query}%` } }]
+                  : []),
+                ...(!!search.category
+                  ? [{ name: { ilike: `%${search.category}%` } }]
+                  : []),
+              ],
+            },
+          },
+        });
+      }
+    }, [getChaamoCards, search.category, search.query, searchText]),
   );
 
   return (

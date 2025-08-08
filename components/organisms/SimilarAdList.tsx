@@ -83,7 +83,6 @@ const SimilarAdList: React.FC<SimilarAdListProps> = memo(
                   pathname: '/screens/auction-detail',
                   params: {
                     id: card.node.id,
-                    isFavorite: String(getIsFavorite(card.node.id)),
                   },
                 })
               }
@@ -109,7 +108,6 @@ const SimilarAdList: React.FC<SimilarAdListProps> = memo(
                   pathname: '/screens/common-detail',
                   params: {
                     id: card.node.id,
-                    isFavorite: String(getIsFavorite(card.node.id)),
                   },
                 })
               }

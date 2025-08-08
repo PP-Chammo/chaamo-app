@@ -18,14 +18,30 @@ export const formatTime = (time: string) => {
   return format(date, 'MMM d, yyyy');
 };
 
-export const formatDate = (time: string) => {
-  const date = new Date(time);
+export const formatDate = (
+  date: string | Date,
+  formatString: string = 'dd/MM/yyyy',
+): string => {
+  const inputDate = typeof date === 'string' ? new Date(date) : date;
 
-  if (isToday(date)) return 'Today';
-  if (isYesterday(date)) return 'Yesterday';
-  if (isThisWeek(date)) return format(date, 'EEEE');
-  if (isThisYear(date)) return format(date, 'MMM d');
-  return format(date, 'MMM d, yyyy');
+  switch (formatString) {
+    case 'dd/MM/yyyy':
+      return format(inputDate, 'dd/MM/yyyy');
+    case 'friendly':
+      if (isToday(inputDate)) return 'Today';
+      if (isYesterday(inputDate)) return 'Yesterday';
+      if (isThisWeek(inputDate)) return format(inputDate, 'EEEE');
+      if (isThisYear(inputDate)) return format(inputDate, 'MMM d');
+      return format(inputDate, 'MMM d, yyyy');
+    case 'time':
+      if (isToday(inputDate)) return format(inputDate, 'HH:mm');
+      if (isYesterday(inputDate)) return 'Yesterday';
+      if (isThisWeek(inputDate)) return format(inputDate, 'EEEE');
+      if (isThisYear(inputDate)) return format(inputDate, 'MMM d');
+      return format(inputDate, 'MMM d, yyyy');
+    default:
+      return format(inputDate, formatString);
+  }
 };
 
 export const formatDateInput = (value: string) => {
@@ -51,5 +67,8 @@ export const formatElapsedTime = (dateInput: string | Date): string => {
   const days = Math.floor(totalHours / 24);
   const hours = totalHours % 24;
 
-  return `${days}d ${hours}h`;
+  if (days > 0) {
+    return `${days}d ${hours}h ago`;
+  }
+  return `${hours}h ago`;
 };

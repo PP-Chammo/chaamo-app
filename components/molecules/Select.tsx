@@ -1,8 +1,16 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useState, useRef } from 'react';
 
 import { clsx } from 'clsx';
 import { cssInterop } from 'nativewind';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+  Pressable,
+  Platform,
+} from 'react-native';
 
 import { Icon } from '@/components/atoms';
 import { TextChangeParams } from '@/domains';
@@ -45,16 +53,39 @@ const Select: React.FC<SelectProps> = memo(function Select({
   className,
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedValue, setSelectedValue] = useState<string>(value || '');
+  const [dropdownPosition, setDropdownPosition] = useState({
+    top: 0,
+    left: 0,
+    width: 0,
+  });
+  const selectRef = useRef<View>(null);
+
+  const handleToggle = useCallback(() => {
+    if (!isOpen && selectRef.current) {
+      selectRef.current.measure((x, y, width, height, pageX, pageY) => {
+        setDropdownPosition({
+          top: Platform.OS === 'ios' ? pageY : pageY - height,
+          left: pageX,
+          width: width,
+        });
+      });
+    }
+    setIsOpen(!isOpen);
+  }, [isOpen]);
 
   const handleSelect = useCallback(
-    (optionValue: string) => {
-      onChange({ name, value: optionValue });
+    (selectedValue: string) => {
+      setSelectedValue(selectedValue);
       setIsOpen(false);
+      onChange?.({ name, value: selectedValue });
     },
     [onChange, name],
   );
 
-  const selectedLabel = options.find((o) => o.value === value)?.label || '';
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
+  }, []);
 
   return (
     <View className={clsx(classes.container, className)}>
@@ -64,52 +95,73 @@ const Select: React.FC<SelectProps> = memo(function Select({
           {required && <Text className={classes.required}>*</Text>}
         </Text>
       )}
-      <View
-        className={clsx(classes.inputContainer)}
-        style={{ position: 'relative' }}
-      >
+      <View ref={selectRef} className={classes.selectRefContainer}>
         <TouchableOpacity
-          activeOpacity={0.8}
           testID="select"
           className={clsx(classes.input, inputClassName)}
-          onPress={() => setIsOpen((prevState) => !prevState)}
+          onPress={handleToggle}
         >
           <Text
-            className={clsx({
-              [classes.inputText]: !!selectedLabel,
-              [classes.inputTextPlaceholder]: !selectedLabel,
-            })}
+            className={clsx(
+              classes.inputText,
+              !selectedValue && classes.inputTextPlaceholder,
+            )}
           >
-            {selectedLabel || placeholder}
+            {selectedValue
+              ? options.find((opt) => opt.value === selectedValue)?.label
+              : placeholder}
           </Text>
           <Icon
             name={isOpen ? 'chevron-up' : 'chevron-down'}
             size={24}
             color={getColor('slate-700')}
-            className={classes.chevronIcon}
+            className={clsx(classes.chevronIcon, isOpen && 'rotate-180')}
           />
         </TouchableOpacity>
-        {isOpen && (
-          <View className={classes.dropdown}>
-            <ScrollView className="max-h-[50px]">
-              {options.map((option, idx) => (
-                <React.Fragment key={option.value}>
-                  <TouchableOpacity
-                    className={classes.dropdownOption}
-                    onPress={() => handleSelect(option.value)}
-                  >
-                    <Text className={classes.dropdownOptionText}>
-                      {option.label}
-                    </Text>
-                  </TouchableOpacity>
-                  {idx < options.length - 1 && (
-                    <View className={classes.dropdownSeparator} />
-                  )}
-                </React.Fragment>
-              ))}
-            </ScrollView>
-          </View>
-        )}
+
+        <Modal
+          visible={isOpen}
+          transparent
+          animationType="fade"
+          onRequestClose={handleClose}
+        >
+          <Pressable className={classes.backdrop} onPress={handleClose}>
+            <View
+              style={{
+                position: 'absolute',
+                top: dropdownPosition.top,
+                left: dropdownPosition.left,
+                width: dropdownPosition.width,
+                maxHeight: 210,
+              }}
+              className={classes.modalDropdown}
+            >
+              <ScrollView
+                showsVerticalScrollIndicator={true}
+                bounces={false}
+                keyboardShouldPersistTaps="always"
+                contentContainerClassName={classes.py2}
+              >
+                {options.map((option, idx) => (
+                  <React.Fragment key={option.value}>
+                    <TouchableOpacity
+                      className={classes.dropdownOption}
+                      onPress={() => handleSelect(option.value)}
+                      activeOpacity={0.7}
+                    >
+                      <Text className={classes.dropdownOptionText}>
+                        {option.label}
+                      </Text>
+                    </TouchableOpacity>
+                    {idx < options.length - 1 && (
+                      <View className={classes.dropdownSeparator} />
+                    )}
+                  </React.Fragment>
+                ))}
+              </ScrollView>
+            </View>
+          </Pressable>
+        </Modal>
       </View>
       {error && <Text className={classes.error}>{error}</Text>}
     </View>
@@ -130,8 +182,13 @@ const classes = {
   inputTextPlaceholder: 'text-gray-400',
   chevronIcon: 'mt-0.5',
   dropdown:
-    'absolute left-0 right-0 top-full max-h-[180px] bg-white border border-slate-200 rounded-lg shadow-lg shadow-black/10 mt-1 z-50 overflow-hidden',
+    'absolute left-0 right-0 top-full bg-white border border-slate-200 rounded-lg shadow-lg shadow-black/10 mt-1 z-[999] elevation-5',
   dropdownOption: 'px-4 py-3',
   dropdownOptionText: 'text-gray-600',
   dropdownSeparator: 'h-px bg-gray-100',
+  selectRefContainer: 'relative z-10',
+  backdrop: 'flex-1 bg-black/20',
+  modalDropdown:
+    'bg-white border border-slate-200 rounded-lg shadow-lg shadow-black/10',
+  py2: 'py-2',
 };

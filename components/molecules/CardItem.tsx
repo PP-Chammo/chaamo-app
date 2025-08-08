@@ -132,7 +132,7 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
           </View>
           <Row className={classes.bidContainer}>
             {listingType === ListingType.AUCTION && (
-              <View className="absolute bottom-7 right-0">
+              <View className={classes.tagContainer}>
                 <Tag title="Highest Bid" />
               </View>
             )}
@@ -172,6 +172,7 @@ const classes = {
   textBidPrice: 'text-base text-right font-semibold text-primary-500 pr-1',
   priceContainer: '!items-end',
   logoImage: 'w-6 h-6',
+  tagContainer: 'absolute bottom-7 right-0',
 };
 
 export default CardItem;

@@ -27,6 +27,7 @@ import {
   TextField,
 } from '@/components/molecules';
 import { conditions, conditionSells } from '@/constants/condition';
+import { currencySymbolMap } from '@/constants/currencies';
 import {
   ListingType,
   MasterCards,
@@ -39,6 +40,7 @@ import useDebounce from '@/hooks/useDebounce';
 import { initialSellFormState, useSellFormVar } from '@/hooks/useSellFormVar';
 import { useUserVar } from '@/hooks/useUserVar';
 import { SellFormStore } from '@/stores/sellFormStore';
+import { SupportedCurrency } from '@/types/currency';
 import { getColor } from '@/utils/getColor';
 import { structuredClone } from '@/utils/structuredClone';
 import { uploadToBucket } from '@/utils/supabase';
@@ -67,6 +69,16 @@ export default function SellScreen() {
     useGetMasterCardsAutocompleteLazyQuery();
   const [createListings] = useCreateListingsMutation();
   const [createUserCard] = useCreateUserCardMutation();
+
+  const userCurrencySymbol = useMemo(() => {
+    if (!user) return '$';
+    const currency = user.profile?.currency;
+    return currencySymbolMap[currency as SupportedCurrency];
+  }, [user]);
+
+  const autocompleteList = useMemo(() => {
+    return masterCards?.master_cardsCollection?.edges ?? [];
+  }, [masterCards?.master_cardsCollection?.edges]);
 
   const categories = useMemo(() => {
     const list = categoriesData?.categoriesCollection?.edges ?? [];
@@ -99,6 +111,7 @@ export default function SellScreen() {
     const fields: (keyof SellFormStore)[] = [
       'title',
       'description',
+      'category_id',
       'condition',
       'listing_type',
     ];
@@ -119,13 +132,13 @@ export default function SellScreen() {
   const handleAutocompletePress = useCallback(
     (masterCard: MasterCards) => {
       setForm({
-        title: masterCard.name,
+        title: masterCard.id ? masterCard.name : searchText,
         master_card_id: masterCard.id,
       });
       setSearchText(masterCard.name);
       setShowModal(false);
     },
-    [setForm],
+    [setForm, searchText],
   );
 
   const handleChange = useCallback(
@@ -190,7 +203,13 @@ export default function SellScreen() {
           objects: [
             {
               user_id: user?.id,
-              master_card_id: form.master_card_id,
+              ...(form.master_card_id
+                ? {
+                    master_card_id: form.master_card_id,
+                  }
+                : {
+                    name: form.title,
+                  }),
               category_id: Number(form.category_id),
               condition: form.condition,
               grading_company: form.grading_company,
@@ -214,7 +233,7 @@ export default function SellScreen() {
                     // Sell
                     ...(form.listing_type === ListingType.SELL
                       ? {
-                          currency: form.currency,
+                          currency: userCurrencySymbol,
                           price: Number(form.price).toFixed(2),
                           accepts_offers: true,
                         }
@@ -223,7 +242,7 @@ export default function SellScreen() {
                     // Auction
                     ...(form.listing_type === ListingType.AUCTION
                       ? {
-                          currency: form.currency,
+                          currency: userCurrencySymbol,
                           start_price: Number(form.minPrice).toFixed(2),
                           reserve_price: Number(form.reservedPrice).toFixed(2),
                           start_time: formatISO(new Date()),
@@ -266,7 +285,14 @@ export default function SellScreen() {
     } else {
       setLoading(false);
     }
-  }, [form, createUserCard, user?.id, setForm, createListings]);
+  }, [
+    form,
+    createUserCard,
+    user?.id,
+    createListings,
+    userCurrencySymbol,
+    setForm,
+  ]);
 
   return (
     <ScreenContainer>
@@ -344,10 +370,7 @@ export default function SellScreen() {
               keyboardType="numeric"
               required
               inputClassName={classes.input}
-              leftIcon="attach-money"
-              leftIconVariant="MaterialIcons"
-              leftIconSize={20}
-              leftIconColor={getColor('slate-500')}
+              leftLabel={userCurrencySymbol}
               error={errors.price}
             />
           )}
@@ -356,7 +379,7 @@ export default function SellScreen() {
               <TextField
                 type="date"
                 name="endDate"
-                label="Select Auction End Date"
+                label="Auction End Date"
                 value={form.endDate}
                 onChange={handleChange}
                 required
@@ -369,16 +392,13 @@ export default function SellScreen() {
               />
               <TextField
                 name="minPrice"
-                label="Set Minimum Price"
+                label="Minimum Price"
                 value={form.minPrice}
                 onChange={handleChange}
                 keyboardType="numeric"
                 required
                 inputClassName={classes.input}
-                leftIcon="attach-money"
-                leftIconVariant="MaterialIcons"
-                leftIconSize={20}
-                leftIconColor={getColor('slate-500')}
+                leftLabel={userCurrencySymbol}
                 error={errors.minPrice}
               />
               <TextField
@@ -389,10 +409,7 @@ export default function SellScreen() {
                 keyboardType="numeric"
                 required
                 inputClassName={classes.input}
-                leftIcon="attach-money"
-                leftIconVariant="MaterialIcons"
-                leftIconSize={20}
-                leftIconColor={getColor('slate-500')}
+                leftLabel={userCurrencySymbol}
                 error={errors.reservedPrice}
               />
             </Fragment>
@@ -422,14 +439,19 @@ export default function SellScreen() {
         <View className={classes.modalContainer}>
           <FlatList
             showsVerticalScrollIndicator={false}
-            data={masterCards?.master_cardsCollection?.edges ?? []}
+            data={[
+              ...autocompleteList,
+              ...(searchText.length > 2
+                ? [{ node: { id: null, name: `Use title "${searchText}"` } }]
+                : []),
+            ]}
             renderItem={({ item }) => (
               <AutocompleteCardItem
                 onPress={() =>
                   handleAutocompletePress(item.node as MasterCards)
                 }
-                imageUrl={item.node.canonical_image_url ?? ''}
-                name={item.node.name}
+                imageUrl={item.node?.canonical_image_url ?? ''}
+                name={item.node?.name}
                 category={item.node.categories?.name ?? ''}
               />
             )}
