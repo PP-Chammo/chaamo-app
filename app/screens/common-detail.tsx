@@ -61,6 +61,11 @@ export default function ProductDetailScreen() {
     [data],
   );
 
+  const isNotSeller = useMemo(
+    () => user?.id !== detail?.seller_id,
+    [detail?.seller_id, user?.id],
+  );
+
   const handleToggleFavorite = useCallback(() => {
     if (isFavoriteState) {
       removeFavorites({
@@ -149,7 +154,11 @@ export default function ProductDetailScreen() {
           )}
         </View>
         <ProductDetailInfo
-          price={formatDisplay(detail?.currency, detail?.price)}
+          price={
+            detail?.listing_type === ListingType.SELL
+              ? formatDisplay(detail?.currency, detail?.price)
+              : undefined
+          }
           date={detail?.created_at ?? new Date().toISOString()}
           title={detail?.name ?? ''}
           marketPrice={formatDisplay(
@@ -166,24 +175,31 @@ export default function ProductDetailScreen() {
           imageUrl={detail?.seller_image_url ?? ''}
           username={detail?.seller_username ?? ''}
         />
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={handleReport}
-          className={classes.reportButton}
-        >
-          <Icon name="flag" size={18} />
-          <Label variant="subtitle">Report this Ad</Label>
-        </TouchableOpacity>
-        <SimilarAdList
-          ignoreListingId={detail?.id ?? ''}
-          listingType={ListingType.SELL}
-        />
+        {isNotSeller && (
+          <>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={handleReport}
+              className={classes.reportButton}
+            >
+              <Icon name="flag" size={18} />
+
+              <Label variant="subtitle">Report this Ad</Label>
+            </TouchableOpacity>
+            <SimilarAdList
+              ignoreListingId={detail?.id ?? ''}
+              listingType={ListingType.SELL}
+            />
+          </>
+        )}
       </ScrollView>
-      <ProductDetailBottomBar
-        showModal={showModal}
-        onBuyNowPress={handleBuyNow}
-        onMakeAnOfferPress={handleMakeAnOffer}
-      />
+      {isNotSeller && (
+        <ProductDetailBottomBar
+          showModal={showModal}
+          onBuyNowPress={handleBuyNow}
+          onMakeAnOfferPress={handleMakeAnOffer}
+        />
+      )}
       <BottomSheetModal
         show={showModal}
         onDismiss={() => setShowModal(false)}

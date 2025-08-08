@@ -99,19 +99,10 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <CategoryList />
-        <FeaturedList
-          favoriteList={favorites}
-          refreshFavoriteCount={refetchFavorites}
-        />
-        <AuctionList
-          favoriteList={favorites}
-          refreshFavoriteCount={refetchFavorites}
-        />
+        <FeaturedList refreshFavoriteCount={refetchFavorites} />
+        <AuctionList refreshFavoriteCount={refetchFavorites} />
         <PeopleList />
-        <RecentlyAddedList
-          favoriteList={favorites}
-          refreshFavoriteCount={refetchFavorites}
-        />
+        <RecentlyAddedList refreshFavoriteCount={refetchFavorites} />
       </ScrollView>
     </ScreenContainer>
   );

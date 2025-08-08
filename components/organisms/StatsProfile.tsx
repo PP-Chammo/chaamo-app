@@ -40,7 +40,7 @@ export default function StatsProfile() {
     [addressData?.user_addressesCollection?.edges],
   );
 
-  const allListingCount = useMemo(() => {
+  const portfolioCount = useMemo(() => {
     return (
       listingsData?.vw_chaamo_cardsCollection?.edges
         ?.filter(
@@ -50,15 +50,7 @@ export default function StatsProfile() {
     );
   }, [listingsData?.vw_chaamo_cardsCollection?.edges]);
 
-  const auctionItemCount = useMemo(() => {
-    return (
-      listingsData?.vw_chaamo_cardsCollection?.edges
-        ?.filter((listing) => listing.node.listing_type === ListingType.AUCTION)
-        .length?.toString() ?? '0'
-    );
-  }, [listingsData?.vw_chaamo_cardsCollection?.edges]);
-
-  const soldItemCount = useMemo(() => {
+  const soldCount = useMemo(() => {
     return (
       listingsData?.vw_chaamo_cardsCollection?.edges
         ?.filter((listing) => listing.node.status === ListingStatus.SOLD)
@@ -66,7 +58,15 @@ export default function StatsProfile() {
     );
   }, [listingsData?.vw_chaamo_cardsCollection?.edges]);
 
-  const buyNowItemCount = useMemo(() => {
+  const auctionCount = useMemo(() => {
+    return (
+      listingsData?.vw_chaamo_cardsCollection?.edges
+        ?.filter((listing) => listing.node.listing_type === ListingType.AUCTION)
+        .length?.toString() ?? '0'
+    );
+  }, [listingsData?.vw_chaamo_cardsCollection?.edges]);
+
+  const sellCount = useMemo(() => {
     return (
       listingsData?.vw_chaamo_cardsCollection?.edges
         ?.filter((listing) => listing.node.listing_type === ListingType.SELL)
@@ -107,13 +107,13 @@ export default function StatsProfile() {
           <ProfileStat
             className={classes.stat}
             title="Portfolio Listings"
-            value={allListingCount}
+            value={portfolioCount}
             testID="portfolio"
           />
           <ProfileStat
             className={classes.stat}
             title="Sold Items"
-            value={soldItemCount}
+            value={soldCount}
             testID="sold"
           />
         </View>
@@ -121,13 +121,13 @@ export default function StatsProfile() {
           <ProfileStat
             className={classes.stat}
             title="Auction Items"
-            value={auctionItemCount}
+            value={auctionCount}
             testID="auction"
           />
           <ProfileStat
             className={classes.stat}
             title="Buy Now Items"
-            value={buyNowItemCount}
+            value={sellCount}
             testID="buy-now"
           />
         </View>
@@ -150,7 +150,11 @@ export default function StatsProfile() {
               testID="location-icon"
             />
             <Label>
-              {address?.city}, {address?.country}
+              {address?.city && address?.country
+                ? `${address?.city}, ${address?.country}`
+                : address?.city || address?.country
+                  ? `${address?.city || address?.country}`
+                  : 'unknown'}
             </Label>
           </View>
         </View>
@@ -167,6 +171,6 @@ const classes = {
   statContainer: 'flex flex-row justify-between my-1.5 gap-3',
   stat: 'bg-white flex-1 p-5 rounded-lg shadow border border-gray-100',
   locationContainer: 'mt-5',
-  locationValueContainer: 'flex flex-row gap-1',
+  locationValueContainer: 'flex flex-row gap-1 items-center',
   memberSinceText: 'text-sm text-gray-500 uppercase text-center mt-12 mb-5',
 };

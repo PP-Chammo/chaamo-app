@@ -9,7 +9,6 @@ import {
 } from '@/components/molecules';
 import {
   useCreateFollowsMutation,
-  useGetFollowsQuery,
   useGetVwFilteredProfilesLazyQuery,
   useRemoveFollowsMutation,
 } from '@/generated/graphql';
@@ -18,47 +17,33 @@ import { useUserVar } from '@/hooks/useUserVar';
 const PeopleList = memo(function PeopleList() {
   const [user] = useUserVar();
 
-  const { data: followedData, refetch: refetchFollowing } =
-    useGetFollowsQuery();
-  const [getPeoples, { data, loading }] = useGetVwFilteredProfilesLazyQuery({
-    fetchPolicy: 'cache-and-network',
-    variables: {
-      filter: {
-        id: { neq: user?.id },
+  const [getPeoples, { data, loading, refetch }] =
+    useGetVwFilteredProfilesLazyQuery({
+      fetchPolicy: 'cache-and-network',
+      variables: {
+        last: 5,
       },
-    },
-  });
+    });
   const [createFollowing] = useCreateFollowsMutation();
   const [removeFollowing] = useRemoveFollowsMutation();
-
-  const followedPeoples = useMemo(
-    () => followedData?.followsCollection?.edges ?? [],
-    [followedData?.followsCollection?.edges],
-  );
 
   const peoples = useMemo(
     () => data?.vw_filtered_profilesCollection?.edges ?? [],
     [data?.vw_filtered_profilesCollection?.edges],
   );
 
-  const getIsFollowee = useCallback(
-    (userId: string) =>
-      followedPeoples.some((edge) => edge.node.followee_user?.id === userId),
-    [followedPeoples],
-  );
-
   const handleToggleFollow = useCallback(
-    (userId: string) => () => {
-      if (getIsFollowee(userId)) {
+    (followeeUserId: string, isFollowed: boolean) => () => {
+      if (isFollowed) {
         removeFollowing({
           variables: {
             filter: {
-              followee_user_id: { eq: userId },
               follower_user_id: { eq: user?.id },
+              followee_user_id: { eq: followeeUserId },
             },
           },
           onCompleted: () => {
-            refetchFollowing();
+            refetch();
           },
         });
       } else {
@@ -66,24 +51,18 @@ const PeopleList = memo(function PeopleList() {
           variables: {
             objects: [
               {
-                followee_user_id: userId,
                 follower_user_id: user?.id,
+                followee_user_id: followeeUserId,
               },
             ],
           },
           onCompleted: () => {
-            refetchFollowing();
+            refetch();
           },
         });
       }
     },
-    [
-      createFollowing,
-      getIsFollowee,
-      refetchFollowing,
-      removeFollowing,
-      user?.id,
-    ],
+    [createFollowing, refetch, removeFollowing, user?.id],
   );
 
   useFocusEffect(
@@ -109,13 +88,16 @@ const PeopleList = memo(function PeopleList() {
         <People
           key={people.node.id}
           size="sm"
-          followed={getIsFollowee(people.node.id)}
+          followed={people.node.is_follow ?? false}
           imageUrl={people.node.profile_image_url ?? ''}
           fullname={people.node.username ?? ''}
           onPress={() => {
             console.log(`People id ${people.node.id}`);
           }}
-          onFollowPress={handleToggleFollow(people.node.id)}
+          onFollowPress={handleToggleFollow(
+            people.node.id,
+            people.node.is_follow ?? false,
+          )}
         />
       )}
     </ListContainer>

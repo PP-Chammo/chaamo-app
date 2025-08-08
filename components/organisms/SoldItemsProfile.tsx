@@ -1,42 +1,133 @@
-import { remapProps } from 'nativewind';
-import { FlatList } from 'react-native';
+import { useCallback, useMemo } from 'react';
 
-import { Boost } from '@/components/atoms';
+import { router } from 'expo-router';
+import { cssInterop } from 'nativewind';
+import { FlatList, View } from 'react-native';
+
+import { Boost, Icon, Label } from '@/components/atoms';
 import { CommonCard } from '@/components/molecules';
-import { dummyFeaturedCardList } from '@/constants/dummy';
+import {
+  ListingStatus,
+  ListingType,
+  useGetVwChaamoListingsQuery,
+  useInsertFavoritesMutation,
+  useRemoveFavoritesMutation,
+} from '@/generated/graphql';
+import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { useUserVar } from '@/hooks/useUserVar';
+import { getColor } from '@/utils/getColor';
 
-const FlatListRemapped = remapProps(FlatList, {
-  contentContainerClassName: 'contentContainerStyle',
-  columnWrapperClassName: 'columnWrapperStyle',
-}) as typeof FlatList;
+cssInterop(FlatList, {
+  contentContainerClassName: { target: 'contentContainerStyle' },
+});
 
 export default function SoldItems() {
+  const [user] = useUserVar();
+
+  const { formatDisplay } = useCurrencyDisplay();
+
+  const { data, refetch } = useGetVwChaamoListingsQuery({
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      filter: {
+        seller_id: { eq: user?.id },
+        listing_type: { neq: ListingType.PORTFOLIO },
+        status: { eq: ListingStatus.SOLD },
+      },
+    },
+  });
+  const [insertFavorites] = useInsertFavoritesMutation();
+  const [removeFavorites] = useRemoveFavoritesMutation();
+
+  const soldItems = useMemo(
+    () => data?.vw_chaamo_cardsCollection?.edges ?? [],
+    [data?.vw_chaamo_cardsCollection?.edges],
+  );
+
+  const handleToggleFavorite = useCallback(
+    (listing_id: string, isFavorite: boolean) => () => {
+      if (isFavorite) {
+        removeFavorites({
+          variables: {
+            filter: {
+              user_id: { eq: user?.id },
+              listing_id: { eq: listing_id },
+            },
+          },
+          onCompleted: () => {
+            refetch();
+          },
+        });
+      } else {
+        insertFavorites({
+          variables: {
+            objects: [
+              {
+                user_id: user?.id,
+                listing_id,
+              },
+            ],
+          },
+          onCompleted: () => {
+            refetch();
+          },
+        });
+      }
+    },
+    [insertFavorites, user?.id, refetch, removeFavorites],
+  );
+
+  if (!soldItems?.length) {
+    return (
+      <View className={classes.emptyContainer}>
+        <Icon name="cards-outline" size={65} color={getColor('gray-300')} />
+        <Label variant="subtitle" className={classes.emptyNotificationText}>
+          No sold items yet
+        </Label>
+      </View>
+    );
+  }
+
   return (
-    <FlatListRemapped
+    <FlatList
       testID="sold-items-profile-list"
-      data={dummyFeaturedCardList}
-      keyExtractor={(_, index) => index.toString()}
+      data={soldItems}
+      keyExtractor={(item) => item.node.id.toString()}
       numColumns={2}
       horizontal={false}
       showsVerticalScrollIndicator={false}
       contentContainerClassName={classes.contentContainer}
-      columnWrapperClassName={classes.columnWrapper}
-      renderItem={({ item, index }) => {
-        const isLast = index === dummyFeaturedCardList.length - 1;
-        const isOdd = dummyFeaturedCardList.length % 2 !== 0;
-        const shouldNotBeFullWidth = isLast && isOdd;
+      renderItem={({ item }) => {
         return (
-          <CommonCard
-            key={item.id}
-            id={item.id}
-            imageUrl={item.imageUrl}
-            title={item.title}
-            marketPrice={item.marketPrice}
-            marketType={item.marketType}
-            indicator={item.indicator}
-            rightComponent={<Boost boosted={item.boosted} />}
-            className={shouldNotBeFullWidth ? classes.lastCard : classes.card}
-          />
+          <View className={classes.cardContainer}>
+            <CommonCard
+              id={item.node.id}
+              imageUrl={item.node.image_url ?? ''}
+              title={item.node.name ?? ''}
+              marketType="eBay"
+              marketPrice={formatDisplay(item.node.currency, item.node.price)}
+              indicator="up"
+              onPress={() =>
+                router.push({
+                  pathname: '/screens/common-detail',
+                  params: {
+                    id: item.node.id,
+                    isFavorite: String(item.node.is_favorite),
+                  },
+                })
+              }
+              onRightIconPress={handleToggleFavorite(
+                item.node.id,
+                item.node.is_favorite ?? false,
+              )}
+              rightIcon={item.node.is_favorite ? 'heart' : 'heart-outline'}
+              rightIconColor={
+                item.node.is_favorite ? getColor('red-600') : undefined
+              }
+              rightIconSize={18}
+              rightComponent={<Boost boosted={item.node.is_boosted ?? false} />}
+            />
+          </View>
         );
       }}
     />
@@ -44,8 +135,8 @@ export default function SoldItems() {
 }
 
 const classes = {
-  contentContainer: '!p-4.5 !gap-4.5',
-  columnWrapper: '!gap-4.5',
-  lastCard: 'flex-[0.5] mr-6',
-  card: 'flex-1',
+  emptyContainer: 'flex-1 items-center mt-24',
+  contentContainer: 'py-4.5 gap-10',
+  cardContainer: 'flex-1 items-center justify-center',
+  emptyNotificationText: '!text-lg mt-5 text-slate-400',
 };

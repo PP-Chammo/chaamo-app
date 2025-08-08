@@ -32,7 +32,7 @@ const SettingItem: React.FC<SettingsListItemProps> = memo(
         onPress={onPress}
       >
         <Row between className={classes.itemRow}>
-          <Row className="gap-3">
+          <Row className={classes.gap3}>
             <Icon
               name={iconName}
               size={24}
@@ -46,7 +46,7 @@ const SettingItem: React.FC<SettingsListItemProps> = memo(
               )}
             </View>
           </Row>
-          <Row className="gap-2">
+          <Row className={classes.gap2}>
             {value && <Label className={classes.valueText}>{value}</Label>}
             {onPress && (
               <Icon
@@ -72,4 +72,6 @@ const classes = {
   itemSubtitle: 'text-xs !text-gray-500 font-light',
   valueText: 'text-slate-500',
   title: 'text-slate-800',
+  gap3: 'gap-3',
+  gap2: 'gap-2',
 };

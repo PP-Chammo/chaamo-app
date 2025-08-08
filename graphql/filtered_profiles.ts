@@ -11,6 +11,7 @@ export const getVwFilteredProfiles = gql`
           phone_number
           country_code
           currency
+          is_follow
         }
       }
     }

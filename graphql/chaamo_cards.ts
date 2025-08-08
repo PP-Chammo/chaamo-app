@@ -16,6 +16,7 @@ export const getVwChaamoListings = gql`
           seller_country
           created_at
           is_favorite
+          is_boosted
           status
         }
       }

@@ -43,7 +43,7 @@ describe('AuctionList', () => {
       pathname: '/screens/auction-detail',
       params: {
         id: '1',
-        isFavorite: 'false',
+        isFavorite: 'undefined',
       },
     });
   });

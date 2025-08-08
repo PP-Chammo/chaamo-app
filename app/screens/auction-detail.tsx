@@ -56,6 +56,11 @@ export default function AuctionDetailScreen() {
     [data],
   );
 
+  const isNotSeller = useMemo(
+    () => user?.id !== detail?.seller_id,
+    [detail?.seller_id, user?.id],
+  );
+
   const handleToggleFavorite = useCallback(() => {
     if (isFavoriteState) {
       removeFavorites({
@@ -152,24 +157,30 @@ export default function AuctionDetailScreen() {
           imageUrl={detail?.seller_image_url ?? ''}
           username={detail?.seller_username ?? ''}
         />
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={handleReport}
-          className={classes.reportButton}
-        >
-          <Icon name="flag" size={18} />
-          <Label variant="subtitle">Report this Ad</Label>
-        </TouchableOpacity>
-        <SimilarAdList
-          ignoreListingId={detail?.id ?? ''}
-          listingType={ListingType.AUCTION}
-        />
+        {isNotSeller && (
+          <>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={handleReport}
+              className={classes.reportButton}
+            >
+              <Icon name="flag" size={18} />
+              <Label variant="subtitle">Report this Ad</Label>
+            </TouchableOpacity>
+            <SimilarAdList
+              ignoreListingId={detail?.id ?? ''}
+              listingType={ListingType.AUCTION}
+            />
+          </>
+        )}
       </ScrollView>
-      <AuctionBottomBar
-        showModal={showModal}
-        endDate={detail?.ends_at ?? new Date()}
-        onBidNowPress={handleBidNow}
-      />
+      {isNotSeller && (
+        <AuctionBottomBar
+          showModal={showModal}
+          endDate={detail?.ends_at ?? new Date()}
+          onBidNowPress={handleBidNow}
+        />
+      )}
       <BottomSheetModal
         show={showModal}
         onDismiss={() => setShowModal(false)}

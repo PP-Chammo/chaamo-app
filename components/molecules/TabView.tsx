@@ -65,7 +65,7 @@ const TabView: React.FC<TabViewProps> = memo(function TabView({
           return (
             <Pressable
               key={tabTitle}
-              className="flex-1 items-center"
+              className={classes.tabViewContainer}
               onPress={() => handleTabPress(index)}
             >
               <Row className={classes.tabRow}>
@@ -115,9 +115,10 @@ const classes = {
     inactive: 'text-slate-500 font-medium',
   },
   tabIndicator: {
-    active: 'h-0.5 bg-primary-500 w-full rounded-full',
-    inactive: 'h-0.5',
+    active: 'h-1 bg-primary-500 w-full rounded-full',
+    inactive: 'h-1 bg-slate-400 w-full rounded-full',
   },
+  tabViewContainer: 'flex-1 items-center',
   pagerView: 'flex-1',
 };
 
