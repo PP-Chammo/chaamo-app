@@ -119,7 +119,6 @@ describe('SimilarAdList edge cases', () => {
       pathname: '/screens/common-detail',
       params: {
         id: '1',
-        isFavorite: 'true',
       },
     });
   });

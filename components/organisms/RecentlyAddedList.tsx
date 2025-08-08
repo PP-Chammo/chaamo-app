@@ -5,6 +5,7 @@ import { router } from 'expo-router';
 import { AuctionCard, CommonCard, ListContainer } from '@/components/molecules';
 import {
   GetVwChaamoListingsQuery,
+  GetFavoritesQuery,
   ListingType,
   useGetVwChaamoListingsQuery,
   useInsertFavoritesMutation,
@@ -16,11 +17,15 @@ import { DeepGet } from '@/types/helper';
 import { getColor } from '@/utils/getColor';
 
 type RecentlyAddedListProps = {
+  favoriteList: DeepGet<
+    GetFavoritesQuery,
+    ['favorite_listingsCollection', 'edges']
+  >;
   refreshFavoriteCount: () => void;
 };
 
 const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
-  function RecentlyAddedList({ refreshFavoriteCount }) {
+  function RecentlyAddedList({ favoriteList = [], refreshFavoriteCount }) {
     const [user] = useUserVar();
     const { formatDisplay } = useCurrencyDisplay();
 
@@ -45,14 +50,20 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
       [data?.vw_chaamo_cardsCollection?.edges],
     );
 
+    const getIsFavorite = useCallback(
+      (listingId: string) =>
+        favoriteList.some((edge) => edge.node.listing_id === listingId),
+      [favoriteList],
+    );
+
     const handleToggleFavorite = useCallback(
-      (listingId: string, isFavorite: boolean) => () => {
-        if (isFavorite) {
+      (listing_id: string) => () => {
+        if (getIsFavorite(listing_id)) {
           removeFavorites({
             variables: {
               filter: {
                 user_id: { eq: user?.id },
-                listing_id: { eq: listingId },
+                listing_id: { eq: listing_id },
               },
             },
             onCompleted: () => {
@@ -65,7 +76,7 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
               objects: [
                 {
                   user_id: user?.id,
-                  listing_id: listingId,
+                  listing_id,
                 },
               ],
             },
@@ -75,7 +86,13 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
           });
         }
       },
-      [insertFavorites, user?.id, refreshFavoriteCount, removeFavorites],
+      [
+        getIsFavorite,
+        insertFavorites,
+        user?.id,
+        refreshFavoriteCount,
+        removeFavorites,
+      ],
     );
 
     if (loading) {
@@ -106,19 +123,17 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
                   pathname: '/screens/auction-detail',
                   params: {
                     id: card.node.id,
-                    isFavorite: String(card.node?.is_favorite),
                   },
                 })
               }
-              rightIcon={card.node?.is_favorite ? 'heart' : 'heart-outline'}
+              rightIcon={
+                getIsFavorite(card.node.id) ? 'heart' : 'heart-outline'
+              }
               rightIconColor={
-                card.node?.is_favorite ? getColor('red-600') : undefined
+                getIsFavorite(card.node.id) ? getColor('red-600') : undefined
               }
               rightIconSize={18}
-              onRightIconPress={handleToggleFavorite(
-                card.node.id,
-                card.node?.is_favorite ?? false,
-              )}
+              onRightIconPress={handleToggleFavorite(card.node.id)}
             />
           ) : (
             <CommonCard
@@ -135,19 +150,17 @@ const RecentlyAddedList: React.FC<RecentlyAddedListProps> = memo(
                   pathname: '/screens/common-detail',
                   params: {
                     id: card.node.id,
-                    isFavorite: String(card.node?.is_favorite),
                   },
                 })
               }
-              rightIcon={card.node?.is_favorite ? 'heart' : 'heart-outline'}
+              rightIcon={
+                getIsFavorite(card.node.id) ? 'heart' : 'heart-outline'
+              }
               rightIconColor={
-                card.node?.is_favorite ? getColor('red-600') : undefined
+                getIsFavorite(card.node.id) ? getColor('red-600') : undefined
               }
               rightIconSize={18}
-              onRightIconPress={handleToggleFavorite(
-                card.node.id,
-                card.node?.is_favorite ?? false,
-              )}
+              onRightIconPress={handleToggleFavorite(card.node.id)}
             />
           )
         }

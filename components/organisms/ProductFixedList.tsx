@@ -64,7 +64,6 @@ const ProductFixedList: React.FC<ProductFixedListProps> = memo(
                     : '/screens/common-detail',
                 params: {
                   id: item.node?.id,
-                  isFavorite: String(item.node?.is_favorite),
                 },
               })
             }

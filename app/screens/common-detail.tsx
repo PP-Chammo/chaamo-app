@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 
 import { clsx } from 'clsx';
 import { Image } from 'expo-image';
-import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
 
@@ -41,8 +41,8 @@ export default function ProductDetailScreen() {
   const [user] = useUserVar();
   const { formatDisplay } = useCurrencyDisplay();
 
-  const { id, isFavorite } = useLocalSearchParams();
-  const { data } = useGetVwCommonDetailQuery({
+  const { id } = useLocalSearchParams();
+  const { data, refetch } = useGetVwCommonDetailQuery({
     skip: !id,
     variables: {
       filter: {
@@ -54,7 +54,6 @@ export default function ProductDetailScreen() {
   const [removeFavorites] = useRemoveFavoritesMutation();
 
   const [showModal, setShowModal] = useState(false);
-  const [isFavoriteState, setIsFavoriteState] = React.useState(false);
 
   const detail = useMemo(
     () => data?.vw_chaamo_cardsCollection?.edges?.[0]?.node,
@@ -67,7 +66,7 @@ export default function ProductDetailScreen() {
   );
 
   const handleToggleFavorite = useCallback(() => {
-    if (isFavoriteState) {
+    if (detail?.is_favorite) {
       removeFavorites({
         variables: {
           filter: {
@@ -76,7 +75,7 @@ export default function ProductDetailScreen() {
           },
         },
         onCompleted: () => {
-          setIsFavoriteState(false);
+          refetch();
         },
       });
     } else {
@@ -90,11 +89,18 @@ export default function ProductDetailScreen() {
           ],
         },
         onCompleted: () => {
-          setIsFavoriteState(true);
+          refetch();
         },
       });
     }
-  }, [id, insertFavorites, isFavoriteState, user?.id, removeFavorites]);
+  }, [
+    detail?.is_favorite,
+    removeFavorites,
+    user?.id,
+    id,
+    refetch,
+    insertFavorites,
+  ]);
 
   const handleReport = useCallback(() => {
     router.push({
@@ -111,12 +117,6 @@ export default function ProductDetailScreen() {
     setShowModal(true);
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      setIsFavoriteState(isFavorite === 'true');
-    }, [isFavorite]),
-  );
-
   return (
     <ScreenContainer
       classNameBottom={clsx({
@@ -132,8 +132,10 @@ export default function ProductDetailScreen() {
         <Header
           onBackPress={() => router.back()}
           className={classes.header}
-          rightIcon={isFavoriteState ? 'heart' : 'heart-outline'}
-          rightIconColor={getColor(isFavoriteState ? 'red-500' : 'gray-600')}
+          rightIcon={detail?.is_favorite ? 'heart' : 'heart-outline'}
+          rightIconColor={getColor(
+            detail?.is_favorite ? 'red-500' : 'gray-600',
+          )}
           rightIconSize={28}
           onRightPress={handleToggleFavorite}
         />

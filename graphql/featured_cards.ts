@@ -7,7 +7,6 @@ export const getVwFeaturedListings = gql`
         node {
           id
           listing_type
-          is_favorite
           image_url
           currency
           price

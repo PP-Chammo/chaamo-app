@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 
 import { AuctionCard, ListContainer } from '@/components/molecules';
 import {
+  GetFavoritesQuery,
   ListingType,
   useGetVwChaamoListingsQuery,
   useInsertFavoritesMutation,
@@ -11,13 +12,19 @@ import {
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useUserVar } from '@/hooks/useUserVar';
+import { DeepGet } from '@/types/helper';
 import { getColor } from '@/utils/getColor';
 
 type AuctionListProps = {
+  favoriteList: DeepGet<
+    GetFavoritesQuery,
+    ['favorite_listingsCollection', 'edges']
+  >;
   refreshFavoriteCount: () => void;
 };
 
 const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
+  favoriteList = [],
   refreshFavoriteCount,
 }) {
   const [user] = useUserVar();
@@ -29,6 +36,7 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
       filter: {
         listing_type: { eq: ListingType.AUCTION },
       },
+      last: 10,
     },
   });
 
@@ -40,14 +48,20 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
     [data?.vw_chaamo_cardsCollection?.edges],
   );
 
+  const getIsFavorite = useCallback(
+    (listingId: string) =>
+      favoriteList.some((edge) => edge.node.listing_id === listingId),
+    [favoriteList],
+  );
+
   const handleToggleFavorite = useCallback(
-    (listingId: string, isFavorite: boolean) => () => {
-      if (isFavorite) {
+    (listing_id: string) => () => {
+      if (getIsFavorite(listing_id)) {
         removeFavorites({
           variables: {
             filter: {
               user_id: { eq: user?.id },
-              listing_id: { eq: listingId },
+              listing_id: { eq: listing_id },
             },
           },
           onCompleted: () => {
@@ -60,7 +74,7 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
             objects: [
               {
                 user_id: user?.id,
-                listing_id: listingId,
+                listing_id,
               },
             ],
           },
@@ -70,7 +84,13 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
         });
       }
     },
-    [insertFavorites, user?.id, refreshFavoriteCount, removeFavorites],
+    [
+      getIsFavorite,
+      insertFavorites,
+      user?.id,
+      refreshFavoriteCount,
+      removeFavorites,
+    ],
   );
 
   if (loading) {
@@ -99,19 +119,15 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
               pathname: '/screens/auction-detail',
               params: {
                 id: card.node.id,
-                isFavorite: String(card.node.is_favorite),
               },
             })
           }
-          rightIcon={card.node?.is_favorite ? 'heart' : 'heart-outline'}
+          rightIcon={getIsFavorite(card.node.id) ? 'heart' : 'heart-outline'}
           rightIconColor={
-            card.node?.is_favorite ? getColor('red-600') : undefined
+            getIsFavorite(card.node.id) ? getColor('red-600') : undefined
           }
           rightIconSize={18}
-          onRightIconPress={handleToggleFavorite(
-            card.node.id,
-            card.node?.is_favorite ?? false,
-          )}
+          onRightIconPress={handleToggleFavorite(card.node.id)}
         />
       )}
     </ListContainer>

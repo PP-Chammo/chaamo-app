@@ -113,7 +113,6 @@ export default function Portfolio() {
                   pathname: '/screens/common-detail',
                   params: {
                     id: item.node.id,
-                    isFavorite: String(item.node.is_favorite),
                   },
                 })
               }

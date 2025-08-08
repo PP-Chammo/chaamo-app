@@ -72,7 +72,6 @@ const ProductCardList: React.FC<ProductCardListProps> = memo(function AllCards({
                   : '/screens/common-detail',
               params: {
                 id: item.node?.id,
-                isFavorite: String(item.node?.is_favorite),
               },
             })
           }

@@ -41,6 +41,7 @@ export const getVwCommonDetail = gql`
           name
           ebay_highest_price
           description
+          is_favorite
         }
       }
     }
@@ -65,6 +66,7 @@ export const getVwAuctionDetail = gql`
           name
           ebay_highest_price
           description
+          is_favorite
         }
       }
     }

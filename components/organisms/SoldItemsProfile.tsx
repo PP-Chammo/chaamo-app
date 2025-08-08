@@ -112,7 +112,6 @@ export default function SoldItems() {
                   pathname: '/screens/common-detail',
                   params: {
                     id: item.node.id,
-                    isFavorite: String(item.node.is_favorite),
                   },
                 })
               }

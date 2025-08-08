@@ -64,7 +64,6 @@ const ProductAuctionList: React.FC<ProductAuctionListProps> = memo(
                     : '/screens/common-detail',
                 params: {
                   id: item.node?.id,
-                  isFavorite: String(item.node?.is_favorite),
                 },
               })
             }
