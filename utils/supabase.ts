@@ -17,19 +17,23 @@ export const supabase = createClient(
   {
     auth: {
       storage: {
-        async getItem(key) {
+        async getItem(key: string) {
           return AsyncStorage.getItem(key);
         },
-        async setItem(key, value) {
+        async setItem(key: string, value: string) {
           return AsyncStorage.setItem(key, value);
         },
-        async removeItem(key) {
+        async removeItem(key: string) {
           return AsyncStorage.removeItem(key);
         },
       },
       autoRefreshToken: true,
       persistSession: true,
       detectSessionInUrl: false,
+    },
+    realtime: {
+      heartbeatIntervalMs: 30000, // 30s instead of 100ms - more reasonable
+      timeout: 20000, // 20s timeout
     },
     global: {
       headers: {

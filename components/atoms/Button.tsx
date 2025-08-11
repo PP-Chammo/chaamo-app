@@ -7,6 +7,7 @@ import {
   TextProps,
   TouchableOpacity,
   TouchableOpacityProps,
+  View,
 } from 'react-native';
 
 import { getColor } from '@/utils/getColor';
@@ -21,6 +22,7 @@ interface ButtonProps extends TouchableOpacityProps {
     | 'white-light'
     | 'secondary'
     | 'danger'
+    | 'danger-light'
     | 'light'
     | 'link'
     | 'ghost';
@@ -79,6 +81,8 @@ const Button: React.FC<ButtonProps> = memo(function Button({
         return getColor('gray-600');
       case 'primary-light':
         return getColor('primary-500');
+      case 'danger-light':
+        return getColor('red-600');
       case 'light':
         return getColor('gray-600');
       case 'ghost':
@@ -101,38 +105,37 @@ const Button: React.FC<ButtonProps> = memo(function Button({
       )}
       {...props}
     >
-      {loading ? (
-        <ActivityIndicator color={iconColorBase} />
-      ) : (
-        <>
-          {icon && (
-            <Icon
-              name={icon}
-              size={iconSize ?? iconSizeBase}
-              variant={iconVariant}
-              color={iconColor ?? iconColorBase}
-            />
-          )}
-          <Text
-            className={clsx(
-              classes.textBase,
-              classes.textSize[size],
-              classes.textVariant[variant],
-              textClassName,
-            )}
-            {...textProps}
-          >
-            {children}
-          </Text>
-          {rightIcon && (
-            <Icon
-              name={rightIcon}
-              size={rightIconSize ?? iconSizeBase}
-              variant={rightIconVariant}
-              color={rightIconColor ?? iconColorBase}
-            />
-          )}
-        </>
+      {icon && (
+        <Icon
+          name={icon}
+          size={iconSize ?? iconSizeBase}
+          variant={iconVariant}
+          color={iconColor ?? iconColorBase}
+        />
+      )}
+      {loading && (
+        <View className={clsx(classes.loadingContainer)}>
+          <ActivityIndicator color={iconColorBase} />
+        </View>
+      )}
+      <Text
+        className={clsx(
+          classes.textBase,
+          classes.textSize[size],
+          loading ? classes.textTransparent : classes.textVariant[variant],
+          textClassName,
+        )}
+        {...textProps}
+      >
+        {children}
+      </Text>
+      {rightIcon && (
+        <Icon
+          name={rightIcon}
+          size={rightIconSize ?? iconSizeBase}
+          variant={rightIconVariant}
+          color={rightIconColor ?? iconColorBase}
+        />
       )}
     </TouchableOpacity>
   );
@@ -141,7 +144,9 @@ const Button: React.FC<ButtonProps> = memo(function Button({
 const classes = {
   base: 'rounded-full flex flex-row items-center justify-center gap-1.5',
   textBase: 'text-base text-center',
-  disabled: 'opacity-50',
+  textTransparent: '!text-transparent',
+  loadingContainer: 'flex items-center justify-center absolute z-10',
+  disabled: 'opacity-60',
   variant: {
     primary: 'bg-primary-500',
     'primary-light': 'bg-transparent border border-primary-500',
@@ -149,6 +154,7 @@ const classes = {
     'white-light': 'bg-transparent border border-white/70',
     secondary: 'bg-gray-200',
     danger: 'bg-red-600',
+    'danger-light': 'bg-transparent border border-red-600',
     light: 'border border-gray-300',
     link: 'bg-transparent',
     ghost: 'bg-transparent',
@@ -165,6 +171,7 @@ const classes = {
     'white-light': 'text-white',
     secondary: 'text-primary-500',
     danger: 'text-white',
+    'danger-light': 'text-red-600',
     light: 'text-gray-600',
     link: 'text-gray-500 underline',
     ghost: 'text-gray-500',

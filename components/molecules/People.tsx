@@ -12,6 +12,7 @@ interface PeopleProps {
   onPress?: () => void;
   onFollowPress?: () => void;
   onViewProfilePress?: () => void;
+  isLoading?: boolean;
 }
 
 const People: React.FC<PeopleProps> = memo(function People({
@@ -22,6 +23,7 @@ const People: React.FC<PeopleProps> = memo(function People({
   onPress,
   onFollowPress,
   onViewProfilePress,
+  isLoading,
 }) {
   return (
     <Pressable
@@ -44,11 +46,13 @@ const People: React.FC<PeopleProps> = memo(function People({
       </View>
       {onFollowPress && (
         <Button
+          testID="follow-button"
           size="small"
           variant={followed ? 'primary-light' : 'primary'}
           className={classes.followButton}
           onPress={onFollowPress}
-          testID="follow-button"
+          loading={isLoading}
+          disabled={isLoading}
         >
           {followed ? 'Unfollow' : 'Follow'}
         </Button>

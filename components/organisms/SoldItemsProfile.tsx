@@ -10,7 +10,7 @@ import {
   ListingStatus,
   ListingType,
   useGetVwChaamoListingsQuery,
-  useInsertFavoritesMutation,
+  useCreateFavoritesMutation,
   useRemoveFavoritesMutation,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
@@ -36,7 +36,7 @@ export default function SoldItems() {
       },
     },
   });
-  const [insertFavorites] = useInsertFavoritesMutation();
+  const [createFavorites] = useCreateFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
 
   const soldItems = useMemo(
@@ -59,7 +59,7 @@ export default function SoldItems() {
           },
         });
       } else {
-        insertFavorites({
+        createFavorites({
           variables: {
             objects: [
               {
@@ -74,7 +74,7 @@ export default function SoldItems() {
         });
       }
     },
-    [insertFavorites, user?.id, refetch, removeFavorites],
+    [createFavorites, user?.id, refetch, removeFavorites],
   );
 
   if (!soldItems?.length) {

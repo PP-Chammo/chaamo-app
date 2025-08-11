@@ -6,8 +6,8 @@ import { View } from 'react-native';
 import { ScreenContainer } from '@/components/atoms';
 import { FilterSection, HeaderSearch, TabView } from '@/components/molecules';
 import {
+  ProductAllList,
   ProductAuctionList,
-  ProductCardList,
   ProductFixedList,
 } from '@/components/organisms';
 import { productListTabs } from '@/constants/tabs';
@@ -15,7 +15,7 @@ import { TextChangeParams } from '@/domains';
 import {
   ListingType,
   useGetVwChaamoListingsLazyQuery,
-  useInsertFavoritesMutation,
+  useCreateFavoritesMutation,
   useRemoveFavoritesMutation,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
@@ -29,11 +29,10 @@ export default function ProductListScreen() {
 
   const [searchText, setSearchText] = useState('');
 
-  const [getChaamoCards, { data, loading, refetch }] =
-    useGetVwChaamoListingsLazyQuery({
-      fetchPolicy: 'cache-and-network',
-    });
-  const [insertFavorites] = useInsertFavoritesMutation();
+  const [getChaamoCards, { data, loading }] = useGetVwChaamoListingsLazyQuery({
+    fetchPolicy: 'cache-and-network',
+  });
+  const [createFavorites] = useCreateFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
 
   const allCards = useMemo(() => {
@@ -83,12 +82,9 @@ export default function ProductListScreen() {
               listing_id: { eq: listingId },
             },
           },
-          onCompleted: () => {
-            refetch();
-          },
         });
       } else {
-        insertFavorites({
+        createFavorites({
           variables: {
             objects: [
               {
@@ -97,13 +93,10 @@ export default function ProductListScreen() {
               },
             ],
           },
-          onCompleted: () => {
-            refetch();
-          },
         });
       }
     },
-    [insertFavorites, refetch, removeFavorites, user?.id],
+    [createFavorites, removeFavorites, user?.id],
   );
 
   useFocusEffect(
@@ -265,10 +258,7 @@ export default function ProductListScreen() {
   );
 
   return (
-    <ScreenContainer
-      classNameTop={classes.containerTop}
-      enableBottomSafeArea={false}
-    >
+    <ScreenContainer classNameTop={classes.containerTop}>
       <HeaderSearch
         value={searchText}
         onChange={handleChange}
@@ -278,7 +268,7 @@ export default function ProductListScreen() {
       <FilterSection resultCount={allCards.length} />
       <View className={classes.tabViewContainer}>
         <TabView className={classes.tabView} tabs={productListTabs}>
-          <ProductCardList
+          <ProductAllList
             loading={loading}
             cards={allCards}
             onFavoritePress={handleToggleFavorite}

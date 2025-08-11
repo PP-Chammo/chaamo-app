@@ -5,7 +5,6 @@ import { View } from 'react-native';
 
 import { Label } from '@/components/atoms';
 import { People } from '@/components/molecules';
-import { useUserVar } from '@/hooks/useUserVar';
 
 type ListedByListProps = {
   userId: string;
@@ -18,15 +17,14 @@ const ListedByList = memo(function ListedByList({
   imageUrl,
   username,
 }: ListedByListProps) {
-  const [user] = useUserVar();
-
   const handleViewProfilePress = useCallback(() => {
-    if (user.id === userId) {
-      router.push('/(tabs)/profile');
-    } else {
-      router.push(`/screens/public-profile?publicUserId=${userId}`);
-    }
-  }, [userId, user.id]);
+    router.push({
+      pathname: '/screens/profile',
+      params: {
+        userId,
+      },
+    });
+  }, [userId]);
 
   return (
     <View className={classes.listedByWrapper}>

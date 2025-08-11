@@ -13,6 +13,7 @@ export { default as FilterTabs, type FilterValue } from './FilterTabs';
 export { default as Icon } from './Icon';
 export { default as KeyboardView } from './KeyboardView';
 export { default as Label } from './Label';
+export { default as Loading } from './Loading';
 export { default as Modal } from './Modal';
 export { default as PaymentMethodCard } from './PaymentMethodCard';
 export { default as PriceIndicator } from './PriceIndicator';

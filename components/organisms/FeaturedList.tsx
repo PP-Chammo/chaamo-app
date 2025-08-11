@@ -4,31 +4,21 @@ import { router } from 'expo-router';
 
 import { AuctionCard, CommonCard, ListContainer } from '@/components/molecules';
 import {
-  GetFavoritesQuery,
   GetVwFeaturedListingsQuery,
   ListingType,
   useGetVwFeaturedListingsQuery,
-  useInsertFavoritesMutation,
+  useCreateFavoritesMutation,
   useRemoveFavoritesMutation,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { useFavorites } from '@/hooks/useFavorites';
 import { useUserVar } from '@/hooks/useUserVar';
 import { DeepGet } from '@/types/helper';
 import { getColor } from '@/utils/getColor';
 
-type FeaturedListProps = {
-  favoriteList: DeepGet<
-    GetFavoritesQuery,
-    ['favorite_listingsCollection', 'edges']
-  >;
-  refreshFavoriteCount: () => void;
-};
-
-const FeaturedList: React.FC<FeaturedListProps> = memo(function FeaturedList({
-  favoriteList = [],
-  refreshFavoriteCount,
-}) {
+const FeaturedList = memo(function FeaturedList() {
   const [user] = useUserVar();
+  const { getIsFavorite } = useFavorites();
   const { formatDisplay } = useCurrencyDisplay();
 
   const { data, loading } = useGetVwFeaturedListingsQuery({
@@ -44,18 +34,12 @@ const FeaturedList: React.FC<FeaturedListProps> = memo(function FeaturedList({
     },
   });
 
-  const [insertFavorites] = useInsertFavoritesMutation();
+  const [createFavorites] = useCreateFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
 
   const cards = useMemo(
     () => data?.vw_featured_cardsCollection?.edges ?? [],
     [data?.vw_featured_cardsCollection?.edges],
-  );
-
-  const getIsFavorite = useCallback(
-    (listingId: string) =>
-      favoriteList.some((edge) => edge.node.listing_id === listingId),
-    [favoriteList],
   );
 
   const handleToggleFavorite = useCallback(
@@ -68,12 +52,9 @@ const FeaturedList: React.FC<FeaturedListProps> = memo(function FeaturedList({
               listing_id: { eq: listing_id },
             },
           },
-          onCompleted: () => {
-            refreshFavoriteCount();
-          },
         });
       } else {
-        insertFavorites({
+        createFavorites({
           variables: {
             objects: [
               {
@@ -82,19 +63,10 @@ const FeaturedList: React.FC<FeaturedListProps> = memo(function FeaturedList({
               },
             ],
           },
-          onCompleted: () => {
-            refreshFavoriteCount();
-          },
         });
       }
     },
-    [
-      getIsFavorite,
-      insertFavorites,
-      user?.id,
-      refreshFavoriteCount,
-      removeFavorites,
-    ],
+    [getIsFavorite, createFavorites, user?.id, removeFavorites],
   );
 
   if (loading || cards.length === 0) {

@@ -1,6 +1,6 @@
 import React, { Fragment, memo, useCallback, useRef, useState } from 'react';
 
-import { Alert, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 import {
   Avatar,
@@ -10,23 +10,31 @@ import {
   Label,
   Row,
 } from '@/components/atoms';
+import { useBlockedUsers } from '@/hooks/useBlockedUsers';
 
 interface FollowListItemProps {
-  name: string;
+  userId: string;
+  username: string;
   imageUrl: string;
-  onUnfollowPress?: () => void;
-  onBlockPress?: () => void;
+  isLoading?: boolean;
   isFollowing?: boolean;
+  onPress?: () => void;
+  onToggleFollowPress?: () => void;
+  onToggleBlockPress?: () => void;
 }
 
 const FollowListItem: React.FC<FollowListItemProps> = memo(
   function FollowListItem({
-    name,
+    userId,
+    username,
     imageUrl,
-    onUnfollowPress,
-    onBlockPress,
+    isLoading,
     isFollowing,
+    onPress,
+    onToggleFollowPress,
+    onToggleBlockPress,
   }) {
+    const { getIsBlocked } = useBlockedUsers();
     const [isContextMenuVisible, setIsContextMenuVisible] =
       useState<boolean>(false);
 
@@ -40,48 +48,69 @@ const FollowListItem: React.FC<FollowListItemProps> = memo(
       setIsContextMenuVisible(false);
     }, []);
 
-    const handleBlock = useCallback(() => {
-      Alert.alert('Blocked', 'User Blocked');
-      onBlockPress?.();
+    const handleToggleBlock = useCallback(() => {
+      onToggleBlockPress?.();
       handleCloseContextMenu();
-    }, [handleCloseContextMenu, onBlockPress]);
+    }, [handleCloseContextMenu, onToggleBlockPress]);
 
     return (
       <Fragment>
         <Row testID="follow-list-item" between>
-          <Row className={classes.row}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={onPress}
+            className={classes.row}
+          >
             <Avatar testID="avatar" imageUrl={imageUrl} size="md" />
-            <Label>{name}</Label>
-          </Row>
+            <Label>{username}</Label>
+          </TouchableOpacity>
           <Row className={classes.row}>
-            {isFollowing && <Button onPress={onUnfollowPress}>Unfollow</Button>}
-            <TouchableOpacity
-              testID="dots-menu-button"
-              ref={dotsRef}
-              onPress={handleContextMenuPress}
-            >
-              <Icon name="dots-vertical" size={24} />
-            </TouchableOpacity>
+            {!getIsBlocked(userId) && onToggleFollowPress && (
+              <Button
+                onPress={onToggleFollowPress}
+                size="small"
+                loading={isLoading}
+                disabled={isLoading}
+                variant={isFollowing ? 'primary-light' : 'primary'}
+              >
+                {isFollowing ? 'Unfollow' : 'Follow'}
+              </Button>
+            )}
+            {onToggleBlockPress && (
+              <TouchableOpacity
+                testID="dots-menu-button"
+                ref={dotsRef}
+                onPress={handleContextMenuPress}
+              >
+                <Icon name="dots-vertical" size={24} />
+              </TouchableOpacity>
+            )}
           </Row>
         </Row>
-
-        <ContextMenu
-          testID="context-menu"
-          visible={isContextMenuVisible}
-          onClose={handleCloseContextMenu}
-          triggerRef={dotsRef}
-        >
-          <TouchableOpacity className={classes.blockMenu} onPress={handleBlock}>
-            <Label className={classes.blockText}>Block</Label>
-          </TouchableOpacity>
-        </ContextMenu>
+        {onToggleBlockPress && (
+          <ContextMenu
+            testID="context-menu"
+            visible={isContextMenuVisible}
+            onClose={handleCloseContextMenu}
+            triggerRef={dotsRef}
+          >
+            <TouchableOpacity
+              className={classes.blockMenu}
+              onPress={handleToggleBlock}
+            >
+              <Label className={classes.blockText}>
+                {getIsBlocked(userId) ? 'Unblock' : 'Block'}
+              </Label>
+            </TouchableOpacity>
+          </ContextMenu>
+        )}
       </Fragment>
     );
   },
 );
 
 const classes = {
-  row: 'gap-3',
+  row: 'flex flex-row items-center gap-3',
   blockMenu: 'flex-row items-center py-2 px-3 gap-2',
   blockText: '!text-red-600 text-sm',
 };
