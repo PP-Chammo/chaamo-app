@@ -2,6 +2,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { router } from 'expo-router';
 import { Alert } from 'react-native';
 
+import { UserProfile } from '@/domains';
 import { createProfiles, getProfiles } from '@/graphql/profiles';
 import { getUserAddresses } from '@/graphql/user_addresses';
 import { UserStore } from '@/stores/userStore';
@@ -59,7 +60,7 @@ export async function loginWithGoogle() {
 
 export const updateProfileSession = async (
   setUser: (value: Partial<UserStore>) => void,
-  callback: (success: boolean, userId?: string) => void,
+  callback: (success: boolean, user?: UserProfile) => void,
 ) => {
   const errorAlert = () => {
     Alert.alert('Session Error', 'Failed to load profile. Please re-login.', [
@@ -169,7 +170,7 @@ export const updateProfileSession = async (
         }, 0);
       });
 
-      callback(true, userId);
+      callback(true, profileData);
     } else {
       callback(false);
     }

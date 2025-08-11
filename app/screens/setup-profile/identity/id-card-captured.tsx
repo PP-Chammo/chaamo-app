@@ -14,12 +14,12 @@ export default function IDCardCapturedScreen() {
 
   const handleRetake = useCallback(() => {
     setImageCaptured(imageCaptured);
-    router.push('/id-card');
+    router.push('/screens/setup-profile/identity/id-card');
   }, [imageCaptured, setImageCaptured]);
 
   const handleSubmit = useCallback(() => {
     // TODO: Implement submit logic save image to storage and send to backend
-    router.push('/id-card-progress');
+    router.push('/screens/setup-profile/identity/id-card-progress');
   }, []);
 
   return (

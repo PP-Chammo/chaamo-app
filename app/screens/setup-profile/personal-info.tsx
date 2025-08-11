@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
@@ -8,7 +8,6 @@ import {
   Avatar,
   Button,
   KeyboardView,
-  Row,
   ScreenContainer,
 } from '@/components/atoms';
 import {
@@ -18,58 +17,54 @@ import {
   TextField,
 } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
-import {
-  validateRequired,
-  ValidationErrors,
-  ValidationValues,
-} from '@/utils/validate';
-
-interface Form extends ValidationValues {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  password: string;
-  confirmPassword: string;
-  image: string;
-}
+import { useUserVar } from '@/hooks/useUserVar';
+import { UserStore } from '@/stores/userStore';
+import { DeepGet } from '@/types/helper';
+import { validateRequired, ValidationErrors } from '@/utils/validate';
 
 export default function PersonalInfoScreen() {
-  const [form, setForm] = useState<Form>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
-    image: '',
-  });
+  const [form, setForm] = useUserVar();
+  const [errors, setErrors] = useState<
+    ValidationErrors<DeepGet<UserStore, ['profile']>>
+  >({});
 
-  const [errors, setErrors] = useState<ValidationErrors<Form>>({});
+  const profile = form?.profile;
 
-  const handleChange = ({ name, value }: TextChangeParams) => {
-    setErrors((prev) => {
-      delete prev[name as keyof typeof prev];
-      return prev;
-    });
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  const handleChange = useCallback(
+    ({ name, value }: TextChangeParams) => {
+      setErrors((prev) => {
+        delete prev[name as keyof typeof prev];
+        return prev;
+      });
+
+      setForm({
+        ...form,
+        profile: { ...form.profile, [name]: value } as DeepGet<
+          UserStore,
+          ['profile']
+        >,
+      });
+    },
+    [form, setForm],
+  );
 
   const handleSubmit = () => {
-    const errors = validateRequired<Form>(form, [
-      'firstName',
-      'lastName',
+    const requiredFields: (keyof DeepGet<UserStore, ['profile']>)[] = [
+      'username',
       'email',
-      'phone',
-      'password',
-      'confirmPassword',
-    ]);
-    if (Object.keys(errors).length > 0) {
-      setErrors(errors);
-      return;
+      'phone_number',
+    ];
+
+    const validationErrors = validateRequired(
+      form.profile as unknown as Record<string, string>,
+      requiredFields,
+    );
+
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length === 0) {
+      router.push('/screens/setup-profile/address');
     }
-    // TODO: Implement API call to update user info
-    router.push('/(setup-profile)/address');
   };
 
   const handleImagePick = async () => {
@@ -92,7 +87,10 @@ export default function PersonalInfoScreen() {
 
     const selectedImage = result.assets[0];
 
-    setForm((prev) => ({ ...prev, image: selectedImage.uri }));
+    setForm({
+      ...form,
+      profile: { ...form.profile, profile_image_url: selectedImage.uri },
+    });
   };
 
   return (
@@ -104,41 +102,40 @@ export default function PersonalInfoScreen() {
           <Avatar
             size="xl"
             onPress={handleImagePick}
-            imageUrl={form.image}
+            imageUrl={profile?.profile_image_url ?? ''}
             imageContainerClassName={classes.imageContainer}
             className={classes.image}
           />
-          <Row>
-            <TextField
-              name="firstName"
-              label="First Name"
-              placeholder="First Name"
-              onChange={handleChange}
-              value={form.firstName}
-              required
-              error={errors['firstName']}
-            />
-            <TextField
-              name="lastName"
-              label="Last Name"
-              placeholder="Last Name"
-              onChange={handleChange}
-              value={form.lastName}
-              required
-              error={errors['lastName']}
-            />
-          </Row>
+          <TextField
+            name="username"
+            label="Username"
+            placeholder="Username"
+            onChange={handleChange}
+            value={profile?.username ?? ''}
+            required
+            error={errors['username']}
+            className={classes.input}
+          />
           <TextField
             name="email"
             label="Email"
             placeholder="Email"
             onChange={handleChange}
-            value={form.email}
             required
             error={errors['email']}
+            className={classes.input}
           />
-          <PhoneInput name="phone" value={form.phone} onChange={handleChange} />
-          <TextField
+          <PhoneInput
+            name="phone_number"
+            value={profile?.phone_number ?? ''}
+            countryCode={profile?.country_code ?? ''}
+            onChange={handleChange}
+            error={errors.phone_number}
+          />
+
+          {/* Since we don't have authentication with password in the backend, we'll skip this for now */}
+
+          {/* <TextField
             name="password"
             label="Password"
             placeholder="Password"
@@ -157,15 +154,15 @@ export default function PersonalInfoScreen() {
             required
             type="password"
             error={errors['confirmPassword']}
-          />
-          <Button
-            className={classes.button}
-            variant="primary"
-            onPress={handleSubmit}
-          >
-            Continue
-          </Button>
+          /> */}
         </KeyboardView>
+        <Button
+          className={classes.button}
+          variant="primary"
+          onPress={handleSubmit}
+        >
+          Continue
+        </Button>
       </View>
     </ScreenContainer>
   );
@@ -175,6 +172,8 @@ const classes = {
   container: 'flex-1 px-4.5',
   image: 'mb-12',
   imageContainer: 'p-1',
-  button: 'mt-5',
+  button: 'mb-12',
   contentContainer: 'gap-4',
+  input: 'flex-1',
+  row: 'gap-3',
 };

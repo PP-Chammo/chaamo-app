@@ -61,7 +61,7 @@ export default function AddressScreen() {
       return;
     }
     // TODO: Implement API call to update address
-    router.push('/(setup-profile)/(upload-identity)/proof-identity');
+    router.push('/screens/setup-profile/identity/proof-identity');
   };
 
   const lazyLoad = useCallback(async () => {

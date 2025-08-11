@@ -28,7 +28,7 @@ export default function ProofIdentityScreen() {
         </Label>
         <ProofIdentity
           title="ID Card"
-          onPress={() => router.push('/id-card')}
+          onPress={() => router.push('/screens/setup-profile/identity/id-card')}
           icon={<Icon name="badge-account-outline" size={24} color="black" />}
         />
         <ProofIdentity

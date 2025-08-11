@@ -12,6 +12,7 @@ export const getProfiles = gql`
           country_code
           currency
           created_at
+          is_profile_complete
         }
       }
     }
@@ -28,6 +29,8 @@ export const createProfiles = gql`
         phone_number
         country_code
         currency
+        created_at
+        is_profile_complete
       }
     }
   }

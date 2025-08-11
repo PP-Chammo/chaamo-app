@@ -51,8 +51,10 @@ export default function StartPage() {
     setHasCheckedSession(true);
 
     try {
-      await updateProfileSession(setUser, (isSuccess) => {
+      await updateProfileSession(setUser, (isSuccess, user) => {
         if (isSuccess) {
+          if (!user?.is_profile_complete)
+            return router.replace('/screens/setup-profile/personal-info');
           if (isDevelopment) {
             return router.replace('/(tabs)/home');
           }

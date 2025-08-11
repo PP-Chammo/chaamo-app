@@ -16,7 +16,7 @@ function useImageCapturedVar(): [
   const imageState = imageCapturedVar.useVar();
   const setImageCapturedVar = (image: ImageCapturedStore) => {
     imageCapturedVar.set(image);
-    router.push('/(setup-profile)/(upload-identity)/id-card-captured');
+    router.push('/screens/setup-profile/identity/id-card-captured');
   };
   return [imageState, setImageCapturedVar];
 }

@@ -3,31 +3,30 @@ import React from 'react';
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
-import { VerificationInProgressIcon } from '@/assets/svg';
+import { VerificationFailedIcon } from '@/assets/svg';
 import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header } from '@/components/molecules';
 
-export default function IDCardProgressScreen() {
-  const handleContinue = () => {
-    router.push('/id-card-failed');
+export default function IDCardFailedScreen() {
+  const handleReUpload = () => {
+    router.push('/screens/setup-profile/identity/id-card');
   };
 
   return (
     <ScreenContainer className={classes.container}>
       <Header title="ID Verification" onBackPress={() => router.back()} />
       <View className={classes.content}>
-        <VerificationInProgressIcon />
+        <VerificationFailedIcon />
         <Label variant="title" className={classes.title}>
-          ID Verification in Progress
+          Oops! Verification Unsuccessful
         </Label>
         <Label className={classes.description}>
-          Thank you! Your ID verification is in process and will be completed
-          within 1 business day. You can use the app with some features
-          restricted until your ID isn’t verified. We appreciate your patience.
+          Your documents could not be verified. Please re-upload them to
+          proceed.
         </Label>
       </View>
-      <Button className={classes.button} onPress={handleContinue}>
-        Continue Using the App
+      <Button className={classes.button} onPress={handleReUpload}>
+        Re-upload Documents
       </Button>
     </ScreenContainer>
   );

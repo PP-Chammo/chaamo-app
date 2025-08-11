@@ -38,13 +38,19 @@ const SetupProfileTabs = memo(function SetupProfileTabs() {
           >
             <Text
               testID={`tab-title-${tab.route}`}
-              className={clsx(classes.TabTitle[tabState()])}
+              className={clsx(
+                classes.tabTitle.base,
+                classes.tabTitle[tabState()],
+              )}
             >
               {tab.title}
             </Text>
             <View
               testID={`tab-indicator-${tab.route}`}
-              className={clsx(classes.TabIndicator[tabState()])}
+              className={clsx(
+                classes.tabIndicator.base,
+                classes.tabIndicator[tabState()],
+              )}
             />
           </Pressable>
         );
@@ -54,15 +60,17 @@ const SetupProfileTabs = memo(function SetupProfileTabs() {
 });
 
 const classes = {
-  TabTitle: {
-    active: 'text-primary-500 font-semibold mb-2',
-    previous: 'text-primary-700/30 font-semibold mb-2',
-    inactive: 'text-slate-500 font-medium mb-2',
+  tabTitle: {
+    base: 'mb-2',
+    active: 'text-primary-500 font-semibold',
+    previous: 'text-primary-700/30 font-semibold',
+    inactive: 'text-slate-500 font-medium',
   },
-  TabIndicator: {
-    active: 'w-12 h-1 bg-primary-500 rounded-full mt-2',
-    previous: 'w-12 h-1 bg-primary-300 rounded-full mt-2',
-    inactive: 'w-12 h-1 bg-slate-200 rounded-full mt-2',
+  tabIndicator: {
+    base: 'w-full h-1 rounded-full mt-2',
+    active: 'bg-primary-500',
+    previous: 'bg-primary-300',
+    inactive: 'bg-slate-200',
   },
   container: 'flex-row justify-between my-4.5 gap-8',
   tabContainer: 'flex-1 items-center',

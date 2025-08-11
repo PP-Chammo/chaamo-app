@@ -15,6 +15,7 @@ interface PhoneNumberInputProps {
   countryCode?: string;
   onChange: ({ name, value }: TextChangeParams) => void;
   required?: boolean;
+  error?: string;
 }
 
 const PhoneNumberInput: React.FC<PhoneNumberInputProps> = memo(
@@ -24,6 +25,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = memo(
     countryCode = 'GB',
     onChange,
     required,
+    error,
   }) {
     const handleChange = (text: string) => onChange({ name, value: text });
 
@@ -53,6 +55,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = memo(
             renderFlagButton: false,
           }}
         />
+        {!!error && <Label className={classes.error}>{error}</Label>}
       </View>
     );
   },
@@ -62,6 +65,7 @@ const classes = {
   container: 'w-full',
   label: 'text-slate-500 font-medium text-md ml-4',
   required: 'text-red-500',
+  error: 'text-red-500 text-sm',
 };
 
 // We use StyleSheet instead of classes/nativewind here because the 'react-native-phone-number-input' component

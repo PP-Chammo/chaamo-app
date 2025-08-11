@@ -1,19 +1,12 @@
 import { User } from '@supabase/supabase-js';
 
-import { GetProfilesQuery, GetUserAddressesQuery } from '@/generated/graphql';
+import { UserAddress, UserProfile } from '@/domains';
 import { SupportedCurrency } from '@/types/currency';
-import { DeepGet } from '@/types/helper';
 
-type ProfileAndAddress = DeepGet<
-  GetProfilesQuery,
-  ['profilesCollection', 'edges', 0, 'node']
-> &
-  DeepGet<
-    GetUserAddressesQuery,
-    ['user_addressesCollection', 'edges', 0, 'node']
-  >;
+type ProfileAndAddress = UserProfile & UserAddress;
 
 interface ProfileWithAddress extends ProfileAndAddress {
+  email: string;
   currency: SupportedCurrency;
 }
 

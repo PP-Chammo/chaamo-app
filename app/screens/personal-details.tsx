@@ -91,80 +91,83 @@ export default function PersonalDetailsScreen() {
     [form, setForm],
   );
 
-  const handleUpdateProfile = () => {
-    const requiredFields: (keyof DeepGet<UserStore, ['profile']>)[] = [
-      'city',
-      'state_province',
-      'country',
-      'postal_code',
-    ];
+  const handleUpdateProfile = useCallback(
+    () => () => {
+      const requiredFields: (keyof DeepGet<UserStore, ['profile']>)[] = [
+        'city',
+        'state_province',
+        'country',
+        'postal_code',
+      ];
 
-    const validationErrors = validateRequired(
-      form.profile as unknown as Record<string, string>,
-      requiredFields,
-    );
+      const validationErrors = validateRequired(
+        form.profile as unknown as Record<string, string>,
+        requiredFields,
+      );
 
-    setErrors(validationErrors);
+      setErrors(validationErrors);
 
-    if (Object.keys(validationErrors).length === 0) {
-      const {
-        id,
-        username,
-        country_code,
-        phone_number,
-        address_line_1,
-        city,
-        state_province,
-        country,
-        postal_code,
-      } = form.profile ?? {};
+      if (Object.keys(validationErrors).length === 0) {
+        const {
+          id,
+          username,
+          country_code,
+          phone_number,
+          address_line_1,
+          city,
+          state_province,
+          country,
+          postal_code,
+        } = form.profile ?? {};
 
-      updateProfile({
-        variables: {
-          set: {
-            username,
-            country_code,
-            phone_number,
-          },
-          filter: {
-            id: {
-              eq: id,
+        updateProfile({
+          variables: {
+            set: {
+              username,
+              country_code,
+              phone_number,
+            },
+            filter: {
+              id: {
+                eq: id,
+              },
             },
           },
-        },
-        onCompleted: ({ updateprofilesCollection }) => {
-          if (updateprofilesCollection?.records.length) {
-            updateUserAddress({
-              variables: {
-                set: {
-                  address_line_1,
-                  city,
-                  state_province,
-                  country,
-                  postal_code,
-                },
-                filter: {
-                  user_id: {
-                    eq: id,
+          onCompleted: ({ updateprofilesCollection }) => {
+            if (updateprofilesCollection?.records.length) {
+              updateUserAddress({
+                variables: {
+                  set: {
+                    address_line_1,
+                    city,
+                    state_province,
+                    country,
+                    postal_code,
+                  },
+                  filter: {
+                    user_id: {
+                      eq: id,
+                    },
                   },
                 },
-              },
-              onCompleted: (data) => {
-                if (data?.updateuser_addressesCollection?.records.length) {
-                  // Update the original form after successful save
-                  setOriginalForm(structuredClone(form));
-                  Alert.alert(
-                    'Success',
-                    'Personal details updated successfully',
-                  );
-                }
-              },
-            });
-          }
-        },
-      });
-    }
-  };
+                onCompleted: (data) => {
+                  if (data?.updateuser_addressesCollection?.records.length) {
+                    // Update the original form after successful save
+                    setOriginalForm(structuredClone(form));
+                    Alert.alert(
+                      'Success',
+                      'Personal details updated successfully',
+                    );
+                  }
+                },
+              });
+            }
+          },
+        });
+      }
+    },
+    [form, updateProfile, updateUserAddress],
+  );
 
   const profile = form.profile;
 
