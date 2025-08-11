@@ -40,7 +40,9 @@ export function useBlockedUsers() {
         blocker_user_id: { eq: user?.id },
       },
     },
-    onError: console.log,
+    onError: (err) => {
+      console.error('useBlockedUsers error:', err);
+    },
   });
 
   const blockedUsers = useMemo(() => {

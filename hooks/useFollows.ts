@@ -45,7 +45,9 @@ export function useFollows(userId?: string) {
         ],
       },
     },
-    onError: console.log,
+    onError: (err) => {
+      console.error('useFollows error:', err);
+    },
   });
 
   const followers = useMemo(() => {

@@ -40,7 +40,9 @@ export function useFavorites() {
         user_id: { eq: user?.id },
       },
     },
-    onError: console.log,
+    onError: (err) => {
+      console.error('useFavorites error:', err);
+    },
   });
 
   const favorites = useMemo(() => {
