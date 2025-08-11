@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const getProfiles = gql`
-  query GetProfiles($filter: profilesFilter, $last: Int) {
-    profilesCollection(filter: $filter, last: $last) {
+  query GetProfiles($filter: profilesFilter, $last: Int, $first: Int) {
+    profilesCollection(filter: $filter, last: $last, first: $first) {
       edges {
         node {
           id
@@ -14,23 +14,6 @@ export const getProfiles = gql`
           created_at
           is_profile_complete
         }
-      }
-    }
-  }
-`;
-
-export const createProfiles = gql`
-  mutation CreateProfiles($objects: [profilesInsertInput!]!) {
-    insertIntoprofilesCollection(objects: $objects) {
-      records {
-        id
-        username
-        profile_image_url
-        phone_number
-        country_code
-        currency
-        created_at
-        is_profile_complete
       }
     }
   }

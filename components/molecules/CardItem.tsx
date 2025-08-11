@@ -42,7 +42,7 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
   marketType,
   indicator,
   rightIcon,
-  rightIconSize,
+  rightIconSize = 20,
   rightIconColor = getColor('slate-600'),
   rightIconVariant,
   rightComponent,

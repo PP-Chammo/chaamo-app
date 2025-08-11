@@ -8,6 +8,8 @@ import FollowList from '../FollowList';
 const mockData = [
   {
     node: {
+      follower_user_id: '1',
+      followee_user_id: '2',
       follower_user: {
         id: '1',
         username: 'user1',
@@ -22,6 +24,8 @@ const mockData = [
   },
   {
     node: {
+      follower_user_id: '3',
+      followee_user_id: '4',
       follower_user: {
         id: '3',
         username: 'user3',
@@ -36,118 +40,71 @@ const mockData = [
   },
 ];
 
-const mockOnBlockPress = jest.fn();
-const mockOnUnfollowPress = jest.fn();
-
 describe('FollowList', () => {
   it('renders correctly', () => {
     const { toJSON } = render(
-      <FollowList
-        data={mockData}
-        keyData="follower_user"
-        onBlockPress={mockOnBlockPress}
-      />,
+      <FollowList list={mockData} keyData="follower_user" />,
     );
     expect(toJSON()).toBeTruthy();
   });
 
   it('renders FlatList component', () => {
     const { toJSON } = render(
-      <FollowList
-        data={mockData}
-        keyData="follower_user"
-        onBlockPress={mockOnBlockPress}
-      />,
+      <FollowList list={mockData} keyData="follower_user" />,
     );
     expect(toJSON()).toBeTruthy();
   });
 
   it('renders FollowListItem components for each item', () => {
     const { toJSON } = render(
-      <FollowList
-        data={mockData}
-        keyData="follower_user"
-        onBlockPress={mockOnBlockPress}
-      />,
+      <FollowList list={mockData} keyData="follower_user" />,
     );
     expect(toJSON()).toBeTruthy();
   });
 
   it('displays data from dummy following list', () => {
     const { toJSON } = render(
-      <FollowList
-        data={mockData}
-        keyData="followee_user"
-        onBlockPress={mockOnBlockPress}
-      />,
+      <FollowList list={mockData} keyData="followee_user" />,
     );
     expect(toJSON()).toBeTruthy();
   });
 
   it('applies correct styling classes', () => {
     const { toJSON } = render(
-      <FollowList
-        data={mockData}
-        keyData="follower_user"
-        onBlockPress={mockOnBlockPress}
-      />,
+      <FollowList list={mockData} keyData="follower_user" />,
     );
     expect(toJSON()).toBeTruthy();
   });
 
   it('renders with proper layout structure', () => {
     const { toJSON } = render(
-      <FollowList
-        data={mockData}
-        keyData="follower_user"
-        onBlockPress={mockOnBlockPress}
-      />,
+      <FollowList list={mockData} keyData="follower_user" />,
     );
     expect(toJSON()).toBeTruthy();
   });
 
   it('handles empty data gracefully', () => {
-    const { toJSON } = render(
-      <FollowList
-        data={[]}
-        keyData="follower_user"
-        onBlockPress={mockOnBlockPress}
-      />,
-    );
+    const { toJSON } = render(<FollowList list={[]} keyData="follower_user" />);
     expect(toJSON()).toBeTruthy();
   });
 
   it('renders with proper key extraction', () => {
     const { toJSON } = render(
-      <FollowList
-        data={mockData}
-        keyData="follower_user"
-        onBlockPress={mockOnBlockPress}
-      />,
+      <FollowList list={mockData} keyData="follower_user" />,
     );
     expect(toJSON()).toBeTruthy();
   });
 
   it('calls onBlockPress when block button is pressed', () => {
     const { toJSON } = render(
-      <FollowList
-        data={mockData}
-        keyData="follower_user"
-        onBlockPress={mockOnBlockPress}
-      />,
+      <FollowList list={mockData} keyData="follower_user" />,
     );
     expect(toJSON()).toBeTruthy();
   });
 
   it('calls onUnfollowPress when unfollow button is pressed', () => {
     const { toJSON } = render(
-      <FollowList
-        data={mockData}
-        keyData="follower_user"
-        onBlockPress={mockOnBlockPress}
-        onUnfollowPress={mockOnUnfollowPress}
-        isFollowing={true}
-      />,
+      <FollowList list={mockData} keyData="follower_user" />,
     );
     expect(toJSON()).toBeTruthy();
   });

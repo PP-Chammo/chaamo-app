@@ -1,8 +1,21 @@
 import { gql } from '@apollo/client';
 
+export const getFavoriteCaches = gql`
+  query GetFavoriteCaches($filter: favoritesFilter, $last: Int) {
+    favoritesCollection(filter: $filter, last: $last) {
+      edges {
+        node {
+          user_id
+          listing_id
+        }
+      }
+    }
+  }
+`;
+
 export const getFavorites = gql`
-  query GetFavorites($filter: favorite_listingsFilter, $last: Int) {
-    favorite_listingsCollection(filter: $filter, last: $last) {
+  query GetFavorites($filter: favoritesFilter, $last: Int) {
+    favoritesCollection(filter: $filter, last: $last) {
       edges {
         node {
           listing_id
@@ -12,10 +25,11 @@ export const getFavorites = gql`
   }
 `;
 
-export const insertFavorites = gql`
-  mutation InsertFavorites($objects: [favorite_listingsInsertInput!]!) {
-    insertIntofavorite_listingsCollection(objects: $objects) {
+export const createFavorites = gql`
+  mutation CreateFavorites($objects: [favoritesInsertInput!]!) {
+    insertIntofavoritesCollection(objects: $objects) {
       records {
+        user_id
         listing_id
       }
     }
@@ -23,9 +37,10 @@ export const insertFavorites = gql`
 `;
 
 export const removeFavorites = gql`
-  mutation RemoveFavorites($filter: favorite_listingsFilter) {
-    deleteFromfavorite_listingsCollection(filter: $filter) {
+  mutation RemoveFavorites($filter: favoritesFilter) {
+    deleteFromfavoritesCollection(filter: $filter) {
       records {
+        user_id
         listing_id
       }
     }

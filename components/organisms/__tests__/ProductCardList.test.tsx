@@ -5,7 +5,7 @@ import { render, fireEvent } from '@testing-library/react-native';
 import { dummyFeaturedCardList } from '@/constants/dummy';
 import { ListingType } from '@/generated/graphql';
 
-import ProductCardList from '../ProductCardList';
+import ProductCardList from '../ProductAllList';
 
 // Mock the currency hook
 jest.mock('@/hooks/useCurrencyDisplay', () => ({

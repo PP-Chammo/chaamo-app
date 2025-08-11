@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useMemo, useState } from 'react';
 
 import { router, useFocusEffect } from 'expo-router';
-import { ScrollView, View } from 'react-native';
+import { Alert, ScrollView, View } from 'react-native';
 
 import {
   Button,
@@ -12,30 +12,18 @@ import {
 } from '@/components/atoms';
 import { Header, SettingItem } from '@/components/molecules';
 import { currencyMap } from '@/constants/currencies';
-import {
-  useGetBlockedAccountsQuery,
-  useGetUserNotificationSettingsQuery,
-} from '@/generated/graphql';
+import { useGetUserNotificationSettingsQuery } from '@/generated/graphql';
+import { useBlockedUsers } from '@/hooks/useBlockedUsers';
 import { useUserVar } from '@/hooks/useUserVar';
 import { logout } from '@/utils/auth';
 import { getColor } from '@/utils/getColor';
 
 export default function SettingsScreen() {
   const [user] = useUserVar();
+  const { blockedUsers } = useBlockedUsers();
+
   const [isDeleteAccountModalVisible, setIsDeleteAccountModalVisible] =
     useState<boolean>(false);
-
-  const { data: blockedData, refetch: refetchBlocked } =
-    useGetBlockedAccountsQuery({
-      fetchPolicy: 'network-only',
-      variables: {
-        filter: {
-          blocker_user_id: {
-            eq: user?.id,
-          },
-        },
-      },
-    });
 
   const {
     data: userNotificationSettingsData,
@@ -56,19 +44,13 @@ export default function SettingsScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      refetchBlocked();
       refetchUserNotificationSettings();
-    }, [refetchBlocked, refetchUserNotificationSettings]),
+    }, [refetchUserNotificationSettings]),
   );
 
   const currencyLabel = useMemo(() => {
     return currencyMap?.[user?.profile?.currency ?? 'USD'];
   }, [user?.profile?.currency]);
-
-  const countBlockedAcc = useMemo(
-    () => blockedData?.blocked_usersCollection?.edges?.length.toString() ?? '0',
-    [blockedData?.blocked_usersCollection?.edges?.length],
-  );
 
   const countUserNotificationSettings = useMemo(
     () =>
@@ -83,6 +65,20 @@ export default function SettingsScreen() {
   const handleDeleteAccount = useCallback(() => {
     setIsDeleteAccountModalVisible(!isDeleteAccountModalVisible);
   }, [isDeleteAccountModalVisible]);
+
+  const handleLogout = useCallback(() => {
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      {
+        text: 'Cancel',
+        onPress: () => {},
+        style: 'cancel',
+      },
+      {
+        text: 'Logout',
+        onPress: logout,
+      },
+    ]);
+  }, []);
 
   return (
     <Fragment>
@@ -122,7 +118,7 @@ export default function SettingsScreen() {
             <SettingItem
               iconName="block-helper"
               title="Block"
-              value={countBlockedAcc}
+              value={String(blockedUsers.length)}
               onPress={() => router.push('/screens/blocked-accounts')}
             />
             <Divider position="horizontal" className={classes.divider} />
@@ -185,7 +181,7 @@ export default function SettingsScreen() {
               iconName="logout"
               iconColor={getColor('primary-500')}
               title="Log out"
-              onPress={logout}
+              onPress={handleLogout}
             />
           </View>
         </ScrollView>
@@ -225,7 +221,7 @@ const classes = {
   containerTop: 'bg-white',
   contentContainer: 'my-4 gap-2.5',
   header: 'bg-white',
-  sectionContainer: 'bg-white',
+  sectionContainer: 'bg-white mb-20',
   sectionHeader: 'px-4 pt-3 text-xs text-slate-600 !font-light',
   divider: '!bg-slate-100',
   deleteAccountModal: 'mx-14 items-center pt-5',

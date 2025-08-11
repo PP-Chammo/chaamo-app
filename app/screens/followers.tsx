@@ -1,114 +1,58 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 
-import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { Alert, View } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { View } from 'react-native';
 
 import { ScreenContainer } from '@/components/atoms';
 import { EmptyState, Header } from '@/components/molecules';
 import { FollowList } from '@/components/organisms';
-import {
-  useCreateBlockedUsersMutation,
-  useGetFollowsQuery,
-  useRemoveFollowsMutation,
-} from '@/generated/graphql';
+import { useGetFollowsQuery } from '@/generated/graphql';
+import { useFollows } from '@/hooks/useFollows';
+import { useRealtime } from '@/hooks/useRealtime';
 import { useUserVar } from '@/hooks/useUserVar';
 
 export default function FollowersScreen() {
-  const { publicUserId } = useLocalSearchParams();
+  useRealtime(['follows']);
   const [user] = useUserVar();
+  const { userId } = useLocalSearchParams();
+  const { followers } = useFollows(userId as string);
 
-  const { data, refetch } = useGetFollowsQuery({
+  const { data, loading } = useGetFollowsQuery({
+    skip: !userId && !user?.id,
+    fetchPolicy: 'cache-and-network',
     variables: {
       filter: {
-        followee_user_id: { eq: publicUserId ?? user?.id },
+        followee_user_id: { eq: userId ?? user?.id },
       },
     },
   });
 
-  const [addBlockedUsers] = useCreateBlockedUsersMutation();
-  const [removeFollowers] = useRemoveFollowsMutation();
-
-  const handleUnfollow = useCallback(
-    (userId: string) => {
-      removeFollowers({
-        variables: {
-          filter: {
-            followee_user_id: { eq: publicUserId ?? user?.id },
-            follower_user_id: { eq: userId },
-          },
-        },
-        onCompleted: ({ deleteFromfollowsCollection }) => {
-          if (deleteFromfollowsCollection?.records?.length) {
-            refetch();
-          }
-        },
-      });
-    },
-    [publicUserId, refetch, removeFollowers, user?.id],
-  );
-
-  const handleBlock = useCallback(
-    (userId: string) => {
-      addBlockedUsers({
-        variables: {
-          objects: [
-            {
-              blocker_user_id: user?.id,
-              blocked_user_id: userId,
-            },
-          ],
-        },
-        onCompleted: ({ insertIntoblocked_usersCollection }) => {
-          if (insertIntoblocked_usersCollection?.records?.length) {
-            handleUnfollow(userId);
-            Alert.alert('Blocked', 'User blocked successfully');
-          }
-        },
-      });
-    },
-    [addBlockedUsers, user?.id, handleUnfollow],
-  );
-
-  const followers = useMemo(() => {
+  const followerUsers = useMemo(() => {
     return data?.followsCollection?.edges ?? [];
   }, [data?.followsCollection?.edges]);
-
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [refetch]),
-  );
-
-  const _renderContent = useMemo(() => {
-    if (followers.length) {
-      return (
-        <View className={classes.container}>
-          <FollowList
-            keyData="follower_user"
-            data={followers}
-            onBlockPress={handleBlock}
-          />
-        </View>
-      );
-    }
-
-    return (
-      <EmptyState
-        iconName="user-follow"
-        message="No followers yet"
-        iconVariant="SimpleLineIcons"
-      />
-    );
-  }, [followers, handleBlock]);
 
   return (
     <ScreenContainer>
       <Header title="Followers" onBackPress={() => router.back()} />
-      {_renderContent}
+      {followers.length > 0 || loading ? (
+        <View className={classes.container}>
+          <FollowList
+            list={followerUsers}
+            keyData="follower_user"
+            loading={loading}
+          />
+        </View>
+      ) : (
+        <EmptyState
+          iconName="user-follow"
+          message="No followers yet"
+          iconVariant="SimpleLineIcons"
+        />
+      )}
     </ScreenContainer>
   );
 }
 
 const classes = {
-  container: 'px-4.5',
+  container: 'flex-1 px-4.5',
 };

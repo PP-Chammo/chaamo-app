@@ -1,141 +1,94 @@
 import React, { useCallback, useMemo, useState } from 'react';
 
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { View } from 'react-native';
 
-import { Icon, Label, ScreenContainer } from '@/components/atoms';
-import { HeaderSearch, UserSkeletonList } from '@/components/molecules';
+import { ScreenContainer } from '@/components/atoms';
+import { EmptyState, HeaderSearch } from '@/components/molecules';
 import { BlockList } from '@/components/organisms';
-import { BlockedUsers } from '@/domains';
-import {
-  useCreateBlockedUsersMutation,
-  useGetBlockedAccountsQuery,
-  useGetProfilesQuery,
-} from '@/generated/graphql';
+import { useGetProfilesLazyQuery } from '@/generated/graphql';
+import { useBlockedUsers } from '@/hooks/useBlockedUsers';
+import useDebounce from '@/hooks/useDebounce';
+import { useRealtime } from '@/hooks/useRealtime';
 import { useUserVar } from '@/hooks/useUserVar';
-import { getColor } from '@/utils/getColor';
+import { structuredClone } from '@/utils/structuredClone';
 
-export default function BlockedAccounts() {
-  const [search, setSearch] = useState<string>('');
+export default function BlockAccounts() {
+  useRealtime(['blocked_users']);
   const [user] = useUserVar();
+  const { blockedUsers, getIsBlocked } = useBlockedUsers();
 
-  const { data: blockedData, refetch: refetchBlockedAccount } =
-    useGetBlockedAccountsQuery({
-      fetchPolicy: 'cache-and-network',
-      variables: {
-        filter: {
-          blocked_user_id: {
-            neq: user?.id,
-          },
-        },
-      },
-    });
+  const [search, setSearch] = useState('');
+  const debouncedSearchQuery = useDebounce(search, 500);
 
-  const blockedIds = useMemo(
-    () =>
-      blockedData?.blocked_usersCollection?.edges?.map(
-        (item) => item?.node?.profiles?.id,
-      ) ?? [],
-    [blockedData?.blocked_usersCollection?.edges],
+  // NOTE: this state is used to prevent the query from being called multiple times
+  const [blockedList] = useState(
+    structuredClone(blockedUsers.map((user) => user.node.blocked_user_id)),
   );
 
-  const {
-    data,
-    refetch: refetchProfiles,
-    loading,
-  } = useGetProfilesQuery({
+  const [getUsers, { data, loading }] = useGetProfilesLazyQuery({
     fetchPolicy: 'cache-and-network',
-    variables: {
-      filter: {
-        not: {
-          id: {
-            in: [user?.id, ...blockedIds],
-          },
-        },
-      },
-    },
   });
 
-  const listUsers = useMemo(() => {
-    return data?.profilesCollection?.edges?.map((edge) => edge?.node) ?? [];
-  }, [data]);
+  const unblockedList = useMemo(() => {
+    return (
+      data?.profilesCollection?.edges?.filter(
+        (profile) => !getIsBlocked(profile.node.id),
+      ) ?? []
+    );
+  }, [data?.profilesCollection?.edges, getIsBlocked]);
 
-  const [addBlockedUsers, { loading: loadingBlock }] =
-    useCreateBlockedUsersMutation();
-
-  const handleBlock = useCallback(
-    (userId: string) => {
-      addBlockedUsers({
-        variables: {
-          objects: [
-            {
-              blocker_user_id: user?.id,
-              blocked_user_id: userId,
+  useFocusEffect(
+    useCallback(() => {
+      if (user?.id) {
+        getUsers({
+          variables: {
+            filter: {
+              and: [
+                {
+                  not: {
+                    id: {
+                      in: [user?.id, ...blockedList],
+                    },
+                  },
+                },
+                {
+                  username: debouncedSearchQuery
+                    ? { ilike: `%${debouncedSearchQuery}%` }
+                    : undefined,
+                },
+              ],
             },
-          ],
-        },
-        onCompleted: ({ insertIntoblocked_usersCollection }) => {
-          if (insertIntoblocked_usersCollection?.records?.length) {
-            refetchBlockedAccount();
-            refetchProfiles();
-          }
-        },
-      });
-    },
-    [addBlockedUsers, refetchBlockedAccount, refetchProfiles, user?.id],
+            last: 50,
+          },
+        });
+      }
+    }, [getUsers, user?.id, debouncedSearchQuery, blockedList]),
   );
 
-  const filteredBlockedAccounts = useMemo(() => {
-    return listUsers.filter((user) =>
-      user.username.toLowerCase().includes(search.toLowerCase()),
-    );
-  }, [listUsers, search]);
-
-  const renderBlockedAccounts = useMemo(() => {
-    if (loading)
-      return (
-        <View className={classes.containerSkeleton}>
-          <UserSkeletonList />
-        </View>
-      );
-
-    if (filteredBlockedAccounts.length)
-      return (
-        <BlockList
-          onBlock={handleBlock}
-          data={filteredBlockedAccounts as BlockedUsers}
-          isLoading={loadingBlock}
-        />
-      );
-
-    return (
-      <View className={classes.emptyContainer}>
-        <Icon
-          variant="Ionicons"
-          name="ban-outline"
-          size={80}
-          color={getColor('primary-100')}
-        />
-        <Label className={classes.emptyText}>No accounts found</Label>
-      </View>
-    );
-  }, [filteredBlockedAccounts, handleBlock, loading, loadingBlock]);
-
   return (
-    <ScreenContainer>
+    <ScreenContainer classNameTop={classes.containerTop}>
       <HeaderSearch
         value={search}
         onChange={({ value }) => setSearch(value)}
         onBackPress={() => router.back()}
       />
-      <View className={classes.container}>{renderBlockedAccounts}</View>
+      <View className={classes.container}>
+        {unblockedList.length > 0 || loading ? (
+          <BlockList list={unblockedList} loading={loading} />
+        ) : (
+          <EmptyState
+            iconName="user"
+            iconVariant="SimpleLineIcons"
+            message="No accounts found"
+          />
+        )}
+      </View>
     </ScreenContainer>
   );
 }
 
 const classes = {
-  emptyContainer: 'flex-1 items-center gap-8 mt-16',
-  emptyText: 'text-center text-slate-600',
+  containerTop: 'bg-white',
   container: 'flex-1 px-4.5 mt-5',
-  containerSkeleton: 'flex-1',
 };

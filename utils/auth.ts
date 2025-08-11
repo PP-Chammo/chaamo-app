@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { Alert } from 'react-native';
 
 import { UserProfile } from '@/domains';
-import { createProfiles, getProfiles } from '@/graphql/profiles';
+import { getProfiles } from '@/graphql/profiles';
 import { getUserAddresses } from '@/graphql/user_addresses';
 import { UserStore } from '@/stores/userStore';
 import { DeepGet } from '@/types/helper';
@@ -18,6 +18,7 @@ GoogleSignin.configure({
 });
 
 export async function logout() {
+  await GoogleSignin.signOut();
   await supabase.auth.signOut();
   router.replace('/(auth)/sign-in');
 }
@@ -25,6 +26,7 @@ export async function logout() {
 export async function loginWithGoogle() {
   try {
     await GoogleSignin.hasPlayServices();
+    await GoogleSignin.signOut();
 
     const userInfo = await GoogleSignin.signIn();
 
@@ -77,7 +79,6 @@ export const updateProfileSession = async (
   try {
     const { data, error } = await supabase.auth.getSession();
     const userId = data?.session?.user?.id;
-    const username = data?.session?.user?.user_metadata?.full_name;
 
     if (error) {
       console.error('Session error:', error);
@@ -86,7 +87,7 @@ export const updateProfileSession = async (
     }
 
     if (data?.session) {
-      const profileResult = await client.query({
+      const selectedProfile = await client.query({
         query: getProfiles,
         variables: {
           filter: {
@@ -95,54 +96,14 @@ export const updateProfileSession = async (
         },
       });
 
-      const profileExists =
-        profileResult?.data?.profilesCollection?.edges?.length > 0;
-
-      let profileData;
-
-      if (userId && !profileExists) {
-        const createResult = await client.mutate({
-          mutation: createProfiles,
-          variables: {
-            objects: [
-              {
-                id: userId,
-                username,
-              },
-            ],
-          },
-        });
-
-        profileData =
-          createResult.data?.insertIntoprofilesCollection?.records?.[0];
-
-        if (createResult.errors) {
-          console.error(
-            'Create profile error:',
-            JSON.stringify(createResult.errors),
-          );
-          errorAlert();
-          return;
-        }
-      } else {
-        const selectedProfile = await client.query({
-          query: getProfiles,
-          variables: {
-            filter: {
-              id: { eq: userId },
-            },
-          },
-        });
-
-        if (selectedProfile.error) {
-          console.error('Profile fetch error:', selectedProfile.error);
-          errorAlert();
-          return;
-        }
-
-        profileData =
-          selectedProfile?.data?.profilesCollection?.edges?.[0]?.node;
+      if (selectedProfile.error) {
+        console.error('Profile fetch error:', selectedProfile.error);
+        errorAlert();
+        return;
       }
+
+      const profileData =
+        selectedProfile?.data?.profilesCollection?.edges?.[0]?.node;
 
       const selectedUserAddress = await client.query({
         query: getUserAddresses,

@@ -7,7 +7,7 @@ import { Label, ScreenContainer } from '@/components/atoms';
 import { CardItem, Header } from '@/components/molecules';
 import {
   ListingType,
-  useGetVwMyFavoriteListingsQuery,
+  useGetVwMyFavoritesQuery,
   useRemoveFavoritesMutation,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
@@ -18,15 +18,15 @@ export default function WishlistScreen() {
   const [user] = useUserVar();
   const { formatDisplay } = useCurrencyDisplay();
 
-  const { data, refetch } = useGetVwMyFavoriteListingsQuery({
+  const { data, refetch } = useGetVwMyFavoritesQuery({
     fetchPolicy: 'cache-and-network',
     skip: !user?.id,
   });
   const [removeFavorites] = useRemoveFavoritesMutation();
 
   const favorites = useMemo(
-    () => data?.vw_myfavorite_listingsCollection?.edges ?? [],
-    [data?.vw_myfavorite_listingsCollection?.edges],
+    () => data?.vw_myfavoritesCollection?.edges ?? [],
+    [data?.vw_myfavoritesCollection?.edges],
   );
 
   const handleRemoveFavorite = useCallback(
@@ -69,7 +69,7 @@ export default function WishlistScreen() {
   );
 
   return (
-    <ScreenContainer enableBottomSafeArea={false}>
+    <ScreenContainer>
       <Header title="Wishlist" onBackPress={() => router.back()} />
       <View className={classes.container}>
         <Label variant="title" className={classes.title}>
@@ -78,6 +78,7 @@ export default function WishlistScreen() {
         <FlatList
           data={favorites}
           keyExtractor={(item) => item.node.id}
+          showsVerticalScrollIndicator={false}
           contentContainerClassName={classes.contentContainer}
           renderItem={({ item }) => (
             <CardItem
@@ -97,7 +98,6 @@ export default function WishlistScreen() {
               indicator="up"
               rightIcon="heart"
               rightIconColor={getColor('red-500')}
-              rightIconSize={18}
               onRightIconPress={handleRemoveFavorite(item.node?.id)}
               onPress={handlePress(
                 item.node?.id,
@@ -112,7 +112,7 @@ export default function WishlistScreen() {
 }
 
 const classes = {
+  container: 'flex-1 p-4.5',
   contentContainer: 'gap-6',
-  container: 'p-4.5',
   title: 'text-slate-800 !text-sm my-4.5',
 };

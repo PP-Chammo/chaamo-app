@@ -21,8 +21,6 @@ export default function StatsProfile() {
   const { formatDisplay, convertSymbolToCurrency, convertCurrencyToSymbol } =
     useCurrencyDisplay();
 
-  console.log('laazyyy');
-
   const { data: publicUserData } = useGetProfilesQuery({
     skip: !publicUserId,
     variables: {

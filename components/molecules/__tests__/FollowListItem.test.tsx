@@ -1,12 +1,19 @@
+/* eslint-disable import/first */
 import React from 'react';
 
 import { fireEvent, render } from '@testing-library/react-native';
+
+// Mock hook to avoid Apollo useApolloClient usage
+jest.mock('@/hooks/useBlockedUsers', () => ({
+  useBlockedUsers: () => ({ getIsBlocked: () => false }),
+}));
 
 import FollowListItem from '../FollowListItem';
 
 describe('FollowListItem', () => {
   const defaultProps = {
-    name: 'John Doe',
+    userId: 'u1',
+    username: 'John Doe',
     imageUrl: 'https://example.com/avatar.jpg',
   };
 
@@ -17,7 +24,7 @@ describe('FollowListItem', () => {
 
   it('renders with custom name', () => {
     const { getByText } = render(
-      <FollowListItem {...defaultProps} name="Jane Smith" />,
+      <FollowListItem {...defaultProps} username="Jane Smith" />,
     );
     expect(getByText('Jane Smith')).toBeTruthy();
   });
@@ -33,7 +40,7 @@ describe('FollowListItem', () => {
       <FollowListItem
         {...defaultProps}
         isFollowing={true}
-        onUnfollowPress={onPressFollow}
+        onToggleFollowPress={onPressFollow}
       />,
     );
     expect(getByText('Unfollow')).toBeTruthy();
@@ -52,7 +59,7 @@ describe('FollowListItem', () => {
       <FollowListItem
         {...defaultProps}
         isFollowing={true}
-        onUnfollowPress={onPressFollow}
+        onToggleFollowPress={onPressFollow}
       />,
     );
 
@@ -63,12 +70,16 @@ describe('FollowListItem', () => {
   });
 
   it('shows dots menu button', () => {
-    const { getByTestId } = render(<FollowListItem {...defaultProps} />);
+    const { getByTestId } = render(
+      <FollowListItem {...defaultProps} onToggleBlockPress={jest.fn()} />,
+    );
     expect(getByTestId('dots-menu-button')).toBeTruthy();
   });
 
   it('opens context menu when dots button is pressed', () => {
-    const { getByTestId } = render(<FollowListItem {...defaultProps} />);
+    const { getByTestId } = render(
+      <FollowListItem {...defaultProps} onToggleBlockPress={jest.fn()} />,
+    );
 
     const dotsButton = getByTestId('dots-menu-button');
     fireEvent.press(dotsButton);
@@ -78,7 +89,7 @@ describe('FollowListItem', () => {
 
   it('shows block option in context menu', () => {
     const { getByTestId, getByText } = render(
-      <FollowListItem {...defaultProps} />,
+      <FollowListItem {...defaultProps} onToggleBlockPress={jest.fn()} />,
     );
 
     const dotsButton = getByTestId('dots-menu-button');
@@ -90,7 +101,7 @@ describe('FollowListItem', () => {
   it('calls onBlock when block option is pressed', () => {
     const onBlock = jest.fn();
     const { getByTestId, getByText } = render(
-      <FollowListItem {...defaultProps} onBlockPress={onBlock} />,
+      <FollowListItem {...defaultProps} onToggleBlockPress={onBlock} />,
     );
 
     const dotsButton = getByTestId('dots-menu-button');
@@ -105,7 +116,7 @@ describe('FollowListItem', () => {
   it('closes context menu after blocking', () => {
     const onBlock = jest.fn();
     const { getByTestId, getByText, queryByTestId } = render(
-      <FollowListItem {...defaultProps} onBlockPress={onBlock} />,
+      <FollowListItem {...defaultProps} onToggleBlockPress={onBlock} />,
     );
 
     const dotsButton = getByTestId('dots-menu-button');
@@ -123,11 +134,11 @@ describe('FollowListItem', () => {
     const { getByText, getByTestId } = render(
       <FollowListItem
         {...defaultProps}
-        name="Alice Johnson"
+        username="Alice Johnson"
         imageUrl="https://example.com/alice.jpg"
         isFollowing={true}
-        onUnfollowPress={onPressFollow}
-        onBlockPress={onBlock}
+        onToggleFollowPress={onPressFollow}
+        onToggleBlockPress={onBlock}
       />,
     );
 
@@ -149,8 +160,8 @@ describe('FollowListItem', () => {
       <FollowListItem
         {...defaultProps}
         isFollowing={true}
-        onUnfollowPress={onPressFollow}
-        onBlockPress={onBlock}
+        onToggleFollowPress={onPressFollow}
+        onToggleBlockPress={onBlock}
       />,
     );
 

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { FlatList, View } from 'react-native';
 
@@ -9,7 +9,7 @@ import { CommonCard } from '@/components/molecules';
 import {
   ListingType,
   useGetVwChaamoListingsQuery,
-  useInsertFavoritesMutation,
+  useCreateFavoritesMutation,
   useRemoveFavoritesMutation,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
@@ -22,20 +22,24 @@ cssInterop(FlatList, {
 
 export default function Portfolio() {
   const [user] = useUserVar();
+  const { userId } = useLocalSearchParams();
 
   const { formatDisplay } = useCurrencyDisplay();
 
   const { data, refetch } = useGetVwChaamoListingsQuery({
+    skip: !userId && !user?.id,
     fetchPolicy: 'cache-and-network',
     variables: {
       filter: {
-        seller_id: { eq: user?.id },
+        seller_id: { eq: userId ?? user?.id },
         listing_type: { eq: ListingType.PORTFOLIO },
       },
     },
   });
-  const [insertFavorites] = useInsertFavoritesMutation();
-  const [removeFavorites] = useRemoveFavoritesMutation();
+  const [createFavorites] = useCreateFavoritesMutation();
+  const [removeFavorites] = useRemoveFavoritesMutation({
+    refetchQueries: [], // Disable automatic refetch - realtime handles cache updates
+  });
 
   const portfolios = useMemo(
     () =>
@@ -60,7 +64,7 @@ export default function Portfolio() {
           },
         });
       } else {
-        insertFavorites({
+        createFavorites({
           variables: {
             objects: [
               {
@@ -75,7 +79,7 @@ export default function Portfolio() {
         });
       }
     },
-    [insertFavorites, user?.id, refetch, removeFavorites],
+    [createFavorites, user?.id, refetch, removeFavorites],
   );
 
   if (!portfolios?.length) {

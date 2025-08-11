@@ -6,11 +6,11 @@ import BlockListItem from '../BlockListItem';
 
 describe('BlockListItem', () => {
   const defaultProps = {
-    id: '123',
     username: 'John Doe',
-    profile_image_url: 'https://example.com/avatar.jpg',
+    imageUrl: 'https://example.com/avatar.jpg',
     isBlocked: false,
     isLoading: false,
+    onToggleBlockPress: jest.fn(),
     onPress: jest.fn(),
   };
 
@@ -28,16 +28,19 @@ describe('BlockListItem', () => {
     expect(getByText('Unblock')).toBeTruthy();
   });
 
-  it('calls onPress when button is pressed', () => {
-    const onPress = jest.fn();
+  it('calls onToggleBlockPress when button is pressed', () => {
+    const onToggleBlockPress = jest.fn();
     const { getByText } = render(
-      <BlockListItem {...defaultProps} onPress={onPress} />,
+      <BlockListItem
+        {...defaultProps}
+        onToggleBlockPress={onToggleBlockPress}
+      />,
     );
 
     const button = getByText('Block');
     fireEvent.press(button);
 
-    expect(onPress).toHaveBeenCalledTimes(1);
+    expect(onToggleBlockPress).toHaveBeenCalledTimes(1);
   });
 
   it('renders with custom username', () => {
@@ -51,7 +54,7 @@ describe('BlockListItem', () => {
     const { getByTestId } = render(
       <BlockListItem
         {...defaultProps}
-        profile_image_url="https://example.com/custom.jpg"
+        imageUrl="https://example.com/custom.jpg"
       />,
     );
     expect(getByTestId('avatar')).toBeTruthy();
@@ -74,9 +77,12 @@ describe('BlockListItem', () => {
   });
 
   it('handles multiple button presses', () => {
-    const onPress = jest.fn();
+    const onToggleBlockPress = jest.fn();
     const { getByText } = render(
-      <BlockListItem {...defaultProps} onPress={onPress} />,
+      <BlockListItem
+        {...defaultProps}
+        onToggleBlockPress={onToggleBlockPress}
+      />,
     );
 
     const button = getByText('Block');
@@ -85,18 +91,19 @@ describe('BlockListItem', () => {
     fireEvent.press(button);
     fireEvent.press(button);
 
-    expect(onPress).toHaveBeenCalledTimes(3);
+    expect(onToggleBlockPress).toHaveBeenCalledTimes(3);
   });
 
   it('renders with all props combined', () => {
+    const onToggleBlockPress = jest.fn();
     const onPress = jest.fn();
     const { getByText, getByTestId } = render(
       <BlockListItem
-        id="123"
         username="Alice Johnson"
-        profile_image_url="https://example.com/alice.jpg"
+        imageUrl="https://example.com/alice.jpg"
         isLoading={false}
         isBlocked={true}
+        onToggleBlockPress={onToggleBlockPress}
         onPress={onPress}
       />,
     );
@@ -108,7 +115,7 @@ describe('BlockListItem', () => {
 
   it('applies correct styling classes', () => {
     const { getByTestId } = render(<BlockListItem {...defaultProps} />);
-    expect(getByTestId('block-list-item')).toBeTruthy();
+    expect(getByTestId('button')).toBeTruthy();
   });
 
   it('renders avatar with correct size', () => {
@@ -133,15 +140,19 @@ describe('BlockListItem', () => {
     expect(button).toBeTruthy();
   });
 
-  it('prevents onPress from being called when loading', () => {
-    const onPress = jest.fn();
+  it('prevents onToggleBlockPress from being called when loading', () => {
+    const onToggleBlockPress = jest.fn();
     const { getByTestId } = render(
-      <BlockListItem {...defaultProps} isLoading={true} onPress={onPress} />,
+      <BlockListItem
+        {...defaultProps}
+        isLoading={true}
+        onToggleBlockPress={onToggleBlockPress}
+      />,
     );
 
     const button = getByTestId('button');
     fireEvent.press(button);
 
-    expect(onPress).not.toHaveBeenCalled();
+    expect(onToggleBlockPress).not.toHaveBeenCalled();
   });
 });

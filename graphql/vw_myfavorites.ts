@@ -1,11 +1,8 @@
 import { gql } from '@apollo/client';
 
-export const getVwMyFavoriteListings = gql`
-  query GetVwMyFavoriteListings(
-    $filter: vw_myfavorite_listingsFilter
-    $last: Int
-  ) {
-    vw_myfavorite_listingsCollection(filter: $filter, last: $last) {
+export const getVwMyFavorites = gql`
+  query GetVwMyFavorites($filter: vw_myfavoritesFilter, $last: Int) {
+    vw_myfavoritesCollection(filter: $filter, last: $last) {
       edges {
         node {
           id

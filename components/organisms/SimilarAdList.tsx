@@ -1,15 +1,14 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 
 import { router } from 'expo-router';
 
 import { AuctionCard, CommonCard, ListContainer } from '@/components/molecules';
 import {
   ListingType,
-  useGetFavoritesQuery,
   useGetVwFeaturedListingsQuery,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
-import { useUserVar } from '@/hooks/useUserVar';
+import { useFavorites } from '@/hooks/useFavorites';
 import { getColor } from '@/utils/getColor';
 
 interface SimilarAdListProps {
@@ -19,18 +18,9 @@ interface SimilarAdListProps {
 
 const SimilarAdList: React.FC<SimilarAdListProps> = memo(
   function SimilarAdList({ ignoreListingId, listingType }) {
-    const [user] = useUserVar();
+    const { getIsFavorite } = useFavorites();
     const { formatDisplay } = useCurrencyDisplay();
 
-    const { data: favoritesData } = useGetFavoritesQuery({
-      skip: !user?.id,
-      variables: {
-        filter: {
-          user_id: { eq: user?.id },
-        },
-      },
-      onError: console.log,
-    });
     const { data, loading } = useGetVwFeaturedListingsQuery({
       fetchPolicy: 'cache-and-network',
       variables: {
@@ -47,14 +37,6 @@ const SimilarAdList: React.FC<SimilarAdListProps> = memo(
     const cards = useMemo(
       () => data?.vw_featured_cardsCollection?.edges ?? [],
       [data?.vw_featured_cardsCollection?.edges],
-    );
-
-    const getIsFavorite = useCallback(
-      (listingId: string) =>
-        favoritesData?.favorite_listingsCollection?.edges?.some(
-          (edge) => edge.node.listing_id === listingId,
-        ),
-      [favoritesData?.favorite_listingsCollection?.edges],
     );
 
     if (loading || cards.length === 0) {
