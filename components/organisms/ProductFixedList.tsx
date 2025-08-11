@@ -8,6 +8,7 @@ import { Label } from '@/components/atoms';
 import { CardItem } from '@/components/molecules';
 import { GetVwChaamoListingsQuery, ListingType } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { useFavorites } from '@/hooks/useFavorites';
 import { DeepGet } from '@/types/helper';
 import { getColor } from '@/utils/getColor';
 
@@ -28,6 +29,7 @@ interface ProductFixedListProps {
 
 const ProductFixedList: React.FC<ProductFixedListProps> = memo(
   function AllCards({ loading, cards, onFavoritePress }) {
+    const { getIsFavorite } = useFavorites();
     const { formatDisplay } = useCurrencyDisplay();
 
     if (loading) {
@@ -67,13 +69,13 @@ const ProductFixedList: React.FC<ProductFixedListProps> = memo(
                 },
               })
             }
-            rightIcon={item.node?.is_favorite ? 'heart' : 'heart-outline'}
+            rightIcon={getIsFavorite(item.node?.id) ? 'heart' : 'heart-outline'}
             rightIconColor={
-              item.node?.is_favorite ? getColor('red-600') : undefined
+              getIsFavorite(item.node?.id) ? getColor('red-600') : undefined
             }
             rightIconSize={22}
             onRightIconPress={() => {
-              onFavoritePress(item.node?.id, item.node?.is_favorite ?? false);
+              onFavoritePress(item.node?.id, getIsFavorite(item.node?.id));
             }}
           />
         )}

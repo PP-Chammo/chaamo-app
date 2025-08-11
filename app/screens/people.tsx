@@ -2,51 +2,59 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
-import { ActivityIndicator, FlatList, View } from 'react-native';
+import { FlatList } from 'react-native';
 
-import { Label, ScreenContainer } from '@/components/atoms';
-import { Header, People, TextField } from '@/components/molecules';
+import { Loading, ScreenContainer } from '@/components/atoms';
+import { HeaderSearch, People } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
 import {
-  useCreateFollowsMutation,
-  useGetVwFilteredProfilesLazyQuery,
+  useGetVwPeoplesLazyQuery,
   useRemoveFollowsMutation,
+  useCreateFollowsMutation,
 } from '@/generated/graphql';
 import useDebounce from '@/hooks/useDebounce';
+import { useFollows } from '@/hooks/useFollows';
+import { useRealtime } from '@/hooks/useRealtime';
 import { useUserVar } from '@/hooks/useUserVar';
-import { getColor } from '@/utils/getColor';
 
 export default function PeopleScreen() {
+  useRealtime(['follows']);
   const [user] = useUserVar();
-  const [searchQuery, setSearchQuery] = useState('');
-  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const { getIsFollowing } = useFollows();
+  const [search, setSearch] = useState('');
+  const debouncedSearchQuery = useDebounce(search, 500);
 
-  const [getPeoples, { data, loading, refetch }] =
-    useGetVwFilteredProfilesLazyQuery({
-      fetchPolicy: 'cache-and-network',
-      variables: {
-        filter: {
-          username: debouncedSearchQuery
-            ? { ilike: `%${debouncedSearchQuery}%` }
-            : undefined,
-        },
+  const [processedList, setProcessedList] = useState<string[]>([]);
+
+  const [getPeoples, { data, loading }] = useGetVwPeoplesLazyQuery({
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      filter: {
+        username: debouncedSearchQuery
+          ? { ilike: `%${debouncedSearchQuery}%` }
+          : undefined,
       },
-    });
-  const [createFollowing] = useCreateFollowsMutation();
-  const [removeFollowing] = useRemoveFollowsMutation();
+      last: 50,
+    },
+  });
+  const [createFollowing, { loading: createFollowingLoading }] =
+    useCreateFollowsMutation();
+  const [removeFollowing, { loading: removeFollowingLoading }] =
+    useRemoveFollowsMutation();
 
   const peoples = useMemo(
-    () => data?.vw_filtered_profilesCollection?.edges ?? [],
-    [data?.vw_filtered_profilesCollection?.edges],
+    () => data?.vw_peoplesCollection?.edges ?? [],
+    [data?.vw_peoplesCollection?.edges],
   );
 
   const handleSearchChange = useCallback(({ value }: TextChangeParams) => {
-    setSearchQuery(value);
+    setSearch(value);
   }, []);
 
   const handleToggleFollow = useCallback(
-    (followeeUserId: string, isFollowed: boolean) => () => {
-      if (isFollowed) {
+    (followeeUserId: string) => () => {
+      setProcessedList((prev) => [...prev, followeeUserId]);
+      if (getIsFollowing(followeeUserId)) {
         removeFollowing({
           variables: {
             filter: {
@@ -55,7 +63,9 @@ export default function PeopleScreen() {
             },
           },
           onCompleted: () => {
-            refetch();
+            setProcessedList((prev) =>
+              prev.filter((id) => id !== followeeUserId),
+            );
           },
         });
       } else {
@@ -69,12 +79,14 @@ export default function PeopleScreen() {
             ],
           },
           onCompleted: () => {
-            refetch();
+            setProcessedList((prev) =>
+              prev.filter((id) => id !== followeeUserId),
+            );
           },
         });
       }
     },
-    [createFollowing, refetch, removeFollowing, user?.id],
+    [createFollowing, getIsFollowing, removeFollowing, user?.id],
   );
 
   useFocusEffect(
@@ -104,21 +116,13 @@ export default function PeopleScreen() {
 
   return (
     <ScreenContainer>
-      <Header title="People List" onBackPress={() => router.back()} />
-      <View className={classes.searchContainer}>
-        <TextField
-          name="search"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          placeholder="Search people..."
-          className={classes.searchField}
-        />
-      </View>
+      <HeaderSearch
+        value={search}
+        onChange={handleSearchChange}
+        onBackPress={() => router.back()}
+      />
       {loading ? (
-        <View className={classes.loadingContainer}>
-          <ActivityIndicator color={getColor('primary-500')} />
-          <Label className={classes.loadingText}>Loading...</Label>
-        </View>
+        <Loading />
       ) : (
         <FlatList
           data={peoples}
@@ -129,16 +133,23 @@ export default function PeopleScreen() {
             <People
               key={people.node.id}
               size="md"
-              followed={people.node.is_follow ?? false}
+              followed={getIsFollowing(people.node.id)}
               imageUrl={people.node.profile_image_url ?? ''}
               fullname={people.node.username ?? ''}
               onPress={() => {
-                console.log(`People id ${people.node.id}`);
+                const userId = people.node.id;
+                router.push({
+                  pathname: '/screens/profile',
+                  params: {
+                    userId,
+                  },
+                });
               }}
-              onFollowPress={handleToggleFollow(
-                people.node.id,
-                people.node.is_follow ?? false,
-              )}
+              onFollowPress={handleToggleFollow(people.node.id)}
+              isLoading={
+                processedList.includes(people.node.id) &&
+                (createFollowingLoading || removeFollowingLoading)
+              }
             />
           )}
         />
@@ -150,7 +161,7 @@ export default function PeopleScreen() {
 const classes = {
   searchContainer: 'px-4 pb-4.5',
   searchField: 'w-full',
-  contentContainer: 'px-4 pb-4 gap-3',
+  contentContainer: 'px-4 pb-4 gap-5',
   loadingContainer: 'flex-1 flex-row items-center justify-center gap-2',
   loadingText: 'text-center',
 };

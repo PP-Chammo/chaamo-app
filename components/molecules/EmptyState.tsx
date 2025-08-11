@@ -21,7 +21,7 @@ const EmptyState = memo(function EmptyState({
   iconName,
   iconVariant = 'MaterialCommunityIcons',
   iconSize = 65,
-  iconColor,
+  iconColor = getColor('primary-100'),
   message,
   className,
   iconClassName,
@@ -33,7 +33,7 @@ const EmptyState = memo(function EmptyState({
         variant={iconVariant}
         name={iconName}
         size={iconSize}
-        color={iconColor || getColor('gray-300')}
+        color={iconColor}
         className={iconClassName}
       />
       <Label className={clsx(messageClassName, classes.message)}>
@@ -44,7 +44,7 @@ const EmptyState = memo(function EmptyState({
 });
 
 const classes = {
-  container: 'flex-1 items-center mt-24',
+  container: 'flex-1 items-center justify-center',
   message: '!text-lg mt-5 text-slate-400',
 };
 

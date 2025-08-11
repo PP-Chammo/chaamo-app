@@ -4,30 +4,19 @@ import { router } from 'expo-router';
 
 import { AuctionCard, ListContainer } from '@/components/molecules';
 import {
-  GetFavoritesQuery,
   ListingType,
   useGetVwChaamoListingsQuery,
-  useInsertFavoritesMutation,
+  useCreateFavoritesMutation,
   useRemoveFavoritesMutation,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { useFavorites } from '@/hooks/useFavorites';
 import { useUserVar } from '@/hooks/useUserVar';
-import { DeepGet } from '@/types/helper';
 import { getColor } from '@/utils/getColor';
 
-type AuctionListProps = {
-  favoriteList: DeepGet<
-    GetFavoritesQuery,
-    ['favorite_listingsCollection', 'edges']
-  >;
-  refreshFavoriteCount: () => void;
-};
-
-const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
-  favoriteList = [],
-  refreshFavoriteCount,
-}) {
+const AuctionList = memo(function AuctionList() {
   const [user] = useUserVar();
+  const { getIsFavorite } = useFavorites();
   const { formatDisplay } = useCurrencyDisplay();
 
   const { data, loading } = useGetVwChaamoListingsQuery({
@@ -40,18 +29,12 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
     },
   });
 
-  const [insertFavorites] = useInsertFavoritesMutation();
+  const [createFavorites] = useCreateFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
 
   const cards = useMemo(
     () => data?.vw_chaamo_cardsCollection?.edges ?? [],
     [data?.vw_chaamo_cardsCollection?.edges],
-  );
-
-  const getIsFavorite = useCallback(
-    (listingId: string) =>
-      favoriteList.some((edge) => edge.node.listing_id === listingId),
-    [favoriteList],
   );
 
   const handleToggleFavorite = useCallback(
@@ -64,12 +47,9 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
               listing_id: { eq: listing_id },
             },
           },
-          onCompleted: () => {
-            refreshFavoriteCount();
-          },
         });
       } else {
-        insertFavorites({
+        createFavorites({
           variables: {
             objects: [
               {
@@ -78,19 +58,10 @@ const AuctionList: React.FC<AuctionListProps> = memo(function AuctionList({
               },
             ],
           },
-          onCompleted: () => {
-            refreshFavoriteCount();
-          },
         });
       }
     },
-    [
-      getIsFavorite,
-      insertFavorites,
-      user?.id,
-      refreshFavoriteCount,
-      removeFavorites,
-    ],
+    [getIsFavorite, createFavorites, user?.id, removeFavorites],
   );
 
   if (loading) {

@@ -1,87 +1,49 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
-import { Icon, Label, ScreenContainer } from '@/components/atoms';
-import { Header, UserSkeletonList } from '@/components/molecules';
+import { ScreenContainer } from '@/components/atoms';
+import { EmptyState, Header } from '@/components/molecules';
 import { BlockList } from '@/components/organisms';
-import { BlockedUsers } from '@/domains';
-import {
-  useGetBlockedAccountsQuery,
-  useRemoveBlockedUsersMutation,
-} from '@/generated/graphql';
+import { GetProfilesQuery, useGetBlockedUsersQuery } from '@/generated/graphql';
+import { useBlockedUsers } from '@/hooks/useBlockedUsers';
+import { useRealtime } from '@/hooks/useRealtime';
 import { useUserVar } from '@/hooks/useUserVar';
+import { DeepGet } from '@/types/helper';
 import { getColor } from '@/utils/getColor';
 
 export default function BlockedAccounts() {
+  useRealtime(['blocked_users']);
   const [user] = useUserVar();
+  const { getIsBlocked } = useBlockedUsers();
 
-  const { data, loading, refetch } = useGetBlockedAccountsQuery({
+  const { data, loading } = useGetBlockedUsersQuery({
     fetchPolicy: 'cache-and-network',
     variables: {
       filter: {
-        blocked_user_id: {
-          neq: user?.id,
-        },
+        and: [
+          {
+            blocker_user_id: {
+              eq: user?.id,
+            },
+          },
+        ],
       },
     },
   });
-  const [removeBlockedUsers, { loading: loadingRemove }] =
-    useRemoveBlockedUsersMutation();
 
-  const blockedAccounts = useMemo(() => {
+  const blockedList = useMemo(() => {
     return (
-      data?.blocked_usersCollection?.edges?.map(
-        (edge) => edge?.node?.profiles,
-      ) ?? []
+      data?.blocked_usersCollection?.edges
+        ?.filter(
+          (edge) => edge.node.profiles && getIsBlocked(edge.node.profiles.id),
+        )
+        ?.map((edge) => ({
+          node: edge.node.profiles,
+        })) ?? []
     );
-  }, [data]);
-
-  const handleRemove = useCallback(
-    (id: string) => {
-      removeBlockedUsers({
-        variables: { filter: { blocked_user_id: { eq: id } } },
-        onCompleted: ({ deleteFromblocked_usersCollection }) => {
-          if (deleteFromblocked_usersCollection?.records?.length) {
-            refetch();
-          }
-        },
-      });
-    },
-    [refetch, removeBlockedUsers],
-  );
-
-  const renderBlockedAccounts = useMemo(() => {
-    if (loading)
-      return (
-        <View className={classes.containerSkeleton}>
-          <UserSkeletonList />
-        </View>
-      );
-
-    if (blockedAccounts.length)
-      return (
-        <BlockList
-          isBlocked
-          onRemove={handleRemove}
-          isLoading={loadingRemove}
-          data={blockedAccounts as BlockedUsers}
-        />
-      );
-
-    return (
-      <View className={classes.emptyContainer}>
-        <Icon
-          variant="Ionicons"
-          name="ban-outline"
-          size={80}
-          color={getColor('primary-100')}
-        />
-        <Label className={classes.emptyText}>No blocked accounts found</Label>
-      </View>
-    );
-  }, [blockedAccounts, handleRemove, loading, loadingRemove]);
+  }, [data?.blocked_usersCollection?.edges, getIsBlocked]);
 
   return (
     <ScreenContainer>
@@ -93,14 +55,30 @@ export default function BlockedAccounts() {
         rightIconSize={28}
         onRightPress={() => router.push('/screens/block-accounts')}
       />
-      <View className={classes.container}>{renderBlockedAccounts}</View>
+      {blockedList.length > 0 || loading ? (
+        <View className={classes.container}>
+          <BlockList
+            list={
+              blockedList as DeepGet<
+                GetProfilesQuery,
+                ['profilesCollection', 'edges']
+              >
+            }
+            loading={loading}
+          />
+        </View>
+      ) : (
+        <EmptyState
+          iconName="ban-outline"
+          iconVariant="Ionicons"
+          iconColor={getColor('red-200')}
+          message="No blocked accounts found"
+        />
+      )}
     </ScreenContainer>
   );
 }
 
 const classes = {
-  emptyContainer: 'flex-1 items-center gap-8 mt-16',
-  emptyText: 'text-center text-slate-600',
   container: 'flex-1 px-4.5 mt-5',
-  containerSkeleton: 'flex-1',
 };

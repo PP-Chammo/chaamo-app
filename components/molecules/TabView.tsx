@@ -129,8 +129,8 @@ const classes = {
     inactive: 'text-slate-500 font-medium',
   },
   tabIndicator: {
-    active: 'h-1 bg-primary-500 w-full rounded-full',
-    inactive: 'h-1 bg-slate-400 w-full rounded-full',
+    active: 'border-b-[2px] border-primary-500 w-full',
+    inactive: 'border-b-[1px] border-slate-200 w-full',
   },
   tabViewContainer: 'flex-1 items-center',
   pagerView: 'flex-1',

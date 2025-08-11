@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import { router, useFocusEffect } from 'expo-router';
+import { router } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { ScrollView, View } from 'react-native';
 
@@ -15,8 +15,8 @@ import {
   RecentlyAddedList,
 } from '@/components/organisms';
 import { TextChangeParams } from '@/domains';
-import { useGetFavoritesQuery } from '@/generated/graphql';
-import { useUserVar } from '@/hooks/useUserVar';
+import { useFavorites } from '@/hooks/useFavorites';
+import { useRealtime } from '@/hooks/useRealtime';
 
 cssInterop(ScrollView, {
   contentContainerClassName: {
@@ -25,25 +25,10 @@ cssInterop(ScrollView, {
 });
 
 export default function HomeScreen() {
-  const [user] = useUserVar();
-
-  const { data: favoritesData, refetch: refetchFavorites } =
-    useGetFavoritesQuery({
-      skip: !user?.id,
-      variables: {
-        filter: {
-          user_id: { eq: user?.id },
-        },
-      },
-      onError: console.log,
-    });
+  useRealtime(['favorites', 'follows', 'blocked_users']);
+  const { favorites } = useFavorites();
 
   const [searchText, setSearchText] = useState<string>('');
-
-  const favorites = useMemo(
-    () => favoritesData?.favorite_listingsCollection?.edges ?? [],
-    [favoritesData?.favorite_listingsCollection?.edges],
-  );
 
   const favoriteCount = useMemo(() => {
     if (favorites?.length > 0) {
@@ -64,12 +49,6 @@ export default function HomeScreen() {
       params: { focus: 'true', search: searchText },
     });
   }, [searchText]);
-
-  useFocusEffect(
-    useCallback(() => {
-      refetchFavorites();
-    }, [refetchFavorites]),
-  );
 
   return (
     <ScreenContainer
@@ -99,19 +78,10 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <CategoryList />
-        <FeaturedList
-          favoriteList={favorites}
-          refreshFavoriteCount={refetchFavorites}
-        />
-        <AuctionList
-          favoriteList={favorites}
-          refreshFavoriteCount={refetchFavorites}
-        />
+        <FeaturedList />
+        <AuctionList />
         <PeopleList />
-        <RecentlyAddedList
-          favoriteList={favorites}
-          refreshFavoriteCount={refetchFavorites}
-        />
+        <RecentlyAddedList />
       </ScrollView>
     </ScreenContainer>
   );
@@ -119,7 +89,7 @@ export default function HomeScreen() {
 
 const classes = {
   containerTop: 'bg-white',
-  headerContainer: 'bg-white gap-3 pt-3 pb-4.5 border-b border-gray-100',
+  headerContainer: 'bg-white gap-3 py-4.5 border-b border-gray-100',
   headerRow: 'px-5',
   contentContainer: 'py-4.5 gap-5',
   auctionList: 'bg-white py-4.5',

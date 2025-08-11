@@ -24,10 +24,11 @@ import { dummyPortfolioValueData } from '@/constants/dummy';
 import {
   ListingType,
   useGetVwCommonDetailQuery,
-  useInsertFavoritesMutation,
+  useCreateFavoritesMutation,
   useRemoveFavoritesMutation,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { useFavorites } from '@/hooks/useFavorites';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
 
@@ -39,10 +40,11 @@ cssInterop(ScrollView, {
 
 export default function ProductDetailScreen() {
   const [user] = useUserVar();
+  const { getIsFavorite } = useFavorites();
   const { formatDisplay } = useCurrencyDisplay();
 
   const { id } = useLocalSearchParams();
-  const { data, refetch } = useGetVwCommonDetailQuery({
+  const { data } = useGetVwCommonDetailQuery({
     skip: !id,
     variables: {
       filter: {
@@ -50,7 +52,7 @@ export default function ProductDetailScreen() {
       },
     },
   });
-  const [insertFavorites] = useInsertFavoritesMutation();
+  const [createFavorites] = useCreateFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
 
   const [showModal, setShowModal] = useState(false);
@@ -66,7 +68,7 @@ export default function ProductDetailScreen() {
   );
 
   const handleToggleFavorite = useCallback(() => {
-    if (detail?.is_favorite) {
+    if (getIsFavorite(id as string)) {
       removeFavorites({
         variables: {
           filter: {
@@ -74,12 +76,9 @@ export default function ProductDetailScreen() {
             listing_id: { eq: id },
           },
         },
-        onCompleted: () => {
-          refetch();
-        },
       });
     } else {
-      insertFavorites({
+      createFavorites({
         variables: {
           objects: [
             {
@@ -88,19 +87,9 @@ export default function ProductDetailScreen() {
             },
           ],
         },
-        onCompleted: () => {
-          refetch();
-        },
       });
     }
-  }, [
-    detail?.is_favorite,
-    removeFavorites,
-    user?.id,
-    id,
-    refetch,
-    insertFavorites,
-  ]);
+  }, [getIsFavorite, removeFavorites, user?.id, id, createFavorites]);
 
   const handleReport = useCallback(() => {
     router.push({
@@ -132,9 +121,11 @@ export default function ProductDetailScreen() {
         <Header
           onBackPress={() => router.back()}
           className={classes.header}
-          rightIcon={detail?.is_favorite ? 'heart' : 'heart-outline'}
+          rightIcon={
+            getIsFavorite(detail?.id ?? '') ? 'heart' : 'heart-outline'
+          }
           rightIconColor={getColor(
-            detail?.is_favorite ? 'red-500' : 'gray-600',
+            getIsFavorite(detail?.id ?? '') ? 'red-500' : 'gray-600',
           )}
           rightIconSize={28}
           onRightPress={handleToggleFavorite}

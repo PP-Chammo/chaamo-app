@@ -20,7 +20,7 @@ export default function CommunityScreen() {
   const [getPosts, { data, refetch }] = useGetVwUserPostsLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
-  const [addBlockedUsers] = useCreateBlockedUsersMutation();
+  const [createBlockedUsers] = useCreateBlockedUsersMutation();
   const [createPostLikes] = useCreatePostLikesMutation();
   const [removePostLikes] = useRemovePostLikesMutation();
 
@@ -71,7 +71,7 @@ export default function CommunityScreen() {
 
   const handleBlock = useCallback(
     (userId: string) => () => {
-      addBlockedUsers({
+      createBlockedUsers({
         variables: {
           objects: [
             {
@@ -88,7 +88,7 @@ export default function CommunityScreen() {
         },
       });
     },
-    [addBlockedUsers, user.id, refetch],
+    [createBlockedUsers, user.id, refetch],
   );
 
   return (

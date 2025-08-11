@@ -8,6 +8,7 @@ import { Label } from '@/components/atoms';
 import { CardItem } from '@/components/molecules';
 import { GetVwChaamoListingsQuery, ListingType } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { useFavorites } from '@/hooks/useFavorites';
 import { DeepGet } from '@/types/helper';
 import { getColor } from '@/utils/getColor';
 
@@ -17,7 +18,7 @@ cssInterop(FlatList, {
   },
 });
 
-interface ProductCardListProps {
+interface ProductAllListProps {
   loading: boolean;
   cards: DeepGet<
     GetVwChaamoListingsQuery,
@@ -26,11 +27,12 @@ interface ProductCardListProps {
   onFavoritePress: (listingId: string, isFavorite: boolean) => void;
 }
 
-const ProductCardList: React.FC<ProductCardListProps> = memo(function AllCards({
+const ProductAllList: React.FC<ProductAllListProps> = memo(function AllCards({
   loading,
   cards,
   onFavoritePress,
 }) {
+  const { getIsFavorite } = useFavorites();
   const { formatDisplay } = useCurrencyDisplay();
 
   if (loading) {
@@ -75,13 +77,13 @@ const ProductCardList: React.FC<ProductCardListProps> = memo(function AllCards({
               },
             })
           }
-          rightIcon={item.node?.is_favorite ? 'heart' : 'heart-outline'}
+          rightIcon={getIsFavorite(item.node?.id) ? 'heart' : 'heart-outline'}
           rightIconColor={
-            item.node?.is_favorite ? getColor('red-600') : undefined
+            getIsFavorite(item.node?.id) ? getColor('red-600') : undefined
           }
           rightIconSize={22}
           onRightIconPress={() => {
-            onFavoritePress(item.node?.id, item.node?.is_favorite ?? false);
+            onFavoritePress(item.node?.id, getIsFavorite(item.node?.id));
           }}
         />
       )}
@@ -96,4 +98,4 @@ const classes = {
   contentContainer: 'gap-4 py-4.5',
 };
 
-export default ProductCardList;
+export default ProductAllList;

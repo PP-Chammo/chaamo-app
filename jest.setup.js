@@ -64,6 +64,14 @@ jest.mock('@apollo/client', () => ({
   InMemoryCache: jest.fn(),
   createHttpLink: jest.fn(),
   ApolloProvider: ({ children }) => children,
+  useApolloClient: jest.fn(() => ({
+    cache: {
+      readQuery: jest.fn(),
+      readFragment: jest.fn(),
+      writeQuery: jest.fn(),
+      writeFragment: jest.fn(),
+    },
+  })),
   useQuery: jest.fn(() => ({
     data: null,
     loading: false,
@@ -398,9 +406,17 @@ jest.mock('@/generated/graphql', () => ({
     jest.fn(),
     { loading: false, error: null, data: null },
   ]),
-  useGetFavoritesQuery: jest.fn(() => ({
+  useCreateBlockedUsersMutation: jest.fn(() => [
+    jest.fn(),
+    { loading: false, error: null, data: null },
+  ]),
+  useRemoveBlockedUsersMutation: jest.fn(() => [
+    jest.fn(),
+    { loading: false, error: null, data: null },
+  ]),
+  useGetFavoriteListingsQuery: jest.fn(() => ({
     data: {
-      favorite_listingsCollection: {
+      favoritesCollection: {
         edges: [
           {
             node: {
@@ -415,7 +431,16 @@ jest.mock('@/generated/graphql', () => ({
     loading: false,
     error: null,
   })),
-  useInsertFavoritesMutation: jest.fn(() => [
+  useGetFavoriteCachesQuery: jest.fn(() => ({
+    data: {
+      favoritesCollection: {
+        edges: [],
+      },
+    },
+    loading: false,
+    error: null,
+  })),
+  useCreateFavoritesMutation: jest.fn(() => [
     jest.fn(),
     { loading: false, error: null, data: null },
   ]),
@@ -423,6 +448,24 @@ jest.mock('@/generated/graphql', () => ({
     jest.fn(),
     { loading: false, error: null, data: null },
   ]),
+  useGetFollowCachesQuery: jest.fn(() => ({
+    data: {
+      followsCollection: {
+        edges: [],
+      },
+    },
+    loading: false,
+    error: null,
+  })),
+  useGetBlockedUserCachesQuery: jest.fn(() => ({
+    data: {
+      blocked_usersCollection: {
+        edges: [],
+      },
+    },
+    loading: false,
+    error: null,
+  })),
   ListingType: {
     AUCTION: 'AUCTION',
     SELL: 'SELL',

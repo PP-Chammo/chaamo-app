@@ -13,7 +13,7 @@ export { default as PaymentForm } from './PaymentForm';
 export { default as PeopleList } from './PeopleList';
 export { default as PortfolioProfile } from './PortfolioProfile';
 export { default as ProductAuctionList } from './ProductAuctionList';
-export { default as ProductCardList } from './ProductCardList';
+export { default as ProductAllList } from './ProductAllList';
 export { default as ProductFixedList } from './ProductFixedList';
 export { default as RecentlyAddedList } from './RecentlyAddedList';
 export { default as ReviewsProfile } from './ReviewsProfile';
