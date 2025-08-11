@@ -68,13 +68,12 @@ export default function ContactUs() {
         <View className={classes.header}>
           <View>
             <Label variant="subtitle" className={classes.label}>
-              If you’ve anything for us to discuss with any issue please let us
-              know
+              Contact Us
             </Label>
           </View>
           <Label>
-            Please fill the details below and click on submit form button to
-            send us your query or you can email us as well
+            Complete the form below, or email us, and we will be in touch within
+            72 hours
           </Label>
         </View>
         <KeyboardView>

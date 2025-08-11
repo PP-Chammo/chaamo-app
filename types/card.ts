@@ -1,23 +1,12 @@
-export enum CardType {
-  Auction = 'auction',
-  Common = 'common',
-}
+import { ListingType } from '@/generated/graphql';
 
-export interface CommonCardType {
+export interface ListingCardType {
+  type?: ListingType | null;
   id: string;
   imageUrl: string;
   title: string;
-  price: string;
+  price?: string;
   marketPrice: string;
-  marketType: string;
-  indicator: string;
-  boosted?: boolean;
-}
-
-export interface AuctionCardType {
-  id: string;
-  imageUrl: string;
-  title: string;
-  price: string;
+  indicator?: string | null;
   boosted?: boolean;
 }

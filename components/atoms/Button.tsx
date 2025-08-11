@@ -105,7 +105,7 @@ const Button: React.FC<ButtonProps> = memo(function Button({
       )}
       {...props}
     >
-      {icon && (
+      {!loading && icon && (
         <Icon
           name={icon}
           size={iconSize ?? iconSizeBase}
@@ -129,7 +129,7 @@ const Button: React.FC<ButtonProps> = memo(function Button({
       >
         {children}
       </Text>
-      {rightIcon && (
+      {!loading && rightIcon && (
         <Icon
           name={rightIcon}
           size={rightIconSize ?? iconSizeBase}

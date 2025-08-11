@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { FlatList, View } from 'react-native';
+import { Alert, FlatList, View } from 'react-native';
 
 import { Button, ScreenContainer } from '@/components/atoms';
 import { Header, PlanCard } from '@/components/molecules';
@@ -7,7 +7,8 @@ import { dummyPlans } from '@/constants/dummy';
 
 export default function PlansScreen() {
   const handleBuySubscription = () => {
-    router.push('/screens/card-details');
+    Alert.alert('Coming soon', 'This feature is not available yet');
+    // router.push('/screens/card-details');
   };
 
   return (

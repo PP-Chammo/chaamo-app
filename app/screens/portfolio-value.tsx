@@ -1,18 +1,24 @@
+import { useMemo } from 'react';
+
 import { router } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { ScrollView, View } from 'react-native';
 
-import { Icon, Label, Row, ScreenContainer } from '@/components/atoms';
+import { Boost, Icon, Label, Row, ScreenContainer } from '@/components/atoms';
 import {
   Chart,
-  CommonCard,
   Header,
   ListContainer,
+  ListingCard,
 } from '@/components/molecules';
+import { dummyPortfolioValueData } from '@/constants/dummy';
 import {
-  dummyFeaturedCardList,
-  dummyPortfolioValueData,
-} from '@/constants/dummy';
+  ListingType,
+  OrderByDirection,
+  useGetVwChaamoListingsQuery,
+} from '@/generated/graphql';
+import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
 
 cssInterop(ScrollView, {
@@ -25,6 +31,27 @@ cssInterop(ScrollView, {
 });
 
 export default function PortfolioValueScreen() {
+  const [user] = useUserVar();
+  const { formatDisplay } = useCurrencyDisplay();
+
+  const { data } = useGetVwChaamoListingsQuery({
+    skip: !user?.id,
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      filter: {
+        seller_id: { eq: user?.id },
+      },
+      orderBy: {
+        created_at: OrderByDirection.DESCNULLSLAST,
+      },
+    },
+  });
+
+  const recentlyList = useMemo(
+    () => data?.vw_chaamo_cardsCollection?.edges ?? [],
+    [data?.vw_chaamo_cardsCollection?.edges],
+  );
+
   return (
     <ScreenContainer classNameTop={classes.containerTop}>
       <Header
@@ -38,7 +65,9 @@ export default function PortfolioValueScreen() {
             <Label className={classes.currentCollectionTitle}>
               Your current collection
             </Label>
-            <Label className={classes.currentCollectionValue}>$2000</Label>
+            <Label className={classes.currentCollectionValue}>
+              {formatDisplay(user?.profile?.currency, 0)}
+            </Label>
           </View>
           <Row className={classes.currentCollectionRow}>
             <View className={classes.currentCollectionContainerYellow}>
@@ -52,7 +81,9 @@ export default function PortfolioValueScreen() {
                   size={20}
                 />
               </Row>
-              <Label className={classes.currentCollectionValue}>$300</Label>
+              <Label className={classes.currentCollectionValue}>
+                {formatDisplay(user?.profile?.currency, 0)}
+              </Label>
             </View>
             <View className={classes.currentCollectionContainerRed}>
               <Row className={classes.currentCollectionTitleRow}>
@@ -65,29 +96,41 @@ export default function PortfolioValueScreen() {
                   size={20}
                 />
               </Row>
-              <Label className={classes.currentCollectionValue}>$500</Label>
+              <Label className={classes.currentCollectionValue}>
+                {formatDisplay(user?.profile?.currency, 0)}
+              </Label>
             </View>
           </Row>
         </View>
         <ListContainer
           title="Recently Added"
           onViewAllHref="/screens/product-list"
-          data={dummyFeaturedCardList}
+          data={recentlyList}
         >
-          {(featured: (typeof dummyFeaturedCardList)[number]) => (
-            <CommonCard
-              id={featured.id}
-              key={featured.id}
-              imageUrl={featured.imageUrl}
-              title={featured.title}
-              price={featured.price}
-              marketPrice={featured.marketPrice}
-              marketType={featured.marketType}
-              indicator={featured.indicator}
-              rightIcon="heart-outline"
-              onRightIconPress={() => {
-                console.log(`Favorite pressed for card ${featured.id}`);
-              }}
+          {(item) => (
+            <ListingCard
+              type={item.node.listing_type}
+              id={item.node.id}
+              imageUrl={item.node.image_url ?? ''}
+              title={item.node.name ?? ''}
+              price={formatDisplay(
+                item.node.currency,
+                item.node?.start_price ?? item.node?.price,
+              )}
+              marketPrice={formatDisplay(item.node.currency, 0)}
+              indicator="up"
+              onPress={() =>
+                router.push({
+                  pathname:
+                    item.node.listing_type === ListingType.AUCTION
+                      ? '/screens/auction-detail'
+                      : '/screens/common-detail',
+                  params: {
+                    id: item.node.id,
+                  },
+                })
+              }
+              rightComponent={<Boost boosted={item.node.is_boosted ?? false} />}
             />
           )}
         </ListContainer>

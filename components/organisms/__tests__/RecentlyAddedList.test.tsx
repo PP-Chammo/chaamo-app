@@ -17,10 +17,8 @@ describe('RecentlyAddedList', () => {
 
   it('renders all recently added cards', () => {
     const { getAllByTestId } = render(<RecentlyAddedList {...mockProps} />);
-    const commonCards = getAllByTestId('common-card');
-    const auctionCards = getAllByTestId('auction-card');
-    const totalCards = commonCards.length + auctionCards.length;
-    expect(totalCards).toBe(4);
+    const cards = getAllByTestId('listing-card');
+    expect(cards.length).toBe(4);
   });
 
   it('displays recently added title', () => {

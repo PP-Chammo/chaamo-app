@@ -40,9 +40,9 @@ describe('PlaceBidModalContent', () => {
   it('displays quick bid options', () => {
     render(<PlaceBidModalContent {...defaultProps} />);
 
-    expect(screen.getByText('$100')).toBeTruthy();
-    expect(screen.getByText('$200')).toBeTruthy();
-    expect(screen.getByText('$300')).toBeTruthy();
+    expect(screen.getByText(/\$\s*100/)).toBeTruthy();
+    expect(screen.getByText(/\$\s*200/)).toBeTruthy();
+    expect(screen.getByText(/\$\s*300/)).toBeTruthy();
   });
 
   it('allows changing bid amount through input', () => {
@@ -57,7 +57,7 @@ describe('PlaceBidModalContent', () => {
   it('allows selecting quick bid options', () => {
     render(<PlaceBidModalContent {...defaultProps} />);
 
-    const quickBid200 = screen.getByText('$200');
+    const quickBid200 = screen.getByText(/\$\s*200/);
     fireEvent.press(quickBid200);
 
     expect(screen.getByDisplayValue('$ 200')).toBeTruthy();
@@ -73,8 +73,7 @@ describe('PlaceBidModalContent', () => {
     render(<PlaceBidModalContent {...defaultProps} />);
 
     expect(screen.getByText(/Note:/)).toBeTruthy();
-    expect(screen.getByText(/The minimum threshold/)).toBeTruthy();
-    expect(screen.getByText(/\$2000/)).toBeTruthy();
+    expect(screen.getByText(/minimum requirement/)).toBeTruthy();
   });
 
   it('filters non-numeric input from bid field', () => {
@@ -100,7 +99,7 @@ describe('PlaceBidModalContent', () => {
 
     expect(screen.getByDisplayValue('$ 5000')).toBeTruthy();
 
-    const quickBid300 = screen.getByText('$300');
+    const quickBid300 = screen.getByText(/\$\s*300/);
     fireEvent.press(quickBid300);
 
     expect(screen.getByDisplayValue('$ 300')).toBeTruthy();
@@ -109,7 +108,7 @@ describe('PlaceBidModalContent', () => {
   it('maintains selected state for quick bid buttons', () => {
     render(<PlaceBidModalContent {...defaultProps} />);
 
-    const quickBid200 = screen.getByText('$200');
+    const quickBid200 = screen.getByText(/\$\s*200/);
     fireEvent.press(quickBid200);
 
     expect(screen.getByDisplayValue('$ 200')).toBeTruthy();

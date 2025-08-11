@@ -2,7 +2,7 @@ import React, { memo, useCallback, useMemo } from 'react';
 
 import { router } from 'expo-router';
 
-import { AuctionCard, ListContainer } from '@/components/molecules';
+import { ListContainer, ListingCard } from '@/components/molecules';
 import {
   ListingType,
   useGetVwChaamoListingsQuery,
@@ -79,12 +79,14 @@ const AuctionList = memo(function AuctionList() {
       data={cards}
     >
       {(card) => (
-        <AuctionCard
+        <ListingCard
           key={card.node.id}
           id={card.node.id}
+          type={card.node.listing_type}
           imageUrl={card.node?.image_url ?? ''}
           title={card.node?.name ?? ''}
           price={formatDisplay(card.node?.currency, card.node?.start_price)}
+          marketPrice={formatDisplay(card.node?.currency, 0)}
           onPress={() =>
             router.push({
               pathname: '/screens/auction-detail',

@@ -43,7 +43,7 @@ const CategoryItem: React.FC<CategoryProps> = memo(function CategoryItem({
           ) : (
             <Icon
               testID="default-icon"
-              name="cards-outliner"
+              name="cards-outline"
               size={40}
               color={getColor('gray-400')}
             />

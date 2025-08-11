@@ -76,8 +76,7 @@ describe('SimilarAdList', () => {
   it('renders product cards', () => {
     render(<SimilarAdList {...defaultProps} />);
 
-    expect(screen.getAllByTestId('common-card')).toHaveLength(2);
-    expect(screen.getAllByTestId('auction-card')).toHaveLength(1);
+    expect(screen.getAllByTestId('listing-card')).toHaveLength(3);
   });
 
   it('displays product information', () => {
@@ -91,12 +90,9 @@ describe('SimilarAdList', () => {
   it('has onPress handlers for product cards', () => {
     render(<SimilarAdList {...defaultProps} />);
 
-    const commonCards = screen.getAllByTestId('common-card');
-    const auctionCards = screen.getAllByTestId('auction-card');
-    expect(commonCards).toHaveLength(2);
-    expect(auctionCards).toHaveLength(1);
-
-    [...commonCards, ...auctionCards].forEach((card) => {
+    const cards = screen.getAllByTestId('listing-card');
+    expect(cards).toHaveLength(3);
+    cards.forEach((card) => {
       expect(card).toBeTruthy();
     });
   });
@@ -114,7 +110,7 @@ describe('SimilarAdList edge cases', () => {
 
   it('calls router.push when a card is pressed', () => {
     const { getAllByTestId } = render(<SimilarAdList {...defaultProps} />);
-    fireEvent.press(getAllByTestId('common-card')[0]);
+    fireEvent.press(getAllByTestId('listing-card')[0]);
     expect(router.push).toHaveBeenCalledWith({
       pathname: '/screens/common-detail',
       params: {

@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 
+import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
 import pluralize from 'pluralize';
 import { Alert, TouchableOpacity, View } from 'react-native';
@@ -24,34 +25,52 @@ import {
   useCreateBlockedUsersMutation,
   useRemoveBlockedUsersMutation,
   useGetProfilesQuery,
+  useUpdateProfileMutation,
+  useGetVwChaamoListingsQuery,
 } from '@/generated/graphql';
 import { useBlockedUsers } from '@/hooks/useBlockedUsers';
+import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFollows } from '@/hooks/useFollows';
 import { useRealtime } from '@/hooks/useRealtime';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
+import { uploadToBucket } from '@/utils/supabase';
 
 export default function ProfileScreen() {
   useRealtime(['follows', 'blocked_users']);
   const [user] = useUserVar();
   const { userId } = useLocalSearchParams();
   const { getIsBlocked } = useBlockedUsers();
+  const { formatDisplay } = useCurrencyDisplay();
   const { followers, followings, getIsFollowing, getIsFollower } = useFollows(
     userId as string,
   );
 
-  const { data } = useGetProfilesQuery({
+  const { data, refetch } = useGetProfilesQuery({
     variables: {
       filter: {
         id: { eq: userId || user?.id },
       },
     },
   });
+
+  const { data: listingData } = useGetVwChaamoListingsQuery({
+    skip: !userId && !user?.id,
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      filter: {
+        seller_id: { eq: userId ?? user?.id },
+      },
+    },
+  });
+
   const [removeFollow, { loading: loadingUnfollow }] =
     useRemoveFollowsMutation();
   const [createFollow, { loading: loadingFollow }] = useCreateFollowsMutation();
   const [createBlockedUsers] = useCreateBlockedUsersMutation();
   const [removeBlockedUsers] = useRemoveBlockedUsersMutation();
+  const [updateProfile, { loading: loadingUpdateProfile }] =
+    useUpdateProfileMutation();
 
   const dotsRef = useRef<View>(null);
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
@@ -169,9 +188,50 @@ export default function ProfileScreen() {
     removeFollow,
   ]);
 
+  const handleUpdateProfileImage = useCallback(async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      return Alert.alert(
+        'Permission required',
+        'We need permission to access your photos.',
+      );
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 0.8,
+    });
+    if (result.canceled || !result.assets.length)
+      return Alert.alert('No image selected');
+    const selectedImage = result.assets[0];
+    if (selectedImage?.uri) {
+      const uploadedUrl = await uploadToBucket(
+        selectedImage.uri,
+        'chaamo',
+        'profiles',
+      );
+
+      updateProfile({
+        variables: {
+          filter: {
+            id: { eq: user?.id },
+          },
+          set: {
+            profile_image_url: uploadedUrl,
+          },
+        },
+        onCompleted: () => {
+          refetch();
+        },
+      });
+    }
+  }, [updateProfile, user?.id, refetch]);
+
   return (
     <>
-      <ScreenContainer className={classes.container}>
+      <ScreenContainer
+        className={classes.container}
+        enableBottomSafeArea={!isSelf}
+      >
         <Header
           title={
             isSelf
@@ -184,7 +244,12 @@ export default function ProfileScreen() {
           rightRef={dotsRef}
         />
         <View className={classes.profileContainer}>
-          <Avatar size="lg" imageUrl={profile?.profile_image_url ?? ''} />
+          <Avatar
+            size="lg"
+            imageUrl={profile?.profile_image_url ?? ''}
+            onPress={isSelf ? handleUpdateProfileImage : undefined}
+            loading={loadingUpdateProfile}
+          />
           <View className={classes.profileInfoContainer}>
             <Label variant="title" className={classes.profileName}>
               {profile?.username}
@@ -198,7 +263,9 @@ export default function ProfileScreen() {
                   onPress={() => router.push('/screens/portfolio-value')}
                   className={classes.portfolioValueContainer}
                 >
-                  <Label className={classes.portfolioValue}>$2000</Label>
+                  <Label className={classes.portfolioValue}>
+                    {formatDisplay(user?.profile?.currency, 0)}
+                  </Label>
                   <View className={classes.portfolioValueIconContainer}>
                     <Icon
                       name="arrow-up-right"
@@ -214,7 +281,13 @@ export default function ProfileScreen() {
         </View>
 
         <View className={classes.profileStatsContainer}>
-          <ProfileStat title="Listing" value="-" />
+          <ProfileStat
+            title="Listing"
+            value={
+              listingData?.vw_chaamo_cardsCollection?.edges?.length?.toString() ??
+              '0'
+            }
+          />
           <Divider />
           <ProfileStat
             title={pluralize('Followers', Number(followers.length))}

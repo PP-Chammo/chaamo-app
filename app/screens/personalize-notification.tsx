@@ -26,7 +26,6 @@ export default function SettingsScreen() {
 
   const { data: userNotificationSettingsData } =
     useGetUserNotificationSettingsQuery({
-      fetchPolicy: 'cache-and-network',
       variables: {
         filter: {
           user_id: {

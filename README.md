@@ -136,7 +136,7 @@ const { data, loading, error } = useGetUsersQuery();
 ## 🧩 Components & Screens
 
 - **Atoms:** Avatar, Badge, Button, Icon, Label, Tag, etc.
-- **Molecules:** AuctionCard, CardItem, Category, Checkbox, OtpInput, People, etc.
+- **Molecules:** ListingCard, CardItem, Category, Checkbox, OtpInput, People, etc.
 - **Organisms:** AuctionList, CategoryList, FeaturedList, PeopleList, PortfolioProfile, etc.
 - **Screens:** Auction Detail, Blocked Accounts, Categories, Portfolio Value, Search, Product List, Public Profile, Settings, Onboarding, etc.
 
