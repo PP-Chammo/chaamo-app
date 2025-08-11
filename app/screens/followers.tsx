@@ -8,9 +8,11 @@ import { EmptyState, Header } from '@/components/molecules';
 import { FollowList } from '@/components/organisms';
 import { useGetFollowsQuery } from '@/generated/graphql';
 import { useFollows } from '@/hooks/useFollows';
+import { useRealtime } from '@/hooks/useRealtime';
 import { useUserVar } from '@/hooks/useUserVar';
 
 export default function FollowersScreen() {
+  useRealtime(['follows']);
   const [user] = useUserVar();
   const { userId } = useLocalSearchParams();
   const { followers } = useFollows(userId as string);
