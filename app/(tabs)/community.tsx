@@ -7,6 +7,7 @@ import { ScreenContainer } from '@/components/atoms';
 import { Header, PostCard } from '@/components/molecules';
 import { EventList } from '@/components/organisms';
 import {
+  OrderByDirection,
   useCreateBlockedUsersMutation,
   useCreatePostLikesMutation,
   useGetVwUserPostsLazyQuery,
@@ -26,7 +27,15 @@ export default function CommunityScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      getPosts();
+      getPosts({
+        variables: {
+          orderBy: [
+            {
+              created_at: OrderByDirection.DESCNULLSLAST,
+            },
+          ],
+        },
+      });
     }, [getPosts]),
   );
 

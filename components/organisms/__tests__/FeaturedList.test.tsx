@@ -19,10 +19,8 @@ describe('FeaturedList', () => {
 
   it('renders all featured cards', () => {
     const { getAllByTestId } = render(<FeaturedList {...mockProps} />);
-    const commonCards = getAllByTestId('common-card');
-    const auctionCards = getAllByTestId('auction-card');
-    const totalCards = commonCards.length + auctionCards.length;
-    expect(totalCards).toBe(dummyFeaturedCardList.length);
+    const cards = getAllByTestId('listing-card');
+    expect(cards.length).toBe(dummyFeaturedCardList.length);
   });
 
   it('displays featured title', () => {

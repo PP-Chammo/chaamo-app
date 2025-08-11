@@ -100,7 +100,7 @@ export default function StatsProfile() {
             Number(
               formatDisplay(
                 convertSymbolToCurrency('USD'),
-                listing.node.price,
+                listing.node?.start_price ?? listing.node?.price ?? 0,
                 {
                   showSymbol: false,
                 },

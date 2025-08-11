@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback } from 'react';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { clsx } from 'clsx';
@@ -6,12 +6,12 @@ import { Image } from 'expo-image';
 import { TouchableOpacity, View } from 'react-native';
 
 import EBayImage from '@/assets/svg/ebay.svg';
-import { Icon, Label, PriceIndicator } from '@/components/atoms';
-import { CommonCardType } from '@/types/card';
+import { Icon, Label, PriceIndicator, Tag } from '@/components/atoms';
+import { ListingType } from '@/generated/graphql';
+import { ListingCardType } from '@/types/card';
 import { getColor } from '@/utils/getColor';
 
-interface CommonCardProps extends Omit<CommonCardType, 'price'> {
-  price?: string;
+interface ListingCardProps extends ListingCardType {
   onPress?: () => void;
   onRightIconPress?: () => void;
   rightIcon?: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
@@ -21,12 +21,12 @@ interface CommonCardProps extends Omit<CommonCardType, 'price'> {
   className?: string;
 }
 
-const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
+const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
+  type = ListingType.SELL,
   imageUrl,
   title,
   price,
   marketPrice,
-  marketType,
   indicator,
   onPress,
   onRightIconPress,
@@ -36,21 +36,6 @@ const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
   rightComponent,
   className,
 }) {
-  const renderMarketType = useMemo(() => {
-    if (marketType === 'eBay') {
-      return <EBayImage />;
-    }
-    if (marketType === 'chaamo') {
-      return (
-        <Image
-          source={require('@/assets/images/logo.png')}
-          className={classes.chaamoLogo}
-        />
-      );
-    }
-    return null;
-  }, [marketType]);
-
   const renderRightIcon = useCallback(
     () =>
       onRightIconPress && (
@@ -71,7 +56,7 @@ const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
 
   return (
     <TouchableOpacity
-      testID="common-card"
+      testID="listing-card"
       activeOpacity={0.8}
       className={clsx(classes.container, className)}
       onPress={onPress}
@@ -79,56 +64,83 @@ const CommonCard: React.FC<CommonCardProps> = memo(function CategoryItem({
       {rightComponent ?? renderRightIcon()}
       {imageUrl ? (
         <Image
-          testID="common-card-image"
+          testID="listing-card-image"
           source={{ uri: imageUrl }}
           className={clsx(classes.image)}
         />
       ) : (
         <View
-          testID="common-card-image-placeholder"
+          testID="listing-card-image-placeholder"
           className={clsx(classes.image)}
         >
           <Icon name="cards-outline" size={40} color={getColor('red-100')} />
         </View>
       )}
-      <View className={classes.titleContainer}>
-        {!!price && (
-          <Label
-            variant="subtitle"
-            className={classes.price}
-            testID="common-card-price"
-          >
-            {price}
-          </Label>
-        )}
-        <Label
-          variant="subtitle"
-          className={classes.title}
-          testID="common-card-title"
-        >
-          {title}
-        </Label>
-      </View>
-      <View className={classes.marketContainer}>
-        {renderMarketType}
-        <Label
-          className={clsx(classes.marketPrice, {
-            '!font-bold !text-xs': !price,
-          })}
-          testID="common-card-market-price"
-        >
-          {marketPrice}
-        </Label>
-        <PriceIndicator direction={indicator} />
-      </View>
+      {type === ListingType.AUCTION ? (
+        <View className={classes.contentContainer}>
+          <View className={classes.titleContainer}>
+            <Label
+              variant="subtitle"
+              className={classes.title}
+              testID="auction-title"
+            >
+              {title}
+            </Label>
+          </View>
+          <View className={classes.bidContainer}>
+            <Tag title="Highest Bid" />
+            <Label
+              variant="subtitle"
+              className={classes.price}
+              testID="auction-price"
+            >
+              {price}
+            </Label>
+          </View>
+        </View>
+      ) : (
+        <View className={classes.contentContainer}>
+          <View className={classes.titleContainer}>
+            {!!price && type === ListingType.SELL && (
+              <Label
+                variant="subtitle"
+                className={classes.price}
+                testID="listing-card-price"
+              >
+                {price}
+              </Label>
+            )}
+            <Label
+              variant="subtitle"
+              className={classes.title}
+              testID="listing-card-title"
+            >
+              {title}
+            </Label>
+          </View>
+          <View className={classes.marketContainer}>
+            <EBayImage />
+            <Label
+              className={clsx(classes.marketPrice, {
+                '!font-bold !text-xs': !price,
+              })}
+              testID="listing-card-market-price"
+            >
+              {marketPrice}
+            </Label>
+            {indicator && <PriceIndicator direction={indicator} />}
+          </View>
+        </View>
+      )}
     </TouchableOpacity>
   );
 });
 
-export default CommonCard;
+export default ListingCard;
 
 const classes = {
   container: 'w-36 flex flex-col gap-2 justify-between',
+  contentContainer: 'flex-1 justify-between gap-2',
   image: 'w-36 aspect-[7/10] bg-gray-200 rounded',
   titleContainer: 'flex-1 flex flex-col gap-1',
   price: 'text-sm text-primary-500 !font-bold',
@@ -137,5 +149,5 @@ const classes = {
   marketContainer: 'flex flex-row items-center gap-2',
   rightIconButton:
     'absolute top-2 right-2 z-10 w-8 h-8 bg-white rounded-full items-center justify-center',
-  chaamoLogo: 'w-5 h-5',
+  bidContainer: 'flex gap-2',
 };

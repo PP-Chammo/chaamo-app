@@ -1,8 +1,12 @@
 import { gql } from '@apollo/client';
 
 export const getVwChaamoListings = gql`
-  query GetVwChaamoListings($filter: vw_chaamo_cardsFilter, $last: Int) {
-    vw_chaamo_cardsCollection(filter: $filter, last: $last) {
+  query GetVwChaamoListings(
+    $filter: vw_chaamo_cardsFilter
+    $last: Int
+    $orderBy: [vw_chaamo_cardsOrderBy!]
+  ) {
+    vw_chaamo_cardsCollection(filter: $filter, last: $last, orderBy: $orderBy) {
       edges {
         node {
           id

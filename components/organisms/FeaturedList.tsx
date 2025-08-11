@@ -2,7 +2,7 @@ import React, { memo, useCallback, useMemo } from 'react';
 
 import { router } from 'expo-router';
 
-import { AuctionCard, CommonCard, ListContainer } from '@/components/molecules';
+import { ListContainer, ListingCard } from '@/components/molecules';
 import {
   GetVwFeaturedListingsQuery,
   ListingType,
@@ -84,58 +84,38 @@ const FeaturedList = memo(function FeaturedList() {
       onViewAllHref="/screens/product-list"
       data={cards}
     >
-      {(card) =>
-        card.node.listing_type === ListingType.AUCTION ? (
-          <AuctionCard
-            key={card.node.id}
-            id={card.node.id}
-            imageUrl={card.node?.image_url ?? ''}
-            title={card.node?.name ?? ''}
-            price={formatDisplay(card.node?.currency, card.node?.start_price)}
-            onPress={() =>
-              router.push({
-                pathname: '/screens/auction-detail',
-                params: {
-                  id: card.node.id,
-                },
-              })
-            }
-            rightIcon={getIsFavorite(card.node.id) ? 'heart' : 'heart-outline'}
-            rightIconColor={
-              getIsFavorite(card.node.id) ? getColor('red-600') : undefined
-            }
-            rightIconSize={18}
-            onRightIconPress={handleToggleFavorite(card.node.id)}
-          />
-        ) : (
-          <CommonCard
-            key={card.node.id}
-            id={card.node.id}
-            imageUrl={card.node?.image_url ?? ''}
-            title={card.node?.name ?? ''}
-            price={formatDisplay(card.node?.currency, card.node?.price)}
-            marketType={
-              card.node.listing_type === ListingType.EBAY ? 'eBay' : 'chaamo'
-            }
-            marketPrice={formatDisplay(card.node?.currency, 0)}
-            indicator="up"
-            onPress={() =>
-              router.push({
-                pathname: '/screens/common-detail',
-                params: {
-                  id: card.node.id,
-                },
-              })
-            }
-            rightIcon={getIsFavorite(card.node.id) ? 'heart' : 'heart-outline'}
-            rightIconColor={
-              getIsFavorite(card.node.id) ? getColor('red-600') : undefined
-            }
-            rightIconSize={18}
-            onRightIconPress={handleToggleFavorite(card.node.id)}
-          />
-        )
-      }
+      {(card) => (
+        <ListingCard
+          key={card.node.id}
+          type={card.node.listing_type}
+          id={card.node.id}
+          imageUrl={card.node?.image_url ?? ''}
+          title={card.node?.name ?? ''}
+          price={formatDisplay(
+            card.node?.currency,
+            card.node?.start_price ?? card.node?.price,
+          )}
+          marketPrice={formatDisplay(card.node?.currency, 0)}
+          indicator="up"
+          onPress={() =>
+            router.push({
+              pathname:
+                card.node.listing_type === ListingType.AUCTION
+                  ? '/screens/auction-detail'
+                  : '/screens/common-detail',
+              params: {
+                id: card.node.id,
+              },
+            })
+          }
+          rightIcon={getIsFavorite(card.node.id) ? 'heart' : 'heart-outline'}
+          rightIconColor={
+            getIsFavorite(card.node.id) ? getColor('red-600') : undefined
+          }
+          rightIconSize={18}
+          onRightIconPress={handleToggleFavorite(card.node.id)}
+        />
+      )}
     </ListContainer>
   );
 });

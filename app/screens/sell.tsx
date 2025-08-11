@@ -229,11 +229,11 @@ export default function SellScreen() {
                     seller_id: user?.id,
                     listing_type: form.listing_type,
                     description: form.description,
+                    currency: userCurrencySymbol,
 
                     // Sell
                     ...(form.listing_type === ListingType.SELL
                       ? {
-                          currency: userCurrencySymbol,
                           price: Number(form.price).toFixed(2),
                           accepts_offers: true,
                         }
@@ -242,7 +242,6 @@ export default function SellScreen() {
                     // Auction
                     ...(form.listing_type === ListingType.AUCTION
                       ? {
-                          currency: userCurrencySymbol,
                           start_price: Number(form.minPrice).toFixed(2),
                           reserve_price: Number(form.reservedPrice).toFixed(2),
                           start_time: formatISO(new Date()),

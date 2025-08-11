@@ -3,7 +3,7 @@ import React, { Fragment, memo, useMemo, useState } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { clsx } from 'clsx';
 import { Image } from 'expo-image';
-import { TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 
 import { getColor } from '@/utils/getColor';
 
@@ -14,6 +14,7 @@ interface AvatarProps {
   imageContainerClassName?: string;
   onPress?: () => void;
   testID?: string;
+  loading?: boolean;
 }
 
 const Avatar = memo(function Avatar({
@@ -23,6 +24,7 @@ const Avatar = memo(function Avatar({
   imageUrl,
   onPress,
   testID,
+  loading,
 }: AvatarProps) {
   const [imageError, setImageError] = useState(false);
 
@@ -48,45 +50,51 @@ const Avatar = memo(function Avatar({
           imageContainerClassName,
         )}
       >
-        {imageUrl && !imageError ? (
-          <Fragment>
-            <Image
-              source={{ uri: imageUrl }}
-              onError={() => {
-                setImageError(true);
-              }}
-              className={clsx(
-                classes.imageSize[size],
-                classes.image,
-                imageContainerClassName,
-              )}
-              contentFit="cover"
-            />
-            {onPress && (
-              <MaterialCommunityIcons
-                name="pencil"
-                size={24}
-                color={getColor('slate-700')}
-                className={classes.modifyIcon}
-              />
-            )}
-          </Fragment>
+        {loading ? (
+          <ActivityIndicator size="large" color={getColor('primary-500')} />
         ) : (
-          <Fragment>
-            <MaterialCommunityIcons
-              name="account"
-              size={getPlusIconSize}
-              color="white"
-            />
-            {onPress && (
-              <MaterialCommunityIcons
-                name="plus"
-                size={20}
-                color={getColor('slate-700')}
-                className={classes.modifyIcon}
-              />
+          <>
+            {imageUrl && !imageError ? (
+              <Fragment>
+                <Image
+                  source={{ uri: imageUrl }}
+                  onError={() => {
+                    setImageError(true);
+                  }}
+                  className={clsx(
+                    classes.imageSize[size],
+                    classes.image,
+                    imageContainerClassName,
+                  )}
+                  contentFit="cover"
+                />
+                {onPress && (
+                  <MaterialCommunityIcons
+                    name="pencil"
+                    size={20}
+                    color={getColor('slate-700')}
+                    className={classes.modifyIcon}
+                  />
+                )}
+              </Fragment>
+            ) : (
+              <Fragment>
+                <MaterialCommunityIcons
+                  name="account"
+                  size={getPlusIconSize}
+                  color="white"
+                />
+                {onPress && (
+                  <MaterialCommunityIcons
+                    name="plus"
+                    size={20}
+                    color={getColor('slate-700')}
+                    className={classes.modifyIcon}
+                  />
+                )}
+              </Fragment>
             )}
-          </Fragment>
+          </>
         )}
       </View>
     </TouchableOpacity>
@@ -103,7 +111,7 @@ const classes = {
   },
   imageContainer:
     'flex items-center justify-center bg-slate-300 rounded-full self-center',
-  modifyIcon: 'absolute bottom-1 right-1 bg-green-50 rounded-full p-1',
+  modifyIcon: 'absolute bottom-2 right-0 bg-primary-100 rounded-full p-1',
   image: 'rounded-full border-2 border-white',
 };
 

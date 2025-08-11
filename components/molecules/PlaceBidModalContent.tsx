@@ -96,14 +96,13 @@ const PlaceBidModalContent: React.FC<PlaceBidModalContentProps> = ({
             className={classes.quickBid}
             onPress={() => handleQuickBid(val, idx)}
           >
-            ${val}
+            {currencySymbol} {val}
           </Button>
         ))}
       </Row>
       <Label className={classes.note}>
-        <Label className={classes.noteBold}>Note:</Label> The minimum threshold
-        for placing a bid is set at $2000. Please ensure your bid meets or
-        exceeds this amount.
+        <Label className={classes.noteBold}>Note:</Label> Please ensure your bid
+        meets the minimum requirement.
       </Label>
       <Button
         variant="white-light"
