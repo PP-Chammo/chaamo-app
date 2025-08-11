@@ -1,9 +1,12 @@
 import { getColor } from '@/utils/getColor';
 
 export const setupProfileTabs = [
-  { title: 'Personal Info.', route: 'personal-info' },
-  { title: 'Address', route: 'address' },
-  { title: 'ID Verification', route: '(upload-identity)/proof-identity' },
+  { title: 'Personal Info.', route: 'screens/setup-profile/personal-info' },
+  { title: 'Address', route: 'screens/setup-profile/address' },
+  {
+    title: 'ID Verification',
+    route: 'screens/setup-profile/identity/proof-identity',
+  },
 ];
 
 export const profileTabs = ['Portfolio', 'Sold Items', 'My Stats', 'Reviews'];

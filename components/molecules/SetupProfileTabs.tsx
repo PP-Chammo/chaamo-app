@@ -9,7 +9,7 @@ import { setupProfileTabs } from '@/constants/tabs';
 const SetupProfileTabs = memo(function SetupProfileTabs() {
   const router = useRouter();
   const segments = useSegments();
-  const activeRoute = segments[segments.length - 1];
+  const activeRoute = segments.join('/');
 
   return (
     <View testID="setup-profile-tabs" className={classes.container}>
@@ -20,21 +20,17 @@ const SetupProfileTabs = memo(function SetupProfileTabs() {
           setupProfileTabs.findIndex((t) => t.route === activeRoute) - 1 >= idx;
 
         const tabState = () => {
-          if (!isActive && !isPrevious) {
-            return 'inactive';
-          } else if (isPrevious) {
-            return 'previous';
-          } else {
-            return 'active';
-          }
+          if (!isActive && !isPrevious) return 'inactive';
+          if (isPrevious) return 'previous';
+          return 'active';
         };
 
         return (
           <Pressable
             key={tab.route}
-            testID={`tab-${tab.route}`}
+            testID={`tab-${tab.route.split('/').pop()}`}
             className={classes.tabContainer}
-            onPress={() => router.push(`/${tab.route}` as Href)}
+            onPress={() => router.push(tab.route as Href)}
           >
             <Text
               testID={`tab-title-${tab.route}`}

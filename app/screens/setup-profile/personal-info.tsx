@@ -17,6 +17,7 @@ import {
   TextField,
 } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
+import { useUpdateProfileMutation } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 import { UserStore } from '@/stores/userStore';
 import { DeepGet } from '@/types/helper';
@@ -29,6 +30,8 @@ export default function PersonalInfoScreen() {
   >({});
 
   const profile = form?.profile;
+
+  const [updateProfile, { loading }] = useUpdateProfileMutation();
 
   const handleChange = useCallback(
     ({ name, value }: TextChangeParams) => {
@@ -48,24 +51,35 @@ export default function PersonalInfoScreen() {
     [form, setForm],
   );
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(async () => {
     const requiredFields: (keyof DeepGet<UserStore, ['profile']>)[] = [
       'username',
-      'email',
       'phone_number',
     ];
 
     const validationErrors = validateRequired(
-      form.profile as unknown as Record<string, string>,
+      { ...form.profile, email: profile?.email } as unknown as Record<
+        string,
+        string
+      >,
       requiredFields,
     );
 
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
+      await updateProfile({
+        variables: {
+          set: {
+            username: form.profile?.username ?? '',
+            phone_number: form.profile?.phone_number ?? '',
+            country_code: form.profile?.country_code ?? '',
+          },
+        },
+      });
       router.push('/screens/setup-profile/address');
     }
-  };
+  }, [form.profile, profile?.email, updateProfile]);
 
   const handleImagePick = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -124,6 +138,8 @@ export default function PersonalInfoScreen() {
             required
             error={errors['email']}
             className={classes.input}
+            value={form?.email ?? ''}
+            editable={false}
           />
           <PhoneInput
             name="phone_number"
@@ -160,6 +176,8 @@ export default function PersonalInfoScreen() {
           className={classes.button}
           variant="primary"
           onPress={handleSubmit}
+          loading={loading}
+          disabled={loading}
         >
           Continue
         </Button>
