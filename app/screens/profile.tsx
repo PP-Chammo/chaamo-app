@@ -31,13 +31,11 @@ import {
 import { useBlockedUsers } from '@/hooks/useBlockedUsers';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFollows } from '@/hooks/useFollows';
-import { useRealtime } from '@/hooks/useRealtime';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
 import { uploadToBucket } from '@/utils/supabase';
 
 export default function ProfileScreen() {
-  useRealtime(['follows', 'blocked_users']);
   const [user] = useUserVar();
   const { userId } = useLocalSearchParams();
   const { getIsBlocked } = useBlockedUsers();

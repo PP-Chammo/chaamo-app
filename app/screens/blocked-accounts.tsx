@@ -8,13 +8,11 @@ import { EmptyState, Header } from '@/components/molecules';
 import { BlockList } from '@/components/organisms';
 import { GetProfilesQuery, useGetBlockedUsersQuery } from '@/generated/graphql';
 import { useBlockedUsers } from '@/hooks/useBlockedUsers';
-import { useRealtime } from '@/hooks/useRealtime';
 import { useUserVar } from '@/hooks/useUserVar';
 import { DeepGet } from '@/types/helper';
 import { getColor } from '@/utils/getColor';
 
 export default function BlockedAccounts() {
-  useRealtime(['blocked_users']);
   const [user] = useUserVar();
   const { getIsBlocked } = useBlockedUsers();
 

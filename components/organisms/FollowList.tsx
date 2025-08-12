@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 
 import { router, useLocalSearchParams } from 'expo-router';
 import { Alert, FlatList } from 'react-native';
@@ -33,6 +33,8 @@ const FollowList: React.FC<FollowListProps> = memo(function FollowList({
   const { getIsFollowing } = useFollows();
   const { getIsBlocked } = useBlockedUsers();
 
+  const [processed, setProcessed] = useState<string[]>([]);
+
   const [removeFollow, { loading: removeFollowLoading }] =
     useRemoveFollowsMutation();
   const [createFollow] = useCreateFollowsMutation();
@@ -48,6 +50,7 @@ const FollowList: React.FC<FollowListProps> = memo(function FollowList({
 
   const handleToggleFollow = useCallback(
     (followeeUserId: string) => () => {
+      setProcessed((prev) => [...prev, followeeUserId]);
       if (getIsFollowing(followeeUserId)) {
         removeFollow({
           variables: {
@@ -55,6 +58,13 @@ const FollowList: React.FC<FollowListProps> = memo(function FollowList({
               follower_user_id: { eq: followerUserId },
               followee_user_id: { eq: followeeUserId },
             },
+          },
+          onCompleted: ({ deleteFromfollowsCollection }) => {
+            if (deleteFromfollowsCollection?.records?.length) {
+              setProcessed((prev) =>
+                prev.filter((id) => id !== followeeUserId),
+              );
+            }
           },
         });
       } else {
@@ -66,6 +76,13 @@ const FollowList: React.FC<FollowListProps> = memo(function FollowList({
                 followee_user_id: followeeUserId,
               },
             ],
+          },
+          onCompleted: ({ insertIntofollowsCollection }) => {
+            if (insertIntofollowsCollection?.records?.length) {
+              setProcessed((prev) =>
+                prev.filter((id) => id !== followeeUserId),
+              );
+            }
           },
         });
       }
@@ -162,7 +179,7 @@ const FollowList: React.FC<FollowListProps> = memo(function FollowList({
             onToggleFollowPress={
               isSelf ? handleToggleFollow(singleUser.id) : undefined
             }
-            isLoading={removeFollowLoading}
+            isLoading={processed.includes(singleUser.id) && removeFollowLoading}
             isFollowing={getIsFollowing(singleUser.id)}
           />
         );

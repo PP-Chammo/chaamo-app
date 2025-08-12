@@ -1,6 +1,57 @@
 import { fireEvent, render } from '@testing-library/react-native';
 
 import BoughtOrder from '../BoughtOrder';
+// Mock GraphQL generated module to avoid undefined enums
+jest.mock('@/generated/graphql', () => ({
+  OrderByDirection: { DESCNULLSLAST: 'DESCNULLSLAST' },
+  OrderStatus: {
+    AWAITING_PAYMENT: 'awaiting_payment',
+    AWAITING_SHIPMENT: 'awaiting_shipment',
+    SHIPPED: 'shipped',
+    DELIVERED: 'delivered',
+    COMPLETED: 'completed',
+    CANCELLED: 'cancelled',
+    REFUNDED: 'refunded',
+    REFUND_REQUESTED: 'refund_requested',
+  },
+  ListingType: { AUCTION: 'AUCTION', SELL: 'SELL' },
+  CardCondition: { RAW: 'RAW', GRADED: 'GRADED' },
+  useGetVwMyOrdersQuery: jest.fn().mockReturnValue({
+    data: {
+      vw_myordersCollection: {
+        edges: [
+          {
+            node: {
+              id: '1',
+              name: 'Test Product 1',
+              final_price: 99.99,
+              currency: 'USD',
+              image_url: 'https://example.com/image1.jpg',
+              listing_id: 'listing-1',
+              listing_type: 'SELL',
+              status: 'awaiting_payment',
+              created_at: '2023-01-01T00:00:00Z',
+            },
+          },
+          {
+            node: {
+              id: '2',
+              name: 'Test Product 2',
+              final_price: 149.99,
+              currency: 'USD',
+              image_url: 'https://example.com/image2.jpg',
+              listing_id: 'listing-2',
+              listing_type: 'SELL',
+              status: 'completed',
+              created_at: '2023-01-02T00:00:00Z',
+            },
+          },
+        ],
+      },
+    },
+    loading: false,
+  }),
+}));
 
 jest.mock('@/constants/dummy', () => ({
   dummyOrders: [
@@ -30,6 +81,19 @@ jest.mock('@/constants/tabs', () => ({
 
 jest.mock('@/assets/svg', () => ({
   EmptyOrders: () => null,
+}));
+
+// Mock currency display to avoid external fetch and ensure fixed formatting
+jest.mock('@/hooks/useCurrencyDisplay', () => ({
+  useCurrencyDisplay: () => ({
+    formatDisplay: (
+      _currency: string | undefined,
+      amount: number | string | undefined,
+    ) => {
+      const n = typeof amount === 'string' ? parseFloat(amount) : (amount ?? 0);
+      return `$${(isNaN(n) ? 0 : n).toFixed(2)}`;
+    },
+  }),
 }));
 
 describe('BoughtOrder', () => {

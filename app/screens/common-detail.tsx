@@ -43,7 +43,7 @@ export default function ProductDetailScreen() {
   const { getIsFavorite } = useFavorites();
   const { formatDisplay } = useCurrencyDisplay();
 
-  const { id } = useLocalSearchParams();
+  const { id, preview } = useLocalSearchParams();
   const { data } = useGetVwCommonDetailQuery({
     skip: !id,
     variables: {
@@ -62,9 +62,9 @@ export default function ProductDetailScreen() {
     [data],
   );
 
-  const isNotSeller = useMemo(
-    () => user?.id !== detail?.seller_id,
-    [detail?.seller_id, user?.id],
+  const isSeller = useMemo(
+    () => user?.id === detail?.seller_id || preview === 'true',
+    [detail?.seller_id, user?.id, preview],
   );
 
   const handleToggleFavorite = useCallback(() => {
@@ -168,7 +168,7 @@ export default function ProductDetailScreen() {
           imageUrl={detail?.seller_image_url ?? ''}
           username={detail?.seller_username ?? ''}
         />
-        {isNotSeller && (
+        {!isSeller && (
           <>
             <TouchableOpacity
               activeOpacity={0.7}
@@ -186,7 +186,7 @@ export default function ProductDetailScreen() {
           </>
         )}
       </ScrollView>
-      {isNotSeller && (
+      {!isSeller && (
         <ProductDetailBottomBar
           showModal={showModal}
           onBuyNowPress={handleBuyNow}

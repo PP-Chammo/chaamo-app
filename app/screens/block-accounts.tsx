@@ -9,12 +9,10 @@ import { BlockList } from '@/components/organisms';
 import { useGetProfilesLazyQuery } from '@/generated/graphql';
 import { useBlockedUsers } from '@/hooks/useBlockedUsers';
 import useDebounce from '@/hooks/useDebounce';
-import { useRealtime } from '@/hooks/useRealtime';
 import { useUserVar } from '@/hooks/useUserVar';
 import { structuredClone } from '@/utils/structuredClone';
 
 export default function BlockAccounts() {
-  useRealtime(['blocked_users']);
   const [user] = useUserVar();
   const { blockedUsers, getIsBlocked } = useBlockedUsers();
 
