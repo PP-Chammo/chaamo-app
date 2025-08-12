@@ -2,11 +2,11 @@ import React from 'react';
 
 import { fireEvent, render } from '@testing-library/react-native';
 
-import { FlatData, Notification } from '@/domains';
+import { BaseNotification, FlatData } from '@/domains';
 
 import NotificationList from '../NotificationList';
 
-const mockNotifications: FlatData<Notification>[] = [
+const mockNotifications: FlatData<BaseNotification>[] = [
   { type: 'date', date: '2023-01-01' },
   {
     type: 'group',
@@ -106,7 +106,7 @@ describe('NotificationList', () => {
   });
 
   it('handles multiple interactions with different notifications', () => {
-    const multipleNotifications: FlatData<Notification>[] = [
+    const multipleNotifications: FlatData<BaseNotification>[] = [
       { type: 'date', date: '2023-01-01' },
       {
         type: 'group',

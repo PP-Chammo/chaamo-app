@@ -12,10 +12,14 @@ import {
 } from '@/components/atoms';
 import { Header, SettingItem } from '@/components/molecules';
 import { currencyMap } from '@/constants/currencies';
-import { useGetUserNotificationSettingsQuery } from '@/generated/graphql';
+import {
+  useGetNotificationsLazyQuery,
+  useGetUserNotificationSettingsQuery,
+} from '@/generated/graphql';
 import { useBlockedUsers } from '@/hooks/useBlockedUsers';
 import { useUserVar } from '@/hooks/useUserVar';
 import { logout } from '@/utils/auth';
+import { exportUserData } from '@/utils/exportData';
 import { getColor } from '@/utils/getColor';
 
 export default function SettingsScreen() {
@@ -41,6 +45,42 @@ export default function SettingsScreen() {
       },
     },
   });
+
+  const [getNotifications] = useGetNotificationsLazyQuery();
+
+  const handleExportPress = useCallback(async () => {
+    const { data } = await getNotifications({
+      variables: {
+        filter: {
+          user_id: { eq: user.id },
+        },
+      },
+    });
+
+    const notifications =
+      data?.notificationsCollection?.edges?.map(
+        (notification) => notification?.node,
+      ) ?? [];
+
+    const notificationPreferences =
+      userNotificationSettingsData?.user_notification_settingsCollection?.edges?.map(
+        (setting) => setting?.node,
+      ) ?? [];
+
+    const activityData = {
+      notifications,
+    };
+
+    const settings = {
+      notificationPreferences,
+    };
+
+    exportUserData(user, activityData, settings);
+  }, [
+    getNotifications,
+    user,
+    userNotificationSettingsData?.user_notification_settingsCollection?.edges,
+  ]);
 
   useFocusEffect(
     useCallback(() => {
@@ -154,7 +194,7 @@ export default function SettingsScreen() {
             <SettingItem
               iconName="file-export-outline"
               title="Export Data"
-              onPress={() => {}}
+              onPress={handleExportPress}
             />
             <Divider position="horizontal" className={classes.divider} />
             <SettingItem
@@ -170,7 +210,7 @@ export default function SettingsScreen() {
             />
           </View>
 
-          <View className={classes.sectionContainer}>
+          <View className={classes.sectionContainerLast}>
             <SettingItem
               iconName="delete-outline"
               iconColor={getColor('red-500')}
@@ -221,7 +261,8 @@ const classes = {
   containerTop: 'bg-white',
   contentContainer: 'my-4 gap-2.5',
   header: 'bg-white',
-  sectionContainer: 'bg-white mb-20',
+  sectionContainer: 'bg-white',
+  sectionContainerLast: 'bg-white mb-20',
   sectionHeader: 'px-4 pt-3 text-xs text-slate-600 !font-light',
   divider: '!bg-slate-100',
   deleteAccountModal: 'mx-14 items-center pt-5',
