@@ -14,11 +14,9 @@ import {
 } from '@/generated/graphql';
 import useDebounce from '@/hooks/useDebounce';
 import { useFollows } from '@/hooks/useFollows';
-import { useRealtime } from '@/hooks/useRealtime';
 import { useUserVar } from '@/hooks/useUserVar';
 
 export default function PeopleScreen() {
-  useRealtime(['follows']);
   const [user] = useUserVar();
   const { getIsFollowing } = useFollows();
   const [search, setSearch] = useState('');

@@ -38,7 +38,7 @@ export default function AuctionDetailScreen() {
   const { getIsFavorite } = useFavorites();
   const { formatDisplay } = useCurrencyDisplay();
 
-  const { id } = useLocalSearchParams();
+  const { id, preview } = useLocalSearchParams();
   const { data } = useGetVwAuctionDetailQuery({
     skip: !id,
     variables: {
@@ -57,9 +57,9 @@ export default function AuctionDetailScreen() {
     [data],
   );
 
-  const isNotSeller = useMemo(
-    () => user?.id !== detail?.seller_id,
-    [detail?.seller_id, user?.id],
+  const isSeller = useMemo(
+    () => user?.id !== detail?.seller_id || preview === 'true',
+    [detail?.seller_id, user?.id, preview],
   );
 
   const handleToggleFavorite = useCallback(() => {
@@ -148,7 +148,7 @@ export default function AuctionDetailScreen() {
           imageUrl={detail?.seller_image_url ?? ''}
           username={detail?.seller_username ?? ''}
         />
-        {isNotSeller && (
+        {!isSeller && (
           <>
             <TouchableOpacity
               activeOpacity={0.7}
@@ -165,7 +165,7 @@ export default function AuctionDetailScreen() {
           </>
         )}
       </ScrollView>
-      {isNotSeller && (
+      {!isSeller && (
         <AuctionBottomBar
           showModal={showModal}
           endDate={detail?.ends_at ?? new Date()}
