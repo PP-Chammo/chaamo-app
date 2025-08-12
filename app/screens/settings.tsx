@@ -210,7 +210,7 @@ export default function SettingsScreen() {
             />
           </View>
 
-          <View className={classes.sectionContainer}>
+          <View className={classes.sectionContainerLast}>
             <SettingItem
               iconName="delete-outline"
               iconColor={getColor('red-500')}
@@ -261,7 +261,8 @@ const classes = {
   containerTop: 'bg-white',
   contentContainer: 'my-4 gap-2.5',
   header: 'bg-white',
-  sectionContainer: 'bg-white mb-20',
+  sectionContainer: 'bg-white',
+  sectionContainerLast: 'bg-white mb-20',
   sectionHeader: 'px-4 pt-3 text-xs text-slate-600 !font-light',
   divider: '!bg-slate-100',
   deleteAccountModal: 'mx-14 items-center pt-5',
