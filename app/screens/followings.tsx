@@ -8,14 +8,12 @@ import { EmptyState, Header } from '@/components/molecules';
 import { FollowList } from '@/components/organisms';
 import { useGetFollowsQuery } from '@/generated/graphql';
 import { useFollows } from '@/hooks/useFollows';
-import { useRealtime } from '@/hooks/useRealtime';
 import { useUserVar } from '@/hooks/useUserVar';
 
 export default function FollowingsScreen() {
-  useRealtime(['follows']);
   const [user] = useUserVar();
   const { userId } = useLocalSearchParams();
-  const { followings } = useFollows(userId as string);
+  const { followings, getIsFollowing } = useFollows(userId as string);
 
   const { data, loading } = useGetFollowsQuery({
     skip: !userId && !user?.id,
@@ -28,8 +26,12 @@ export default function FollowingsScreen() {
   });
 
   const followingUsers = useMemo(() => {
-    return data?.followsCollection?.edges ?? [];
-  }, [data?.followsCollection?.edges]);
+    return (
+      data?.followsCollection?.edges.filter((edge) =>
+        getIsFollowing(edge.node?.followee_user_id),
+      ) ?? []
+    );
+  }, [data?.followsCollection?.edges, getIsFollowing]);
 
   return (
     <ScreenContainer>

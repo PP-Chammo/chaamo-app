@@ -25,7 +25,7 @@ export {
   ListContainerDirection,
 } from './ListContainer';
 export { default as NotificationListItem } from './NotificationListItem';
-export { default as OrderItem, type OrderStatus } from './OrderItem';
+export { default as OrderItem } from './OrderItem';
 export { default as OtpInput } from './OtpInput';
 export { default as People } from './People';
 export { default as PhoneInput } from './PhoneInput';

@@ -2,6 +2,69 @@ import { fireEvent, render } from '@testing-library/react-native';
 
 import SoldOrder from '../SoldOrder';
 
+// Mock GraphQL generated module to avoid undefined enums and hooks
+jest.mock('@/generated/graphql', () => ({
+  OrderByDirection: { DESCNULLSLAST: 'DESCNULLSLAST' },
+  OrderStatus: {
+    AWAITING_PAYMENT: 'AWAITING_PAYMENT',
+    AWAITING_SHIPMENT: 'AWAITING_SHIPMENT',
+    SHIPPED: 'SHIPPED',
+    DELIVERED: 'DELIVERED',
+    COMPLETED: 'COMPLETED',
+    CANCELLED: 'CANCELLED',
+    REFUNDED: 'REFUNDED',
+    REFUND_REQUESTED: 'REFUND_REQUESTED',
+  },
+  ListingType: { AUCTION: 'AUCTION', SELL: 'SELL' },
+  CardCondition: { RAW: 'RAW', GRADED: 'GRADED' },
+  useGetVwMyOrdersQuery: jest.fn().mockReturnValue({
+    data: {
+      vw_myordersCollection: {
+        edges: [
+          {
+            node: {
+              id: '1',
+              name: 'Test Product 1',
+              seller_earnings: 99.99,
+              currency: 'USD',
+              status: 'AWAITING_PAYMENT',
+              created_at: '2023-01-01T00:00:00Z',
+              listing_id: 'listing-1',
+              listing_type: 'SELL',
+            },
+          },
+          {
+            node: {
+              id: '2',
+              name: 'Test Product 2',
+              seller_earnings: 149.99,
+              currency: 'USD',
+              status: 'COMPLETED',
+              created_at: '2023-01-02T00:00:00Z',
+              listing_id: 'listing-2',
+              listing_type: 'SELL',
+            },
+          },
+        ],
+      },
+    },
+    loading: false,
+  }),
+}));
+
+// Mock currency display to avoid external fetch and ensure fixed formatting
+jest.mock('@/hooks/useCurrencyDisplay', () => ({
+  useCurrencyDisplay: () => ({
+    formatDisplay: (
+      _currency: string | undefined,
+      amount: number | string | undefined,
+    ) => {
+      const n = typeof amount === 'string' ? parseFloat(amount) : (amount ?? 0);
+      return `$${(isNaN(n) ? 0 : n).toFixed(2)}`;
+    },
+  }),
+}));
+
 jest.mock('@/constants/dummy', () => ({
   dummyOrders: [
     {

@@ -14,11 +14,16 @@ type GlobalChannelEntry = {
   refCount: number;
   reconnectAttempts: number;
   reconnectTimeout?: ReturnType<typeof setTimeout> | null;
+  isReconnecting?: boolean;
+  lastError?: string | Error;
+  lingerTimeout?: ReturnType<typeof setTimeout> | null;
+  persistent?: boolean;
 };
 
 const globalChannels: Record<string, GlobalChannelEntry | undefined> = {};
 const MAX_RECONNECT_ATTEMPTS = 5;
 const MAX_RECONNECT_DELAY_MS = 30_000;
+const CHANNEL_LINGER_MS = 30_000; // keep channel alive briefly after last unsubscribe
 
 type Edge = {
   node: Record<string, unknown>;
@@ -40,9 +45,13 @@ type ConnectionShape = {
   __typename?: string;
 } | null;
 
-export const useRealtime = (tables: TableName[]) => {
+export const useRealtime = (
+  tables: TableName[],
+  options?: { persistent?: boolean },
+) => {
   const client = useApolloClient();
   const localTablesRef = useRef<Set<string>>(new Set());
+  const persistent = options?.persistent ?? true;
 
   const encode = (s: string) =>
     typeof btoa !== 'undefined' ? btoa(s) : Buffer.from(s).toString('base64');
@@ -307,73 +316,226 @@ export const useRealtime = (tables: TableName[]) => {
           );
           handlePayload(tableName, payload);
         },
-      )
-      .subscribe((status, error) => {
-        if (status === 'SUBSCRIBED') {
-          const entry = globalChannels[tableName];
-          if (entry) entry.reconnectAttempts = 0;
-        } else if (status === 'CHANNEL_ERROR') {
-          console.error(
-            `❌ ${tableName}: Channel error`,
-            error?.message || error,
-          );
-          const entry = globalChannels[tableName];
-          if (!entry) return;
-          const attempts = entry.reconnectAttempts || 0;
-          if (attempts < MAX_RECONNECT_ATTEMPTS) {
-            const delay = Math.min(
-              1000 * Math.pow(2, attempts),
-              MAX_RECONNECT_DELAY_MS,
-            );
-            entry.reconnectAttempts = attempts + 1;
-            if (entry.reconnectTimeout) {
-              clearTimeout(entry.reconnectTimeout);
-            }
-            entry.reconnectTimeout = setTimeout(() => {
-              try {
-                channel.unsubscribe();
-                supabase.removeChannel(channel);
-              } catch {}
-              const newTopic = `${tableName}-changes-${Date.now()}`;
-              const newChannel = supabase
-                .channel(newTopic)
-                .on(
-                  'postgres_changes',
-                  { event: '*', schema: 'public', table: tableName },
-                  (payload) => handlePayload(tableName, payload),
-                )
-                .subscribe((newStatus) => {
-                  if (newStatus === 'SUBSCRIBED') {
-                    const e = globalChannels[tableName];
-                    if (e) {
-                      e.channel = newChannel;
-                      e.reconnectAttempts = 0;
-                      if (e.reconnectTimeout) {
-                        clearTimeout(e.reconnectTimeout);
-                        e.reconnectTimeout = null;
-                      }
-                    }
-                  } else if (newStatus === 'CHANNEL_ERROR') {
-                    console.error(
-                      `❌ ${tableName}: Reconnection attempt failed`,
-                    );
-                  }
-                });
+      );
 
-              const entryNow = globalChannels[tableName];
-              if (entryNow) {
-                entryNow.channel = newChannel;
-              }
-            }, delay);
-          } else {
-            console.error(`❌ ${tableName}: Max reconnection attempts reached`);
+    // Ensure a provisional entry exists before subscribe fires any callbacks
+    if (!globalChannels[tableName]) {
+      globalChannels[tableName] = {
+        channel,
+        refCount: 0,
+        reconnectAttempts: 0,
+        reconnectTimeout: null,
+        isReconnecting: false,
+        lingerTimeout: null,
+        persistent,
+      };
+    }
+
+    channel.subscribe((status, error) => {
+      const entry = globalChannels[tableName];
+
+      if (status === 'SUBSCRIBED') {
+        console.log(`✅ ${tableName}: Channel subscribed successfully`);
+        if (entry) {
+          entry.reconnectAttempts = 0;
+          if (entry.reconnectTimeout) {
+            clearTimeout(entry.reconnectTimeout);
+            entry.reconnectTimeout = null;
           }
-        } else if (status === 'TIMED_OUT') {
-          console.error(`⏰ ${tableName}: Connection timed out`);
-        } else if (status === 'CLOSED') {
-          // console.log(`[realtime] Channel closed for ${tableName}`);
         }
-      });
+      } else if (status === 'CHANNEL_ERROR') {
+        const errorMsg = error?.message || error || 'Unknown channel error';
+        console.error(`❌ ${tableName}: Channel error -`, errorMsg);
+
+        if (!entry) {
+          console.warn(
+            `⚠️ ${tableName}: No entry found; skipping reconnection for now`,
+          );
+        }
+
+        // Prevent multiple simultaneous reconnection attempts
+        if (entry && entry.isReconnecting) {
+          console.log(`🔄 ${tableName}: Reconnection already in progress`);
+          return;
+        }
+
+        if (!entry) return; // no state to manage yet; subscribeLocal will create and can trigger recovery
+
+        entry.lastError =
+          typeof errorMsg === 'string' ? errorMsg : String(errorMsg);
+        const attempts = entry.reconnectAttempts || 0;
+        if (entry.persistent || attempts < MAX_RECONNECT_ATTEMPTS) {
+          entry.isReconnecting = true;
+          const delay = Math.min(
+            1000 * Math.pow(2, attempts),
+            MAX_RECONNECT_DELAY_MS,
+          );
+          entry.reconnectAttempts = attempts + 1;
+
+          console.log(
+            `🔄 ${tableName}: Reconnecting in ${delay}ms (attempt ${entry.reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`,
+          );
+
+          // Clear existing timeout
+          if (entry.reconnectTimeout) {
+            clearTimeout(entry.reconnectTimeout);
+          }
+
+          entry.reconnectTimeout = setTimeout(() => {
+            const currentEntry = globalChannels[tableName];
+            if (!currentEntry || !currentEntry.isReconnecting) {
+              console.warn(
+                `⚠️ ${tableName}: Entry removed or not reconnecting, aborting`,
+              );
+              return;
+            }
+
+            console.log(
+              `🔄 ${tableName}: Starting reconnection attempt ${currentEntry.reconnectAttempts}`,
+            );
+
+            // Cleanup old channel
+            try {
+              if (currentEntry.channel) {
+                currentEntry.channel.unsubscribe();
+                supabase.removeChannel(currentEntry.channel);
+              }
+            } catch (cleanupError) {
+              console.warn(`⚠️ ${tableName}: Cleanup error:`, cleanupError);
+            }
+
+            // Create new channel with unique topic
+            const newTopic = `${tableName}-changes-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            const newChannel = supabase
+              .channel(newTopic)
+              .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: tableName },
+                (payload) => {
+                  console.log(
+                    `📡 [${tableName}] --> ${payload.eventType}:`,
+                    payload.eventType === 'DELETE' ? payload.old : payload.new,
+                  );
+                  handlePayload(tableName, payload);
+                },
+              )
+              .subscribe((newStatus, newError) => {
+                const currentEntry = globalChannels[tableName];
+                if (!currentEntry) return;
+
+                if (newStatus === 'SUBSCRIBED') {
+                  console.log(`✅ ${tableName}: Reconnection successful`);
+                  currentEntry.channel = newChannel;
+                  currentEntry.reconnectAttempts = 0;
+                  currentEntry.isReconnecting = false;
+                  currentEntry.lastError = undefined;
+                  if (currentEntry.reconnectTimeout) {
+                    clearTimeout(currentEntry.reconnectTimeout);
+                    currentEntry.reconnectTimeout = null;
+                  }
+                } else if (newStatus === 'CHANNEL_ERROR') {
+                  const newErrorMsg =
+                    newError?.message ||
+                    newError ||
+                    'Unknown reconnection error';
+                  console.error(
+                    `❌ ${tableName}: Reconnection failed -`,
+                    newErrorMsg,
+                  );
+                  currentEntry.isReconnecting = false;
+                  currentEntry.lastError = newErrorMsg;
+                  // The new channel will trigger its own reconnection logic
+                } else if (newStatus === 'TIMED_OUT') {
+                  console.error(`⏰ ${tableName}: Reconnection timed out`);
+                  currentEntry.isReconnecting = false;
+                  currentEntry.lastError = 'Connection timed out';
+                }
+              });
+
+            // Update entry with new channel
+            if (globalChannels[tableName]) {
+              globalChannels[tableName]!.channel = newChannel;
+            }
+          }, delay);
+        } else {
+          console.error(
+            `❌ ${tableName}: Max reconnection attempts (${MAX_RECONNECT_ATTEMPTS}) reached. Giving up.`,
+          );
+          entry.isReconnecting = false;
+          entry.lastError = `Max reconnection attempts reached: ${errorMsg}`;
+          // Clean up the entry
+          if (entry.reconnectTimeout) {
+            clearTimeout(entry.reconnectTimeout);
+            entry.reconnectTimeout = null;
+          }
+        }
+      } else if (status === 'TIMED_OUT') {
+        console.error(`⏰ ${tableName}: Connection timed out`);
+        // Treat timeout as channel error for reconnection
+        if (
+          entry &&
+          (entry.persistent ||
+            entry.reconnectAttempts < MAX_RECONNECT_ATTEMPTS) &&
+          !entry.isReconnecting
+        ) {
+          entry.isReconnecting = true;
+          entry.lastError = 'Connection timed out';
+          // Trigger reconnection logic similar to CHANNEL_ERROR
+          const attempts = entry.reconnectAttempts || 0;
+          const delay = Math.min(
+            1000 * Math.pow(2, attempts),
+            MAX_RECONNECT_DELAY_MS,
+          );
+          entry.reconnectAttempts = attempts + 1;
+
+          if (entry.reconnectTimeout) {
+            clearTimeout(entry.reconnectTimeout);
+          }
+
+          entry.reconnectTimeout = setTimeout(() => {
+            const newChannel = createChannel(tableName);
+            const currentEntry = globalChannels[tableName];
+            if (currentEntry) {
+              currentEntry.channel = newChannel;
+              currentEntry.isReconnecting = false;
+            }
+          }, delay);
+        }
+      } else if (status === 'CLOSED') {
+        console.log(`🔒 ${tableName}: Channel closed`);
+        // Mark lastError so future subscribers can trigger recovery even if refCount is 0 (lingering)
+        const e = globalChannels[tableName];
+        if (e) {
+          e.lastError = 'Channel closed';
+        }
+        // Attempt reconnection if this wasn't an intentional unsubscribe or if persistent
+        if (
+          e &&
+          (e.refCount > 0 || e.persistent) &&
+          (e.persistent || e.reconnectAttempts < MAX_RECONNECT_ATTEMPTS) &&
+          !e.isReconnecting
+        ) {
+          e.isReconnecting = true;
+          const attempts = e.reconnectAttempts || 0;
+          const delay = Math.min(
+            1000 * Math.pow(2, attempts),
+            MAX_RECONNECT_DELAY_MS,
+          );
+          e.reconnectAttempts = attempts + 1;
+          if (e.reconnectTimeout) {
+            clearTimeout(e.reconnectTimeout);
+          }
+          e.reconnectTimeout = setTimeout(() => {
+            const newChannel = createChannel(tableName);
+            const currentEntry = globalChannels[tableName];
+            if (currentEntry) {
+              currentEntry.channel = newChannel;
+              currentEntry.isReconnecting = false;
+            }
+          }, delay);
+        }
+      }
+    });
 
     return channel;
   };
@@ -385,15 +547,49 @@ export const useRealtime = (tables: TableName[]) => {
     const existing = globalChannels[key];
     if (existing) {
       existing.refCount += 1;
+      // Promote to persistent if requested
+      if (persistent) existing.persistent = true;
+      // If existing channel has errors, try to reconnect
+      if (existing.lastError && !existing.isReconnecting) {
+        console.log(`🔄 ${tableName}: Attempting to recover existing channel`);
+        const newChannel = createChannel(tableName);
+        existing.channel = newChannel;
+        existing.reconnectAttempts = 0;
+        existing.lastError = undefined;
+      }
       return;
     }
 
     const channel = createChannel(tableName);
+    // Handle rare race condition: another subscriber might have created the
+    // same channel entry between the existence check and creation above.
+    if (globalChannels[key]) {
+      const existingEntry = globalChannels[key]!;
+      existingEntry.refCount += 1;
+      if (existingEntry.lingerTimeout) {
+        clearTimeout(existingEntry.lingerTimeout!);
+        existingEntry.lingerTimeout = null;
+      }
+      if (persistent) existingEntry.persistent = true;
+      // Only dispose the newly created channel if it's NOT the same instance
+      if (existingEntry.channel !== channel) {
+        try {
+          channel.unsubscribe();
+        } catch {}
+        try {
+          supabase.removeChannel(channel);
+        } catch {}
+      }
+      return;
+    }
     globalChannels[key] = {
       channel,
       refCount: 1,
       reconnectAttempts: 0,
       reconnectTimeout: null,
+      isReconnecting: false,
+      lingerTimeout: null,
+      persistent,
     };
   };
 
@@ -404,16 +600,40 @@ export const useRealtime = (tables: TableName[]) => {
     if (!entry) return;
     entry.refCount -= 1;
     if (entry.refCount <= 0) {
-      try {
-        entry.channel.unsubscribe();
-      } catch {}
-      try {
-        supabase.removeChannel(entry.channel);
-      } catch {}
-      if (entry.reconnectTimeout) {
-        clearTimeout(entry.reconnectTimeout);
+      if (entry.persistent) {
+        // Keep channel alive globally; do not teardown
+        entry.refCount = 0;
+        return;
       }
-      delete globalChannels[key];
+      // Delay teardown to allow quick navigations back to reuse the live channel
+      if (entry.lingerTimeout) {
+        clearTimeout(entry.lingerTimeout);
+      }
+      entry.lingerTimeout = setTimeout(() => {
+        const current = globalChannels[key];
+        if (!current) return;
+        if (current.refCount > 0) {
+          // Reused while lingering; keep it
+          if (current.lingerTimeout) {
+            clearTimeout(current.lingerTimeout);
+            current.lingerTimeout = null;
+          }
+          return;
+        }
+        try {
+          current.channel.unsubscribe();
+        } catch {}
+        try {
+          supabase.removeChannel(current.channel);
+        } catch {}
+        if (current.reconnectTimeout) {
+          clearTimeout(current.reconnectTimeout);
+        }
+        if (current.lingerTimeout) {
+          clearTimeout(current.lingerTimeout);
+        }
+        delete globalChannels[key];
+      }, CHANNEL_LINGER_MS);
     }
   };
 

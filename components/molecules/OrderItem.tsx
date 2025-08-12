@@ -6,11 +6,13 @@ import { router } from 'expo-router';
 import { TouchableOpacity, View } from 'react-native';
 
 import { Divider, Icon, Label, Row } from '@/components/atoms';
+import { ListingType, OrderStatus } from '@/generated/graphql';
 import { getColor } from '@/utils/getColor';
 
-export type OrderStatus = 'progress' | 'completed' | 'cancelled';
-
 interface OrderItemProps {
+  id: string;
+  listingId: string;
+  listingType: ListingType;
   title: string;
   price: string;
   imageUrl: string;
@@ -18,14 +20,26 @@ interface OrderItemProps {
 }
 
 const OrderItem: React.FC<OrderItemProps> = memo(function OrderItem({
+  id,
+  listingId,
+  listingType,
   title,
   price,
   imageUrl,
   status,
 }) {
   const getIcon = useMemo(() => {
-    if (status === 'cancelled') return 'close';
-    return 'check';
+    const iconMap = {
+      awaiting_payment: 'timer',
+      awaiting_shipment: 'timer',
+      shipped: 'truck',
+      delivered: 'check',
+      completed: 'check',
+      refund_requested: 'close',
+      refunded: 'close',
+      cancelled: 'close',
+    };
+    return iconMap[status];
   }, [status]);
 
   const getColorIcon = useMemo(() => {
@@ -34,10 +48,25 @@ const OrderItem: React.FC<OrderItemProps> = memo(function OrderItem({
   }, [status]);
 
   return (
-    <TouchableOpacity onPress={() => router.push('/screens/order-details')}>
+    <View>
       <Row between>
         <Row className={classes.row}>
-          <View className={classes.imageContainer}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() =>
+              router.push({
+                pathname:
+                  listingType === ListingType.AUCTION
+                    ? '/screens/auction-detail'
+                    : '/screens/common-detail',
+                params: {
+                  id: listingId,
+                  preview: 'true',
+                },
+              })
+            }
+            className={classes.imageContainer}
+          >
             <Image
               source={{
                 uri: imageUrl,
@@ -45,40 +74,57 @@ const OrderItem: React.FC<OrderItemProps> = memo(function OrderItem({
               className={classes.image}
               contentFit="cover"
             />
-            <View className={classes.statusContainer}>
-              <View
-                className={clsx(classes.status[status], classes.status.base)}
-              >
-                <Icon name={getIcon} size={13} color={getColorIcon} />
-              </View>
+            <View
+              className={clsx(classes.status[status], classes.statusContainer)}
+            >
+              <Icon name={getIcon} size={13} color={getColorIcon} />
             </View>
-          </View>
-          <View>
-            <Label className={classes.title}>{title}</Label>
-            <Label className={classes.price}>${price}</Label>
-          </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() =>
+              router.push({
+                pathname: '/screens/order-details',
+                params: {
+                  id,
+                },
+              })
+            }
+            className={classes.titleContainer}
+          >
+            <Label className={classes.title} numberOfLines={2}>
+              {title}
+            </Label>
+            <Label className={classes.price}>{price}</Label>
+          </TouchableOpacity>
+          <Icon name="chevron-right" />
         </Row>
-        <Icon name="chevron-right" />
       </Row>
       <Divider position="horizontal" className={classes.divider} />
-    </TouchableOpacity>
+    </View>
   );
 });
 
 const classes = {
   row: 'gap-3',
   imageContainer: 'relative',
-  image: 'w-14 h-20 rounded relative',
+  image: 'w-16 aspect-[7/10] rounded relative',
   title: 'font-bold text-slate-800',
-  price: 'text-sm',
+  price: 'text-sm font-medium',
   divider: 'my-3',
-  statusContainer: 'absolute -top-2 -right-2 bg-white p-1 rounded-full',
+  statusContainer:
+    'absolute -top-2 -right-2 p-1 border-px border-gray-200 rounded-full',
   status: {
-    base: 'rounded-full p-1',
-    progress: 'bg-black/20',
+    awaiting_payment: 'bg-yellow-500',
+    awaiting_shipment: 'bg-yellow-500',
+    shipped: 'bg-green-500',
+    delivered: 'bg-green-500',
     completed: 'bg-green-500',
-    cancelled: 'bg-white',
+    refund_requested: 'bg-red-500',
+    refunded: 'bg-red-500',
+    cancelled: 'bg-red-500',
   },
+  titleContainer: 'flex-1 gap-2',
 };
 
 export default OrderItem;
