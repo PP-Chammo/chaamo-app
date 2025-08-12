@@ -1,5 +1,5 @@
-import * as FileSystem from 'expo-file-system';
 import { Alert } from 'react-native';
+import RNFS from 'react-native-fs';
 
 import {
   BaseNotification,
@@ -109,11 +109,9 @@ export const exportUserData = async (
 
     const fileName = `chaamo-export-${user.id}-${Date.now()}.json`;
 
-    const fileUri = `${FileSystem.documentDirectory}${fileName}`;
+    const fileUri = `${RNFS.DownloadDirectoryPath}/${fileName}`;
 
-    await FileSystem.writeAsStringAsync(fileUri, jsonData, {
-      encoding: FileSystem.EncodingType.UTF8,
-    });
+    await RNFS.writeFile(fileUri, jsonData, 'utf8');
 
     Alert.alert(
       'Export Successful',
