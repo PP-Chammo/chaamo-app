@@ -148,6 +148,20 @@ const FollowList: React.FC<FollowListProps> = memo(function FollowList({
     ],
   );
 
+  const handleRemoveFromFollower = useCallback(
+    (followerUserId: string) => {
+      removeFollow({
+        variables: {
+          filter: {
+            follower_user_id: { eq: followerUserId },
+            followee_user_id: { eq: user?.id },
+          },
+        },
+      });
+    },
+    [removeFollow, user?.id],
+  );
+
   if (loading) {
     return <Loading />;
   }
@@ -192,6 +206,7 @@ const FollowList: React.FC<FollowListProps> = memo(function FollowList({
               (removeFollowLoading || createFollowLoading)
             }
             isFollowing={getIsFollowing(singleUser.id)}
+            onRemoveFromFollowerPress={handleRemoveFromFollower}
           />
         );
       }}

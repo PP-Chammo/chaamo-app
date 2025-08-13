@@ -16,16 +16,16 @@ import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useUserVar } from '@/hooks/useUserVar';
 
 export default function StatsProfile() {
-  const { publicUserId } = useLocalSearchParams();
+  const { userId } = useLocalSearchParams();
   const [user] = useUserVar();
   const { formatDisplay, convertSymbolToCurrency, convertCurrencyToSymbol } =
     useCurrencyDisplay();
 
   const { data: publicUserData } = useGetProfilesQuery({
-    skip: !publicUserId,
+    skip: !userId,
     variables: {
       filter: {
-        id: { eq: publicUserId },
+        id: { eq: userId },
       },
     },
   });
@@ -33,7 +33,7 @@ export default function StatsProfile() {
   const { data: addressData } = useGetUserAddressesQuery({
     variables: {
       filter: {
-        user_id: { eq: publicUserId ?? user?.id },
+        user_id: { eq: userId ?? user?.id },
       },
     },
   });
@@ -42,7 +42,7 @@ export default function StatsProfile() {
     fetchPolicy: 'cache-and-network',
     variables: {
       filter: {
-        seller_id: { eq: publicUserId ?? user?.id },
+        seller_id: { eq: userId ?? user?.id },
       },
     },
   });
@@ -147,14 +147,16 @@ export default function StatsProfile() {
             testID="buy-now"
           />
         </View>
-        <View className={classes.statContainer}>
-          <ProfileStat
-            className={classes.stat}
-            title="Total Earnings"
-            value={`${convertCurrencyToSymbol(user?.profile?.currency)}${totalEarnings}`}
-            testID="total-earnings"
-          />
-        </View>
+        {!userId && (
+          <View className={classes.statContainer}>
+            <ProfileStat
+              className={classes.stat}
+              title="Total Earnings"
+              value={`${convertCurrencyToSymbol(user?.profile?.currency)}${totalEarnings}`}
+              testID="total-earnings"
+            />
+          </View>
+        )}
 
         <View className={classes.locationContainer}>
           <Label>Location</Label>

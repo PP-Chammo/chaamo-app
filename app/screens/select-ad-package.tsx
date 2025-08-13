@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 
 import { Button, Icon, Label, Row, ScreenContainer } from '@/components/atoms';
@@ -13,6 +13,7 @@ import { structuredClone } from '@/utils/structuredClone';
 
 export default function SelectAdPackageScreen() {
   const [form, setForm] = useSellFormVar();
+  const { listingId } = useLocalSearchParams();
 
   const handleSelectPackage = useCallback(
     (adPackage: { value: string }) => () => {
@@ -30,12 +31,14 @@ export default function SelectAdPackageScreen() {
     <ScreenContainer>
       <Header title="Select Ad Package" onBackPress={() => router.back()} />
       <View className={classes.container}>
-        <View className={classes.successMessage}>
-          <Icon name="check-circle" color={getColor('green-500')} size={24} />
-          <Label className={classes.successMessageText}>
-            Your card has been posted successfully
-          </Label>
-        </View>
+        {!listingId && (
+          <View className={classes.successMessage}>
+            <Icon name="check-circle" color={getColor('green-500')} size={24} />
+            <Label className={classes.successMessageText}>
+              Your card has been posted successfully
+            </Label>
+          </View>
+        )}
         <View className={classes.content}>
           <View className={classes.cardContainer}>
             <Row between>

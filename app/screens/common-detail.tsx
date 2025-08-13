@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import { clsx } from 'clsx';
 import { Image } from 'expo-image';
@@ -8,6 +8,8 @@ import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
 
 import {
   BottomSheetModal,
+  ContextMenu,
+  Divider,
   Icon,
   Label,
   ScreenContainer,
@@ -24,8 +26,8 @@ import { dummyPortfolioValueData } from '@/constants/dummy';
 import {
   ListingType,
   useCreateFavoritesMutation,
-  useRemoveFavoritesMutation,
   useGetVwChaamoDetailQuery,
+  useRemoveFavoritesMutation,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -42,6 +44,9 @@ export default function ProductDetailScreen() {
   const [user] = useUserVar();
   const { getIsFavorite } = useFavorites();
   const { formatDisplay } = useCurrencyDisplay();
+
+  const dotsRef = useRef<View>(null);
+  const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 
   const { id, preview } = useLocalSearchParams();
   const { data } = useGetVwChaamoDetailQuery({
@@ -106,6 +111,65 @@ export default function ProductDetailScreen() {
     setShowModal(true);
   }, []);
 
+  const rightIconHeader = useMemo(() => {
+    if (isSeller) {
+      return 'dots-vertical';
+    }
+    return getIsFavorite(id as string) ? 'heart' : 'heart-outline';
+  }, [isSeller, id, getIsFavorite]);
+
+  const rightIconColor = useMemo(() => {
+    if (isSeller) {
+      return getColor('gray-600');
+    }
+    return getColor(getIsFavorite(id as string) ? 'red-500' : 'gray-600');
+  }, [id, getIsFavorite, isSeller]);
+
+  const onRightPress = useCallback(() => {
+    if (isSeller) {
+      setIsContextMenuVisible(true);
+    } else {
+      handleToggleFavorite();
+    }
+  }, [handleToggleFavorite, isSeller]);
+
+  const handleBoostPost = useCallback(() => {
+    router.push({
+      pathname: '/screens/select-ad-package',
+      params: { listingId: detail?.id },
+    });
+    setIsContextMenuVisible(false);
+  }, [detail?.id]);
+
+  const handleEditDetails = useCallback(() => {
+    router.push({
+      pathname: '/screens/sell',
+      params: { cardId: detail?.id },
+    });
+    setIsContextMenuVisible(false);
+  }, [detail?.id]);
+
+  const handleDelete = useCallback(() => {
+    setIsContextMenuVisible(false);
+    Alert.alert(
+      'Are you sure you want to delete this card?',
+      'This action cannot be undone.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            Alert.alert('Coming soon');
+          },
+        },
+      ],
+    );
+  }, []);
+
   return (
     <ScreenContainer
       classNameBottom={clsx({
@@ -121,14 +185,11 @@ export default function ProductDetailScreen() {
         <Header
           onBackPress={() => router.back()}
           className={classes.header}
-          rightIcon={
-            getIsFavorite(detail?.id ?? '') ? 'heart' : 'heart-outline'
-          }
-          rightIconColor={getColor(
-            getIsFavorite(detail?.id ?? '') ? 'red-500' : 'gray-600',
-          )}
+          rightIcon={rightIconHeader}
+          rightIconColor={rightIconColor}
           rightIconSize={28}
-          onRightPress={handleToggleFavorite}
+          onRightPress={onRightPress}
+          rightRef={dotsRef}
         />
         <View className={classes.cardImageWrapper}>
           {detail?.image_url ? (
@@ -198,6 +259,33 @@ export default function ProductDetailScreen() {
           onDismiss={() => setShowModal(false)}
         />
       </BottomSheetModal>
+      <ContextMenu
+        visible={isContextMenuVisible}
+        onClose={() => setIsContextMenuVisible(false)}
+        triggerRef={dotsRef}
+        menuHeight={60}
+      >
+        <TouchableOpacity
+          onPress={handleBoostPost}
+          className={classes.contextMenu}
+        >
+          <Label className={classes.contextMenuText}>Boost Post</Label>
+        </TouchableOpacity>
+        <Divider position="horizontal" />
+        <TouchableOpacity
+          onPress={handleEditDetails}
+          className={classes.contextMenu}
+        >
+          <Label className={classes.contextMenuText}>Edit Details</Label>
+        </TouchableOpacity>
+        <Divider position="horizontal" />
+        <TouchableOpacity
+          onPress={handleDelete}
+          className={classes.contextMenu}
+        >
+          <Label className={classes.deleteText}>Delete</Label>
+        </TouchableOpacity>
+      </ContextMenu>
     </ScreenContainer>
   );
 }
@@ -231,4 +319,7 @@ const classes = {
     'absolute -top-7 left-0 right-0 bg-amber-50 py-1 flex flex-row justify-center items-center rounded-t-xl',
   timeText: 'text-sm font-bold',
   bottomSheet: 'bg-primary-500',
+  contextMenu: 'flex-row items-center py-2 px-3 gap-2',
+  contextMenuText: 'text-sm',
+  deleteText: 'text-sm text-red-500',
 };

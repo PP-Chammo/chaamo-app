@@ -90,6 +90,8 @@ export default function Portfolio() {
         renderItem={({ item }) => (
           <View className={classes.cardContainer}>
             <ListingCard
+              className="w-full"
+              classNameImage="w-full"
               type={item.node.listing_type}
               id={item.node.id}
               imageUrl={item.node.image_url ?? ''}
@@ -123,8 +125,8 @@ export default function Portfolio() {
 const classes = {
   container: 'flex-1',
   emptyContainer: 'flex-1 items-center mt-24',
-  contentContainer: 'pb-4.5 gap-10',
-  cardContainer: 'flex-[0.5] items-center',
+  contentContainer: 'pb-4.5 gap-10 mt-2 mx-2',
+  cardContainer: 'flex-1 mx-3',
   filterContainer: 'px-4.5 py-4 gap-2',
   emptyNotificationText: '!text-lg mt-5 text-slate-400',
 };

@@ -8,7 +8,7 @@ import React, {
 
 import { formatISO, parse } from 'date-fns';
 import * as ImagePicker from 'expo-image-picker';
-import { router } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { Alert, FlatList, View } from 'react-native';
 
@@ -35,6 +35,7 @@ import {
   useCreateUserCardMutation,
   useGetCategoriesQuery,
   useGetMasterCardsAutocompleteLazyQuery,
+  useGetVwChaamoDetailLazyQuery,
 } from '@/generated/graphql';
 import useDebounce from '@/hooks/useDebounce';
 import { initialSellFormState, useSellFormVar } from '@/hooks/useSellFormVar';
@@ -56,6 +57,7 @@ cssInterop(FlatList, {
 });
 
 export default function SellScreen() {
+  const { cardId } = useLocalSearchParams();
   const [user] = useUserVar();
   const [form, setForm] = useSellFormVar();
 
@@ -69,6 +71,7 @@ export default function SellScreen() {
     useGetMasterCardsAutocompleteLazyQuery();
   const [createListings] = useCreateListingsMutation();
   const [createUserCard] = useCreateUserCardMutation();
+  const [getDetail] = useGetVwChaamoDetailLazyQuery();
 
   const userCurrencySymbol = useMemo(() => {
     if (!user) return '$';
@@ -129,6 +132,26 @@ export default function SellScreen() {
     [form, requiredFields],
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      if (cardId) {
+        getDetail({
+          variables: {
+            filter: { id: { eq: cardId } },
+          },
+          onCompleted: ({ vw_chaamo_cardsCollection }) => {
+            if (vw_chaamo_cardsCollection?.edges?.length) {
+              const detail = vw_chaamo_cardsCollection.edges[0].node;
+              console.log({ detail });
+
+              // setForm(detail);
+            }
+          },
+        });
+      }
+    }, [cardId, getDetail]),
+  );
+
   const handleAutocompletePress = useCallback(
     (masterCard: MasterCards) => {
       setForm({
@@ -157,7 +180,6 @@ export default function SellScreen() {
       );
     }
     const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
       quality: 0.8,
     });
     if (result.canceled || !result.assets.length)
@@ -207,10 +229,10 @@ export default function SellScreen() {
               ...(form.master_card_id
                 ? {
                     master_card_id: form.master_card_id,
-                    name: form.title,
+                    custom_name: form.title,
                   }
                 : {
-                    name: form.title,
+                    custom_name: form.title,
                   }),
               description: form.description,
               condition: form.condition,
@@ -359,7 +381,7 @@ export default function SellScreen() {
           />
           {form.listing_type === 'sell' && (
             <TextField
-              name="price"
+              name="start_price"
               label="Price"
               placeholder="Enter price"
               value={form.start_price}
@@ -375,7 +397,7 @@ export default function SellScreen() {
             <Fragment>
               <TextField
                 type="date"
-                name="endDate"
+                name="end_time"
                 label="Auction End Date"
                 value={form.end_time}
                 onChange={handleChange}
@@ -388,7 +410,7 @@ export default function SellScreen() {
                 error={errors.end_time}
               />
               <TextField
-                name="minPrice"
+                name="start_price"
                 label="Minimum Price"
                 value={form.start_price}
                 onChange={handleChange}
@@ -399,7 +421,7 @@ export default function SellScreen() {
                 error={errors.start_price}
               />
               <TextField
-                name="reservedPrice"
+                name="reserved_price"
                 label="Reserved Price"
                 value={form.reserved_price}
                 onChange={handleChange}

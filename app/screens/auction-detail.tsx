@@ -19,8 +19,8 @@ import { dummyPortfolioValueData } from '@/constants/dummy';
 import {
   ListingType,
   useCreateFavoritesMutation,
-  useRemoveFavoritesMutation,
   useGetVwChaamoDetailQuery,
+  useRemoveFavoritesMutation,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -97,6 +97,13 @@ export default function AuctionDetailScreen() {
     setShowModal(true);
   }, []);
 
+  const rightIconHeader = useMemo(() => {
+    if (isSeller) {
+      return 'dots-vertical';
+    }
+    return getIsFavorite(id as string) ? 'heart' : 'heart-outline';
+  }, [isSeller, getIsFavorite, id]);
+
   return (
     <ScreenContainer classNameBottom={classes.containerBottom}>
       <ScrollView
@@ -107,7 +114,7 @@ export default function AuctionDetailScreen() {
         <Header
           onBackPress={() => router.back()}
           className={classes.header}
-          rightIcon={getIsFavorite(id as string) ? 'heart' : 'heart-outline'}
+          rightIcon={rightIconHeader}
           rightIconColor={getColor(
             getIsFavorite(id as string) ? 'red-500' : 'gray-600',
           )}
