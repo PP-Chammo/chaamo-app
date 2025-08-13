@@ -15,8 +15,10 @@ import {
   ScreenContainer,
 } from '@/components/atoms';
 import {
+  AuctionDetailBottomBar,
   Chart,
   Header,
+  PlaceBidModalContent,
   PlaceOfferModalContent,
   ProductDetailBottomBar,
   ProductDetailInfo,
@@ -40,7 +42,7 @@ cssInterop(ScrollView, {
   },
 });
 
-export default function ProductDetailScreen() {
+export default function ListingDetailScreen() {
   const [user] = useUserVar();
   const { getIsFavorite } = useFavorites();
   const { formatDisplay } = useCurrencyDisplay();
@@ -107,7 +109,7 @@ export default function ProductDetailScreen() {
     Alert.alert('Coming soon');
   }, []);
 
-  const handleMakeAnOffer = useCallback(() => {
+  const handleShowModal = useCallback(() => {
     setShowModal(true);
   }, []);
 
@@ -169,6 +171,81 @@ export default function ProductDetailScreen() {
       ],
     );
   }, []);
+  const renderBottomBar = useCallback(() => {
+    if (isSeller) {
+      return null;
+    }
+
+    if (detail?.listing_type === ListingType.AUCTION) {
+      return (
+        <>
+          <AuctionDetailBottomBar
+            showModal={showModal}
+            highestBidPrice={formatDisplay(
+              detail?.currency,
+              detail?.highest_bid_price ?? detail?.reserve_price ?? 0,
+            )}
+            endDate={detail?.end_time ?? new Date()}
+            onBidNowPress={handleShowModal}
+          />
+          <BottomSheetModal
+            show={showModal}
+            onDismiss={() => setShowModal(false)}
+            className={classes.bottomSheet}
+            height={400}
+          >
+            <PlaceBidModalContent
+              id={detail?.id ?? ''}
+              minimumBidAmount={detail?.reserve_price ?? 0}
+              currentBidAmount={
+                detail?.highest_bid_price ?? detail?.reserve_price ?? 0
+              }
+              highestBidAmount={
+                detail?.highest_bid_price ?? detail?.reserve_price ?? 0
+              }
+              endDate={detail?.end_time ?? new Date()}
+              onDismiss={() => setShowModal(false)}
+            />
+          </BottomSheetModal>
+        </>
+      );
+    } else if (detail?.listing_type === ListingType.SELL) {
+      return (
+        <>
+          <ProductDetailBottomBar
+            showModal={showModal}
+            onBuyNowPress={handleBuyNow}
+            onMakeAnOfferPress={handleShowModal}
+          />
+          <BottomSheetModal
+            show={showModal}
+            onDismiss={() => setShowModal(false)}
+            className={classes.bottomSheet}
+            height={240}
+          >
+            <PlaceOfferModalContent
+              id={detail?.id ?? ''}
+              sellerId={detail?.seller_id ?? ''}
+              onDismiss={() => setShowModal(false)}
+            />
+          </BottomSheetModal>
+        </>
+      );
+    }
+  }, [
+    isSeller,
+    detail?.listing_type,
+    detail?.currency,
+    detail?.highest_bid_price,
+    detail?.reserve_price,
+    detail?.end_time,
+    detail?.id,
+    detail?.seller_id,
+    showModal,
+    formatDisplay,
+    handleShowModal,
+    handleBuyNow,
+  ]);
 
   return (
     <ScreenContainer
@@ -211,7 +288,14 @@ export default function ProductDetailScreen() {
           price={formatDisplay(detail?.currency, detail?.start_price ?? 0)}
           date={detail?.created_at ?? new Date().toISOString()}
           title={detail?.name ?? ''}
-          marketPrice={formatDisplay(detail?.currency, 0)}
+          marketPrice={
+            detail?.last_sold_price === null
+              ? 'process last sold...'
+              : formatDisplay(
+                  detail?.last_sold_currency,
+                  detail?.last_sold_price,
+                )
+          }
           description={detail?.description ?? ''}
         />
         <View className={classes.chartWrapper}>
@@ -223,42 +307,22 @@ export default function ProductDetailScreen() {
           username={detail?.seller_username ?? ''}
         />
         {!isSeller && (
-          <>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={handleReport}
-              className={classes.reportButton}
-            >
-              <Icon name="flag" size={18} />
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={handleReport}
+            className={classes.reportButton}
+          >
+            <Icon name="flag" size={18} />
 
-              <Label variant="subtitle">Report this Ad</Label>
-            </TouchableOpacity>
-            <SimilarAdList
-              ignoreListingId={detail?.id ?? ''}
-              listingType={ListingType.SELL}
-            />
-          </>
+            <Label variant="subtitle">Report this Ad</Label>
+          </TouchableOpacity>
         )}
+        <SimilarAdList
+          ignoreId={detail?.id ?? ''}
+          listingType={detail?.listing_type ?? ListingType.SELL}
+        />
       </ScrollView>
-      {!isSeller && (
-        <ProductDetailBottomBar
-          showModal={showModal}
-          onBuyNowPress={handleBuyNow}
-          onMakeAnOfferPress={handleMakeAnOffer}
-        />
-      )}
-      <BottomSheetModal
-        show={showModal}
-        onDismiss={() => setShowModal(false)}
-        className={classes.bottomSheet}
-        height={300}
-      >
-        <PlaceOfferModalContent
-          id={detail?.id ?? ''}
-          sellerId={detail?.seller_id ?? ''}
-          onDismiss={() => setShowModal(false)}
-        />
-      </BottomSheetModal>
+      {renderBottomBar()}
       <ContextMenu
         visible={isContextMenuVisible}
         onClose={() => setIsContextMenuVisible(false)}

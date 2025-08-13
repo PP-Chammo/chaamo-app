@@ -8,11 +8,16 @@ import { ListingType } from '@/generated/graphql';
 import SimilarAdList from '../SimilarAdList';
 
 jest.mock('expo-router', () => ({
-  router: { push: jest.fn() },
+  router: {
+    push: jest.fn(),
+    replace: jest.fn(),
+    back: jest.fn(),
+  },
+  useFocusEffect: jest.fn((cb: () => void) => cb()),
 }));
 
 const defaultProps = {
-  ignoreListingId: 'ignore-this-id',
+  ignoreId: 'ignore-this-id',
   listingType: ListingType.SELL,
 };
 
@@ -76,22 +81,22 @@ describe('SimilarAdList', () => {
   it('renders product cards', () => {
     render(<SimilarAdList {...defaultProps} />);
 
-    expect(screen.getAllByTestId('listing-card')).toHaveLength(3);
+    expect(screen.getAllByTestId('listing-card')).toHaveLength(4);
   });
 
   it('displays product information', () => {
     render(<SimilarAdList {...defaultProps} />);
 
-    expect(screen.getByText('Featured Item 1')).toBeTruthy();
-    expect(screen.getByText('Featured Item 2')).toBeTruthy();
-    expect(screen.getByText('Featured Item 3')).toBeTruthy();
+    expect(screen.getByText('Auction Item 1')).toBeTruthy();
+    expect(screen.getByText('Common Item 2')).toBeTruthy();
+    expect(screen.getAllByText('Common Item 3').length).toBeGreaterThan(0);
   });
 
   it('has onPress handlers for product cards', () => {
     render(<SimilarAdList {...defaultProps} />);
 
     const cards = screen.getAllByTestId('listing-card');
-    expect(cards).toHaveLength(3);
+    expect(cards).toHaveLength(4);
     cards.forEach((card) => {
       expect(card).toBeTruthy();
     });
@@ -112,7 +117,7 @@ describe('SimilarAdList edge cases', () => {
     const { getAllByTestId } = render(<SimilarAdList {...defaultProps} />);
     fireEvent.press(getAllByTestId('listing-card')[0]);
     expect(router.push).toHaveBeenCalledWith({
-      pathname: '/screens/common-detail',
+      pathname: '/screens/listing-detail',
       params: {
         id: '1',
       },

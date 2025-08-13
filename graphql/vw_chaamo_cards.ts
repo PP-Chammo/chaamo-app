@@ -12,11 +12,12 @@ export const getVwChaamoListings = gql`
           id
           listing_type
           image_url
+          name
           currency
           start_price
-          name
+          last_sold_currency
+          last_sold_price
           seller_username
-          seller_country
           created_at
           is_favorite
           is_boosted
@@ -44,6 +45,8 @@ export const getVwChaamoDetail = gql`
           start_price
           reserve_price
           highest_bid_price
+          last_sold_currency
+          last_sold_price
           created_at
           end_time
         }

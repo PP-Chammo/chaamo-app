@@ -14,9 +14,9 @@ import {
   useCreateFavoritesMutation,
   useRemoveFavoritesMutation,
 } from '@/generated/graphql';
-import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
+import { getIndicator } from '@/utils/getIndicator';
 
 cssInterop(FlatList, {
   contentContainerClassName: { target: 'contentContainerStyle' },
@@ -24,7 +24,6 @@ cssInterop(FlatList, {
 
 export default function SoldItems() {
   const [user] = useUserVar();
-  const { formatDisplay } = useCurrencyDisplay();
 
   const [filter, setFilter] = useState<ListingType | 'all'>('all');
 
@@ -126,18 +125,17 @@ export default function SoldItems() {
                 type={item.node.listing_type}
                 imageUrl={item.node.image_url ?? ''}
                 title={item.node.name ?? ''}
-                price={formatDisplay(
-                  item.node.currency,
-                  item.node?.start_price ?? 0,
+                currency={item.node?.currency}
+                price={item.node?.start_price}
+                marketCurrency={item.node?.last_sold_currency}
+                marketPrice={item.node?.last_sold_price}
+                indicator={getIndicator(
+                  item.node?.start_price,
+                  item.node?.last_sold_price,
                 )}
-                marketPrice={formatDisplay(item.node.currency, 0)}
-                indicator="up"
                 onPress={() =>
                   router.push({
-                    pathname:
-                      item.node.listing_type === ListingType.AUCTION
-                        ? '/screens/auction-detail'
-                        : '/screens/common-detail',
+                    pathname: '/screens/listing-detail',
                     params: {
                       id: item.node.id,
                     },

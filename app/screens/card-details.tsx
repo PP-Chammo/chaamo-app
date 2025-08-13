@@ -54,7 +54,7 @@ export default function CardDetailsScreen() {
   }, [form]);
 
   const handlePayWithPaypal = useCallback(async () => {
-    const baseUrl = process.env.EXPO_PUBLIC_PAYPAL_CHECKOUT_URL;
+    const baseUrl = `${process.env.EXPO_PUBLIC_BACKEND_URL}/paypal/checkout`;
     if (!baseUrl) {
       Alert.alert('Missing configuration', 'PayPal needs checkout endpoint.');
       return;

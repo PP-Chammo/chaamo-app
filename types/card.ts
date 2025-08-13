@@ -5,8 +5,10 @@ export interface ListingCardType {
   id: string;
   imageUrl: string;
   title: string;
-  price?: string;
-  marketPrice: string;
+  currency?: string | null;
+  price?: string | null;
+  marketCurrency?: string | null;
+  marketPrice?: string | null;
   indicator?: string | null;
   boosted?: boolean;
 }

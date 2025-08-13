@@ -242,61 +242,72 @@ export default function SellScreen() {
             },
           ],
         },
-        onCompleted: ({ insertIntouser_cardsCollection }) => {
+        onCompleted: async ({ insertIntouser_cardsCollection }) => {
           if (insertIntouser_cardsCollection?.records?.length) {
             const userCardId = insertIntouser_cardsCollection.records[0].id;
-            createListings({
-              variables: {
-                objects: [
-                  {
-                    user_card_id: userCardId,
-                    seller_id: user?.id,
-                    listing_type: form.listing_type,
-                    currency: user?.profile?.currency,
-                    // Sell
-                    ...(form.listing_type === ListingType.SELL
-                      ? {
-                          start_price: Number(form.start_price).toFixed(2),
-                        }
-                      : {}),
-                    // Auction
-                    ...(form.listing_type === ListingType.AUCTION
-                      ? {
-                          start_price: Number(form.start_price).toFixed(2),
-                          reserve_price: Number(form.reserved_price).toFixed(2),
-                          start_time: formatISO(new Date()),
-                          end_time: formatISO(
-                            parse(form.end_time, 'dd/MM/yyyy', new Date()),
-                          ),
-                        }
-                      : {}),
-                  },
-                ],
-              },
-              onCompleted: ({ insertIntolistingsCollection }) => {
-                if (insertIntolistingsCollection?.records?.length) {
-                  if (form.listing_type === ListingType.PORTFOLIO) {
-                    Alert.alert('Success!', 'Your portfolio has been saved.', [
-                      {
-                        text: 'OK',
-                        onPress: () => {
-                          setForm(structuredClone(initialSellFormState));
-                          router.replace('/(tabs)/home');
-                        },
-                      },
-                    ]);
-                  } else {
-                    setForm({
+            await Promise.all([
+              fetch(
+                `${process.env.EXPO_PUBLIC_BACKEND_URL}/ebay_scrape?user_card_id=${userCardId}&region=${user?.profile?.currency === 'GBP' ? 'uk' : 'us'}`,
+              ),
+              createListings({
+                variables: {
+                  objects: [
+                    {
                       user_card_id: userCardId,
-                      listing_id: insertIntolistingsCollection.records[0].id,
-                    });
-                    setLoading(false);
-                    router.push('/screens/select-ad-package');
+                      seller_id: user?.id,
+                      listing_type: form.listing_type,
+                      currency: user?.profile?.currency,
+                      // Sell
+                      ...(form.listing_type === ListingType.SELL
+                        ? {
+                            start_price: Number(form.start_price).toFixed(2),
+                          }
+                        : {}),
+                      // Auction
+                      ...(form.listing_type === ListingType.AUCTION
+                        ? {
+                            start_price: Number(form.start_price).toFixed(2),
+                            reserve_price: Number(form.reserved_price).toFixed(
+                              2,
+                            ),
+                            start_time: formatISO(new Date()),
+                            end_time: formatISO(
+                              parse(form.end_time, 'dd/MM/yyyy', new Date()),
+                            ),
+                          }
+                        : {}),
+                    },
+                  ],
+                },
+                onCompleted: ({ insertIntolistingsCollection }) => {
+                  if (insertIntolistingsCollection?.records?.length) {
+                    if (form.listing_type === ListingType.PORTFOLIO) {
+                      Alert.alert(
+                        'Success!',
+                        'Your portfolio has been saved.',
+                        [
+                          {
+                            text: 'OK',
+                            onPress: () => {
+                              setForm(structuredClone(initialSellFormState));
+                              router.replace('/(tabs)/home');
+                            },
+                          },
+                        ],
+                      );
+                    } else {
+                      setForm({
+                        user_card_id: userCardId,
+                        listing_id: insertIntolistingsCollection.records[0].id,
+                      });
+                      setLoading(false);
+                      router.push('/screens/select-ad-package');
+                    }
                   }
-                }
-              },
-              onError: console.log,
-            });
+                },
+                onError: console.log,
+              }),
+            ]);
           }
         },
         onError: console.log,

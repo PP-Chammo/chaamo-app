@@ -7,10 +7,10 @@ import { ActivityIndicator, FlatList, View } from 'react-native';
 import { Label } from '@/components/atoms';
 import { CardItem } from '@/components/molecules';
 import { GetVwChaamoListingsQuery, ListingType } from '@/generated/graphql';
-import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFavorites } from '@/hooks/useFavorites';
 import { DeepGet } from '@/types/helper';
 import { getColor } from '@/utils/getColor';
+import { getIndicator } from '@/utils/getIndicator';
 
 cssInterop(FlatList, {
   contentContainerClassName: {
@@ -30,7 +30,6 @@ interface ProductFixedListProps {
 const ProductFixedList: React.FC<ProductFixedListProps> = memo(
   function AllCards({ loading, cards, onFavoritePress }) {
     const { getIsFavorite } = useFavorites();
-    const { formatDisplay } = useCurrencyDisplay();
 
     if (loading) {
       return (
@@ -53,20 +52,18 @@ const ProductFixedList: React.FC<ProductFixedListProps> = memo(
             imageUrl={item.node?.image_url ?? ''}
             title={item.node?.name ?? ''}
             subtitle={item.node?.seller_username ?? ''}
-            price={formatDisplay(
-              item.node?.currency,
-              item.node?.start_price ?? 0,
-            )}
             date={item.node.created_at ?? new Date().toISOString()}
-            marketPrice={formatDisplay(item.node?.currency, 0)}
-            marketType="eBay"
-            indicator="up"
+            currency={item.node?.currency}
+            price={item.node?.start_price}
+            marketCurrency={item.node?.last_sold_currency}
+            marketPrice={item.node?.last_sold_price}
+            indicator={getIndicator(
+              item.node?.start_price,
+              item.node?.last_sold_price,
+            )}
             onPress={() =>
               router.push({
-                pathname:
-                  item.node?.listing_type === ListingType.AUCTION
-                    ? '/screens/auction-detail'
-                    : '/screens/common-detail',
+                pathname: '/screens/listing-detail',
                 params: {
                   id: item.node?.id,
                 },

@@ -1,39 +1,44 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 
 import { ListContainer, ListingCard } from '@/components/molecules';
 import {
   ListingType,
-  useGetVwFeaturedListingsQuery,
+  useGetVwChaamoListingsLazyQuery,
 } from '@/generated/graphql';
-import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { getIndicator } from '@/utils/getIndicator';
 
 interface SimilarAdListProps {
-  ignoreListingId: string;
+  ignoreId: string;
   listingType: ListingType;
 }
 
 const SimilarAdList: React.FC<SimilarAdListProps> = memo(
-  function SimilarAdList({ ignoreListingId, listingType }) {
-    const { formatDisplay } = useCurrencyDisplay();
-
-    const { data, loading } = useGetVwFeaturedListingsQuery({
-      fetchPolicy: 'cache-and-network',
-      variables: {
-        filter: {
-          and: [
-            { id: { neq: ignoreListingId } },
-            { listing_type: { eq: listingType } },
-          ],
-        },
-        last: 10,
-      },
-    });
+  function SimilarAdList({ ignoreId, listingType }) {
+    const [getRecentlyAddedListings, { data, loading }] =
+      useGetVwChaamoListingsLazyQuery({
+        fetchPolicy: 'cache-and-network',
+      });
 
     const cards = useMemo(
-      () => data?.vw_featured_cardsCollection?.edges ?? [],
-      [data?.vw_featured_cardsCollection?.edges],
+      () => data?.vw_chaamo_cardsCollection?.edges ?? [],
+      [data?.vw_chaamo_cardsCollection?.edges],
+    );
+
+    useFocusEffect(
+      useCallback(() => {
+        getRecentlyAddedListings({
+          variables: {
+            filter: {
+              id: { neq: ignoreId },
+              listing_type: { eq: listingType },
+              is_boosted: { eq: true },
+            },
+            last: 10,
+          },
+        });
+      }, [getRecentlyAddedListings, ignoreId, listingType]),
     );
 
     if (loading || cards.length === 0) {
@@ -49,18 +54,17 @@ const SimilarAdList: React.FC<SimilarAdListProps> = memo(
             type={card.node.listing_type}
             imageUrl={card.node?.image_url ?? ''}
             title={card.node?.name ?? ''}
-            price={formatDisplay(
-              card.node?.currency,
-              card.node?.start_price ?? 0,
+            currency={card.node?.currency}
+            price={card.node?.start_price}
+            marketCurrency={card.node?.last_sold_currency}
+            marketPrice={card.node?.last_sold_price}
+            indicator={getIndicator(
+              card.node?.start_price,
+              card.node?.last_sold_price,
             )}
-            marketPrice={formatDisplay(card.node?.currency, 0)}
-            indicator="up"
             onPress={() =>
               router.push({
-                pathname:
-                  card.node.listing_type === ListingType.AUCTION
-                    ? '/screens/auction-detail'
-                    : '/screens/common-detail',
+                pathname: '/screens/listing-detail',
                 params: {
                   id: card.node.id,
                 },
