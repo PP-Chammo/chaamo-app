@@ -58,9 +58,7 @@ const ProductAllList: React.FC<ProductAllListProps> = memo(function AllCards({
           subtitle={item.node?.seller_username ?? ''}
           price={formatDisplay(
             item.node?.currency,
-            item.node.listing_type === ListingType.SELL
-              ? item.node?.price
-              : item.node?.start_price,
+            item.node?.start_price ?? 0,
           )}
           date={item.node.created_at ?? new Date().toISOString()}
           marketPrice={formatDisplay(item.node?.currency, 0)}

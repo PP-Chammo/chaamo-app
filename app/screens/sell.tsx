@@ -115,9 +115,9 @@ export default function SellScreen() {
       'condition',
       'listing_type',
     ];
-    if (form.listing_type === 'sell') fields.push('price');
+    if (form.listing_type === 'sell') fields.push('start_price');
     if (form.listing_type === 'auction')
-      fields.push('endDate', 'minPrice', 'reservedPrice');
+      fields.push('end_time', 'start_price', 'reserved_price');
     return fields;
   }, [form.listing_type]);
 
@@ -181,10 +181,10 @@ export default function SellScreen() {
       'listing_type',
     ];
     if (form.listing_type === 'sell') {
-      requiredFields.push('price');
+      requiredFields.push('start_price');
     }
     if (form.listing_type === 'auction') {
-      requiredFields.push('endDate', 'minPrice', 'reservedPrice');
+      requiredFields.push('end_time', 'start_price', 'reserved_price');
     }
     const validationErrors = validateRequired(
       form as unknown as Record<string, string | number>,
@@ -203,18 +203,20 @@ export default function SellScreen() {
           objects: [
             {
               user_id: user?.id,
+              category_id: Number(form.category_id),
               ...(form.master_card_id
                 ? {
                     master_card_id: form.master_card_id,
+                    name: form.title,
                   }
                 : {
                     name: form.title,
                   }),
-              category_id: Number(form.category_id),
+              description: form.description,
               condition: form.condition,
               grading_company: form.grading_company,
               grade: '0.0',
-              user_images: uploadedUrl,
+              image_url: uploadedUrl,
             },
           ],
         },
@@ -228,25 +230,21 @@ export default function SellScreen() {
                     user_card_id: userCardId,
                     seller_id: user?.id,
                     listing_type: form.listing_type,
-                    description: form.description,
-                    currency: userCurrencySymbol,
-
+                    currency: user?.profile?.currency,
                     // Sell
                     ...(form.listing_type === ListingType.SELL
                       ? {
-                          price: Number(form.price).toFixed(2),
-                          accepts_offers: true,
+                          start_price: Number(form.start_price).toFixed(2),
                         }
                       : {}),
-
                     // Auction
                     ...(form.listing_type === ListingType.AUCTION
                       ? {
-                          start_price: Number(form.minPrice).toFixed(2),
-                          reserve_price: Number(form.reservedPrice).toFixed(2),
+                          start_price: Number(form.start_price).toFixed(2),
+                          reserve_price: Number(form.reserved_price).toFixed(2),
                           start_time: formatISO(new Date()),
-                          ends_at: formatISO(
-                            parse(form.endDate, 'dd/MM/yyyy', new Date()),
+                          end_time: formatISO(
+                            parse(form.end_time, 'dd/MM/yyyy', new Date()),
                           ),
                         }
                       : {}),
@@ -289,7 +287,7 @@ export default function SellScreen() {
     createUserCard,
     user?.id,
     createListings,
-    userCurrencySymbol,
+    user?.profile?.currency,
     setForm,
   ]);
 
@@ -364,13 +362,13 @@ export default function SellScreen() {
               name="price"
               label="Price"
               placeholder="Enter price"
-              value={form.price}
+              value={form.start_price}
               onChange={handleChange}
               keyboardType="numeric"
               required
               inputClassName={classes.input}
               leftLabel={userCurrencySymbol}
-              error={errors.price}
+              error={errors.start_price}
             />
           )}
           {form.listing_type === 'auction' && (
@@ -379,7 +377,7 @@ export default function SellScreen() {
                 type="date"
                 name="endDate"
                 label="Auction End Date"
-                value={form.endDate}
+                value={form.end_time}
                 onChange={handleChange}
                 required
                 inputClassName={classes.input}
@@ -387,29 +385,29 @@ export default function SellScreen() {
                 rightIconVariant="SimpleLineIcons"
                 rightIconSize={20}
                 rightIconColor={getColor('slate-500')}
-                error={errors.endDate}
+                error={errors.end_time}
               />
               <TextField
                 name="minPrice"
                 label="Minimum Price"
-                value={form.minPrice}
+                value={form.start_price}
                 onChange={handleChange}
                 keyboardType="numeric"
                 required
                 inputClassName={classes.input}
                 leftLabel={userCurrencySymbol}
-                error={errors.minPrice}
+                error={errors.start_price}
               />
               <TextField
                 name="reservedPrice"
                 label="Reserved Price"
-                value={form.reservedPrice}
+                value={form.reserved_price}
                 onChange={handleChange}
                 keyboardType="numeric"
                 required
                 inputClassName={classes.input}
                 leftLabel={userCurrencySymbol}
-                error={errors.reservedPrice}
+                error={errors.reserved_price}
               />
             </Fragment>
           )}

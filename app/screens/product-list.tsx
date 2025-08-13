@@ -135,24 +135,14 @@ export default function ProductListScreen() {
                               ...(Number(priceRange.min) > 0
                                 ? [
                                     {
-                                      or: [
-                                        { price: { gte: priceRange.min } },
-                                        {
-                                          start_price: { gte: priceRange.min },
-                                        },
-                                      ],
+                                      start_price: { gte: priceRange.min },
                                     },
                                   ]
                                 : []),
                               ...(Number(priceRange.max) > 0
                                 ? [
                                     {
-                                      or: [
-                                        { price: { lte: priceRange.max } },
-                                        {
-                                          start_price: { lte: priceRange.max },
-                                        },
-                                      ],
+                                      start_price: { lte: priceRange.max },
                                     },
                                   ]
                                 : []),
@@ -163,24 +153,14 @@ export default function ProductListScreen() {
                           ...(Number(priceRange.min) > 0
                             ? [
                                 {
-                                  or: [
-                                    { price: { gte: priceRange.min } },
-                                    {
-                                      start_price: { gte: priceRange.min },
-                                    },
-                                  ],
+                                  start_price: { gte: priceRange.min },
                                 },
                               ]
                             : []),
                           ...(Number(priceRange.max) > 0
                             ? [
                                 {
-                                  or: [
-                                    { price: { lte: priceRange.max } },
-                                    {
-                                      start_price: { lte: priceRange.max },
-                                    },
-                                  ],
+                                  start_price: { lte: priceRange.max },
                                 },
                               ]
                             : []),

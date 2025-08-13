@@ -8,6 +8,7 @@ import {
   useGetVwChaamoListingsQuery,
   useCreateFavoritesMutation,
   useRemoveFavoritesMutation,
+  OrderByDirection,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -28,6 +29,7 @@ const RecentlyAddedList = memo(function RecentlyAddedList() {
           { listing_type: { eq: ListingType.AUCTION } },
         ],
       },
+      orderBy: { created_at: OrderByDirection.DESCNULLSLAST },
       last: 10,
     },
   });
@@ -86,7 +88,7 @@ const RecentlyAddedList = memo(function RecentlyAddedList() {
           title={card.node?.name ?? ''}
           price={formatDisplay(
             card.node?.currency,
-            card.node?.start_price ?? card.node?.price,
+            card.node?.start_price ?? 0,
           )}
           marketPrice={formatDisplay(card.node?.currency, 0)}
           indicator="up"

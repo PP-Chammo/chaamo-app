@@ -7,6 +7,9 @@ import PlaceBidModalContent from '../PlaceBidModalContent';
 describe('PlaceBidModalContent', () => {
   const defaultProps = {
     id: 'test-id',
+    minimumBidAmount: '100',
+    currentBidAmount: '4000',
+    highestBidAmount: '4000',
     endDate: new Date(
       Date.now() + 7 * 24 * 60 * 60 * 1000 + 15 * 60 * 60 * 1000,
     ).toISOString(),
@@ -27,40 +30,40 @@ describe('PlaceBidModalContent', () => {
   it('displays current bid information', () => {
     render(<PlaceBidModalContent {...defaultProps} />);
 
-    expect(screen.getByText('Current Bid: $4000')).toBeTruthy();
+    expect(screen.getByText(/Current Bid:\s*\$\s*4,?000\.00/)).toBeTruthy();
   });
 
   it('displays max bid input field', () => {
     render(<PlaceBidModalContent {...defaultProps} />);
 
     expect(screen.getByText('Max Bid')).toBeTruthy();
-    expect(screen.getByDisplayValue('$ 5000')).toBeTruthy();
+    expect(screen.getByDisplayValue('4000')).toBeTruthy();
   });
 
   it('displays quick bid options', () => {
     render(<PlaceBidModalContent {...defaultProps} />);
 
-    expect(screen.getByText(/\$\s*100/)).toBeTruthy();
-    expect(screen.getByText(/\$\s*200/)).toBeTruthy();
-    expect(screen.getByText(/\$\s*300/)).toBeTruthy();
+    expect(screen.getByText(/\$\s*4100/)).toBeTruthy();
+    expect(screen.getByText(/\$\s*4150/)).toBeTruthy();
+    expect(screen.getByText(/\$\s*4300/)).toBeTruthy();
   });
 
   it('allows changing bid amount through input', () => {
     render(<PlaceBidModalContent {...defaultProps} />);
 
-    const input = screen.getByDisplayValue('$ 5000');
+    const input = screen.getByDisplayValue('4000');
     fireEvent.changeText(input, '8000');
 
-    expect(screen.getByDisplayValue('$ 8000')).toBeTruthy();
+    expect(screen.getByDisplayValue('8000')).toBeTruthy();
   });
 
   it('allows selecting quick bid options', () => {
     render(<PlaceBidModalContent {...defaultProps} />);
 
-    const quickBid200 = screen.getByText(/\$\s*200/);
-    fireEvent.press(quickBid200);
+    const quickBid4100 = screen.getByText(/\$\s*4100/);
+    fireEvent.press(quickBid4100);
 
-    expect(screen.getByDisplayValue('$ 200')).toBeTruthy();
+    expect(screen.getByDisplayValue('4100')).toBeTruthy();
   });
 
   it('displays place bid button', () => {
@@ -79,10 +82,10 @@ describe('PlaceBidModalContent', () => {
   it('filters non-numeric input from bid field', () => {
     render(<PlaceBidModalContent {...defaultProps} />);
 
-    const input = screen.getByDisplayValue('$ 5000');
+    const input = screen.getByDisplayValue('4000');
     fireEvent.changeText(input, 'abc123def');
 
-    expect(screen.getByDisplayValue('$ 123')).toBeTruthy();
+    expect(screen.getByDisplayValue('123')).toBeTruthy();
   });
 
   it('renders with all required elements', () => {
@@ -91,26 +94,26 @@ describe('PlaceBidModalContent', () => {
     expect(screen.getAllByText('Place Bid')).toHaveLength(2);
     expect(screen.getByText(/7d \d+h/)).toBeTruthy();
     expect(screen.getByText('Max Bid')).toBeTruthy();
-    expect(screen.getByText('Current Bid: $4000')).toBeTruthy();
+    expect(screen.getByText(/Current Bid:\s*\$\s*4,?000\.00/)).toBeTruthy();
   });
 
   it('handles quick bid selection correctly', () => {
     render(<PlaceBidModalContent {...defaultProps} />);
 
-    expect(screen.getByDisplayValue('$ 5000')).toBeTruthy();
+    expect(screen.getByDisplayValue('4000')).toBeTruthy();
 
-    const quickBid300 = screen.getByText(/\$\s*300/);
-    fireEvent.press(quickBid300);
+    const quickBid4300 = screen.getByText(/\$\s*4300/);
+    fireEvent.press(quickBid4300);
 
-    expect(screen.getByDisplayValue('$ 300')).toBeTruthy();
+    expect(screen.getByDisplayValue('4300')).toBeTruthy();
   });
 
   it('maintains selected state for quick bid buttons', () => {
     render(<PlaceBidModalContent {...defaultProps} />);
 
-    const quickBid200 = screen.getByText(/\$\s*200/);
-    fireEvent.press(quickBid200);
+    const quickBid4100 = screen.getByText(/\$\s*4100/);
+    fireEvent.press(quickBid4100);
 
-    expect(screen.getByDisplayValue('$ 200')).toBeTruthy();
+    expect(screen.getByDisplayValue('4100')).toBeTruthy();
   });
 });

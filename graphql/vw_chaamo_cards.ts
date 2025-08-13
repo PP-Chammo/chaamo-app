@@ -13,7 +13,6 @@ export const getVwChaamoListings = gql`
           listing_type
           image_url
           currency
-          price
           start_price
           name
           seller_username
@@ -28,8 +27,8 @@ export const getVwChaamoListings = gql`
   }
 `;
 
-export const getVwCommonDetail = gql`
-  query GetVwCommonDetail($filter: vw_chaamo_cardsFilter) {
+export const getVwChaamoDetail = gql`
+  query GetVwChaamoDetail($filter: vw_chaamo_cardsFilter) {
     vw_chaamo_cardsCollection(filter: $filter, last: 1) {
       edges {
         node {
@@ -39,38 +38,14 @@ export const getVwCommonDetail = gql`
           seller_username
           listing_type
           image_url
-          currency
-          price
-          created_at
           name
-          ebay_highest_price
           description
-          is_favorite
-        }
-      }
-    }
-  }
-`;
-
-export const getVwAuctionDetail = gql`
-  query GetVwAuctionDetail($filter: vw_chaamo_cardsFilter) {
-    vw_chaamo_cardsCollection(filter: $filter, last: 1) {
-      edges {
-        node {
-          id
-          seller_id
-          seller_image_url
-          seller_username
-          listing_type
-          image_url
           currency
           start_price
+          reserve_price
+          highest_bid_price
           created_at
-          ends_at
-          name
-          ebay_highest_price
-          description
-          is_favorite
+          end_time
         }
       }
     }

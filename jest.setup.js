@@ -50,6 +50,12 @@ jest.mock('expo-image-picker', () => ({
   },
 }));
 
+jest.mock('expo-file-system', () => ({
+  getInfoAsync: jest.fn(async () => ({ exists: true })),
+  readAsStringAsync: jest.fn(async () => ''),
+  EncodingType: { Base64: 'base64' },
+}));
+
 jest.mock('expo-linear-gradient', () => ({
   LinearGradient: 'LinearGradient',
 }));
@@ -327,7 +333,7 @@ jest.mock('@/generated/graphql', () => ({
               name: 'Common Item 2',
               image_url: 'https://example.com/image2.jpg',
               currency: '$',
-              price: '200.00',
+              start_price: '200.00',
               listing_type: 'SELL',
             },
           },
@@ -337,7 +343,7 @@ jest.mock('@/generated/graphql', () => ({
               name: 'Common Item 3',
               image_url: 'https://example.com/image3.jpg',
               currency: '$',
-              price: '300.00',
+              start_price: '300.00',
               listing_type: 'SELL',
               status: 'SOLD',
             },
@@ -348,7 +354,7 @@ jest.mock('@/generated/graphql', () => ({
               name: 'Common Item 3',
               image_url: 'https://example.com/image3.jpg',
               currency: '$',
-              price: '300.00',
+              start_price: '300.00',
               listing_type: 'PORTFOLIO',
             },
           },
@@ -485,6 +491,7 @@ jest.mock('@/generated/graphql', () => ({
     ACTIVE: 'ACTIVE',
     PENDING: 'PENDING',
   },
+  OrderByDirection: { DESCNULLSLAST: 'DESCNULLSLAST' },
 }));
 
 // Mock hooks with reactive behavior
@@ -510,9 +517,26 @@ jest.mock('@/hooks/useAuthVar', () => ({
   }),
 }));
 
+// Prevent realtime websockets/timers during tests
+jest.mock('@/hooks/useRealtime', () => ({
+  useRealtime: jest.fn(() => {
+    // no-op in tests
+    return undefined;
+  }),
+}));
+
 jest.mock('@/hooks/useCurrencyDisplay', () => ({
   useCurrencyDisplay: jest.fn(() => ({
-    formatDisplay: jest.fn((currency, value) => value),
+    formatDisplay: jest.fn((baseCurrency, amount, options) => {
+      const num = typeof amount === 'string' ? parseFloat(amount) : amount || 0;
+      const formatted = new Intl.NumberFormat(undefined, {
+        style: 'decimal',
+        minimumFractionDigits: options?.unfixed ? 0 : 2,
+        maximumFractionDigits: 2,
+      }).format(isNaN(num) ? 0 : num);
+      if (options?.showSymbol === false) return formatted;
+      return `$${formatted}`;
+    }),
     convertSymbolToCurrency: jest.fn(() => 'USD'),
     convertCurrencyToSymbol: jest.fn(() => '$'),
   })),

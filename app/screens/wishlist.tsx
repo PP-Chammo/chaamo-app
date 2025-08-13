@@ -88,9 +88,7 @@ export default function WishlistScreen() {
               subtitle={item.node?.seller_username ?? ''}
               price={formatDisplay(
                 item.node?.currency,
-                item.node?.listing_type === ListingType.AUCTION
-                  ? (item.node?.start_price ?? 0)
-                  : (item.node?.price ?? 0),
+                item.node?.start_price ?? 0,
               )}
               date={item.node?.created_at ?? ''}
               marketType="eBay"

@@ -7,11 +7,10 @@ export interface SellFormStore {
   category_id: string;
   condition: CardCondition;
   listing_type: ListingType;
+  end_time: string;
   currency: string;
-  price: string;
-  endDate: string;
-  minPrice: string;
-  reservedPrice: string;
+  start_price: string;
+  reserved_price: string;
 
   master_card_id: string;
   grading_company: string;
@@ -19,10 +18,9 @@ export interface SellFormStore {
 
   listing_id?: string;
   user_card_id?: string;
-  selectedPackageDays: string;
   payment_id: string;
   start_time: string;
-  end_time: string;
+  selectedPackageDays: string;
 }
 
 export const sellFormStore: SellFormStore = {
@@ -33,10 +31,8 @@ export const sellFormStore: SellFormStore = {
   condition: CardCondition.RAW,
   listing_type: ListingType.PORTFOLIO,
   currency: '$',
-  price: '',
-  endDate: '',
-  minPrice: '',
-  reservedPrice: '',
+  start_price: '',
+  reserved_price: '',
   //  below input get from autocomplete
   master_card_id: '',
   grading_company: '',

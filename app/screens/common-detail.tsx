@@ -23,9 +23,9 @@ import { ListedByList, SimilarAdList } from '@/components/organisms';
 import { dummyPortfolioValueData } from '@/constants/dummy';
 import {
   ListingType,
-  useGetVwCommonDetailQuery,
   useCreateFavoritesMutation,
   useRemoveFavoritesMutation,
+  useGetVwChaamoDetailQuery,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -44,7 +44,7 @@ export default function ProductDetailScreen() {
   const { formatDisplay } = useCurrencyDisplay();
 
   const { id, preview } = useLocalSearchParams();
-  const { data } = useGetVwCommonDetailQuery({
+  const { data } = useGetVwChaamoDetailQuery({
     skip: !id,
     variables: {
       filter: {
@@ -147,17 +147,10 @@ export default function ProductDetailScreen() {
           )}
         </View>
         <ProductDetailInfo
-          price={
-            detail?.listing_type === ListingType.SELL
-              ? formatDisplay(detail?.currency, detail?.price)
-              : undefined
-          }
+          price={formatDisplay(detail?.currency, detail?.start_price ?? 0)}
           date={detail?.created_at ?? new Date().toISOString()}
           title={detail?.name ?? ''}
-          marketPrice={formatDisplay(
-            detail?.currency,
-            detail?.ebay_highest_price ?? 0,
-          )}
+          marketPrice={formatDisplay(detail?.currency, 0)}
           description={detail?.description ?? ''}
         />
         <View className={classes.chartWrapper}>

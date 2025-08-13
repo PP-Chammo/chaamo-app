@@ -14,7 +14,6 @@ import {
   useCreateBoostedListingsMutation,
   useCreatePaymentsMutation,
   useUpdatePaymentsMutation,
-  useUpdateUserCardMutation,
 } from '@/generated/graphql';
 import { initialSellFormState, useSellFormVar } from '@/hooks/useSellFormVar';
 import { useUserVar } from '@/hooks/useUserVar';
@@ -39,7 +38,6 @@ export default function AdCheckoutScreen() {
   const [createPayment] = useCreatePaymentsMutation();
   const [createBoostedListing] = useCreateBoostedListingsMutation();
   const [updatePayment] = useUpdatePaymentsMutation();
-  const [updateUserCard] = useUpdateUserCardMutation();
 
   const selectedPackage = useMemo(() => {
     const selected = adPackages.find(
@@ -101,36 +99,22 @@ export default function AdCheckoutScreen() {
                       },
                       onCompleted: ({ updatepaymentsCollection }) => {
                         if (updatepaymentsCollection?.records?.length) {
-                          updateUserCard({
-                            variables: {
-                              set: {
-                                is_in_listing: true,
+                          setLoading(false);
+                          Alert.alert(
+                            'Success!',
+                            'Your card has been boosted.',
+                            [
+                              {
+                                text: 'OK',
+                                onPress: () => {
+                                  setForm(
+                                    structuredClone(initialSellFormState),
+                                  );
+                                  router.replace('/(tabs)/home');
+                                },
                               },
-                              filter: {
-                                id: { eq: form.user_card_id },
-                              },
-                            },
-                            onCompleted: ({ updateuser_cardsCollection }) => {
-                              if (updateuser_cardsCollection?.records?.length) {
-                                setLoading(false);
-                                Alert.alert(
-                                  'Success!',
-                                  'Your card has been boosted.',
-                                  [
-                                    {
-                                      text: 'OK',
-                                      onPress: () => {
-                                        setForm(
-                                          structuredClone(initialSellFormState),
-                                        );
-                                        router.replace('/(tabs)/home');
-                                      },
-                                    },
-                                  ],
-                                );
-                              }
-                            },
-                          });
+                            ],
+                          );
                         }
                       },
                     });
@@ -162,7 +146,6 @@ export default function AdCheckoutScreen() {
     selectedPackage?.price,
     setForm,
     updatePayment,
-    updateUserCard,
   ]);
 
   return (

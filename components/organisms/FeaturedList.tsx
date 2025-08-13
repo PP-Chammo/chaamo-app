@@ -93,7 +93,7 @@ const FeaturedList = memo(function FeaturedList() {
           title={card.node?.name ?? ''}
           price={formatDisplay(
             card.node?.currency,
-            card.node?.start_price ?? card.node?.price,
+            card.node?.start_price ?? 0,
           )}
           marketPrice={formatDisplay(card.node?.currency, 0)}
           indicator="up"
