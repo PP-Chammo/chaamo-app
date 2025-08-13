@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { clsx } from 'clsx';
@@ -8,6 +8,7 @@ import { TouchableOpacity, View } from 'react-native';
 import EBayImage from '@/assets/svg/ebay.svg';
 import { Icon, Label, PriceIndicator, Tag } from '@/components/atoms';
 import { ListingType } from '@/generated/graphql';
+import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { ListingCardType } from '@/types/card';
 import { getColor } from '@/utils/getColor';
 
@@ -25,7 +26,9 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
   type = ListingType.SELL,
   imageUrl,
   title,
+  currency,
   price,
+  marketCurrency,
   marketPrice,
   indicator,
   onPress,
@@ -36,6 +39,38 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
   rightComponent,
   className,
 }) {
+  const { formatDisplay } = useCurrencyDisplay();
+
+  const priceDisplay = useMemo(
+    () => formatDisplay(currency, price ?? 0),
+    [currency, formatDisplay, price],
+  );
+
+  const renderMarketPrice = useCallback(() => {
+    if (marketPrice === null) {
+      return (
+        <>
+          <Label className={classes.textProcessing} testID="card-item-price">
+            process last sold...
+          </Label>
+        </>
+      );
+    }
+    return (
+      <>
+        <Label
+          className={clsx(classes.marketPrice, {
+            '!font-bold !text-xs': !price,
+          })}
+          testID="listing-card-market-price"
+        >
+          {formatDisplay(marketCurrency, marketPrice)}
+        </Label>
+        {indicator && <PriceIndicator direction={indicator} />}
+      </>
+    );
+  }, [formatDisplay, indicator, marketCurrency, marketPrice, price]);
+
   const renderRightIcon = useCallback(
     () =>
       onRightIconPress && (
@@ -94,20 +129,20 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
               className={classes.price}
               testID="auction-price"
             >
-              {price}
+              {priceDisplay}
             </Label>
           </View>
         </View>
       ) : (
         <View className={classes.contentContainer}>
           <View className={classes.titleContainer}>
-            {!!price && type === ListingType.SELL && (
+            {type !== ListingType.PORTFOLIO && (
               <Label
                 variant="subtitle"
                 className={classes.price}
                 testID="listing-card-price"
               >
-                {price}
+                {priceDisplay}
               </Label>
             )}
             <Label
@@ -120,15 +155,7 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
           </View>
           <View className={classes.marketContainer}>
             <EBayImage />
-            <Label
-              className={clsx(classes.marketPrice, {
-                '!font-bold !text-xs': !price,
-              })}
-              testID="listing-card-market-price"
-            >
-              {marketPrice}
-            </Label>
-            {indicator && <PriceIndicator direction={indicator} />}
+            {renderMarketPrice()}
           </View>
         </View>
       )}
@@ -150,4 +177,5 @@ const classes = {
   rightIconButton:
     'absolute top-2 right-2 z-10 w-8 h-8 bg-white rounded-full items-center justify-center',
   bidContainer: 'flex gap-2',
+  textProcessing: 'text-xs !text-gray-500/70 font-normal',
 };

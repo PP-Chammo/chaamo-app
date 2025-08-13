@@ -1,45 +1,34 @@
 import React, { memo, useCallback, useMemo } from 'react';
 
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 
 import { ListContainer, ListingCard } from '@/components/molecules';
 import {
-  GetVwFeaturedListingsQuery,
   ListingType,
-  useGetVwFeaturedListingsQuery,
   useCreateFavoritesMutation,
   useRemoveFavoritesMutation,
+  useGetVwChaamoListingsLazyQuery,
 } from '@/generated/graphql';
-import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useUserVar } from '@/hooks/useUserVar';
-import { DeepGet } from '@/types/helper';
 import { getColor } from '@/utils/getColor';
+import { getIndicator } from '@/utils/getIndicator';
 
 const FeaturedList = memo(function FeaturedList() {
   const [user] = useUserVar();
   const { getIsFavorite } = useFavorites();
-  const { formatDisplay } = useCurrencyDisplay();
 
-  const { data, loading } = useGetVwFeaturedListingsQuery({
-    fetchPolicy: 'cache-and-network',
-    variables: {
-      filter: {
-        or: [
-          { listing_type: { eq: ListingType.SELL } },
-          { listing_type: { eq: ListingType.AUCTION } },
-        ],
-      },
-      last: 10,
-    },
-  });
+  const [getFeaturedListings, { data, loading }] =
+    useGetVwChaamoListingsLazyQuery({
+      fetchPolicy: 'cache-and-network',
+    });
 
   const [createFavorites] = useCreateFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
 
   const cards = useMemo(
-    () => data?.vw_featured_cardsCollection?.edges ?? [],
-    [data?.vw_featured_cardsCollection?.edges],
+    () => data?.vw_chaamo_cardsCollection?.edges ?? [],
+    [data?.vw_chaamo_cardsCollection?.edges],
   );
 
   const handleToggleFavorite = useCallback(
@@ -69,17 +58,31 @@ const FeaturedList = memo(function FeaturedList() {
     [getIsFavorite, createFavorites, user?.id, removeFavorites],
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      if (user?.id) {
+        getFeaturedListings({
+          variables: {
+            filter: {
+              or: [
+                { listing_type: { eq: ListingType.SELL } },
+                { listing_type: { eq: ListingType.AUCTION } },
+              ],
+              is_boosted: { eq: true },
+            },
+            last: 10,
+          },
+        });
+      }
+    }, [getFeaturedListings, user?.id]),
+  );
+
   if (loading || cards.length === 0) {
     return null;
   }
 
   return (
-    <ListContainer<
-      DeepGet<
-        GetVwFeaturedListingsQuery,
-        ['vw_featured_cardsCollection', 'edges', number]
-      >
-    >
+    <ListContainer
       title="Featured"
       onViewAllHref="/screens/product-list"
       data={cards}
@@ -91,18 +94,17 @@ const FeaturedList = memo(function FeaturedList() {
           id={card.node.id}
           imageUrl={card.node?.image_url ?? ''}
           title={card.node?.name ?? ''}
-          price={formatDisplay(
-            card.node?.currency,
-            card.node?.start_price ?? 0,
+          currency={card.node?.currency}
+          price={card.node?.start_price}
+          marketCurrency={card.node?.last_sold_currency}
+          marketPrice={card.node?.last_sold_price}
+          indicator={getIndicator(
+            card.node?.start_price,
+            card.node?.last_sold_price,
           )}
-          marketPrice={formatDisplay(card.node?.currency, 0)}
-          indicator="up"
           onPress={() =>
             router.push({
-              pathname:
-                card.node.listing_type === ListingType.AUCTION
-                  ? '/screens/auction-detail'
-                  : '/screens/common-detail',
+              pathname: '/screens/listing-detail',
               params: {
                 id: card.node.id,
               },

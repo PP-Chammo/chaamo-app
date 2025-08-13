@@ -55,10 +55,7 @@ const OrderItem: React.FC<OrderItemProps> = memo(function OrderItem({
             activeOpacity={0.7}
             onPress={() =>
               router.push({
-                pathname:
-                  listingType === ListingType.AUCTION
-                    ? '/screens/auction-detail'
-                    : '/screens/common-detail',
+                pathname: '/screens/listing-detail',
                 params: {
                   id: listingId,
                   preview: 'true',

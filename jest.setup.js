@@ -325,6 +325,8 @@ jest.mock('@/generated/graphql', () => ({
               currency: '$',
               start_price: '100',
               listing_type: 'AUCTION',
+              last_sold_currency: '$',
+              last_sold_price: '120',
             },
           },
           {
@@ -335,6 +337,8 @@ jest.mock('@/generated/graphql', () => ({
               currency: '$',
               start_price: '200.00',
               listing_type: 'SELL',
+              last_sold_currency: '$',
+              last_sold_price: '180.00',
             },
           },
           {
@@ -346,6 +350,8 @@ jest.mock('@/generated/graphql', () => ({
               start_price: '300.00',
               listing_type: 'SELL',
               status: 'SOLD',
+              last_sold_currency: '$',
+              last_sold_price: '290.00',
             },
           },
           {
@@ -356,6 +362,8 @@ jest.mock('@/generated/graphql', () => ({
               currency: '$',
               start_price: '300.00',
               listing_type: 'PORTFOLIO',
+              last_sold_currency: '$',
+              last_sold_price: '305.00',
             },
           },
         ],
@@ -364,6 +372,68 @@ jest.mock('@/generated/graphql', () => ({
     loading: false,
     error: null,
   })),
+  useGetVwChaamoListingsLazyQuery: jest.fn(() => [
+    jest.fn(),
+    {
+      data: {
+        vw_chaamo_cardsCollection: {
+          edges: [
+            {
+              node: {
+                id: '1',
+                name: 'Auction Item 1',
+                image_url: 'https://example.com/image1.jpg',
+                currency: '$',
+                start_price: '100',
+                listing_type: 'AUCTION',
+                last_sold_currency: '$',
+                last_sold_price: '120',
+              },
+            },
+            {
+              node: {
+                id: '2',
+                name: 'Common Item 2',
+                image_url: 'https://example.com/image2.jpg',
+                currency: '$',
+                start_price: '200.00',
+                listing_type: 'SELL',
+                last_sold_currency: '$',
+                last_sold_price: '180.00',
+              },
+            },
+            {
+              node: {
+                id: '3',
+                name: 'Common Item 3',
+                image_url: 'https://example.com/image3.jpg',
+                currency: '$',
+                start_price: '300.00',
+                listing_type: 'SELL',
+                status: 'SOLD',
+                last_sold_currency: '$',
+                last_sold_price: '290.00',
+              },
+            },
+            {
+              node: {
+                id: '4',
+                name: 'Common Item 3',
+                image_url: 'https://example.com/image3.jpg',
+                currency: '$',
+                start_price: '300.00',
+                listing_type: 'PORTFOLIO',
+                last_sold_currency: '$',
+                last_sold_price: '305.00',
+              },
+            },
+          ],
+        },
+      },
+      loading: false,
+      error: null,
+    },
+  ]),
   useGetVwFeaturedListingsQuery: jest.fn(() => ({
     data: {
       vw_featured_cardsCollection: {
