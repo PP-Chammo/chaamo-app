@@ -16,7 +16,6 @@ import {
 } from '@/components/organisms';
 import { TextChangeParams } from '@/domains';
 import { useFavorites } from '@/hooks/useFavorites';
-import { useUserVar } from '@/hooks/useUserVar';
 
 cssInterop(ScrollView, {
   contentContainerClassName: {
@@ -25,9 +24,7 @@ cssInterop(ScrollView, {
 });
 
 export default function HomeScreen() {
-  const [user] = useUserVar();
   const { favorites } = useFavorites();
-  console.log(user);
   const [searchText, setSearchText] = useState<string>('');
 
   const favoriteCount = useMemo(() => {

@@ -40,7 +40,7 @@ cssInterop(ScrollView, {
   },
 });
 
-export default function ProductDetailScreen() {
+export default function ListingDetailScreen() {
   const [user] = useUserVar();
   const { getIsFavorite } = useFavorites();
   const { formatDisplay } = useCurrencyDisplay();
