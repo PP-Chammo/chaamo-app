@@ -3,12 +3,14 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { formatISO, parse } from 'date-fns';
 import * as ImagePicker from 'expo-image-picker';
-import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { Alert, FlatList, View } from 'react-native';
 
@@ -29,6 +31,9 @@ import {
 import { conditions, conditionSells } from '@/constants/condition';
 import { currencySymbolMap } from '@/constants/currencies';
 import {
+  CardCondition,
+  ListingsInsertInput,
+  ListingsUpdateInput,
   ListingType,
   MasterCards,
   useCreateListingsMutation,
@@ -36,6 +41,10 @@ import {
   useGetCategoriesQuery,
   useGetMasterCardsAutocompleteLazyQuery,
   useGetVwChaamoDetailLazyQuery,
+  UserCardsInsertInput,
+  UserCardsUpdateInput,
+  useUpdateListingsMutation,
+  useUpdateUserCardMutation,
 } from '@/generated/graphql';
 import useDebounce from '@/hooks/useDebounce';
 import { initialSellFormState, useSellFormVar } from '@/hooks/useSellFormVar';
@@ -70,8 +79,12 @@ export default function SellScreen() {
   const [getAutocompleteList, { data: masterCards }] =
     useGetMasterCardsAutocompleteLazyQuery();
   const [createListings] = useCreateListingsMutation();
+  const [updateListings] = useUpdateListingsMutation();
   const [createUserCard] = useCreateUserCardMutation();
-  const [getDetail] = useGetVwChaamoDetailLazyQuery();
+  const [updateUserCard] = useUpdateUserCardMutation();
+  const [getDetail, { data }] = useGetVwChaamoDetailLazyQuery();
+  const hasProcessedCard = useRef(false);
+  const hasResetForm = useRef(false);
 
   const userCurrencySymbol = useMemo(() => {
     if (!user) return '$';
@@ -134,22 +147,45 @@ export default function SellScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      if (cardId) {
+      if (cardId && !hasProcessedCard.current) {
         getDetail({
           variables: {
-            filter: { id: { eq: cardId } },
-          },
-          onCompleted: ({ vw_chaamo_cardsCollection }) => {
-            if (vw_chaamo_cardsCollection?.edges?.length) {
-              const detail = vw_chaamo_cardsCollection.edges[0].node;
-              console.log({ detail });
-
-              // setForm(detail);
-            }
+            filter: { user_card_id: { eq: cardId } },
           },
         });
       }
     }, [cardId, getDetail]),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (cardId) {
+        const detail = data?.vw_chaamo_cardsCollection?.edges[0]?.node;
+
+        if (detail && !hasProcessedCard.current) {
+          hasProcessedCard.current = true;
+          hasResetForm.current = false;
+          setForm({
+            title: detail.name ?? '',
+            description: detail.description ?? '',
+            category_id: '4',
+            imageUrl: detail.image_url ?? '',
+            start_price: detail.start_price ?? '',
+            reserved_price: detail.reserve_price ?? '',
+            end_time: detail.end_time ?? '',
+            condition: detail.condition ?? CardCondition.RAW,
+            listing_type: detail.listing_type ?? ListingType.PORTFOLIO,
+          });
+        }
+      } else {
+        // Only reset form once when opening new sell screen
+        if (!hasResetForm.current) {
+          hasProcessedCard.current = false;
+          hasResetForm.current = true;
+          setForm(structuredClone(initialSellFormState));
+        }
+      }
+    }, [cardId, data?.vw_chaamo_cardsCollection?.edges, setForm]),
   );
 
   const handleAutocompletePress = useCallback(
@@ -192,53 +228,14 @@ export default function SellScreen() {
     setForm({ imageUrl: '' });
   }, [setForm]);
 
-  const handleSubmit = useCallback(async () => {
-    setLoading(true);
-    const requiredFields: (keyof SellFormStore)[] = [
-      'imageUrl',
-      'title',
-      'description',
-      'category_id',
-      'condition',
-      'listing_type',
-    ];
-    if (form.listing_type === 'sell') {
-      requiredFields.push('start_price');
-    }
-    if (form.listing_type === 'auction') {
-      requiredFields.push('end_time', 'start_price', 'reserved_price');
-    }
-    const validationErrors = validateRequired(
-      form as unknown as Record<string, string | number>,
-      requiredFields,
-    );
-    setErrors(validationErrors);
-
-    if (Object.keys(validationErrors).length === 0) {
-      const uploadedUrl = await uploadToBucket(
-        form.imageUrl,
-        'chaamo',
-        'user_cards',
-      );
+  const handleCreateCard = useCallback(
+    async (card: UserCardsInsertInput, listing: ListingsInsertInput) => {
       createUserCard({
         variables: {
           objects: [
             {
+              ...card,
               user_id: user?.id,
-              category_id: Number(form.category_id),
-              ...(form.master_card_id
-                ? {
-                    master_card_id: form.master_card_id,
-                    custom_name: form.title,
-                  }
-                : {
-                    custom_name: form.title,
-                  }),
-              description: form.description,
-              condition: form.condition,
-              grading_company: form.grading_company,
-              grade: '0.0',
-              image_url: uploadedUrl,
             },
           ],
         },
@@ -253,29 +250,8 @@ export default function SellScreen() {
                 variables: {
                   objects: [
                     {
+                      ...listing,
                       user_card_id: userCardId,
-                      seller_id: user?.id,
-                      listing_type: form.listing_type,
-                      currency: user?.profile?.currency,
-                      // Sell
-                      ...(form.listing_type === ListingType.SELL
-                        ? {
-                            start_price: Number(form.start_price).toFixed(2),
-                          }
-                        : {}),
-                      // Auction
-                      ...(form.listing_type === ListingType.AUCTION
-                        ? {
-                            start_price: Number(form.start_price).toFixed(2),
-                            reserve_price: Number(form.reserved_price).toFixed(
-                              2,
-                            ),
-                            start_time: formatISO(new Date()),
-                            end_time: formatISO(
-                              parse(form.end_time, 'dd/MM/yyyy', new Date()),
-                            ),
-                          }
-                        : {}),
                     },
                   ],
                 },
@@ -312,22 +288,178 @@ export default function SellScreen() {
         },
         onError: console.log,
       });
+    },
+    [
+      createListings,
+      createUserCard,
+      form.listing_type,
+      setForm,
+      user?.id,
+      user?.profile?.currency,
+    ],
+  );
+
+  const handleUpdateCard = useCallback(
+    async (card: UserCardsUpdateInput, listing: ListingsUpdateInput) => {
+      updateUserCard({
+        variables: {
+          set: card,
+          filter: {
+            id: { eq: cardId },
+          },
+        },
+        onCompleted: async ({ updateuser_cardsCollection }) => {
+          if (updateuser_cardsCollection?.records?.length) {
+            const userCardId = updateuser_cardsCollection.records[0].id;
+            await Promise.all([
+              fetch(
+                `${process.env.EXPO_PUBLIC_BACKEND_URL}/ebay_scrape?user_card_id=${userCardId}&region=${user?.profile?.currency === 'GBP' ? 'uk' : 'us'}`,
+              ),
+              updateListings({
+                variables: {
+                  set: listing,
+                  filter: {
+                    user_card_id: { eq: userCardId },
+                  },
+                },
+                onCompleted: ({ updatelistingsCollection }) => {
+                  if (updatelistingsCollection?.records?.length) {
+                    if (form.listing_type === ListingType.PORTFOLIO) {
+                      Alert.alert(
+                        'Success!',
+                        'Your portfolio has been updated.',
+                        [
+                          {
+                            text: 'OK',
+                            onPress: () => {
+                              setForm(structuredClone(initialSellFormState));
+                              router.replace('/(tabs)/home');
+                            },
+                          },
+                        ],
+                      );
+                    } else {
+                      setForm({
+                        user_card_id: userCardId,
+                        listing_id: updatelistingsCollection.records[0].id,
+                      });
+                      setLoading(false);
+                      router.push({
+                        pathname: '/screens/listing-detail',
+                        params: {
+                          id: updatelistingsCollection.records[0].id,
+                        },
+                      });
+                    }
+                  }
+                },
+                onError: console.log,
+              }),
+            ]);
+          }
+        },
+      });
+    },
+    [
+      cardId,
+      form.listing_type,
+      setForm,
+      updateListings,
+      updateUserCard,
+      user?.profile?.currency,
+    ],
+  );
+
+  const handleSubmit = useCallback(async () => {
+    setLoading(true);
+    const requiredFields: (keyof SellFormStore)[] = [
+      'imageUrl',
+      'title',
+      'description',
+      'category_id',
+      'condition',
+      'listing_type',
+    ];
+    if (form.listing_type === 'sell') {
+      requiredFields.push('start_price');
+    }
+    if (form.listing_type === 'auction') {
+      requiredFields.push('end_time', 'start_price', 'reserved_price');
+    }
+    const validationErrors = validateRequired(
+      form as unknown as Record<string, string | number>,
+      requiredFields,
+    );
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length === 0) {
+      const uploadedUrl = await uploadToBucket(
+        form.imageUrl,
+        'chaamo',
+        'user_cards',
+      );
+
+      const card = {
+        category_id: Number(form.category_id),
+        ...(form.master_card_id
+          ? {
+              master_card_id: form.master_card_id,
+              custom_name: form.title,
+            }
+          : {
+              custom_name: form.title,
+            }),
+        description: form.description,
+        condition: form.condition,
+        grading_company: form.grading_company,
+        grade: '0.0',
+        image_url: uploadedUrl,
+      };
+
+      const listing = {
+        seller_id: user?.id,
+        listing_type: form.listing_type,
+        currency: user?.profile?.currency,
+        // Sell
+        ...(form.listing_type === ListingType.SELL
+          ? {
+              start_price: Number(form.start_price).toFixed(2),
+            }
+          : {}),
+        // Auction
+        ...(form.listing_type === ListingType.AUCTION
+          ? {
+              start_price: Number(form.start_price).toFixed(2),
+              reserve_price: Number(form.reserved_price).toFixed(2),
+              start_time: formatISO(new Date()),
+              end_time: formatISO(
+                parse(form.end_time, 'dd/MM/yyyy', new Date()),
+              ),
+            }
+          : {}),
+      };
+
+      if (cardId) {
+        handleUpdateCard(card, listing);
+      } else {
+        handleCreateCard(card, listing);
+      }
     } else {
       setLoading(false);
     }
   }, [
     form,
-    createUserCard,
     user?.id,
-    createListings,
     user?.profile?.currency,
-    setForm,
+    cardId,
+    handleUpdateCard,
+    handleCreateCard,
   ]);
 
   return (
     <ScreenContainer>
       <Header
-        title="Sell Your Card"
+        title={cardId ? 'Edit Your Card' : 'Sell Your Card'}
         onBackPress={() => router.push('/(tabs)/home')}
       />
       <KeyboardView>
@@ -452,7 +584,7 @@ export default function SellScreen() {
           disabled={!isFormValid || !form.imageUrl || loading}
           loading={loading}
         >
-          Post Your Card
+          {cardId ? 'Update Your Card' : 'Post Your Card'}
         </Button>
       </View>
       <Modal

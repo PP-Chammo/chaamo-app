@@ -49,6 +49,10 @@ export async function uploadToBucket(
   folder: string = '',
 ): Promise<string | null> {
   try {
+    if (localUri.includes('http')) {
+      return localUri;
+    }
+
     const fileInfo = await FileSystem.getInfoAsync(localUri);
     if (!fileInfo.exists) {
       throw new Error('File does not exist at path: ' + localUri);
