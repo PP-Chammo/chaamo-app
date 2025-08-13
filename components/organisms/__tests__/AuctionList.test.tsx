@@ -8,6 +8,8 @@ import AuctionList from '../AuctionList';
 jest.mock('expo-router', () => ({
   router: { push: jest.fn() },
   Link: 'Link',
+  // Ensure useFocusEffect exists in this test scope
+  useFocusEffect: (cb: () => void) => cb(),
 }));
 
 const mockProps = {
@@ -40,7 +42,7 @@ describe('AuctionList', () => {
     fireEvent.press(firstCard);
 
     expect(router.push).toHaveBeenCalledWith({
-      pathname: '/screens/auction-detail',
+      pathname: '/screens/listing-detail',
       params: {
         id: '1',
       },

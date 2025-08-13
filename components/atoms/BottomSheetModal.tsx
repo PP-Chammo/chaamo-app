@@ -146,7 +146,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
       />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
       >
         <View
           className={classes.container}

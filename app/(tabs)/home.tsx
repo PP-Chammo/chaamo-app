@@ -25,7 +25,6 @@ cssInterop(ScrollView, {
 
 export default function HomeScreen() {
   const { favorites } = useFavorites();
-
   const [searchText, setSearchText] = useState<string>('');
 
   const favoriteCount = useMemo(() => {

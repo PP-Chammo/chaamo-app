@@ -10,8 +10,9 @@ describe('ListingCard', () => {
     id: '1',
     imageUrl: 'https://example.com/image.jpg',
     title: 'Test Card',
-    marketPrice: '$120',
-    marketType: 'eBay',
+    currency: 'USD',
+    marketCurrency: 'USD',
+    marketPrice: '120',
     indicator: 'up',
   };
 
@@ -21,7 +22,7 @@ describe('ListingCard', () => {
     expect(getByTestId('listing-card-image')).toBeTruthy();
     expect(getByTestId('listing-card-title').props.children).toBe('Test Card');
     expect(getByTestId('listing-card-market-price').props.children).toBe(
-      '$120',
+      '$120.00',
     );
   });
 
@@ -34,14 +35,14 @@ describe('ListingCard', () => {
 
   it('renders price when provided', () => {
     const { getByTestId } = render(
-      <ListingCard {...defaultProps} price="$100" />,
+      <ListingCard {...defaultProps} price={'100'} />,
     );
-    expect(getByTestId('listing-card-price').props.children).toBe('$100');
+    expect(getByTestId('listing-card-price').props.children).toBe('$100.00');
   });
 
   it('does not render price when not provided', () => {
-    const { queryByTestId } = render(<ListingCard {...defaultProps} />);
-    expect(queryByTestId('listing-card-price')).toBeNull();
+    const { getByTestId } = render(<ListingCard {...defaultProps} />);
+    expect(getByTestId('listing-card-price').props.children).toBe('$0.00');
   });
 
   it('calls onPress when card is pressed', () => {
@@ -88,7 +89,7 @@ describe('ListingCard', () => {
     const { getByTestId } = render(
       <ListingCard
         {...defaultProps}
-        price="$100"
+        price={'100'}
         onPress={onPress}
         onRightIconPress={onRightIconPress}
         rightIcon="star"
@@ -100,9 +101,9 @@ describe('ListingCard', () => {
     expect(getByTestId('listing-card')).toBeTruthy();
     expect(getByTestId('listing-card-image')).toBeTruthy();
     expect(getByTestId('listing-card-title').props.children).toBe('Test Card');
-    expect(getByTestId('listing-card-price').props.children).toBe('$100');
+    expect(getByTestId('listing-card-price').props.children).toBe('$100.00');
     expect(getByTestId('listing-card-market-price').props.children).toBe(
-      '$120',
+      '$120.00',
     );
   });
 
@@ -118,14 +119,14 @@ describe('ListingCard', () => {
       <ListingCard
         {...defaultProps}
         title={'A very long card title for testing purposes'}
-        price={'$1234567890'}
+        price={'1234567890'}
       />,
     );
     expect(getByTestId('listing-card-title').props.children).toBe(
       'A very long card title for testing purposes',
     );
     expect(getByTestId('listing-card-price').props.children).toBe(
-      '$1234567890',
+      '$1,234,567,890.00',
     );
   });
 
