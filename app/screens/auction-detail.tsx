@@ -18,9 +18,9 @@ import { ListedByList, SimilarAdList } from '@/components/organisms';
 import { dummyPortfolioValueData } from '@/constants/dummy';
 import {
   ListingType,
-  useGetVwAuctionDetailQuery,
   useCreateFavoritesMutation,
   useRemoveFavoritesMutation,
+  useGetVwChaamoDetailQuery,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -35,11 +35,11 @@ cssInterop(ScrollView, {
 
 export default function AuctionDetailScreen() {
   const [user] = useUserVar();
+  const { id, preview } = useLocalSearchParams();
   const { getIsFavorite } = useFavorites();
   const { formatDisplay } = useCurrencyDisplay();
 
-  const { id, preview } = useLocalSearchParams();
-  const { data } = useGetVwAuctionDetailQuery({
+  const { data } = useGetVwChaamoDetailQuery({
     skip: !id,
     variables: {
       filter: {
@@ -58,7 +58,7 @@ export default function AuctionDetailScreen() {
   );
 
   const isSeller = useMemo(
-    () => user?.id !== detail?.seller_id || preview === 'true',
+    () => user?.id === detail?.seller_id || preview === 'true',
     [detail?.seller_id, user?.id, preview],
   );
 
@@ -134,10 +134,7 @@ export default function AuctionDetailScreen() {
           price={formatDisplay(detail?.currency, detail?.start_price)}
           date={detail?.created_at ?? new Date().toISOString()}
           title={detail?.name ?? ''}
-          marketPrice={formatDisplay(
-            detail?.currency,
-            detail?.ebay_highest_price ?? 0,
-          )}
+          marketPrice={formatDisplay(detail?.currency, 0)}
           description={detail?.description ?? ''}
         />
         <View className={classes.chartWrapper}>
@@ -168,7 +165,11 @@ export default function AuctionDetailScreen() {
       {!isSeller && (
         <AuctionBottomBar
           showModal={showModal}
-          endDate={detail?.ends_at ?? new Date()}
+          highestBidPrice={formatDisplay(
+            detail?.currency,
+            detail?.highest_bid_price ?? detail?.reserve_price ?? 0,
+          )}
+          endDate={detail?.end_time ?? new Date()}
           onBidNowPress={handleBidNow}
         />
       )}
@@ -176,11 +177,18 @@ export default function AuctionDetailScreen() {
         show={showModal}
         onDismiss={() => setShowModal(false)}
         className={classes.bottomSheet}
-        height={460}
+        height={400}
       >
         <PlaceBidModalContent
           id={detail?.id ?? ''}
-          endDate={detail?.ends_at ?? new Date()}
+          minimumBidAmount={detail?.reserve_price ?? 0}
+          currentBidAmount={
+            detail?.highest_bid_price ?? detail?.reserve_price ?? 0
+          }
+          highestBidAmount={
+            detail?.highest_bid_price ?? detail?.reserve_price ?? 0
+          }
+          endDate={detail?.end_time ?? new Date()}
           onDismiss={() => setShowModal(false)}
         />
       </BottomSheetModal>
@@ -215,5 +223,5 @@ const classes = {
   timeBarInner:
     'absolute -top-7 left-0 right-0 bg-amber-50 py-1 flex flex-row justify-center items-center rounded-t-xl',
   timeText: 'text-sm font-bold',
-  bottomSheet: 'bg-primary-500 pb-4.5',
+  bottomSheet: 'bg-primary-500',
 };

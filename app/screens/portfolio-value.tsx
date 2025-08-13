@@ -115,7 +115,7 @@ export default function PortfolioValueScreen() {
               title={item.node.name ?? ''}
               price={formatDisplay(
                 item.node.currency,
-                item.node?.start_price ?? item.node?.price,
+                item.node?.start_price ?? 0,
               )}
               marketPrice={formatDisplay(item.node.currency, 0)}
               indicator="up"

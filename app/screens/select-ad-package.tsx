@@ -7,15 +7,12 @@ import { View } from 'react-native';
 import { Button, Icon, Label, Row, ScreenContainer } from '@/components/atoms';
 import { Header, RadioInput } from '@/components/molecules';
 import { adFeatures, adPackages } from '@/constants/adProperties';
-import { useUpdateUserCardMutation } from '@/generated/graphql';
 import { initialSellFormState, useSellFormVar } from '@/hooks/useSellFormVar';
 import { getColor } from '@/utils/getColor';
 import { structuredClone } from '@/utils/structuredClone';
 
 export default function SelectAdPackageScreen() {
   const [form, setForm] = useSellFormVar();
-
-  const [updateUserCard] = useUpdateUserCardMutation();
 
   const handleSelectPackage = useCallback(
     (adPackage: { value: string }) => () => {
@@ -25,23 +22,9 @@ export default function SelectAdPackageScreen() {
   );
 
   const handleUnboostPackage = useCallback(() => {
-    updateUserCard({
-      variables: {
-        set: {
-          is_in_listing: true,
-        },
-        filter: {
-          id: { eq: form.user_card_id },
-        },
-      },
-      onCompleted: ({ updateuser_cardsCollection }) => {
-        if (updateuser_cardsCollection?.records?.length) {
-          setForm(structuredClone(initialSellFormState));
-          router.replace('/(tabs)/home');
-        }
-      },
-    });
-  }, [form.user_card_id, setForm, updateUserCard]);
+    setForm(structuredClone(initialSellFormState));
+    router.replace('/(tabs)/home');
+  }, [setForm]);
 
   return (
     <ScreenContainer>

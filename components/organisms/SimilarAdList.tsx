@@ -51,13 +51,9 @@ const SimilarAdList: React.FC<SimilarAdListProps> = memo(
             title={card.node?.name ?? ''}
             price={formatDisplay(
               card.node?.currency,
-              card.node?.start_price ?? card.node?.price,
+              card.node?.start_price ?? 0,
             )}
-            marketPrice={
-              card?.node?.price
-                ? `${card.node.currency?.trim()}${card.node.price?.trim()}`
-                : ''
-            }
+            marketPrice={formatDisplay(card.node?.currency, 0)}
             indicator="up"
             onPress={() =>
               router.push({

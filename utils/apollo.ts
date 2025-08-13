@@ -11,13 +11,13 @@ import {
 } from '@apollo/client';
 import { Session } from '@supabase/supabase-js';
 
-import { supabase } from './supabase';
+import { supabase } from '@/utils/supabase';
 
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
 const graphqlUrl = process.env.EXPO_PUBLIC_SUPABASE_GRAPHQL_URL!;
 
 const cache = new InMemoryCache({
-  addTypename: false,
+  addTypename: true,
 });
 
 const authLink = new ApolloLink((operation: Operation, forward: NextLink) => {

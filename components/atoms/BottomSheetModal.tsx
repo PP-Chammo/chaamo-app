@@ -6,6 +6,7 @@ import {
   Dimensions,
   GestureResponderEvent,
   Keyboard,
+  KeyboardAvoidingView,
   KeyboardEvent,
   PanResponder,
   PanResponderGestureState,
@@ -133,11 +134,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
     Platform.OS === 'ios' ? Math.max(0, keyboardHeight - insets.bottom) : 0;
 
   return (
-    <View
-      className={classes.container}
-      pointerEvents={show ? 'auto' : 'none'}
-      testID="bottom-sheet-container"
-    >
+    <>
       {/* Overlay */}
       <Pressable
         className={clsx(classes.overlay, overlayClassName)}
@@ -147,32 +144,47 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
         accessibilityRole="button"
         testID="bottom-sheet-overlay"
       />
-      {/* Bottom Sheet */}
-      <Animated.View
-        className={clsx(classes.sheet.base, classes.sheet[variant], className)}
-        style={{
-          height: sheetHeight,
-          transform: [{ translateY }],
-          bottom: effectiveKeyboardHeight,
-        }}
-        {...panResponder.panHandlers}
-        accessibilityViewIsModal={true}
-        accessibilityLiveRegion="polite"
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
-          bounces={false}
+        <View
+          className={classes.container}
+          pointerEvents={show ? 'auto' : 'none'}
+          testID="bottom-sheet-container"
         >
-          <View className={classes.handleContainer}>
-            <View
-              className={clsx(classes.handle.base, classes.handle[variant])}
-            />
-          </View>
-          <View className={classes.content}>{children}</View>
-        </ScrollView>
-      </Animated.View>
-    </View>
+          {/* Bottom Sheet */}
+          <Animated.View
+            className={clsx(
+              classes.sheet.base,
+              classes.sheet[variant],
+              className,
+            )}
+            style={{
+              height: sheetHeight,
+              transform: [{ translateY }],
+              bottom: effectiveKeyboardHeight,
+            }}
+            {...panResponder.panHandlers}
+            accessibilityViewIsModal={true}
+            accessibilityLiveRegion="polite"
+          >
+            <ScrollView
+              contentContainerStyle={{ flexGrow: 1 }}
+              keyboardShouldPersistTaps="handled"
+              bounces={false}
+            >
+              <View className={classes.handleContainer}>
+                <View
+                  className={clsx(classes.handle.base, classes.handle[variant])}
+                />
+              </View>
+              <View className={classes.content}>{children}</View>
+            </ScrollView>
+          </Animated.View>
+        </View>
+      </KeyboardAvoidingView>
+    </>
   );
 };
 

@@ -53,7 +53,10 @@ const ProductFixedList: React.FC<ProductFixedListProps> = memo(
             imageUrl={item.node?.image_url ?? ''}
             title={item.node?.name ?? ''}
             subtitle={item.node?.seller_username ?? ''}
-            price={formatDisplay(item.node?.currency, item.node?.price)}
+            price={formatDisplay(
+              item.node?.currency,
+              item.node?.start_price ?? 0,
+            )}
             date={item.node.created_at ?? new Date().toISOString()}
             marketPrice={formatDisplay(item.node?.currency, 0)}
             marketType="eBay"

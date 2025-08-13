@@ -4,26 +4,32 @@ import { clsx } from 'clsx';
 import { View } from 'react-native';
 
 import { Button, Label } from '@/components/atoms';
-import { formatElapsedTime } from '@/utils/date';
+import { formatCountdownTime } from '@/utils/date';
 
 interface AuctionDetailBottomBarProps {
   showModal: boolean;
+  highestBidPrice: string;
   endDate: string;
   onBidNowPress: () => void;
 }
 
 const AuctionDetailBottomBar: React.FC<AuctionDetailBottomBarProps> = memo(
-  function AuctionDetailBottomBar({ showModal, endDate, onBidNowPress }) {
+  function AuctionDetailBottomBar({
+    showModal,
+    highestBidPrice,
+    endDate,
+    onBidNowPress,
+  }) {
     return (
       <View className={clsx(classes.bottomBar, { hidden: showModal })}>
         <View className={classes.timeBarInner}>
           <Label className={classes.timeText}>
-            {formatElapsedTime(endDate)}
+            {formatCountdownTime(endDate)}
           </Label>
         </View>
         <View className={classes.bottomBarLeft}>
           <Label className={classes.highestBidLabel}>Highest Bid</Label>
-          <Label className={classes.highestBidValue}>$400</Label>
+          <Label className={classes.highestBidValue}>{highestBidPrice}</Label>
         </View>
         <Button
           variant="white-light"

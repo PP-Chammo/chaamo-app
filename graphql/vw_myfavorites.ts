@@ -13,7 +13,6 @@ export const getVwMyFavorites = gql`
           seller_username
           created_at
           currency
-          price
           start_price
         }
       }

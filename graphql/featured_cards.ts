@@ -9,7 +9,6 @@ export const getVwFeaturedListings = gql`
           listing_type
           image_url
           currency
-          price
           start_price
           name
         }

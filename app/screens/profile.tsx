@@ -40,14 +40,20 @@ export default function ProfileScreen() {
   const { userId } = useLocalSearchParams();
   const { getIsBlocked } = useBlockedUsers();
   const { formatDisplay } = useCurrencyDisplay();
-  const { followers, followings, getIsFollowing, getIsFollower } = useFollows(
+  const { getIsFollowing: getIsFollowingSelf } = useFollows();
+  const { followers, followings, getIsFollowing } = useFollows(
     userId as string,
   );
+
+  const currentUser = useMemo(() => userId ?? user?.id, [userId, user?.id]);
+
+  const dotsRef = useRef<View>(null);
+  const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 
   const { data, refetch } = useGetProfilesQuery({
     variables: {
       filter: {
-        id: { eq: userId || user?.id },
+        id: { eq: currentUser },
       },
     },
   });
@@ -57,23 +63,21 @@ export default function ProfileScreen() {
     fetchPolicy: 'cache-and-network',
     variables: {
       filter: {
-        seller_id: { eq: userId ?? user?.id },
+        seller_id: { eq: currentUser },
       },
     },
   });
 
   const [removeFollow, { loading: loadingUnfollow }] =
     useRemoveFollowsMutation();
+  const [removeFromFollower] = useRemoveFollowsMutation();
   const [createFollow, { loading: loadingFollow }] = useCreateFollowsMutation();
   const [createBlockedUsers] = useCreateBlockedUsersMutation();
   const [removeBlockedUsers] = useRemoveBlockedUsersMutation();
   const [updateProfile, { loading: loadingUpdateProfile }] =
     useUpdateProfileMutation();
 
-  const dotsRef = useRef<View>(null);
-  const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
-
-  const isSelf = useMemo(() => {
+  const isSelfProfile = useMemo(() => {
     if (!userId) {
       return true;
     }
@@ -85,11 +89,11 @@ export default function ProfileScreen() {
   }, [data?.profilesCollection?.edges]);
 
   const handleSettingsPress = useCallback(() => {
-    if (isSelf) {
+    if (isSelfProfile) {
       return router.push('/screens/settings');
     }
     setIsContextMenuVisible(true);
-  }, [isSelf]);
+  }, [isSelfProfile]);
 
   const handleEditProfilePress = useCallback(() => {
     router.push('/screens/personal-details');
@@ -97,7 +101,7 @@ export default function ProfileScreen() {
 
   const handleToggleFollow = useCallback(
     (followeeUserId: string) => () => {
-      if (getIsFollowing(followeeUserId)) {
+      if (getIsFollowingSelf(followeeUserId)) {
         removeFollow({
           variables: {
             filter: {
@@ -119,21 +123,26 @@ export default function ProfileScreen() {
         });
       }
     },
-    [getIsFollowing, createFollow, removeFollow, user?.id],
+    [getIsFollowingSelf, createFollow, removeFollow, user?.id],
   );
 
   const handleRemoveFromFollower = useCallback(
     (followerUserId: string) => () => {
-      removeFollow({
+      removeFromFollower({
         variables: {
           filter: {
             follower_user_id: { eq: followerUserId },
             followee_user_id: { eq: user?.id },
           },
         },
+        onCompleted: ({ deleteFromfollowsCollection }) => {
+          if (deleteFromfollowsCollection?.records?.length) {
+            setIsContextMenuVisible(false);
+          }
+        },
       });
     },
-    [removeFollow, user?.id],
+    [removeFromFollower, user?.id],
   );
 
   const handleToggleBlockedUser = useCallback(() => {
@@ -228,16 +237,16 @@ export default function ProfileScreen() {
     <>
       <ScreenContainer
         className={classes.container}
-        enableBottomSafeArea={!isSelf}
+        enableBottomSafeArea={!isSelfProfile}
       >
         <Header
           title={
-            isSelf
+            isSelfProfile
               ? 'Profile'
               : `${profile?.username.split(' ')?.[0]}'s Profile`
           }
-          rightIcon={isSelf ? 'menu' : 'dots-vertical'}
-          onBackPress={isSelf ? undefined : () => router.back()}
+          rightIcon={isSelfProfile ? 'menu' : 'dots-vertical'}
+          onBackPress={isSelfProfile ? undefined : () => router.back()}
           onRightPress={handleSettingsPress}
           rightRef={dotsRef}
         />
@@ -245,14 +254,14 @@ export default function ProfileScreen() {
           <Avatar
             size="lg"
             imageUrl={profile?.profile_image_url ?? ''}
-            onPress={isSelf ? handleUpdateProfileImage : undefined}
+            onPress={isSelfProfile ? handleUpdateProfileImage : undefined}
             loading={loadingUpdateProfile}
           />
           <View className={classes.profileInfoContainer}>
             <Label variant="title" className={classes.profileName}>
               {profile?.username}
             </Label>
-            {isSelf && (
+            {isSelfProfile && (
               <View className={classes.portfolioContainer}>
                 <Label className={classes.portfolioValueLabel}>
                   Portfolio Value:
@@ -314,7 +323,7 @@ export default function ProfileScreen() {
           />
         </View>
 
-        {isSelf ? (
+        {isSelfProfile ? (
           <Button
             icon="pencil-outline"
             className={classes.editProfileButton}
@@ -350,7 +359,7 @@ export default function ProfileScreen() {
                   disabled={loadingFollow || loadingUnfollow}
                   loading={loadingFollow || loadingUnfollow}
                 >
-                  {getIsFollowing(userId as string) ? 'Unfollow' : 'Follow'}
+                  {getIsFollowingSelf(userId as string) ? 'Unfollow' : 'Follow'}
                 </Button>
                 <Button
                   variant="light"
@@ -390,14 +399,14 @@ export default function ProfileScreen() {
           />
         </TabView>
       </ScreenContainer>
-      {!isSelf && (
+      {!isSelfProfile && (
         <ContextMenu
           visible={isContextMenuVisible}
           onClose={() => setIsContextMenuVisible(false)}
           triggerRef={dotsRef}
           menuHeight={60}
         >
-          {getIsFollower(userId as string) && (
+          {getIsFollowing(user?.id) && (
             <>
               <TouchableOpacity
                 onPress={handleRemoveFromFollower(userId as string)}
