@@ -20,6 +20,7 @@ interface ListingCardProps extends ListingCardType {
   rightIconColor?: React.ComponentProps<typeof MaterialCommunityIcons>['color'];
   rightComponent?: React.ReactNode;
   className?: string;
+  classNameImage?: string;
 }
 
 const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
@@ -38,6 +39,7 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
   rightIconColor = getColor('slate-700'),
   rightComponent,
   className,
+  classNameImage,
 }) {
   const { formatDisplay } = useCurrencyDisplay();
 
@@ -101,12 +103,12 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
         <Image
           testID="listing-card-image"
           source={{ uri: imageUrl }}
-          className={clsx(classes.image)}
+          className={clsx(classes.image, classNameImage)}
         />
       ) : (
         <View
           testID="listing-card-image-placeholder"
-          className={clsx(classes.image)}
+          className={clsx(classes.image, classNameImage)}
         >
           <Icon name="cards-outline" size={40} color={getColor('red-100')} />
         </View>

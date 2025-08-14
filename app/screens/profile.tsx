@@ -20,13 +20,13 @@ import {
 import { Header, Lazy, TabView } from '@/components/molecules';
 import { profileTabs } from '@/constants/tabs';
 import {
-  useCreateFollowsMutation,
-  useRemoveFollowsMutation,
   useCreateBlockedUsersMutation,
-  useRemoveBlockedUsersMutation,
+  useCreateFollowsMutation,
   useGetProfilesQuery,
-  useUpdateProfileMutation,
   useGetVwChaamoListingsQuery,
+  useRemoveBlockedUsersMutation,
+  useRemoveFollowsMutation,
+  useUpdateProfileMutation,
 } from '@/generated/graphql';
 import { useBlockedUsers } from '@/hooks/useBlockedUsers';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';

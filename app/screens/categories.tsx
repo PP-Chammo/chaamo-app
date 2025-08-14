@@ -5,9 +5,9 @@ import { upperFirst } from 'lodash';
 import { cssInterop } from 'nativewind';
 import { FlatList, View } from 'react-native';
 
-import { Label, ScreenContainer } from '@/components/atoms';
+import { Divider, Label, ScreenContainer } from '@/components/atoms';
 import { Category, Header } from '@/components/molecules';
-import { imageCategories } from '@/constants/categories';
+import { imageCategories, typeCategories } from '@/constants/categories';
 import { useGetCategoriesQuery } from '@/generated/graphql';
 import { useSearchVar } from '@/hooks/useSearchVar';
 
@@ -44,21 +44,35 @@ export default function CategoriesScreen() {
         showsVerticalScrollIndicator={false}
         data={edges}
         keyExtractor={(item) => item.node.name}
-        renderItem={({ item, index }) => (
-          <View>
-            {edges?.[index - 1]?.node.type !== item.node.type && (
-              <Label variant="subtitle" className={classes.headerCategory}>
-                {upperFirst(item.node.type)}
-              </Label>
-            )}
-            <Category
-              horizontal
-              onPress={handleCtaCards}
-              title={item.node.name}
-              image={imageCategories?.[item.node.name]}
-            />
-          </View>
-        )}
+        renderItem={({ item, index }) => {
+          const isPopular = item.node.type === typeCategories.Popular;
+          const isNotSameType =
+            edges?.[index - 1]?.node.type !== item.node.type;
+
+          return (
+            <View>
+              {isNotSameType && isPopular && (
+                <Label variant="subtitle" className={classes.headerCategory}>
+                  {upperFirst(item.node.type)}
+                </Label>
+              )}
+
+              {isNotSameType && !isPopular && (
+                <Divider
+                  position="horizontal"
+                  className="border-slate-200 border-2 mb-5 "
+                />
+              )}
+
+              <Category
+                horizontal
+                onPress={handleCtaCards}
+                title={item.node.name}
+                image={imageCategories?.[item.node.name]}
+              />
+            </View>
+          );
+        }}
         className={classes.list}
         contentContainerClassName={classes.contentContainer}
       />

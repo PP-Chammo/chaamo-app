@@ -22,3 +22,13 @@ export const updateUserCard = gql`
     }
   }
 `;
+
+export const deleteUserCard = gql`
+  mutation DeleteUserCard($filter: user_cardsFilter!) {
+    deleteFromuser_cardsCollection(filter: $filter) {
+      records {
+        id
+      }
+    }
+  }
+`;

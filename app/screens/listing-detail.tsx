@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import { clsx } from 'clsx';
 import { Image } from 'expo-image';
@@ -8,8 +8,12 @@ import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
 
 import {
   BottomSheetModal,
+  Button,
+  ContextMenu,
+  Divider,
   Icon,
   Label,
+  Modal,
   ScreenContainer,
 } from '@/components/atoms';
 import {
@@ -26,8 +30,9 @@ import { dummyPortfolioValueData } from '@/constants/dummy';
 import {
   ListingType,
   useCreateFavoritesMutation,
-  useRemoveFavoritesMutation,
+  useDeleteUserCardMutation,
   useGetVwChaamoDetailQuery,
+  useRemoveFavoritesMutation,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -44,10 +49,15 @@ export default function ListingDetailScreen() {
   const [user] = useUserVar();
   const { getIsFavorite } = useFavorites();
   const { formatDisplay } = useCurrencyDisplay();
+  const [isDeletePopupVisible, setIsDeletePopupVisible] = useState(false);
+
+  const dotsRef = useRef<View>(null);
+  const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 
   const { id, preview } = useLocalSearchParams();
   const { data } = useGetVwChaamoDetailQuery({
     skip: !id,
+    fetchPolicy: 'cache-and-network',
     variables: {
       filter: {
         id: { eq: id },
@@ -56,6 +66,7 @@ export default function ListingDetailScreen() {
   });
   const [createFavorites] = useCreateFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
+  const [deleteUserCard, { loading: isDeleting }] = useDeleteUserCardMutation();
 
   const [showModal, setShowModal] = useState(false);
 
@@ -107,6 +118,75 @@ export default function ListingDetailScreen() {
   const handleShowModal = useCallback(() => {
     setShowModal(true);
   }, []);
+
+  const rightIconHeader = useMemo(() => {
+    if (isSeller) {
+      return 'dots-vertical';
+    }
+    return getIsFavorite(id as string) ? 'heart' : 'heart-outline';
+  }, [isSeller, id, getIsFavorite]);
+
+  const rightIconColor = useMemo(() => {
+    if (isSeller) {
+      return getColor('gray-600');
+    }
+    return getColor(getIsFavorite(id as string) ? 'red-500' : 'gray-600');
+  }, [id, getIsFavorite, isSeller]);
+
+  const onRightPress = useCallback(() => {
+    if (isSeller) {
+      setIsContextMenuVisible(true);
+    } else {
+      handleToggleFavorite();
+    }
+  }, [handleToggleFavorite, isSeller]);
+
+  const handleBoostPost = useCallback(() => {
+    router.push({
+      pathname: '/screens/select-ad-package',
+      params: { listingId: detail?.user_card_id },
+    });
+    setIsContextMenuVisible(false);
+  }, [detail?.user_card_id]);
+
+  const handleEditDetails = useCallback(() => {
+    router.push({
+      pathname: '/screens/sell',
+      params: { cardId: detail?.user_card_id },
+    });
+    setIsContextMenuVisible(false);
+  }, [detail?.user_card_id]);
+
+  const handleDeletePopup = useCallback(() => {
+    setIsContextMenuVisible(false);
+    setIsDeletePopupVisible(!isDeletePopupVisible);
+  }, [isDeletePopupVisible]);
+
+  const handleDeleteAccount = useCallback(() => {
+    deleteUserCard({
+      variables: {
+        filter: {
+          id: { eq: detail?.user_card_id },
+        },
+      },
+      onCompleted: ({ deleteFromuser_cardsCollection }) => {
+        if (deleteFromuser_cardsCollection?.records?.length) {
+          Alert.alert('Success', 'Your post has been deleted', [
+            {
+              text: 'OK',
+              onPress: () => {
+                router.replace('/(tabs)/profile');
+                handleDeletePopup();
+              },
+            },
+          ]);
+        }
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
+  }, [deleteUserCard, detail?.user_card_id, handleDeletePopup]);
 
   const renderBottomBar = useCallback(() => {
     if (isSeller) {
@@ -199,14 +279,11 @@ export default function ListingDetailScreen() {
         <Header
           onBackPress={() => router.back()}
           className={classes.header}
-          rightIcon={
-            getIsFavorite(detail?.id ?? '') ? 'heart' : 'heart-outline'
-          }
-          rightIconColor={getColor(
-            getIsFavorite(detail?.id ?? '') ? 'red-500' : 'gray-600',
-          )}
+          rightIcon={rightIconHeader}
+          rightIconColor={rightIconColor}
           rightIconSize={28}
-          onRightPress={handleToggleFavorite}
+          onRightPress={onRightPress}
+          rightRef={dotsRef}
         />
         <View className={classes.cardImageWrapper}>
           {detail?.image_url ? (
@@ -263,6 +340,65 @@ export default function ListingDetailScreen() {
         />
       </ScrollView>
       {renderBottomBar()}
+      <ContextMenu
+        visible={isContextMenuVisible}
+        onClose={() => setIsContextMenuVisible(false)}
+        triggerRef={dotsRef}
+        menuHeight={60}
+      >
+        <TouchableOpacity
+          onPress={handleBoostPost}
+          className={classes.contextMenu}
+        >
+          <Label className={classes.contextMenuText}>Boost Post</Label>
+        </TouchableOpacity>
+        <Divider position="horizontal" />
+        <TouchableOpacity
+          onPress={handleEditDetails}
+          className={classes.contextMenu}
+        >
+          <Label className={classes.contextMenuText}>Edit Details</Label>
+        </TouchableOpacity>
+        <Divider position="horizontal" />
+        <TouchableOpacity
+          onPress={handleDeletePopup}
+          className={classes.contextMenu}
+        >
+          <Label className={classes.deleteText}>Delete</Label>
+        </TouchableOpacity>
+      </ContextMenu>
+      <Modal
+        visible={isDeletePopupVisible}
+        onClose={handleDeletePopup}
+        className={classes.deleteAccountModal}
+      >
+        <Label className={classes.deleteAccountModalTitle}>
+          Delete this post?
+        </Label>
+        <Label className={classes.deleteAccountModalDescription}>
+          Are you sure you want to delete this post. It will be deleted
+          permanently and can not be resorted.
+        </Label>
+        <Divider position="horizontal" />
+        <Button
+          variant="ghost"
+          className={classes.deleteAccountModalButton}
+          textClassName={classes.deleteAccountModalButtonText}
+          loading={isDeleting}
+          disabled={isDeleting}
+          onPress={handleDeleteAccount}
+        >
+          Delete
+        </Button>
+        <Divider position="horizontal" />
+        <Button
+          variant="ghost"
+          onPress={handleDeletePopup}
+          disabled={isDeleting}
+        >
+          Cancel
+        </Button>
+      </Modal>
     </ScreenContainer>
   );
 }
@@ -296,4 +432,13 @@ const classes = {
     'absolute -top-7 left-0 right-0 bg-amber-50 py-1 flex flex-row justify-center items-center rounded-t-xl',
   timeText: 'text-sm font-bold',
   bottomSheet: 'bg-primary-500',
+  contextMenu: 'flex-row items-center py-2 px-3 gap-2',
+  contextMenuText: 'text-sm',
+  deleteText: 'text-sm text-red-500',
+  deleteAccountModal: 'mx-14 items-center pt-5',
+  deleteAccountModalTitle: 'text-lg font-bold text-slate-900',
+  deleteAccountModalDescription:
+    'text-md text-slate-600 text-center mx-16 mt-4 mb-8',
+  deleteAccountModalButton: 'text-red-500',
+  deleteAccountModalButtonText: 'text-red-700',
 };

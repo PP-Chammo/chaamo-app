@@ -29,3 +29,8 @@ export const imageCategories: Record<string, React.FC<SvgProps>> = {
   Wrestling: Wrestling,
   'Yu-Gi-Oh!': YuGiOh,
 };
+
+export const typeCategories: Record<string, string> = {
+  Popular: 'popular',
+  Other: 'other',
+};

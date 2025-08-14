@@ -9,3 +9,13 @@ export const createListings = gql`
     }
   }
 `;
+
+export const updateListings = gql`
+  mutation UpdateListings($set: listingsUpdateInput!, $filter: listingsFilter) {
+    updatelistingsCollection(set: $set, filter: $filter) {
+      records {
+        id
+      }
+    }
+  }
+`;
