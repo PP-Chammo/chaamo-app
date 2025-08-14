@@ -93,6 +93,8 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
           handleChange(formatDate(date, 'dd/MM/yyyy'));
           setShowDatePicker(false);
         }
+      } else if (Platform.OS === 'android') {
+        setShowDatePicker(false);
       }
     },
     [handleChange],
@@ -246,6 +248,15 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
             </View>
           </View>
         </Modal>
+      )}
+      {Platform.OS === 'android' && type === 'date' && showDatePicker && (
+        <DateTimePicker
+          value={selectedDate}
+          mode="date"
+          display="calendar"
+          onChange={handleDateChange}
+          minimumDate={new Date()}
+        />
       )}
     </View>
   );

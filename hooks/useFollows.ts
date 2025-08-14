@@ -76,11 +76,11 @@ export function useFollows(userId?: string) {
     (followeeUserId: string) => {
       return data?.followsCollection?.edges?.some(
         (follow) =>
-          follow.node.follower_user_id === user?.id &&
+          follow.node.follower_user_id === id &&
           follow.node.followee_user_id === followeeUserId,
       );
     },
-    [data?.followsCollection?.edges, user?.id],
+    [data?.followsCollection?.edges, id],
   );
 
   const getIsFollower = useCallback(
@@ -88,10 +88,10 @@ export function useFollows(userId?: string) {
       return data?.followsCollection?.edges?.some(
         (follow) =>
           follow.node.follower_user_id === followerUserId &&
-          follow.node.followee_user_id === user?.id,
+          follow.node.followee_user_id === id,
       );
     },
-    [data?.followsCollection?.edges, user?.id],
+    [data?.followsCollection?.edges, id],
   );
 
   return { followers, followings, getIsFollowing, getIsFollower };

@@ -3,12 +3,14 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { formatISO, parse } from 'date-fns';
 import * as ImagePicker from 'expo-image-picker';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { Alert, FlatList, View } from 'react-native';
 
@@ -29,12 +31,20 @@ import {
 import { conditions, conditionSells } from '@/constants/condition';
 import { currencySymbolMap } from '@/constants/currencies';
 import {
+  CardCondition,
+  ListingsInsertInput,
+  ListingsUpdateInput,
   ListingType,
   MasterCards,
   useCreateListingsMutation,
   useCreateUserCardMutation,
   useGetCategoriesQuery,
   useGetMasterCardsAutocompleteLazyQuery,
+  useGetVwChaamoDetailLazyQuery,
+  UserCardsInsertInput,
+  UserCardsUpdateInput,
+  useUpdateListingsMutation,
+  useUpdateUserCardMutation,
 } from '@/generated/graphql';
 import useDebounce from '@/hooks/useDebounce';
 import { initialSellFormState, useSellFormVar } from '@/hooks/useSellFormVar';
@@ -56,6 +66,7 @@ cssInterop(FlatList, {
 });
 
 export default function SellScreen() {
+  const { cardId } = useLocalSearchParams();
   const [user] = useUserVar();
   const [form, setForm] = useSellFormVar();
 
@@ -68,7 +79,12 @@ export default function SellScreen() {
   const [getAutocompleteList, { data: masterCards }] =
     useGetMasterCardsAutocompleteLazyQuery();
   const [createListings] = useCreateListingsMutation();
+  const [updateListings] = useUpdateListingsMutation();
   const [createUserCard] = useCreateUserCardMutation();
+  const [updateUserCard] = useUpdateUserCardMutation();
+  const [getDetail, { data }] = useGetVwChaamoDetailLazyQuery();
+  const hasProcessedCard = useRef(false);
+  const hasResetForm = useRef(false);
 
   const userCurrencySymbol = useMemo(() => {
     if (!user) return '$';
@@ -115,9 +131,9 @@ export default function SellScreen() {
       'condition',
       'listing_type',
     ];
-    if (form.listing_type === 'sell') fields.push('price');
+    if (form.listing_type === 'sell') fields.push('start_price');
     if (form.listing_type === 'auction')
-      fields.push('endDate', 'minPrice', 'reservedPrice');
+      fields.push('end_time', 'start_price', 'reserved_price');
     return fields;
   }, [form.listing_type]);
 
@@ -127,6 +143,49 @@ export default function SellScreen() {
         (field) => form[field] && form[field].toString().trim() !== '',
       ),
     [form, requiredFields],
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (cardId && !hasProcessedCard.current) {
+        getDetail({
+          variables: {
+            filter: { user_card_id: { eq: cardId } },
+          },
+        });
+      }
+    }, [cardId, getDetail]),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (cardId) {
+        const detail = data?.vw_chaamo_cardsCollection?.edges[0]?.node;
+
+        if (detail && !hasProcessedCard.current) {
+          hasProcessedCard.current = true;
+          hasResetForm.current = false;
+          setForm({
+            title: detail.name ?? '',
+            description: detail.description ?? '',
+            category_id: '4',
+            imageUrl: detail.image_url ?? '',
+            start_price: detail.start_price ?? '',
+            reserved_price: detail.reserve_price ?? '',
+            end_time: detail.end_time ?? '',
+            condition: detail.condition ?? CardCondition.RAW,
+            listing_type: detail.listing_type ?? ListingType.PORTFOLIO,
+          });
+        }
+      } else {
+        // Only reset form once when opening new sell screen
+        if (!hasResetForm.current) {
+          hasProcessedCard.current = false;
+          hasResetForm.current = true;
+          setForm(structuredClone(initialSellFormState));
+        }
+      }
+    }, [cardId, data?.vw_chaamo_cardsCollection?.edges, setForm]),
   );
 
   const handleAutocompletePress = useCallback(
@@ -157,7 +216,6 @@ export default function SellScreen() {
       );
     }
     const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
       quality: 0.8,
     });
     if (result.canceled || !result.assets.length)
@@ -170,6 +228,148 @@ export default function SellScreen() {
     setForm({ imageUrl: '' });
   }, [setForm]);
 
+  const handleCreateCard = useCallback(
+    async (card: UserCardsInsertInput, listing: ListingsInsertInput) => {
+      createUserCard({
+        variables: {
+          objects: [
+            {
+              ...card,
+              user_id: user?.id,
+            },
+          ],
+        },
+        onCompleted: async ({ insertIntouser_cardsCollection }) => {
+          if (insertIntouser_cardsCollection?.records?.length) {
+            const userCardId = insertIntouser_cardsCollection.records[0].id;
+            await Promise.all([
+              fetch(
+                `${process.env.EXPO_PUBLIC_BACKEND_URL}/ebay_scrape?user_card_id=${userCardId}&region=${user?.profile?.currency === 'GBP' ? 'uk' : 'us'}`,
+              ),
+              createListings({
+                variables: {
+                  objects: [
+                    {
+                      ...listing,
+                      user_card_id: userCardId,
+                    },
+                  ],
+                },
+                onCompleted: ({ insertIntolistingsCollection }) => {
+                  if (insertIntolistingsCollection?.records?.length) {
+                    if (form.listing_type === ListingType.PORTFOLIO) {
+                      Alert.alert(
+                        'Success!',
+                        'Your portfolio has been saved.',
+                        [
+                          {
+                            text: 'OK',
+                            onPress: () => {
+                              setForm(structuredClone(initialSellFormState));
+                              router.replace('/(tabs)/home');
+                            },
+                          },
+                        ],
+                      );
+                    } else {
+                      setForm({
+                        user_card_id: userCardId,
+                        listing_id: insertIntolistingsCollection.records[0].id,
+                      });
+                      setLoading(false);
+                      router.push('/screens/select-ad-package');
+                    }
+                  }
+                },
+                onError: console.log,
+              }),
+            ]);
+          }
+        },
+        onError: console.log,
+      });
+    },
+    [
+      createListings,
+      createUserCard,
+      form.listing_type,
+      setForm,
+      user?.id,
+      user?.profile?.currency,
+    ],
+  );
+
+  const handleUpdateCard = useCallback(
+    async (card: UserCardsUpdateInput, listing: ListingsUpdateInput) => {
+      updateUserCard({
+        variables: {
+          set: card,
+          filter: {
+            id: { eq: cardId },
+          },
+        },
+        onCompleted: async ({ updateuser_cardsCollection }) => {
+          if (updateuser_cardsCollection?.records?.length) {
+            const userCardId = updateuser_cardsCollection.records[0].id;
+            await Promise.all([
+              fetch(
+                `${process.env.EXPO_PUBLIC_BACKEND_URL}/ebay_scrape?user_card_id=${userCardId}&region=${user?.profile?.currency === 'GBP' ? 'uk' : 'us'}`,
+              ),
+              updateListings({
+                variables: {
+                  set: listing,
+                  filter: {
+                    user_card_id: { eq: userCardId },
+                  },
+                },
+                onCompleted: ({ updatelistingsCollection }) => {
+                  if (updatelistingsCollection?.records?.length) {
+                    if (form.listing_type === ListingType.PORTFOLIO) {
+                      Alert.alert(
+                        'Success!',
+                        'Your portfolio has been updated.',
+                        [
+                          {
+                            text: 'OK',
+                            onPress: () => {
+                              setForm(structuredClone(initialSellFormState));
+                              router.replace('/(tabs)/home');
+                            },
+                          },
+                        ],
+                      );
+                    } else {
+                      setForm({
+                        user_card_id: userCardId,
+                        listing_id: updatelistingsCollection.records[0].id,
+                      });
+                      setLoading(false);
+                      router.push({
+                        pathname: '/screens/listing-detail',
+                        params: {
+                          id: updatelistingsCollection.records[0].id,
+                        },
+                      });
+                    }
+                  }
+                },
+                onError: console.log,
+              }),
+            ]);
+          }
+        },
+      });
+    },
+    [
+      cardId,
+      form.listing_type,
+      setForm,
+      updateListings,
+      updateUserCard,
+      user?.profile?.currency,
+    ],
+  );
+
   const handleSubmit = useCallback(async () => {
     setLoading(true);
     const requiredFields: (keyof SellFormStore)[] = [
@@ -181,10 +381,10 @@ export default function SellScreen() {
       'listing_type',
     ];
     if (form.listing_type === 'sell') {
-      requiredFields.push('price');
+      requiredFields.push('start_price');
     }
     if (form.listing_type === 'auction') {
-      requiredFields.push('endDate', 'minPrice', 'reservedPrice');
+      requiredFields.push('end_time', 'start_price', 'reserved_price');
     }
     const validationErrors = validateRequired(
       form as unknown as Record<string, string | number>,
@@ -198,106 +398,68 @@ export default function SellScreen() {
         'chaamo',
         'user_cards',
       );
-      createUserCard({
-        variables: {
-          objects: [
-            {
-              user_id: user?.id,
-              ...(form.master_card_id
-                ? {
-                    master_card_id: form.master_card_id,
-                  }
-                : {
-                    name: form.title,
-                  }),
-              category_id: Number(form.category_id),
-              condition: form.condition,
-              grading_company: form.grading_company,
-              grade: '0.0',
-              user_images: uploadedUrl,
-            },
-          ],
-        },
-        onCompleted: ({ insertIntouser_cardsCollection }) => {
-          if (insertIntouser_cardsCollection?.records?.length) {
-            const userCardId = insertIntouser_cardsCollection.records[0].id;
-            createListings({
-              variables: {
-                objects: [
-                  {
-                    user_card_id: userCardId,
-                    seller_id: user?.id,
-                    listing_type: form.listing_type,
-                    description: form.description,
 
-                    // Sell
-                    ...(form.listing_type === ListingType.SELL
-                      ? {
-                          currency: userCurrencySymbol,
-                          price: Number(form.price).toFixed(2),
-                          accepts_offers: true,
-                        }
-                      : {}),
+      const card = {
+        category_id: Number(form.category_id),
+        ...(form.master_card_id
+          ? {
+              master_card_id: form.master_card_id,
+              custom_name: form.title,
+            }
+          : {
+              custom_name: form.title,
+            }),
+        description: form.description,
+        condition: form.condition,
+        grading_company: form.grading_company,
+        grade: '0.0',
+        image_url: uploadedUrl,
+      };
 
-                    // Auction
-                    ...(form.listing_type === ListingType.AUCTION
-                      ? {
-                          currency: userCurrencySymbol,
-                          start_price: Number(form.minPrice).toFixed(2),
-                          reserve_price: Number(form.reservedPrice).toFixed(2),
-                          start_time: formatISO(new Date()),
-                          ends_at: formatISO(
-                            parse(form.endDate, 'dd/MM/yyyy', new Date()),
-                          ),
-                        }
-                      : {}),
-                  },
-                ],
-              },
-              onCompleted: ({ insertIntolistingsCollection }) => {
-                if (insertIntolistingsCollection?.records?.length) {
-                  if (form.listing_type === ListingType.PORTFOLIO) {
-                    Alert.alert('Success!', 'Your portfolio has been saved.', [
-                      {
-                        text: 'OK',
-                        onPress: () => {
-                          setForm(structuredClone(initialSellFormState));
-                          router.replace('/(tabs)/home');
-                        },
-                      },
-                    ]);
-                  } else {
-                    setForm({
-                      user_card_id: userCardId,
-                      listing_id: insertIntolistingsCollection.records[0].id,
-                    });
-                    setLoading(false);
-                    router.push('/screens/select-ad-package');
-                  }
-                }
-              },
-              onError: console.log,
-            });
-          }
-        },
-        onError: console.log,
-      });
+      const listing = {
+        seller_id: user?.id,
+        listing_type: form.listing_type,
+        currency: user?.profile?.currency,
+        // Sell
+        ...(form.listing_type === ListingType.SELL
+          ? {
+              start_price: Number(form.start_price).toFixed(2),
+            }
+          : {}),
+        // Auction
+        ...(form.listing_type === ListingType.AUCTION
+          ? {
+              start_price: Number(form.start_price).toFixed(2),
+              reserve_price: Number(form.reserved_price).toFixed(2),
+              start_time: formatISO(new Date()),
+              end_time: formatISO(
+                parse(form.end_time, 'dd/MM/yyyy', new Date()),
+              ),
+            }
+          : {}),
+      };
+
+      if (cardId) {
+        handleUpdateCard(card, listing);
+      } else {
+        handleCreateCard(card, listing);
+      }
     } else {
       setLoading(false);
     }
   }, [
     form,
-    createUserCard,
     user?.id,
-    createListings,
-    userCurrencySymbol,
-    setForm,
+    user?.profile?.currency,
+    cardId,
+    handleUpdateCard,
+    handleCreateCard,
   ]);
 
   return (
     <ScreenContainer>
       <Header
-        title="Sell Your Card"
+        title={cardId ? 'Edit Your Card' : 'Sell Your Card'}
         onBackPress={() => router.push('/(tabs)/home')}
       />
       <KeyboardView>
@@ -362,25 +524,25 @@ export default function SellScreen() {
           />
           {form.listing_type === 'sell' && (
             <TextField
-              name="price"
+              name="start_price"
               label="Price"
               placeholder="Enter price"
-              value={form.price}
+              value={form.start_price}
               onChange={handleChange}
               keyboardType="numeric"
               required
               inputClassName={classes.input}
               leftLabel={userCurrencySymbol}
-              error={errors.price}
+              error={errors.start_price}
             />
           )}
           {form.listing_type === 'auction' && (
             <Fragment>
               <TextField
                 type="date"
-                name="endDate"
+                name="end_time"
                 label="Auction End Date"
-                value={form.endDate}
+                value={form.end_time}
                 onChange={handleChange}
                 required
                 inputClassName={classes.input}
@@ -388,29 +550,29 @@ export default function SellScreen() {
                 rightIconVariant="SimpleLineIcons"
                 rightIconSize={20}
                 rightIconColor={getColor('slate-500')}
-                error={errors.endDate}
+                error={errors.end_time}
               />
               <TextField
-                name="minPrice"
+                name="start_price"
                 label="Minimum Price"
-                value={form.minPrice}
+                value={form.start_price}
                 onChange={handleChange}
                 keyboardType="numeric"
                 required
                 inputClassName={classes.input}
                 leftLabel={userCurrencySymbol}
-                error={errors.minPrice}
+                error={errors.start_price}
               />
               <TextField
-                name="reservedPrice"
+                name="reserved_price"
                 label="Reserved Price"
-                value={form.reservedPrice}
+                value={form.reserved_price}
                 onChange={handleChange}
                 keyboardType="numeric"
                 required
                 inputClassName={classes.input}
                 leftLabel={userCurrencySymbol}
-                error={errors.reservedPrice}
+                error={errors.reserved_price}
               />
             </Fragment>
           )}
@@ -422,7 +584,7 @@ export default function SellScreen() {
           disabled={!isFormValid || !form.imageUrl || loading}
           loading={loading}
         >
-          Post Your Card
+          {cardId ? 'Update Your Card' : 'Post Your Card'}
         </Button>
       </View>
       <Modal

@@ -1,22 +1,29 @@
 import React, { memo } from 'react';
 
-import SkeletonLoading, { SkeletonProps } from 'expo-skeleton-loading';
+import SkeletonLoading from 'expo-skeleton-loading';
 
 import { getColor } from '@/utils/getColor';
 
-const SkeletonCustom = SkeletonLoading as React.FC<SkeletonProps>;
+type SkeletonLoadingProps = {
+  background?: string;
+  highlight?: string;
+  children?: React.ReactNode;
+};
 
-const Skeleton: React.FC<Pick<SkeletonProps, 'children'>> = memo(
-  function Skeleton({ children }) {
-    return (
-      <SkeletonCustom
-        background={getColor('slate-300')}
-        highlight={getColor('white')}
-      >
-        {children}
-      </SkeletonCustom>
-    );
-  },
-);
+const SkeletonLoadingComponent =
+  SkeletonLoading as unknown as React.ComponentType<SkeletonLoadingProps>;
+
+const Skeleton: React.FC<React.PropsWithChildren> = memo(function Skeleton({
+  children,
+}) {
+  return (
+    <SkeletonLoadingComponent
+      background={getColor('slate-300')}
+      highlight={getColor('white')}
+    >
+      {children}
+    </SkeletonLoadingComponent>
+  );
+});
 
 export default Skeleton;

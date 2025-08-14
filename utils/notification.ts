@@ -1,18 +1,18 @@
 import { format } from 'date-fns';
 
-import { Notification } from '@/domains';
+import { BaseNotification } from '@/domains';
 
 export interface DateGroupedNotifications {
   date: string;
-  notifications: Notification[];
+  notifications: BaseNotification[];
 }
 
 export const groupNotificationsByDate = (
-  notifications: Notification[],
+  notifications: BaseNotification[],
 ): DateGroupedNotifications[] => {
   if (!notifications.length) return [];
 
-  const dateMap: Record<string, Notification[]> = {};
+  const dateMap: Record<string, BaseNotification[]> = {};
 
   for (const notif of notifications) {
     const dateKey = format(new Date(notif.created_at), 'yyyy-MM-dd');

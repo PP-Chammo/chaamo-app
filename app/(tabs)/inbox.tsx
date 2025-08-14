@@ -5,8 +5,13 @@ import { Header } from '@/components/molecules';
 import { ChatList } from '@/components/organisms';
 
 export default function InboxLayout() {
-  const handlePress = (id: number, name: string) => {
-    router.push(`/screens/chat?id=${id}&name=${name}`);
+  const handlePress = (id: number) => {
+    router.push({
+      pathname: '/screens/chat',
+      params: {
+        id,
+      },
+    });
   };
   return (
     <ScreenContainer

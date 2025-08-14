@@ -4,13 +4,13 @@ import { FlatList } from 'react-native';
 
 import { Label } from '@/components/atoms';
 import { NotificationListItem } from '@/components/molecules';
-import { FlatData, Notification } from '@/domains';
+import { BaseNotification, FlatData } from '@/domains';
 import { formatDate } from '@/utils/date';
 
 interface NotificationListProps {
   onPress: () => void;
   onLongPress: () => void;
-  notifications: FlatData<Notification>[];
+  notifications: FlatData<BaseNotification>[];
 }
 
 const NotificationList: React.FC<NotificationListProps> = memo(

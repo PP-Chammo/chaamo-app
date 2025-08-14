@@ -1,21 +1,19 @@
 import { useCallback } from 'react';
 
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 
 import { Button, Icon, Label, Row, ScreenContainer } from '@/components/atoms';
 import { Header, RadioInput } from '@/components/molecules';
 import { adFeatures, adPackages } from '@/constants/adProperties';
-import { useUpdateUserCardMutation } from '@/generated/graphql';
 import { initialSellFormState, useSellFormVar } from '@/hooks/useSellFormVar';
 import { getColor } from '@/utils/getColor';
 import { structuredClone } from '@/utils/structuredClone';
 
 export default function SelectAdPackageScreen() {
   const [form, setForm] = useSellFormVar();
-
-  const [updateUserCard] = useUpdateUserCardMutation();
+  const { listingId } = useLocalSearchParams();
 
   const handleSelectPackage = useCallback(
     (adPackage: { value: string }) => () => {
@@ -25,34 +23,22 @@ export default function SelectAdPackageScreen() {
   );
 
   const handleUnboostPackage = useCallback(() => {
-    updateUserCard({
-      variables: {
-        set: {
-          is_in_listing: true,
-        },
-        filter: {
-          id: { eq: form.user_card_id },
-        },
-      },
-      onCompleted: ({ updateuser_cardsCollection }) => {
-        if (updateuser_cardsCollection?.records?.length) {
-          setForm(structuredClone(initialSellFormState));
-          router.replace('/(tabs)/home');
-        }
-      },
-    });
-  }, [form.user_card_id, setForm, updateUserCard]);
+    setForm(structuredClone(initialSellFormState));
+    router.replace('/(tabs)/home');
+  }, [setForm]);
 
   return (
     <ScreenContainer>
       <Header title="Select Ad Package" onBackPress={() => router.back()} />
       <View className={classes.container}>
-        <View className={classes.successMessage}>
-          <Icon name="check-circle" color={getColor('green-500')} size={24} />
-          <Label className={classes.successMessageText}>
-            Your card has been posted successfully
-          </Label>
-        </View>
+        {!listingId && (
+          <View className={classes.successMessage}>
+            <Icon name="check-circle" color={getColor('green-500')} size={24} />
+            <Label className={classes.successMessageText}>
+              Your card has been posted successfully
+            </Label>
+          </View>
+        )}
         <View className={classes.content}>
           <View className={classes.cardContainer}>
             <Row between>

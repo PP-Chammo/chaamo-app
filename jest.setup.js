@@ -50,6 +50,20 @@ jest.mock('expo-image-picker', () => ({
   },
 }));
 
+jest.mock('expo-file-system', () => ({
+  getInfoAsync: jest.fn(async () => ({ exists: true })),
+  readAsStringAsync: jest.fn(async () => ''),
+  EncodingType: { Base64: 'base64' },
+}));
+
+// Mock react-native-fs to prevent NativeEventEmitter errors in Jest
+jest.mock('react-native-fs', () => ({
+  DownloadDirectoryPath: '/tmp',
+  DocumentDirectoryPath: '/tmp',
+  mkdir: jest.fn(async () => {}),
+  writeFile: jest.fn(async () => {}),
+}));
+
 jest.mock('expo-linear-gradient', () => ({
   LinearGradient: 'LinearGradient',
 }));
@@ -215,6 +229,15 @@ jest.mock('@/generated/graphql', () => ({
     loading: false,
     error: null,
   })),
+  useGetPostCommentsQuery: jest.fn(() => ({
+    data: {
+      post_commentsCollection: {
+        edges: [],
+      },
+    },
+    loading: false,
+    error: null,
+  })),
   useGetProfilesQuery: jest.fn(() => ({
     data: {
       profilesCollection: {
@@ -319,6 +342,8 @@ jest.mock('@/generated/graphql', () => ({
               currency: '$',
               start_price: '100',
               listing_type: 'AUCTION',
+              last_sold_currency: '$',
+              last_sold_price: '120',
             },
           },
           {
@@ -327,8 +352,10 @@ jest.mock('@/generated/graphql', () => ({
               name: 'Common Item 2',
               image_url: 'https://example.com/image2.jpg',
               currency: '$',
-              price: '200.00',
+              start_price: '200.00',
               listing_type: 'SELL',
+              last_sold_currency: '$',
+              last_sold_price: '180.00',
             },
           },
           {
@@ -337,9 +364,11 @@ jest.mock('@/generated/graphql', () => ({
               name: 'Common Item 3',
               image_url: 'https://example.com/image3.jpg',
               currency: '$',
-              price: '300.00',
+              start_price: '300.00',
               listing_type: 'SELL',
               status: 'SOLD',
+              last_sold_currency: '$',
+              last_sold_price: '290.00',
             },
           },
           {
@@ -348,8 +377,10 @@ jest.mock('@/generated/graphql', () => ({
               name: 'Common Item 3',
               image_url: 'https://example.com/image3.jpg',
               currency: '$',
-              price: '300.00',
+              start_price: '300.00',
               listing_type: 'PORTFOLIO',
+              last_sold_currency: '$',
+              last_sold_price: '305.00',
             },
           },
         ],
@@ -358,6 +389,68 @@ jest.mock('@/generated/graphql', () => ({
     loading: false,
     error: null,
   })),
+  useGetVwChaamoListingsLazyQuery: jest.fn(() => [
+    jest.fn(),
+    {
+      data: {
+        vw_chaamo_cardsCollection: {
+          edges: [
+            {
+              node: {
+                id: '1',
+                name: 'Auction Item 1',
+                image_url: 'https://example.com/image1.jpg',
+                currency: '$',
+                start_price: '100',
+                listing_type: 'AUCTION',
+                last_sold_currency: '$',
+                last_sold_price: '120',
+              },
+            },
+            {
+              node: {
+                id: '2',
+                name: 'Common Item 2',
+                image_url: 'https://example.com/image2.jpg',
+                currency: '$',
+                start_price: '200.00',
+                listing_type: 'SELL',
+                last_sold_currency: '$',
+                last_sold_price: '180.00',
+              },
+            },
+            {
+              node: {
+                id: '3',
+                name: 'Common Item 3',
+                image_url: 'https://example.com/image3.jpg',
+                currency: '$',
+                start_price: '300.00',
+                listing_type: 'SELL',
+                status: 'SOLD',
+                last_sold_currency: '$',
+                last_sold_price: '290.00',
+              },
+            },
+            {
+              node: {
+                id: '4',
+                name: 'Common Item 3',
+                image_url: 'https://example.com/image3.jpg',
+                currency: '$',
+                start_price: '300.00',
+                listing_type: 'PORTFOLIO',
+                last_sold_currency: '$',
+                last_sold_price: '305.00',
+              },
+            },
+          ],
+        },
+      },
+      loading: false,
+      error: null,
+    },
+  ]),
   useGetVwFeaturedListingsQuery: jest.fn(() => ({
     data: {
       vw_featured_cardsCollection: {
@@ -485,6 +578,7 @@ jest.mock('@/generated/graphql', () => ({
     ACTIVE: 'ACTIVE',
     PENDING: 'PENDING',
   },
+  OrderByDirection: { DESCNULLSLAST: 'DESCNULLSLAST', ASCNULLSLAST: 'ASCNULLSLAST' },
 }));
 
 // Mock hooks with reactive behavior
@@ -510,9 +604,26 @@ jest.mock('@/hooks/useAuthVar', () => ({
   }),
 }));
 
+// Prevent realtime websockets/timers during tests
+jest.mock('@/hooks/useRealtime', () => ({
+  useRealtime: jest.fn(() => {
+    // no-op in tests
+    return undefined;
+  }),
+}));
+
 jest.mock('@/hooks/useCurrencyDisplay', () => ({
   useCurrencyDisplay: jest.fn(() => ({
-    formatDisplay: jest.fn((currency, value) => value),
+    formatDisplay: jest.fn((baseCurrency, amount, options) => {
+      const num = typeof amount === 'string' ? parseFloat(amount) : amount || 0;
+      const formatted = new Intl.NumberFormat(undefined, {
+        style: 'decimal',
+        minimumFractionDigits: options?.unfixed ? 0 : 2,
+        maximumFractionDigits: 2,
+      }).format(isNaN(num) ? 0 : num);
+      if (options?.showSymbol === false) return formatted;
+      return `$${formatted}`;
+    }),
     convertSymbolToCurrency: jest.fn(() => 'USD'),
     convertCurrencyToSymbol: jest.fn(() => '$'),
   })),

@@ -12,7 +12,7 @@ import {
 } from '@/components/atoms';
 import { Header } from '@/components/molecules';
 import { NotificationList } from '@/components/organisms';
-import { FlatData, Notification } from '@/domains';
+import { BaseNotification, FlatData } from '@/domains';
 import { useGetNotificationsQuery } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
@@ -20,7 +20,7 @@ import { groupNotificationsByDate } from '@/utils/notification';
 
 export default function Notifications() {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [data, setData] = useState<FlatData<Notification>[]>([]);
+  const [data, setData] = useState<FlatData<BaseNotification>[]>([]);
 
   const [user] = useUserVar();
 
@@ -76,7 +76,7 @@ export default function Notifications() {
 
   useFocusEffect(
     useCallback(() => {
-      const flatData: FlatData<Notification>[] = [];
+      const flatData: FlatData<BaseNotification>[] = [];
 
       const groupedNotifications = groupNotificationsByDate(notifications);
 

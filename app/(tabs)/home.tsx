@@ -16,7 +16,6 @@ import {
 } from '@/components/organisms';
 import { TextChangeParams } from '@/domains';
 import { useFavorites } from '@/hooks/useFavorites';
-import { useRealtime } from '@/hooks/useRealtime';
 
 cssInterop(ScrollView, {
   contentContainerClassName: {
@@ -25,9 +24,7 @@ cssInterop(ScrollView, {
 });
 
 export default function HomeScreen() {
-  useRealtime(['favorites', 'follows', 'blocked_users']);
   const { favorites } = useFavorites();
-
   const [searchText, setSearchText] = useState<string>('');
 
   const favoriteCount = useMemo(() => {

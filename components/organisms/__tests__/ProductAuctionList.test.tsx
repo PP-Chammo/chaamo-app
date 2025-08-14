@@ -71,7 +71,7 @@ describe('ProductAuctionList', () => {
     const auctionItems = getAllByTestId('card-item');
     fireEvent.press(auctionItems[0]);
     expect(router.push).toHaveBeenCalledWith({
-      pathname: '/screens/auction-detail',
+      pathname: '/screens/listing-detail',
       params: { id: 'card-0' },
     });
   });

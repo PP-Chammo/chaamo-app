@@ -1,8 +1,12 @@
 import { gql } from '@apollo/client';
 
 export const getVwUserPosts = gql`
-  query GetVwUserPosts($filter: vw_user_postsFilter, $last: Int) {
-    vw_user_postsCollection(filter: $filter, last: $last) {
+  query GetVwUserPosts(
+    $filter: vw_user_postsFilter
+    $last: Int
+    $orderBy: [vw_user_postsOrderBy!]
+  ) {
+    vw_user_postsCollection(filter: $filter, last: $last, orderBy: $orderBy) {
       edges {
         node {
           id

@@ -6,11 +6,13 @@ import {
   Avatar,
   Button,
   ContextMenu,
+  Divider,
   Icon,
   Label,
   Row,
 } from '@/components/atoms';
 import { useBlockedUsers } from '@/hooks/useBlockedUsers';
+import { useFollows } from '@/hooks/useFollows';
 
 interface FollowListItemProps {
   userId: string;
@@ -21,6 +23,7 @@ interface FollowListItemProps {
   onPress?: () => void;
   onToggleFollowPress?: () => void;
   onToggleBlockPress?: () => void;
+  onRemoveFromFollowerPress?: (userId: string) => void;
 }
 
 const FollowListItem: React.FC<FollowListItemProps> = memo(
@@ -33,8 +36,10 @@ const FollowListItem: React.FC<FollowListItemProps> = memo(
     onPress,
     onToggleFollowPress,
     onToggleBlockPress,
+    onRemoveFromFollowerPress,
   }) {
     const { getIsBlocked } = useBlockedUsers();
+    const { getIsFollower } = useFollows();
     const [isContextMenuVisible, setIsContextMenuVisible] =
       useState<boolean>(false);
 
@@ -52,6 +57,11 @@ const FollowListItem: React.FC<FollowListItemProps> = memo(
       onToggleBlockPress?.();
       handleCloseContextMenu();
     }, [handleCloseContextMenu, onToggleBlockPress]);
+
+    const handleRemoveFromFollower = useCallback(() => {
+      onRemoveFromFollowerPress?.(userId as string);
+      handleCloseContextMenu();
+    }, [handleCloseContextMenu, onRemoveFromFollowerPress, userId]);
 
     return (
       <Fragment>
@@ -94,8 +104,21 @@ const FollowListItem: React.FC<FollowListItemProps> = memo(
             onClose={handleCloseContextMenu}
             triggerRef={dotsRef}
           >
+            {getIsFollower(userId) && (
+              <>
+                <TouchableOpacity
+                  className={classes.contextMenu}
+                  onPress={handleRemoveFromFollower}
+                >
+                  <Label className={classes.removeFromFollower}>
+                    Remove from followers
+                  </Label>
+                </TouchableOpacity>
+                <Divider position="horizontal" />
+              </>
+            )}
             <TouchableOpacity
-              className={classes.blockMenu}
+              className={classes.contextMenu}
               onPress={handleToggleBlock}
             >
               <Label className={classes.blockText}>
@@ -111,8 +134,9 @@ const FollowListItem: React.FC<FollowListItemProps> = memo(
 
 const classes = {
   row: 'flex flex-row items-center gap-3',
-  blockMenu: 'flex-row items-center py-2 px-3 gap-2',
+  contextMenu: 'flex-row items-center py-2 px-3 gap-2',
   blockText: '!text-red-600 text-sm',
+  removeFromFollower: 'text-sm',
 };
 
 export default FollowListItem;

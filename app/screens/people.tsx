@@ -8,17 +8,15 @@ import { Loading, ScreenContainer } from '@/components/atoms';
 import { HeaderSearch, People } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
 import {
+  useCreateFollowsMutation,
   useGetVwPeoplesLazyQuery,
   useRemoveFollowsMutation,
-  useCreateFollowsMutation,
 } from '@/generated/graphql';
 import useDebounce from '@/hooks/useDebounce';
 import { useFollows } from '@/hooks/useFollows';
-import { useRealtime } from '@/hooks/useRealtime';
 import { useUserVar } from '@/hooks/useUserVar';
 
 export default function PeopleScreen() {
-  useRealtime(['follows']);
   const [user] = useUserVar();
   const { getIsFollowing } = useFollows();
   const [search, setSearch] = useState('');

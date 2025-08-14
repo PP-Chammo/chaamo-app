@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 
+import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
 import pluralize from 'pluralize';
 import { Alert, TouchableOpacity, View } from 'react-native';
@@ -19,44 +20,64 @@ import {
 import { Header, Lazy, TabView } from '@/components/molecules';
 import { profileTabs } from '@/constants/tabs';
 import {
-  useCreateFollowsMutation,
-  useRemoveFollowsMutation,
   useCreateBlockedUsersMutation,
-  useRemoveBlockedUsersMutation,
+  useCreateFollowsMutation,
   useGetProfilesQuery,
+  useGetVwChaamoListingsQuery,
+  useRemoveBlockedUsersMutation,
+  useRemoveFollowsMutation,
+  useUpdateProfileMutation,
 } from '@/generated/graphql';
 import { useBlockedUsers } from '@/hooks/useBlockedUsers';
+import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFollows } from '@/hooks/useFollows';
-import { useRealtime } from '@/hooks/useRealtime';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
+import { uploadToBucket } from '@/utils/supabase';
 
 export default function ProfileScreen() {
-  useRealtime(['follows', 'blocked_users']);
   const [user] = useUserVar();
   const { userId } = useLocalSearchParams();
   const { getIsBlocked } = useBlockedUsers();
-  const { followers, followings, getIsFollowing, getIsFollower } = useFollows(
+  const { formatDisplay } = useCurrencyDisplay();
+  const { getIsFollowing: getIsFollowingSelf } = useFollows();
+  const { followers, followings, getIsFollowing } = useFollows(
     userId as string,
   );
 
-  const { data } = useGetProfilesQuery({
-    variables: {
-      filter: {
-        id: { eq: userId || user?.id },
-      },
-    },
-  });
-  const [removeFollow, { loading: loadingUnfollow }] =
-    useRemoveFollowsMutation();
-  const [createFollow, { loading: loadingFollow }] = useCreateFollowsMutation();
-  const [createBlockedUsers] = useCreateBlockedUsersMutation();
-  const [removeBlockedUsers] = useRemoveBlockedUsersMutation();
+  const currentUser = useMemo(() => userId ?? user?.id, [userId, user?.id]);
 
   const dotsRef = useRef<View>(null);
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 
-  const isSelf = useMemo(() => {
+  const { data, refetch } = useGetProfilesQuery({
+    variables: {
+      filter: {
+        id: { eq: currentUser },
+      },
+    },
+  });
+
+  const { data: listingData } = useGetVwChaamoListingsQuery({
+    skip: !userId && !user?.id,
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      filter: {
+        seller_id: { eq: currentUser },
+      },
+    },
+  });
+
+  const [removeFollow, { loading: loadingUnfollow }] =
+    useRemoveFollowsMutation();
+  const [removeFromFollower] = useRemoveFollowsMutation();
+  const [createFollow, { loading: loadingFollow }] = useCreateFollowsMutation();
+  const [createBlockedUsers] = useCreateBlockedUsersMutation();
+  const [removeBlockedUsers] = useRemoveBlockedUsersMutation();
+  const [updateProfile, { loading: loadingUpdateProfile }] =
+    useUpdateProfileMutation();
+
+  const isSelfProfile = useMemo(() => {
     if (!userId) {
       return true;
     }
@@ -68,11 +89,11 @@ export default function ProfileScreen() {
   }, [data?.profilesCollection?.edges]);
 
   const handleSettingsPress = useCallback(() => {
-    if (isSelf) {
+    if (isSelfProfile) {
       return router.push('/screens/settings');
     }
     setIsContextMenuVisible(true);
-  }, [isSelf]);
+  }, [isSelfProfile]);
 
   const handleEditProfilePress = useCallback(() => {
     router.push('/screens/personal-details');
@@ -80,7 +101,7 @@ export default function ProfileScreen() {
 
   const handleToggleFollow = useCallback(
     (followeeUserId: string) => () => {
-      if (getIsFollowing(followeeUserId)) {
+      if (getIsFollowingSelf(followeeUserId)) {
         removeFollow({
           variables: {
             filter: {
@@ -102,21 +123,26 @@ export default function ProfileScreen() {
         });
       }
     },
-    [getIsFollowing, createFollow, removeFollow, user?.id],
+    [getIsFollowingSelf, createFollow, removeFollow, user?.id],
   );
 
   const handleRemoveFromFollower = useCallback(
     (followerUserId: string) => () => {
-      removeFollow({
+      removeFromFollower({
         variables: {
           filter: {
             follower_user_id: { eq: followerUserId },
             followee_user_id: { eq: user?.id },
           },
         },
+        onCompleted: ({ deleteFromfollowsCollection }) => {
+          if (deleteFromfollowsCollection?.records?.length) {
+            setIsContextMenuVisible(false);
+          }
+        },
       });
     },
-    [removeFollow, user?.id],
+    [removeFromFollower, user?.id],
   );
 
   const handleToggleBlockedUser = useCallback(() => {
@@ -169,27 +195,73 @@ export default function ProfileScreen() {
     removeFollow,
   ]);
 
+  const handleUpdateProfileImage = useCallback(async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      return Alert.alert(
+        'Permission required',
+        'We need permission to access your photos.',
+      );
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 0.8,
+    });
+    if (result.canceled || !result.assets.length)
+      return Alert.alert('No image selected');
+    const selectedImage = result.assets[0];
+    if (selectedImage?.uri) {
+      const uploadedUrl = await uploadToBucket(
+        selectedImage.uri,
+        'chaamo',
+        'profiles',
+      );
+
+      updateProfile({
+        variables: {
+          filter: {
+            id: { eq: user?.id },
+          },
+          set: {
+            profile_image_url: uploadedUrl,
+          },
+        },
+        onCompleted: () => {
+          refetch();
+        },
+      });
+    }
+  }, [updateProfile, user?.id, refetch]);
+
   return (
     <>
-      <ScreenContainer className={classes.container}>
+      <ScreenContainer
+        className={classes.container}
+        enableBottomSafeArea={!isSelfProfile}
+      >
         <Header
           title={
-            isSelf
+            isSelfProfile
               ? 'Profile'
               : `${profile?.username.split(' ')?.[0]}'s Profile`
           }
-          rightIcon={isSelf ? 'menu' : 'dots-vertical'}
-          onBackPress={isSelf ? undefined : () => router.back()}
+          rightIcon={isSelfProfile ? 'menu' : 'dots-vertical'}
+          onBackPress={isSelfProfile ? undefined : () => router.back()}
           onRightPress={handleSettingsPress}
           rightRef={dotsRef}
         />
         <View className={classes.profileContainer}>
-          <Avatar size="lg" imageUrl={profile?.profile_image_url ?? ''} />
+          <Avatar
+            size="lg"
+            imageUrl={profile?.profile_image_url ?? ''}
+            onPress={isSelfProfile ? handleUpdateProfileImage : undefined}
+            loading={loadingUpdateProfile}
+          />
           <View className={classes.profileInfoContainer}>
             <Label variant="title" className={classes.profileName}>
               {profile?.username}
             </Label>
-            {isSelf && (
+            {isSelfProfile && (
               <View className={classes.portfolioContainer}>
                 <Label className={classes.portfolioValueLabel}>
                   Portfolio Value:
@@ -198,7 +270,9 @@ export default function ProfileScreen() {
                   onPress={() => router.push('/screens/portfolio-value')}
                   className={classes.portfolioValueContainer}
                 >
-                  <Label className={classes.portfolioValue}>$2000</Label>
+                  <Label className={classes.portfolioValue}>
+                    {formatDisplay(user?.profile?.currency, 0)}
+                  </Label>
                   <View className={classes.portfolioValueIconContainer}>
                     <Icon
                       name="arrow-up-right"
@@ -214,7 +288,13 @@ export default function ProfileScreen() {
         </View>
 
         <View className={classes.profileStatsContainer}>
-          <ProfileStat title="Listing" value="-" />
+          <ProfileStat
+            title="Listing"
+            value={
+              listingData?.vw_chaamo_cardsCollection?.edges?.length?.toString() ??
+              '0'
+            }
+          />
           <Divider />
           <ProfileStat
             title={pluralize('Followers', Number(followers.length))}
@@ -243,7 +323,7 @@ export default function ProfileScreen() {
           />
         </View>
 
-        {isSelf ? (
+        {isSelfProfile ? (
           <Button
             icon="pencil-outline"
             className={classes.editProfileButton}
@@ -279,7 +359,7 @@ export default function ProfileScreen() {
                   disabled={loadingFollow || loadingUnfollow}
                   loading={loadingFollow || loadingUnfollow}
                 >
-                  {getIsFollowing(userId as string) ? 'Unfollow' : 'Follow'}
+                  {getIsFollowingSelf(userId as string) ? 'Unfollow' : 'Follow'}
                 </Button>
                 <Button
                   variant="light"
@@ -319,14 +399,14 @@ export default function ProfileScreen() {
           />
         </TabView>
       </ScreenContainer>
-      {!isSelf && (
+      {!isSelfProfile && (
         <ContextMenu
           visible={isContextMenuVisible}
           onClose={() => setIsContextMenuVisible(false)}
           triggerRef={dotsRef}
           menuHeight={60}
         >
-          {getIsFollower(userId as string) && (
+          {getIsFollowing(user?.id) && (
             <>
               <TouchableOpacity
                 onPress={handleRemoveFromFollower(userId as string)}

@@ -12,9 +12,11 @@ describe('CardItem', () => {
     imageUrl: 'https://example.com/image.jpg',
     title: 'Test Card',
     subtitle: 'Test Subtitle',
-    price: '$100',
+    currency: 'USD',
+    marketCurrency: 'USD',
+    price: '100',
     date: new Date().toISOString(),
-    marketPrice: '$120',
+    marketPrice: '120',
     marketType: 'eBay',
     indicator: 'up',
   };
@@ -27,8 +29,10 @@ describe('CardItem', () => {
     expect(getByTestId('card-item-subtitle').props.children).toBe(
       'Test Subtitle',
     );
-    expect(getByTestId('card-item-price').props.children).toBe('$120');
-    expect(getByTestId('card-item-market-price').props.children).toBe('$100');
+    expect(getByTestId('card-item-price').props.children).toBe('$120.00');
+    expect(getByTestId('card-item-market-price').props.children).toBe(
+      '$100.00',
+    );
     expect(getByTestId('card-item-date')).toBeTruthy();
   });
 
@@ -85,8 +89,10 @@ describe('CardItem', () => {
     expect(getByTestId('card-item-subtitle').props.children).toBe(
       'Test Subtitle',
     );
-    expect(getByTestId('card-item-price').props.children).toBe('$120');
-    expect(getByTestId('card-item-market-price').props.children).toBe('$100');
+    expect(getByTestId('card-item-price').props.children).toBe('$120.00');
+    expect(getByTestId('card-item-market-price').props.children).toBe(
+      '$100.00',
+    );
     expect(getByTestId('card-item-date')).toBeTruthy();
   });
 
@@ -102,12 +108,14 @@ describe('CardItem', () => {
       <CardItem
         {...defaultProps}
         title={'A very long card title for testing purposes'}
-        marketPrice={'$1234567890'}
+        marketPrice={'1234567890'}
       />,
     );
     expect(getByTestId('card-item-title').props.children).toBe(
       'A very long card title for testing purposes',
     );
-    expect(getByTestId('card-item-price').props.children).toBe('$1234567890');
+    expect(getByTestId('card-item-price').props.children).toBe(
+      '$1,234,567,890.00',
+    );
   });
 });

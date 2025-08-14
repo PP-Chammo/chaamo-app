@@ -5,7 +5,7 @@ import { ScrollView } from 'react-native';
 
 import { ScreenContainer } from '@/components/atoms';
 import { Header, SwitchInput } from '@/components/molecules';
-import { NotificationSetting } from '@/domains';
+import { NotificationType } from '@/domains/notification.types';
 import {
   useCreateUserNotificationSettingsMutation,
   useGetNotificationTypesQuery,
@@ -26,7 +26,6 @@ export default function SettingsScreen() {
 
   const { data: userNotificationSettingsData } =
     useGetUserNotificationSettingsQuery({
-      fetchPolicy: 'cache-and-network',
       variables: {
         filter: {
           user_id: {
@@ -68,7 +67,7 @@ export default function SettingsScreen() {
   ]);
 
   const handleToggleNotification = useCallback(
-    (notification: NotificationSetting) => {
+    (notification: NotificationType) => {
       const { id, value, hasNotificationSettingServer } = notification ?? {};
 
       setLocalNotificationSettings((prev) => ({

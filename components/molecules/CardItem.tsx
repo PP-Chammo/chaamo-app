@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 
 import { clsx } from 'clsx';
 import { formatDistanceToNow } from 'date-fns';
@@ -8,6 +8,7 @@ import { TouchableOpacity, View } from 'react-native';
 import EBayLogo from '@/assets/svg/ebay.svg';
 import { Icon, Label, PriceIndicator, Row, Tag } from '@/components/atoms';
 import { ListingType } from '@/generated/graphql';
+import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { getColor } from '@/utils/getColor';
 
 type CardItemProps = {
@@ -15,10 +16,11 @@ type CardItemProps = {
   imageUrl: string;
   title: string;
   subtitle?: string;
-  price?: string;
   date: string;
-  marketPrice: string;
-  marketType: string;
+  currency?: string | null;
+  price?: string;
+  marketCurrency?: string | null;
+  marketPrice?: string | null;
   indicator: string;
   rightIcon?: React.ComponentProps<typeof Icon>['name'];
   rightIconSize?: React.ComponentProps<typeof Icon>['size'];
@@ -36,10 +38,11 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
   imageUrl,
   title,
   subtitle,
-  price,
   date,
+  currency,
+  price,
+  marketCurrency,
   marketPrice,
-  marketType,
   indicator,
   rightIcon,
   rightIconSize = 20,
@@ -50,6 +53,33 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
   className,
   onPress,
 }) {
+  const { formatDisplay } = useCurrencyDisplay();
+
+  const priceDisplay = useMemo(
+    () => formatDisplay(currency, price ?? 0),
+    [currency, formatDisplay, price],
+  );
+
+  const renderMarketPrice = useCallback(() => {
+    if (marketPrice === null) {
+      return (
+        <>
+          <Label className={classes.textProcessing} testID="card-item-price">
+            process last sold...
+          </Label>
+        </>
+      );
+    }
+    return (
+      <>
+        <Label className={classes.textBold} testID="card-item-price">
+          {formatDisplay(marketCurrency, marketPrice)}
+        </Label>
+        <PriceIndicator direction={indicator} />
+      </>
+    );
+  }, [formatDisplay, indicator, marketPrice, marketCurrency]);
+
   const renderRightIcon = useCallback(
     () =>
       onRightIconPress && (
@@ -121,13 +151,10 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
 
         <Row between className={classes.priceContainer}>
           <View>
-            {marketType === 'eBay' && <EBayLogo />}
+            <EBayLogo />
             <Row>
               <Label className={classes.text}>Price Value:</Label>
-              <Label className={classes.textBold} testID="card-item-price">
-                {marketPrice}
-              </Label>
-              <PriceIndicator direction={indicator} />
+              {renderMarketPrice()}
             </Row>
           </View>
           <Row className={classes.bidContainer}>
@@ -140,7 +167,7 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
               className={classes.textBidPrice}
               testID="card-item-market-price"
             >
-              {price}
+              {priceDisplay}
             </Label>
             {listingType === ListingType.SELL && (
               <Image
@@ -173,6 +200,7 @@ const classes = {
   priceContainer: '!items-end',
   logoImage: 'w-6 h-6',
   tagContainer: 'absolute bottom-7 right-0',
+  textProcessing: 'text-sm !text-primary-500/70 font-normal',
 };
 
 export default CardItem;

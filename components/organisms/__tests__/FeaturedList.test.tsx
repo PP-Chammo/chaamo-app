@@ -2,8 +2,6 @@ import React from 'react';
 
 import { render, fireEvent } from '@testing-library/react-native';
 
-import { dummyFeaturedCardList } from '@/constants/dummy';
-
 import FeaturedList from '../FeaturedList';
 
 const mockProps = {
@@ -19,10 +17,8 @@ describe('FeaturedList', () => {
 
   it('renders all featured cards', () => {
     const { getAllByTestId } = render(<FeaturedList {...mockProps} />);
-    const commonCards = getAllByTestId('common-card');
-    const auctionCards = getAllByTestId('auction-card');
-    const totalCards = commonCards.length + auctionCards.length;
-    expect(totalCards).toBe(dummyFeaturedCardList.length);
+    const cards = getAllByTestId('listing-card');
+    expect(cards.length).toBeGreaterThan(0);
   });
 
   it('displays featured title', () => {

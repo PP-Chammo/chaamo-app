@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 
 import { router, useLocalSearchParams } from 'expo-router';
 import { Alert, FlatList } from 'react-native';
@@ -33,28 +33,41 @@ const FollowList: React.FC<FollowListProps> = memo(function FollowList({
   const { getIsFollowing } = useFollows();
   const { getIsBlocked } = useBlockedUsers();
 
+  const [processed, setProcessed] = useState<string[]>([]);
+
   const [removeFollow, { loading: removeFollowLoading }] =
     useRemoveFollowsMutation();
-  const [createFollow] = useCreateFollowsMutation();
+  const [createFollow, { loading: createFollowLoading }] =
+    useCreateFollowsMutation();
   const [createBlockedUsers] = useCreateBlockedUsersMutation();
   const [removeBlockedUsers] = useRemoveBlockedUsersMutation();
 
-  const isSelf = useMemo(() => {
-    if (!userId) return true;
+  const isSelfProfile = useMemo(() => {
+    if (!userId) {
+      return true;
+    }
     return user?.id === userId;
   }, [user?.id, userId]);
 
-  const followerUserId = useMemo(() => userId ?? user?.id, [userId, user?.id]);
+  const currentUserId = useMemo(() => userId ?? user?.id, [userId, user?.id]);
 
   const handleToggleFollow = useCallback(
     (followeeUserId: string) => () => {
+      setProcessed((prev) => [...prev, followeeUserId]);
       if (getIsFollowing(followeeUserId)) {
         removeFollow({
           variables: {
             filter: {
-              follower_user_id: { eq: followerUserId },
+              follower_user_id: { eq: user?.id },
               followee_user_id: { eq: followeeUserId },
             },
+          },
+          onCompleted: ({ deleteFromfollowsCollection }) => {
+            if (deleteFromfollowsCollection?.records?.length) {
+              setProcessed((prev) =>
+                prev.filter((id) => id !== followeeUserId),
+              );
+            }
           },
         });
       } else {
@@ -62,15 +75,22 @@ const FollowList: React.FC<FollowListProps> = memo(function FollowList({
           variables: {
             objects: [
               {
-                follower_user_id: followerUserId,
+                follower_user_id: user?.id,
                 followee_user_id: followeeUserId,
               },
             ],
           },
+          onCompleted: ({ insertIntofollowsCollection }) => {
+            if (insertIntofollowsCollection?.records?.length) {
+              setProcessed((prev) =>
+                prev.filter((id) => id !== followeeUserId),
+              );
+            }
+          },
         });
       }
     },
-    [getIsFollowing, createFollow, removeFollow, followerUserId],
+    [getIsFollowing, removeFollow, user?.id, createFollow],
   );
 
   const handleToggleBlock = useCallback(
@@ -79,7 +99,7 @@ const FollowList: React.FC<FollowListProps> = memo(function FollowList({
         removeBlockedUsers({
           variables: {
             filter: {
-              blocker_user_id: { eq: followerUserId },
+              blocker_user_id: { eq: currentUserId },
               blocked_user_id: { eq: followeeUserId },
             },
           },
@@ -94,7 +114,7 @@ const FollowList: React.FC<FollowListProps> = memo(function FollowList({
           variables: {
             objects: [
               {
-                blocker_user_id: followerUserId,
+                blocker_user_id: currentUserId,
                 blocked_user_id: followeeUserId,
               },
             ],
@@ -120,12 +140,26 @@ const FollowList: React.FC<FollowListProps> = memo(function FollowList({
     [
       getIsBlocked,
       removeBlockedUsers,
-      followerUserId,
+      currentUserId,
       createBlockedUsers,
       removeFollow,
       user?.id,
       keyData,
     ],
+  );
+
+  const handleRemoveFromFollower = useCallback(
+    (followerUserId: string) => {
+      removeFollow({
+        variables: {
+          filter: {
+            follower_user_id: { eq: followerUserId },
+            followee_user_id: { eq: user?.id },
+          },
+        },
+      });
+    },
+    [removeFollow, user?.id],
   );
 
   if (loading) {
@@ -148,22 +182,31 @@ const FollowList: React.FC<FollowListProps> = memo(function FollowList({
             userId={singleUser.id}
             username={singleUser.username}
             imageUrl={singleUser.profile_image_url ?? ''}
-            onPress={() =>
+            onPress={() => {
               router.push({
-                pathname: '/screens/profile',
+                pathname:
+                  user?.id === singleUser.id
+                    ? '/(tabs)/profile'
+                    : '/screens/profile',
                 params: {
-                  ...(isSelf ? { userId: singleUser.id } : {}),
+                  userId: singleUser.id,
                 },
-              })
-            }
+              });
+            }}
             onToggleBlockPress={
-              isSelf ? handleToggleBlock(singleUser.id) : undefined
+              isSelfProfile ? handleToggleBlock(singleUser.id) : undefined
             }
             onToggleFollowPress={
-              isSelf ? handleToggleFollow(singleUser.id) : undefined
+              singleUser.id !== user?.id
+                ? handleToggleFollow(singleUser.id)
+                : undefined
             }
-            isLoading={removeFollowLoading}
+            isLoading={
+              processed.includes(singleUser.id) &&
+              (removeFollowLoading || createFollowLoading)
+            }
             isFollowing={getIsFollowing(singleUser.id)}
+            onRemoveFromFollowerPress={handleRemoveFromFollower}
           />
         );
       }}

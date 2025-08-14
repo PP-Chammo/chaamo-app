@@ -10,13 +10,12 @@ import {
   useGetVwMyFavoritesQuery,
   useRemoveFavoritesMutation,
 } from '@/generated/graphql';
-import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
+import { getIndicator } from '@/utils/getIndicator';
 
 export default function WishlistScreen() {
   const [user] = useUserVar();
-  const { formatDisplay } = useCurrencyDisplay();
 
   const { data, refetch } = useGetVwMyFavoritesQuery({
     fetchPolicy: 'cache-and-network',
@@ -47,21 +46,11 @@ export default function WishlistScreen() {
   );
 
   const handlePress = useCallback(
-    (listingId: string, listingType: ListingType) => () => {
-      if (listingType === ListingType.AUCTION) {
-        return router.push({
-          pathname: '/screens/auction-detail',
-          params: {
-            id: listingId,
-            isFavorite: 'true',
-          },
-        });
-      }
-      return router.push({
-        pathname: '/screens/common-detail',
+    (listingId: string) => () => {
+      router.push({
+        pathname: '/screens/listing-detail',
         params: {
           id: listingId,
-          isFavorite: 'true',
         },
       });
     },
@@ -86,23 +75,19 @@ export default function WishlistScreen() {
               imageUrl={item.node?.image_url ?? ''}
               title={item.node?.name ?? ''}
               subtitle={item.node?.seller_username ?? ''}
-              price={formatDisplay(
-                item.node?.currency,
-                item.node?.listing_type === ListingType.AUCTION
-                  ? (item.node?.start_price ?? 0)
-                  : (item.node?.price ?? 0),
-              )}
               date={item.node?.created_at ?? ''}
-              marketType="eBay"
-              marketPrice={formatDisplay(item.node?.currency, 0)}
-              indicator="up"
+              currency={item.node?.currency}
+              price={item.node?.start_price}
+              marketCurrency={item.node?.last_sold_currency}
+              marketPrice={item.node?.last_sold_price}
+              indicator={getIndicator(
+                item.node?.start_price,
+                item.node?.last_sold_price,
+              )}
               rightIcon="heart"
               rightIconColor={getColor('red-500')}
               onRightIconPress={handleRemoveFavorite(item.node?.id)}
-              onPress={handlePress(
-                item.node?.id,
-                item.node?.listing_type ?? ListingType.SELL,
-              )}
+              onPress={handlePress(item.node?.id)}
             />
           )}
         />

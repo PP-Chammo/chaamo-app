@@ -1,19 +1,28 @@
-import { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { router, useFocusEffect } from 'expo-router';
-import { Alert, ScrollView } from 'react-native';
+import { cssInterop } from 'nativewind';
+import { Alert } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { ScreenContainer } from '@/components/atoms';
 import { Header, PostCard } from '@/components/molecules';
 import { EventList } from '@/components/organisms';
 import {
+  OrderByDirection,
   useCreateBlockedUsersMutation,
+  useCreatePostCommentsMutation,
   useCreatePostLikesMutation,
   useGetVwUserPostsLazyQuery,
   useRemovePostLikesMutation,
 } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
+
+cssInterop(KeyboardAwareScrollView, {
+  className: { target: 'style' },
+  contentContainerClassName: { target: 'contentContainerStyle' },
+});
 
 export default function CommunityScreen() {
   const [user] = useUserVar();
@@ -23,10 +32,19 @@ export default function CommunityScreen() {
   const [createBlockedUsers] = useCreateBlockedUsersMutation();
   const [createPostLikes] = useCreatePostLikesMutation();
   const [removePostLikes] = useRemovePostLikesMutation();
+  const [createComments] = useCreatePostCommentsMutation();
 
   useFocusEffect(
     useCallback(() => {
-      getPosts();
+      getPosts({
+        variables: {
+          orderBy: [
+            {
+              created_at: OrderByDirection.DESCNULLSLAST,
+            },
+          ],
+        },
+      });
     }, [getPosts]),
   );
 
@@ -35,7 +53,24 @@ export default function CommunityScreen() {
     [data?.vw_user_postsCollection?.edges],
   );
 
-  const handleComment = useCallback(() => {}, []);
+  const handleSubmitComment = useCallback(
+    (postId: string, content: string) => {
+      if (content.length > 0) {
+        createComments({
+          variables: {
+            objects: [
+              {
+                post_id: postId,
+                user_id: user?.id,
+                content,
+              },
+            ],
+          },
+        });
+      }
+    },
+    [createComments, user?.id],
+  );
 
   const handleTogglePostLike = useCallback(
     (post_id: string, liked: boolean) => () => {
@@ -105,11 +140,15 @@ export default function CommunityScreen() {
         onRightPress={() => router.push('/screens/new-post')}
         className={classes.header}
       />
-      <ScrollView
+
+      <KeyboardAwareScrollView
         contentContainerClassName={classes.container}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
+        enableOnAndroid={true}
+        extraHeight={0}
       >
         <EventList />
+
         {posts.map((post) => (
           <PostCard
             showContext={post.node?.user_id !== user.id}
@@ -123,7 +162,7 @@ export default function CommunityScreen() {
             createdAt={post.node?.created_at ?? ''}
             likeCount={post.node?.like_count ?? 0}
             liked={post.node?.liked ?? false}
-            onCommentPress={handleComment}
+            onCommentSubmitPress={handleSubmitComment}
             onLikePress={handleTogglePostLike(
               post.node.id,
               post.node?.liked ?? false,
@@ -131,14 +170,14 @@ export default function CommunityScreen() {
             onBlockPress={handleBlock(post.node?.user_id ?? '')}
           />
         ))}
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </ScreenContainer>
   );
 }
 
 const classes = {
   containerTop: 'bg-white',
-  container: 'gap-4',
+  container: 'gap-4 pb-20',
   header: 'bg-white',
   containerEvents: 'flex flex-row gap-3 px-4.5',
   eventContainer: 'pt-4.5',

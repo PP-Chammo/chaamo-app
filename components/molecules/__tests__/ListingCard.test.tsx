@@ -3,58 +3,61 @@ import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
 import { View } from 'react-native';
 
-import CommonCard from '../CommonCard';
+import ListingCard from '../ListingCard';
 
-describe('CommonCard', () => {
+describe('ListingCard', () => {
   const defaultProps = {
     id: '1',
     imageUrl: 'https://example.com/image.jpg',
     title: 'Test Card',
-    marketPrice: '$120',
-    marketType: 'eBay',
+    currency: 'USD',
+    marketCurrency: 'USD',
+    marketPrice: '120',
     indicator: 'up',
   };
 
   it('renders correctly with default props', () => {
-    const { getByTestId } = render(<CommonCard {...defaultProps} />);
-    expect(getByTestId('common-card')).toBeTruthy();
-    expect(getByTestId('common-card-image')).toBeTruthy();
-    expect(getByTestId('common-card-title').props.children).toBe('Test Card');
-    expect(getByTestId('common-card-market-price').props.children).toBe('$120');
+    const { getByTestId } = render(<ListingCard {...defaultProps} />);
+    expect(getByTestId('listing-card')).toBeTruthy();
+    expect(getByTestId('listing-card-image')).toBeTruthy();
+    expect(getByTestId('listing-card-title').props.children).toBe('Test Card');
+    expect(getByTestId('listing-card-market-price').props.children).toBe(
+      '$120.00',
+    );
   });
 
   it('renders image placeholder when imageUrl is not provided', () => {
     const { getByTestId } = render(
-      <CommonCard {...defaultProps} imageUrl="" />,
+      <ListingCard {...defaultProps} imageUrl="" />,
     );
-    expect(getByTestId('common-card-image-placeholder')).toBeTruthy();
+    expect(getByTestId('listing-card-image-placeholder')).toBeTruthy();
   });
 
   it('renders price when provided', () => {
     const { getByTestId } = render(
-      <CommonCard {...defaultProps} price="$100" />,
+      <ListingCard {...defaultProps} price={'100'} />,
     );
-    expect(getByTestId('common-card-price').props.children).toBe('$100');
+    expect(getByTestId('listing-card-price').props.children).toBe('$100.00');
   });
 
   it('does not render price when not provided', () => {
-    const { queryByTestId } = render(<CommonCard {...defaultProps} />);
-    expect(queryByTestId('common-card-price')).toBeNull();
+    const { getByTestId } = render(<ListingCard {...defaultProps} />);
+    expect(getByTestId('listing-card-price').props.children).toBe('$0.00');
   });
 
   it('calls onPress when card is pressed', () => {
     const onPress = jest.fn();
     const { getByTestId } = render(
-      <CommonCard {...defaultProps} onPress={onPress} />,
+      <ListingCard {...defaultProps} onPress={onPress} />,
     );
-    fireEvent.press(getByTestId('common-card'));
+    fireEvent.press(getByTestId('listing-card'));
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
   it('renders right icon button when onRightIconPress is provided', () => {
     const onRightIconPress = jest.fn();
     const { getByTestId } = render(
-      <CommonCard
+      <ListingCard
         {...defaultProps}
         onRightIconPress={onRightIconPress}
         rightIcon="heart"
@@ -68,7 +71,7 @@ describe('CommonCard', () => {
   it('calls onRightIconPress when right icon button is pressed', () => {
     const onRightIconPress = jest.fn();
     const { getByTestId } = render(
-      <CommonCard
+      <ListingCard
         {...defaultProps}
         onRightIconPress={onRightIconPress}
         rightIcon="heart"
@@ -84,9 +87,9 @@ describe('CommonCard', () => {
     const onPress = jest.fn();
     const onRightIconPress = jest.fn();
     const { getByTestId } = render(
-      <CommonCard
+      <ListingCard
         {...defaultProps}
-        price="$100"
+        price={'100'}
         onPress={onPress}
         onRightIconPress={onRightIconPress}
         rightIcon="star"
@@ -95,59 +98,61 @@ describe('CommonCard', () => {
         className="custom-class"
       />,
     );
-    expect(getByTestId('common-card')).toBeTruthy();
-    expect(getByTestId('common-card-image')).toBeTruthy();
-    expect(getByTestId('common-card-title').props.children).toBe('Test Card');
-    expect(getByTestId('common-card-price').props.children).toBe('$100');
-    expect(getByTestId('common-card-market-price').props.children).toBe('$120');
+    expect(getByTestId('listing-card')).toBeTruthy();
+    expect(getByTestId('listing-card-image')).toBeTruthy();
+    expect(getByTestId('listing-card-title').props.children).toBe('Test Card');
+    expect(getByTestId('listing-card-price').props.children).toBe('$100.00');
+    expect(getByTestId('listing-card-market-price').props.children).toBe(
+      '$120.00',
+    );
   });
 
   it('applies correct styling classes', () => {
     const { getByTestId } = render(
-      <CommonCard {...defaultProps} className="custom-class" />,
+      <ListingCard {...defaultProps} className="custom-class" />,
     );
-    expect(getByTestId('common-card')).toBeTruthy();
+    expect(getByTestId('listing-card')).toBeTruthy();
   });
 
   it('renders with long title and price', () => {
     const { getByTestId } = render(
-      <CommonCard
+      <ListingCard
         {...defaultProps}
         title={'A very long card title for testing purposes'}
-        price={'$1234567890'}
+        price={'1234567890'}
       />,
     );
-    expect(getByTestId('common-card-title').props.children).toBe(
+    expect(getByTestId('listing-card-title').props.children).toBe(
       'A very long card title for testing purposes',
     );
-    expect(getByTestId('common-card-price').props.children).toBe('$1234567890');
+    expect(getByTestId('listing-card-price').props.children).toBe(
+      '$1,234,567,890.00',
+    );
   });
 
   it('renders right icon with default props when only onRightIconPress is provided', () => {
     const onRightIconPress = jest.fn();
     const { getByTestId } = render(
-      <CommonCard {...defaultProps} onRightIconPress={onRightIconPress} />,
+      <ListingCard {...defaultProps} onRightIconPress={onRightIconPress} />,
     );
     expect(getByTestId('right-icon-button')).toBeTruthy();
   });
 
   it('does not render right icon button when onRightIconPress is not provided', () => {
-    const { queryByTestId } = render(<CommonCard {...defaultProps} />);
+    const { queryByTestId } = render(<ListingCard {...defaultProps} />);
     expect(queryByTestId('right-icon-button')).toBeNull();
   });
 
   it('renders right component when provided instead of right icon', () => {
     const rightComponent = <View testID="custom-right-component">Custom</View>;
     const { getByTestId } = render(
-      <CommonCard {...defaultProps} rightComponent={rightComponent} />,
+      <ListingCard {...defaultProps} rightComponent={rightComponent} />,
     );
     expect(getByTestId('custom-right-component')).toBeTruthy();
   });
 
   it('does not render eBay image for non-eBay marketType', () => {
-    const { queryByTestId } = render(
-      <CommonCard {...defaultProps} marketType="other" />,
-    );
+    const { queryByTestId } = render(<ListingCard {...defaultProps} />);
     expect(queryByTestId('ebay-svg')).toBeNull();
   });
 });

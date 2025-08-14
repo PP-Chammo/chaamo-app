@@ -1,13 +1,33 @@
 import { render } from '@testing-library/react-native';
 
+import { ListingType, OrderStatus } from '@/generated/graphql';
+
 import OrderItem from '../OrderItem';
+
+// Provide GraphQL enum mocks to avoid undefined enum values during tests
+jest.mock('@/generated/graphql', () => ({
+  ListingType: { AUCTION: 'AUCTION', SELL: 'SELL' },
+  OrderStatus: {
+    AWAITING_PAYMENT: 'AWAITING_PAYMENT',
+    AWAITING_SHIPMENT: 'AWAITING_SHIPMENT',
+    SHIPPED: 'SHIPPED',
+    DELIVERED: 'DELIVERED',
+    COMPLETED: 'COMPLETED',
+    CANCELLED: 'CANCELLED',
+    REFUNDED: 'REFUNDED',
+    REFUND_REQUESTED: 'REFUND_REQUESTED',
+  },
+}));
 
 describe('OrderItem', () => {
   const defaultProps = {
+    id: 'order-1',
+    listingId: 'listing-1',
+    listingType: ListingType.SELL,
     title: 'Test Product',
-    price: '99.99',
+    price: '$99.99',
     imageUrl: 'https://example.com/image.jpg',
-    status: 'progress' as const,
+    status: OrderStatus.AWAITING_PAYMENT,
   };
 
   it('renders correctly with default props', () => {
@@ -17,9 +37,9 @@ describe('OrderItem', () => {
     expect(getByText('$99.99')).toBeTruthy();
   });
 
-  it('renders with progress status', () => {
+  it('renders with awaiting_payment status', () => {
     const { getByText } = render(
-      <OrderItem {...defaultProps} status="progress" />,
+      <OrderItem {...defaultProps} status={OrderStatus.AWAITING_PAYMENT} />,
     );
 
     expect(getByText('Test Product')).toBeTruthy();
@@ -27,7 +47,7 @@ describe('OrderItem', () => {
 
   it('renders with completed status', () => {
     const { getByText } = render(
-      <OrderItem {...defaultProps} status="completed" />,
+      <OrderItem {...defaultProps} status={OrderStatus.COMPLETED} />,
     );
 
     expect(getByText('Test Product')).toBeTruthy();
@@ -35,7 +55,7 @@ describe('OrderItem', () => {
 
   it('renders with cancelled status', () => {
     const { getByText } = render(
-      <OrderItem {...defaultProps} status="cancelled" />,
+      <OrderItem {...defaultProps} status={OrderStatus.CANCELLED} />,
     );
 
     expect(getByText('Test Product')).toBeTruthy();
@@ -43,7 +63,7 @@ describe('OrderItem', () => {
 
   it('renders with different title and price', () => {
     const { getByText } = render(
-      <OrderItem {...defaultProps} title="Another Product" price="149.99" />,
+      <OrderItem {...defaultProps} title="Another Product" price="$149.99" />,
     );
 
     expect(getByText('Another Product')).toBeTruthy();

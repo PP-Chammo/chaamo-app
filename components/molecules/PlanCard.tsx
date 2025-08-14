@@ -3,6 +3,7 @@ import React, { memo } from 'react';
 import { View } from 'react-native';
 
 import { Icon, Label, Row } from '@/components/atoms';
+import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { getColor } from '@/utils/getColor';
 
 export interface PlanCardProps {
@@ -16,6 +17,8 @@ const PlanCard: React.FC<PlanCardProps> = memo(function PlanCard({
   price,
   benefits,
 }) {
+  const { formatDisplay } = useCurrencyDisplay();
+
   return (
     <View className={classes.container}>
       <Label className={classes.plan}>{name}</Label>
@@ -28,7 +31,7 @@ const PlanCard: React.FC<PlanCardProps> = memo(function PlanCard({
         Enjoy complete access to CHAAMO’s features!
       </Label>
       <Label className={classes.price}>
-        ${price}
+        {formatDisplay('$', price)}
         <Label className={classes.priceSuffix}>/monthly</Label>
       </Label>
       <Label className={classes.benefits}>Benefits</Label>

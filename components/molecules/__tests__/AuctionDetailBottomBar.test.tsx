@@ -7,6 +7,7 @@ import AuctionDetailBottomBar from '../AuctionDetailBottomBar';
 describe('AuctionDetailBottomBar', () => {
   const defaultProps = {
     showModal: false,
+    highestBidPrice: '$400',
     endDate: new Date(
       Date.now() + 7 * 24 * 60 * 60 * 1000 + 15 * 60 * 60 * 1000,
     ).toISOString(),

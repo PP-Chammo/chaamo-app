@@ -27,7 +27,7 @@ interface ButtonProps extends TouchableOpacityProps {
     | 'link'
     | 'ghost';
   size?: 'small' | 'medium' | 'large';
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
   textClassName?: string;
   textProps?: TextProps;
@@ -105,7 +105,7 @@ const Button: React.FC<ButtonProps> = memo(function Button({
       )}
       {...props}
     >
-      {icon && (
+      {!loading && icon && (
         <Icon
           name={icon}
           size={iconSize ?? iconSizeBase}
@@ -118,18 +118,20 @@ const Button: React.FC<ButtonProps> = memo(function Button({
           <ActivityIndicator color={iconColorBase} />
         </View>
       )}
-      <Text
-        className={clsx(
-          classes.textBase,
-          classes.textSize[size],
-          loading ? classes.textTransparent : classes.textVariant[variant],
-          textClassName,
-        )}
-        {...textProps}
-      >
-        {children}
-      </Text>
-      {rightIcon && (
+      {children && (
+        <Text
+          className={clsx(
+            classes.textBase,
+            classes.textSize[size],
+            loading ? classes.textTransparent : classes.textVariant[variant],
+            textClassName,
+          )}
+          {...textProps}
+        >
+          {children}
+        </Text>
+      )}
+      {!loading && rightIcon && (
         <Icon
           name={rightIcon}
           size={rightIconSize ?? iconSizeBase}

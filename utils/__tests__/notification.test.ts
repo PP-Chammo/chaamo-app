@@ -1,4 +1,4 @@
-import { Notification } from '@/domains';
+import { BaseNotification } from '@/domains';
 
 import { groupNotificationsByDate } from '../notification';
 
@@ -8,7 +8,7 @@ describe('groupNotificationsByDate', () => {
   });
 
   it('should handle a single notification', () => {
-    const notifications: Notification[] = [
+    const notifications: BaseNotification[] = [
       {
         id: 1,
         content: 'Shipped!',
@@ -22,7 +22,7 @@ describe('groupNotificationsByDate', () => {
   });
 
   it('should group notifications by date', () => {
-    const notifications: Notification[] = [
+    const notifications: BaseNotification[] = [
       {
         id: 1,
         content: 'Shipped!',
@@ -49,7 +49,7 @@ describe('groupNotificationsByDate', () => {
   });
 
   it('should sort dates descending', () => {
-    const notifications: Notification[] = [
+    const notifications: BaseNotification[] = [
       {
         id: 1,
         content: 'Shipped!',

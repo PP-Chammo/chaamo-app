@@ -14,6 +14,7 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 
+import { useRealtime } from '@/hooks/useRealtime';
 import { getColor } from '@/utils/getColor';
 
 interface ScreenContainerProps extends ViewProps {
@@ -37,6 +38,7 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
     style,
     ...props
   }) {
+    useRealtime(['favorites', 'follows', 'blocked_users', 'post_comments']);
     const isAndroid = Platform.OS === 'android';
     const insets = useSafeAreaInsets();
 

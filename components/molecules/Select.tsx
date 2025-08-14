@@ -1,15 +1,15 @@
-import React, { memo, useCallback, useState, useRef } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 
 import { clsx } from 'clsx';
 import { cssInterop } from 'nativewind';
 import {
-  View,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
   Text,
   TouchableOpacity,
-  ScrollView,
-  Modal,
-  Pressable,
-  Platform,
+  View,
 } from 'react-native';
 
 import { Icon } from '@/components/atoms';
@@ -54,6 +54,7 @@ const Select: React.FC<SelectProps> = memo(function Select({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>(value || '');
+
   const [dropdownPosition, setDropdownPosition] = useState({
     top: 0,
     left: 0,
@@ -86,6 +87,12 @@ const Select: React.FC<SelectProps> = memo(function Select({
   const handleClose = useCallback(() => {
     setIsOpen(false);
   }, []);
+
+  useEffect(() => {
+    if (value) {
+      setSelectedValue(value);
+    }
+  }, [value, setSelectedValue]);
 
   return (
     <View className={clsx(classes.container, className)}>

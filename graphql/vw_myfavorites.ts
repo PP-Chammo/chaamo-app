@@ -9,12 +9,13 @@ export const getVwMyFavorites = gql`
           listing_type
           image_url
           name
-          bid_count
+          currency
+          start_price
+          last_sold_currency
+          last_sold_price
           seller_username
           created_at
-          currency
-          price
-          start_price
+          bid_count
         }
       }
     }
