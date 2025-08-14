@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 
+import { clsx } from 'clsx';
 import { router } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { FlatList, View } from 'react-native';
@@ -117,10 +118,16 @@ export default function SoldItems() {
         horizontal={false}
         showsVerticalScrollIndicator={false}
         contentContainerClassName={classes.contentContainer}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
+          const isLastItem = index === filteredSoldItems.length - 1;
           return (
             <View className={classes.cardContainer}>
               <ListingCard
+                className={clsx(
+                  classes.listingCard.full,
+                  isLastItem && classes.listingCard.half,
+                )}
+                imageClassName={classes.listingCardImage}
                 id={item.node.id}
                 type={item.node.listing_type}
                 imageUrl={item.node.image_url ?? ''}
@@ -165,8 +172,13 @@ export default function SoldItems() {
 const classes = {
   container: 'flex-1',
   emptyContainer: 'flex-1 items-center mt-24',
-  contentContainer: 'py-4.5 gap-10',
-  cardContainer: 'flex-1 items-center justify-center',
+  contentContainer: 'pb-4.5 gap-10 mt-2 mx-2',
+  cardContainer: 'flex-[0.5] mx-3',
   filterContainer: 'px-4.5 py-4 gap-2',
   emptyNotificationText: '!text-lg mt-5 text-slate-400',
+  listingCard: {
+    full: 'w-full',
+    half: 'w-1/2',
+  },
+  listingCardImage: 'w-full',
 };

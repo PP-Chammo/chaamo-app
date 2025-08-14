@@ -1,4 +1,4 @@
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import RNFS from 'react-native-fs';
 
 import {
@@ -109,8 +109,15 @@ export const exportUserData = async (
 
     const fileName = `chaamo-export-${user.id}-${Date.now()}.json`;
 
-    const fileUri = `${RNFS.DownloadDirectoryPath}/${fileName}`;
+    // Use platform-appropriate directory via RNFS only
+    const baseDir =
+      Platform.OS === 'android'
+        ? RNFS.DownloadDirectoryPath
+        : RNFS.DocumentDirectoryPath;
+    const fileUri = `${baseDir}/${fileName}`;
 
+    // Ensure directory exists (no-op if already exists)
+    await RNFS.mkdir(baseDir);
     await RNFS.writeFile(fileUri, jsonData, 'utf8');
 
     Alert.alert(

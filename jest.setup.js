@@ -56,6 +56,14 @@ jest.mock('expo-file-system', () => ({
   EncodingType: { Base64: 'base64' },
 }));
 
+// Mock react-native-fs to prevent NativeEventEmitter errors in Jest
+jest.mock('react-native-fs', () => ({
+  DownloadDirectoryPath: '/tmp',
+  DocumentDirectoryPath: '/tmp',
+  mkdir: jest.fn(async () => {}),
+  writeFile: jest.fn(async () => {}),
+}));
+
 jest.mock('expo-linear-gradient', () => ({
   LinearGradient: 'LinearGradient',
 }));
@@ -218,6 +226,15 @@ jest.mock('@/generated/graphql', () => ({
   })),
   useGetNotificationsQuery: jest.fn(() => ({
     data: { notificationsCollection: { edges: [] } },
+    loading: false,
+    error: null,
+  })),
+  useGetPostCommentsQuery: jest.fn(() => ({
+    data: {
+      post_commentsCollection: {
+        edges: [],
+      },
+    },
     loading: false,
     error: null,
   })),
@@ -561,7 +578,7 @@ jest.mock('@/generated/graphql', () => ({
     ACTIVE: 'ACTIVE',
     PENDING: 'PENDING',
   },
-  OrderByDirection: { DESCNULLSLAST: 'DESCNULLSLAST' },
+  OrderByDirection: { DESCNULLSLAST: 'DESCNULLSLAST', ASCNULLSLAST: 'ASCNULLSLAST' },
 }));
 
 // Mock hooks with reactive behavior

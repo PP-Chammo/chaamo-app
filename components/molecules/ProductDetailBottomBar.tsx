@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 
 import { clsx } from 'clsx';
-import { KeyboardAvoidingView } from 'react-native';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 
 import { Button, Row } from '@/components/atoms';
 
@@ -18,7 +18,10 @@ const ProductDetailBottomBar: React.FC<ProductDetailBottomBarProps> = memo(
     onMakeAnOfferPress,
   }) {
     return (
-      <KeyboardAvoidingView>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+      >
         <Row className={clsx(classes.container, { hidden: showModal })}>
           <Button
             variant="primary-light"
@@ -49,8 +52,7 @@ const ProductDetailBottomBar: React.FC<ProductDetailBottomBarProps> = memo(
 export default ProductDetailBottomBar;
 
 const classes = {
-  container:
-    'z-10 absolute left-0 right-0 bottom-0 gap-4.5 p-4.5 -mb-8 bg-white',
+  container: 'z-10 absolute left-0 right-0 bottom-0 gap-4.5 p-4.5 bg-white',
   timeBarInner:
     'absolute -top-7 left-0 right-0 bg-amber-50 py-1 flex flex-row justify-center items-center rounded-t-xl',
   timeText: 'text-sm font-bold',

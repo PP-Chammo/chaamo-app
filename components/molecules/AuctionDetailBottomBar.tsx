@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 
 import { clsx } from 'clsx';
-import { KeyboardAvoidingView, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, View } from 'react-native';
 
 import { Button, Label } from '@/components/atoms';
 import { formatCountdownTime } from '@/utils/date';
@@ -21,7 +21,10 @@ const AuctionDetailBottomBar: React.FC<AuctionDetailBottomBarProps> = memo(
     onBidNowPress,
   }) {
     return (
-      <KeyboardAvoidingView>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+      >
         <View className={clsx(classes.bottomBar, { hidden: showModal })}>
           <View className={classes.timeBarInner}>
             <Label className={classes.timeText}>
@@ -51,7 +54,7 @@ export default AuctionDetailBottomBar;
 
 const classes = {
   bottomBar:
-    'z-10 absolute left-0 right-0 bottom-0 flex-row items-center p-4.5 -mb-8 bg-primary-500 z-50',
+    'z-10 absolute left-0 right-0 bottom-0 flex-row items-center p-4.5 bg-primary-500 z-50',
   timeBarInner:
     'absolute -top-6 left-0 right-0 bg-amber-50 py-1 flex flex-row justify-center items-center rounded-t-xl',
   timeText: 'text-sm font-bold',
