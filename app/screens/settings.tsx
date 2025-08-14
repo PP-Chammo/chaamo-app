@@ -49,33 +49,48 @@ export default function SettingsScreen() {
   const [getNotifications] = useGetNotificationsLazyQuery();
 
   const handleExportPress = useCallback(async () => {
-    const { data } = await getNotifications({
-      variables: {
-        filter: {
-          user_id: { eq: user.id },
+    await Alert.alert(
+      'Export Data',
+      'Are you sure you want to export your data?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
         },
-      },
-    });
+        {
+          text: 'Export',
+          onPress: async () => {
+            const { data } = await getNotifications({
+              variables: {
+                filter: {
+                  user_id: { eq: user.id },
+                },
+              },
+            });
 
-    const notifications =
-      data?.notificationsCollection?.edges?.map(
-        (notification) => notification?.node,
-      ) ?? [];
+            const notifications =
+              data?.notificationsCollection?.edges?.map(
+                (notification) => notification?.node,
+              ) ?? [];
 
-    const notificationPreferences =
-      userNotificationSettingsData?.user_notification_settingsCollection?.edges?.map(
-        (setting) => setting?.node,
-      ) ?? [];
+            const notificationPreferences =
+              userNotificationSettingsData?.user_notification_settingsCollection?.edges?.map(
+                (setting) => setting?.node,
+              ) ?? [];
 
-    const activityData = {
-      notifications,
-    };
+            const activityData = {
+              notifications,
+            };
 
-    const settings = {
-      notificationPreferences,
-    };
+            const settings = {
+              notificationPreferences,
+            };
 
-    exportUserData(user, activityData, settings);
+            exportUserData(user, activityData, settings);
+          },
+        },
+      ],
+    );
   }, [
     getNotifications,
     user,
