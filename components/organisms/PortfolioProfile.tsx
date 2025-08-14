@@ -96,7 +96,7 @@ export default function Portfolio() {
                   classes.listingCard.full,
                   isLastItem && classes.listingCard.half,
                 )}
-                classNameImage="w-full"
+                imageClassName={classes.listingCardImage}
                 type={item.node.listing_type}
                 id={item.node.id}
                 imageUrl={item.node.image_url ?? ''}
@@ -133,11 +133,12 @@ const classes = {
   container: 'flex-1',
   emptyContainer: 'flex-1 items-center mt-24',
   contentContainer: 'pb-4.5 gap-10 mt-2 mx-2',
-  cardContainer: 'flex-1 mx-3',
+  cardContainer: 'flex-[0.5] mx-3',
   filterContainer: 'px-4.5 py-4 gap-2',
   emptyNotificationText: '!text-lg mt-5 text-slate-400',
   listingCard: {
     full: 'w-full',
     half: 'w-1/2',
   },
+  listingCardImage: 'w-full',
 };
