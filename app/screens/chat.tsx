@@ -1,14 +1,12 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { format } from 'date-fns';
 import { router, useLocalSearchParams } from 'expo-router';
+import { FlatList, Text, View } from 'react-native';
 import {
-  FlatList,
   KeyboardAvoidingView,
-  Platform,
-  Text,
-  View,
-} from 'react-native';
+  KeyboardStickyView,
+} from 'react-native-keyboard-controller';
 
 import {
   Avatar,
@@ -21,6 +19,7 @@ import { Header, TextField } from '@/components/molecules';
 import { dummyChatMessages } from '@/constants/dummy';
 import { FlatData, TextChangeParams } from '@/domains';
 import {
+  ChatMessage as ChatMessageType,
   DateGroupedMessages,
   GroupedMessage,
   groupMessagesByDateAndSender,
@@ -29,6 +28,7 @@ import { getColor } from '@/utils/getColor';
 
 export default function ChatScreen() {
   const { name } = useLocalSearchParams();
+  const flatListRef = useRef<FlatList>(null);
 
   const [message, setMessage] = useState('');
 
@@ -48,6 +48,18 @@ export default function ChatScreen() {
     setMessage(value);
   };
 
+  const handleSendMessage = () => {
+    if (message.trim()) {
+      // TODO: Implement send message logic
+      console.log('Sending message:', message);
+      setMessage('');
+
+      setTimeout(() => {
+        flatListRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+    }
+  };
+
   return (
     <ScreenContainer classNameTop={classes.containerTop}>
       <Header
@@ -60,68 +72,82 @@ export default function ChatScreen() {
         onBackPress={() => router.back()}
         className={classes.header}
       />
-      <FlatList
-        data={flatData}
-        keyExtractor={(item) => {
-          if (item.type === 'date') return `date-${item.date}`;
-          return `group-${item.group.id}`;
-        }}
-        className={classes.flatList}
-        contentContainerClassName={classes.contentContainer}
-        renderItem={({ item }) => {
-          if (item.type === 'date') {
-            return (
-              <Text className={classes.dateText}>
-                {format(new Date(item.date), 'd MMM yyyy')}
-              </Text>
-            );
-          }
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
+        <FlatList
+          ref={flatListRef}
+          data={flatData}
+          keyExtractor={(item) => {
+            if (item.type === 'date') return `date-${item.date}`;
+            return `group-${item.group.id}`;
+          }}
+          className={classes.flatList}
+          contentContainerClassName={classes.contentContainer}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
+          renderItem={({ item }) => {
+            if (item.type === 'date') {
+              return (
+                <Text className={classes.dateText}>
+                  {format(new Date(item.date), 'd MMM yyyy')}
+                </Text>
+              );
+            }
 
-          const group = item.group;
-          if (group.sender === session) {
-            return (
-              <View className={classes.messageContainerMe}>
-                {group.messages.map((message) => (
-                  <ChatMessage key={message.id} message={message.message} />
-                ))}
-              </View>
-            );
-          }
-          return (
-            <View className={classes.messageContainerOther}>
-              <View className={classes.messageOtherContent}>
-                <Avatar size="sm" />
-                <View className={classes.messagesGroup}>
-                  {group.messages.map((message) => (
-                    <ChatMessage key={message.id} message={message.message} />
+            const group = item.group;
+            if (group.sender === session) {
+              return (
+                <View className={classes.messageContainerMe}>
+                  {group.messages.map((msg: ChatMessageType) => (
+                    <ChatMessage key={msg.id} message={msg.message} />
                   ))}
                 </View>
+              );
+            }
+            return (
+              <View className={classes.messageContainerOther}>
+                <View className={classes.messageOtherContent}>
+                  <Avatar size="sm" />
+                  <View className={classes.messagesGroup}>
+                    {group.messages.map((msg: ChatMessageType) => (
+                      <ChatMessage key={msg.id} message={msg.message} />
+                    ))}
+                  </View>
+                </View>
               </View>
+            );
+          }}
+        />
+
+        <KeyboardStickyView
+          offset={{ closed: 0, opened: 240 }}
+          className={classes.keyboardStickyView}
+        >
+          <View className={classes.bottomContainer}>
+            <Icon
+              variant="FontAwesome6"
+              name="add"
+              size={24}
+              color={getColor('slate-500')}
+            />
+            <View className={classes.messageInputContainer}>
+              <TextField
+                className={classes.messageInput}
+                name="message"
+                onChange={handleChangeMessage}
+                value={message}
+                placeholder="Type a message..."
+                onSubmitEditing={handleSendMessage}
+                returnKeyType="send"
+              />
             </View>
-          );
-        }}
-      />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 0}
-      >
-        <View className={classes.bottomContainer}>
-          <Icon
-            variant="FontAwesome6"
-            name="add"
-            size={24}
-            color={getColor('slate-500')}
-          />
-          <View className={classes.messageInputContainer}>
-            <TextField
-              className={classes.messageInput}
-              name="message"
-              onChange={handleChangeMessage}
-              value={message}
+            <Icon
+              name="send"
+              size={24}
+              color={getColor('slate-500')}
+              onPress={handleSendMessage}
             />
           </View>
-          <Icon name="send" size={24} color={getColor('slate-500')} />
-        </View>
+        </KeyboardStickyView>
       </KeyboardAvoidingView>
     </ScreenContainer>
   );
@@ -143,4 +169,5 @@ const classes = {
   header: 'bg-white',
   containerTop: 'bg-white',
   keyboardAvoidingView: 'bg-white',
+  keyboardStickyView: 'bg-white border-t border-slate-200',
 };

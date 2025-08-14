@@ -49,6 +49,9 @@ export const getVwChaamoDetail = gql`
           last_sold_price
           created_at
           end_time
+          category_id
+          condition
+          user_card_id
         }
       }
     }

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 
+import { clsx } from 'clsx';
 import { router, useLocalSearchParams } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { FlatList, View } from 'react-native';
@@ -86,33 +87,43 @@ export default function Portfolio() {
         horizontal={false}
         showsVerticalScrollIndicator={false}
         contentContainerClassName={classes.contentContainer}
-        renderItem={({ item }) => (
-          <View className={classes.cardContainer}>
-            <ListingCard
-              type={item.node.listing_type}
-              id={item.node.id}
-              imageUrl={item.node.image_url ?? ''}
-              title={item.node.name ?? ''}
-              currency={item.node?.currency}
-              price={item.node?.start_price}
-              marketCurrency={item.node?.last_sold_currency}
-              marketPrice={item.node?.last_sold_price}
-              indicator={getIndicator(
-                item.node?.start_price,
-                item.node?.last_sold_price,
-              )}
-              onPress={() =>
-                router.push({
-                  pathname: '/screens/listing-detail',
-                  params: {
-                    id: item.node.id,
-                  },
-                })
-              }
-              rightComponent={<Boost boosted={item.node.is_boosted ?? false} />}
-            />
-          </View>
-        )}
+        renderItem={({ item, index }) => {
+          const isLastItem = index === filteredPortfolios.length - 1;
+          return (
+            <View className={classes.cardContainer}>
+              <ListingCard
+                className={clsx(
+                  classes.listingCard.full,
+                  isLastItem && classes.listingCard.half,
+                )}
+                classNameImage="w-full"
+                type={item.node.listing_type}
+                id={item.node.id}
+                imageUrl={item.node.image_url ?? ''}
+                title={item.node.name ?? ''}
+                currency={item.node?.currency}
+                price={item.node?.start_price}
+                marketCurrency={item.node?.last_sold_currency}
+                marketPrice={item.node?.last_sold_price}
+                indicator={getIndicator(
+                  item.node?.start_price,
+                  item.node?.last_sold_price,
+                )}
+                onPress={() =>
+                  router.push({
+                    pathname: '/screens/listing-detail',
+                    params: {
+                      id: item.node.id,
+                    },
+                  })
+                }
+                rightComponent={
+                  <Boost boosted={item.node.is_boosted ?? false} />
+                }
+              />
+            </View>
+          );
+        }}
       />
     </View>
   );
@@ -121,8 +132,12 @@ export default function Portfolio() {
 const classes = {
   container: 'flex-1',
   emptyContainer: 'flex-1 items-center mt-24',
-  contentContainer: 'pb-4.5 gap-10',
-  cardContainer: 'flex-[0.5] items-center',
+  contentContainer: 'pb-4.5 gap-10 mt-2 mx-2',
+  cardContainer: 'flex-1 mx-3',
   filterContainer: 'px-4.5 py-4 gap-2',
   emptyNotificationText: '!text-lg mt-5 text-slate-400',
+  listingCard: {
+    full: 'w-full',
+    half: 'w-1/2',
+  },
 };

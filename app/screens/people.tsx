@@ -8,9 +8,9 @@ import { Loading, ScreenContainer } from '@/components/atoms';
 import { HeaderSearch, People } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
 import {
+  useCreateFollowsMutation,
   useGetVwPeoplesLazyQuery,
   useRemoveFollowsMutation,
-  useCreateFollowsMutation,
 } from '@/generated/graphql';
 import useDebounce from '@/hooks/useDebounce';
 import { useFollows } from '@/hooks/useFollows';
