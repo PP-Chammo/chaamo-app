@@ -8,5 +8,5 @@ export const setupProfileTabs = [
   { title: 'ID Verification', route: 'id-verification' },
 ];
 
-export const FRAME_WIDTH = width * 0.85;
+export const FRAME_WIDTH = width * 0.9;
 export const FRAME_HEIGHT = FRAME_WIDTH * 0.6;

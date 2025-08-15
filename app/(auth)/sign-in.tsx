@@ -41,10 +41,16 @@ export default function SignInScreen() {
     try {
       setLoading(true);
       await loginWithGoogle();
-      await updateProfileSession(setUser, (isSuccess) => {
+      await updateProfileSession(setUser, (isSuccess, user, userDocument) => {
         setLoading(false);
         if (isSuccess) {
-          router.replace('/(tabs)/home');
+          if (!user?.is_profile_complete)
+            return router.replace('/screens/setup-profile/personal-info');
+
+          if (userDocument?.status === 'rejected')
+            return router.replace('/screens/setup-profile/document-rejected');
+
+          return router.replace('/(tabs)/home');
         }
       });
     } catch (e: unknown) {

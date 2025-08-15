@@ -5,7 +5,7 @@ export const setupProfileTabs = [
   { title: 'Address', route: 'screens/setup-profile/address' },
   {
     title: 'ID Verification',
-    route: 'screens/setup-profile/identity/proof-identity',
+    route: 'screens/setup-profile/document-upload-selection',
   },
 ];
 

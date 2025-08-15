@@ -3,8 +3,10 @@ import { router } from 'expo-router';
 import { Alert } from 'react-native';
 
 import { UserProfile } from '@/domains';
+import { OrderByDirection, UserDocuments } from '@/generated/graphql';
 import { getProfiles } from '@/graphql/profiles';
 import { getUserAddresses } from '@/graphql/user_addresses';
+import { getUserDocument } from '@/graphql/user_documents';
 import { UserStore } from '@/stores/userStore';
 import { DeepGet } from '@/types/helper';
 
@@ -62,7 +64,11 @@ export async function loginWithGoogle() {
 
 export const updateProfileSession = async (
   setUser: (value: Partial<UserStore>) => void,
-  callback: (success: boolean, user?: UserProfile) => void,
+  callback: (
+    success: boolean,
+    user?: UserProfile,
+    userDocument?: UserDocuments,
+  ) => void,
 ) => {
   const errorAlert = () => {
     Alert.alert('Session Error', 'Failed to load profile. Please re-login.', [
@@ -131,7 +137,24 @@ export const updateProfileSession = async (
         }, 0);
       });
 
-      callback(true, profileData);
+      const userDocument = await client.query({
+        query: getUserDocument,
+        variables: {
+          filter: {
+            user_id: { eq: userId },
+          },
+          orderBy: [
+            {
+              uploaded_at: OrderByDirection.DESCNULLSLAST,
+            },
+          ],
+        },
+      });
+
+      const userDocumentData =
+        userDocument?.data?.user_documentsCollection?.edges?.[0]?.node;
+
+      callback(true, profileData, userDocumentData);
     } else {
       callback(false);
     }

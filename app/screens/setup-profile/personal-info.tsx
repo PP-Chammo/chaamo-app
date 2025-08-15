@@ -109,10 +109,10 @@ export default function PersonalInfoScreen() {
 
   return (
     <ScreenContainer>
-      <Header title="Setting Up Profile" onBackPress={() => router.back()} />
+      <Header title="Setting Up Profile" />
       <View className={classes.container}>
         <SetupProfileTabs />
-        <KeyboardView contentContainerClassName={classes.contentContainer}>
+        <KeyboardView>
           <Avatar
             size="xl"
             onPress={handleImagePick}
@@ -191,7 +191,5 @@ const classes = {
   image: 'mb-12',
   imageContainer: 'p-1',
   button: 'mb-12',
-  contentContainer: 'gap-4',
   input: 'flex-1',
-  row: 'gap-3',
 };
