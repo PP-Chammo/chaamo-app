@@ -56,25 +56,25 @@ export const useRealtime = (
   const encode = (s: string) =>
     typeof btoa !== 'undefined' ? btoa(s) : Buffer.from(s).toString('base64');
 
-  const matchesFilter = (
-    row: Record<string, unknown>,
-    filter: unknown,
-  ): boolean => {
-    if (!filter || typeof filter !== 'object') return true;
-    const f = filter as Record<string, unknown>;
-    const orClause = (f as { or?: unknown }).or;
-    if (Array.isArray(orClause)) {
-      return orClause.some((sub) => matchesFilter(row, sub));
-    }
-    for (const [key, value] of Object.entries(f)) {
-      if (!value || typeof value !== 'object') continue;
-      const valObj = value as { eq?: unknown };
-      if ('eq' in valObj) {
-        if ((row as Record<string, unknown>)[key] !== valObj.eq) return false;
+  const matchesFilter = useCallback(
+    (row: Record<string, unknown>, filter: unknown): boolean => {
+      if (!filter || typeof filter !== 'object') return true;
+      const f = filter as Record<string, unknown>;
+      const orClause = (f as { or?: unknown }).or;
+      if (Array.isArray(orClause)) {
+        return orClause.some((sub) => matchesFilter(row, sub));
       }
-    }
-    return true;
-  };
+      for (const [key, value] of Object.entries(f)) {
+        if (!value || typeof value !== 'object') continue;
+        const valObj = value as { eq?: unknown };
+        if ('eq' in valObj) {
+          if ((row as Record<string, unknown>)[key] !== valObj.eq) return false;
+        }
+      }
+      return true;
+    },
+    [],
+  );
 
   const getFieldValue = (
     key: string,
@@ -313,9 +313,8 @@ export const useRealtime = (
           client.refetchQueries({ include: [cfg.query] });
         }
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
-    [client],
+    [client, matchesFilter],
   );
 
   const createChannel = useCallback(
