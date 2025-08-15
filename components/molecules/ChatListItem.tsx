@@ -13,6 +13,7 @@ interface ChatListItemProps {
   unreadCount: number;
   imageUrl: string;
   onPress: () => void;
+  onLongPress: () => void;
 }
 
 const ChatListItem: React.FC<ChatListItemProps> = memo(function ChatListItem({
@@ -22,6 +23,7 @@ const ChatListItem: React.FC<ChatListItemProps> = memo(function ChatListItem({
   unreadCount,
   imageUrl,
   onPress,
+  onLongPress,
 }) {
   const containerClassName = unreadCount && classes.container.unread;
   const timeCustom = formatTime(time);
@@ -30,6 +32,7 @@ const ChatListItem: React.FC<ChatListItemProps> = memo(function ChatListItem({
     <Pressable
       testID="chat-list-item"
       onPress={onPress}
+      onLongPress={onLongPress}
       className={clsx(classes.container.base, containerClassName)}
     >
       <View className={classes.leftContainer}>

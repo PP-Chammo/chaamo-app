@@ -16,6 +16,7 @@ describe('ChatListItem', () => {
     unreadCount: 3,
     imageUrl: 'https://example.com/avatar.jpg',
     onPress: jest.fn(),
+    onLongPress: jest.fn(),
   };
 
   beforeEach(() => {
@@ -91,6 +92,7 @@ describe('ChatListItem', () => {
         unreadCount={5}
         imageUrl="https://example.com/alice.jpg"
         onPress={onPress}
+        onLongPress={jest.fn()}
       />,
     );
 
