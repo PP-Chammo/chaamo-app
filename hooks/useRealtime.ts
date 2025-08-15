@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { useApolloClient } from '@apollo/client';
 import { Modifier } from '@apollo/client/cache';
@@ -102,77 +102,176 @@ export const useRealtime = (
     return { ...(oldNode ?? {}), ...(newNode ?? {}) };
   };
 
-  const handlePayload = (tableName: TableName, payload: unknown) => {
-    const config = tableQueryMap[tableName];
-    if (!config) return;
-    const p = payload as {
-      eventType?: 'INSERT' | 'UPDATE' | 'DELETE';
-      new?: Record<string, unknown>;
-      old?: Record<string, unknown>;
-    };
+  const handlePayload = useCallback(
+    (tableName: TableName, payload: unknown) => {
+      const config = tableQueryMap[tableName];
+      if (!config) return;
+      const p = payload as {
+        eventType?: 'INSERT' | 'UPDATE' | 'DELETE';
+        new?: Record<string, unknown>;
+        old?: Record<string, unknown>;
+      };
 
-    try {
-      const fieldsObj: Record<string, unknown> = {
-        [config.dataKey]: (
-          existingConnection: ConnectionShape,
-          details: {
-            readField: (fieldName: string, obj?: unknown) => unknown;
-            args?: { filter?: unknown };
-          },
-        ) => {
-          if (!existingConnection) {
-            if (
-              p.eventType === 'INSERT' &&
-              matchesFilter(
-                p.new as Record<string, unknown>,
-                details.args?.filter,
-              )
-            ) {
-              const pkVal = (p.new as Record<string, unknown>)[
-                config.primaryKey[0]
-              ];
-              const cursor = encode(`${tableName}:${pkVal}`);
-              return {
-                edges: [
-                  {
-                    node: p.new as Record<string, unknown>,
-                    cursor,
-                    __typename: `${tableName}Edge`,
+      try {
+        const fieldsObj: Record<string, unknown> = {
+          [config.dataKey]: (
+            existingConnection: ConnectionShape,
+            details: {
+              readField: (fieldName: string, obj?: unknown) => unknown;
+              args?: { filter?: unknown };
+            },
+          ) => {
+            if (!existingConnection) {
+              if (
+                p.eventType === 'INSERT' &&
+                matchesFilter(
+                  p.new as Record<string, unknown>,
+                  details.args?.filter,
+                )
+              ) {
+                const pkVal = (p.new as Record<string, unknown>)[
+                  config.primaryKey[0]
+                ];
+                const cursor = encode(`${tableName}:${pkVal}`);
+                return {
+                  edges: [
+                    {
+                      node: p.new as Record<string, unknown>,
+                      cursor,
+                      __typename: `${tableName}Edge`,
+                    },
+                  ],
+                  pageInfo: {
+                    hasNextPage: false,
+                    hasPreviousPage: false,
+                    startCursor: cursor,
+                    endCursor: cursor,
+                    __typename: 'PageInfo',
                   },
-                ],
-                pageInfo: {
-                  hasNextPage: false,
-                  hasPreviousPage: false,
-                  startCursor: cursor,
-                  endCursor: cursor,
-                  __typename: 'PageInfo',
-                },
-                __typename: `${tableName}Connection`,
-              } as ConnectionShape;
+                  __typename: `${tableName}Connection`,
+                } as ConnectionShape;
+              }
+              return existingConnection;
             }
-            return existingConnection;
-          }
 
-          const edges = existingConnection.edges || [];
-          let updatedEdges = [...edges];
-          const filterArg = details.args?.filter;
-          const readField = details.readField;
-          const primaryKeys = config.primaryKey;
+            const edges = existingConnection.edges || [];
+            let updatedEdges = [...edges];
+            const filterArg = details.args?.filter;
+            const readField = details.readField;
+            const primaryKeys = config.primaryKey;
 
-          switch (p.eventType) {
-            case 'INSERT': {
-              const index = edges.findIndex((edge) =>
-                primaryKeys.every(
-                  (key) =>
-                    getFieldValue(key, (edge as Edge).node, readField, edge) ===
-                    (p.new as Record<string, unknown>)[key],
-                ),
-              );
+            switch (p.eventType) {
+              case 'INSERT': {
+                const index = edges.findIndex((edge) =>
+                  primaryKeys.every(
+                    (key) =>
+                      getFieldValue(
+                        key,
+                        (edge as Edge).node,
+                        readField,
+                        edge,
+                      ) === (p.new as Record<string, unknown>)[key],
+                  ),
+                );
 
-              if (index === -1) {
-                if (
-                  matchesFilter(p.new as Record<string, unknown>, filterArg)
-                ) {
+                if (index === -1) {
+                  if (
+                    matchesFilter(p.new as Record<string, unknown>, filterArg)
+                  ) {
+                    const pkVal = (p.new as Record<string, unknown>)[
+                      primaryKeys[0]
+                    ];
+                    const cursor = encode(`${tableName}:${pkVal}`);
+                    const newEdge: Edge = {
+                      node: p.new as Record<string, unknown>,
+                      cursor,
+                      __typename: `${tableName}Edge`,
+                    };
+                    updatedEdges = [...edges, newEdge];
+                  }
+                } else {
+                  const oldEdge = edges[index];
+                  const merged = mergeNodes(
+                    oldEdge.node as Record<string, unknown>,
+                    p.new as Record<string, unknown>,
+                  );
+                  updatedEdges = edges.map((e, i) =>
+                    i === index ? { ...e, node: merged } : e,
+                  );
+                }
+                break;
+              }
+
+              case 'DELETE': {
+                const initialCount = edges.length;
+                updatedEdges = edges.filter((edge) => {
+                  return !primaryKeys.every(
+                    (key) =>
+                      getFieldValue(
+                        key,
+                        (edge as Edge).node,
+                        readField,
+                        edge,
+                      ) === (p.old as Record<string, unknown>)[key],
+                  );
+                });
+                const removedCount = initialCount - updatedEdges.length;
+                if (removedCount === 0) {
+                  const cacheIds = edges.map((edge) =>
+                    primaryKeys
+                      .map((key) => {
+                        const val = getFieldValue(
+                          key,
+                          (edge as Edge).node,
+                          readField,
+                          edge,
+                        );
+                        return `${key}:${val === undefined ? 'undefined' : String(val)}`;
+                      })
+                      .join(','),
+                  );
+                  const targetId = primaryKeys
+                    .map(
+                      (key) =>
+                        `${key}:${(p.old as Record<string, unknown>)[key]}`,
+                    )
+                    .join(',');
+                  console.warn(
+                    `⚠️ ${tableName} DELETE: Item not found in cache`,
+                    {
+                      target: targetId,
+                      cacheItems: cacheIds,
+                      cacheSize: edges.length,
+                    },
+                  );
+                  client.refetchQueries({
+                    include: [config.query],
+                  });
+                }
+                break;
+              }
+
+              case 'UPDATE': {
+                const index = edges.findIndex((edge) =>
+                  primaryKeys.every(
+                    (key) =>
+                      getFieldValue(
+                        key,
+                        (edge as Edge).node,
+                        readField,
+                        edge,
+                      ) === (p.old as Record<string, unknown>)[key],
+                  ),
+                );
+
+                const nowMatches = matchesFilter(
+                  p.new as Record<string, unknown>,
+                  filterArg,
+                );
+
+                if (index !== -1 && !nowMatches) {
+                  updatedEdges = edges.filter((_, i) => i !== index);
+                } else if (index === -1 && nowMatches) {
                   const pkVal = (p.new as Record<string, unknown>)[
                     primaryKeys[0]
                   ];
@@ -183,417 +282,300 @@ export const useRealtime = (
                     __typename: `${tableName}Edge`,
                   };
                   updatedEdges = [...edges, newEdge];
+                } else if (index !== -1 && nowMatches) {
+                  const oldEdge = edges[index];
+                  const merged = mergeNodes(
+                    oldEdge.node as Record<string, unknown>,
+                    p.new as Record<string, unknown>,
+                  );
+                  updatedEdges = edges.map((e, i) =>
+                    i === index ? { ...e, node: merged } : e,
+                  );
                 }
-              } else {
-                const oldEdge = edges[index];
-                const merged = mergeNodes(
-                  oldEdge.node as Record<string, unknown>,
-                  p.new as Record<string, unknown>,
-                );
-                updatedEdges = edges.map((e, i) =>
-                  i === index ? { ...e, node: merged } : e,
-                );
+                break;
               }
-              break;
             }
 
-            case 'DELETE': {
-              const initialCount = edges.length;
-              updatedEdges = edges.filter((edge) => {
-                return !primaryKeys.every(
-                  (key) =>
-                    getFieldValue(key, (edge as Edge).node, readField, edge) ===
-                    (p.old as Record<string, unknown>)[key],
-                );
-              });
-              const removedCount = initialCount - updatedEdges.length;
-              if (removedCount === 0) {
-                const cacheIds = edges.map((edge) =>
-                  primaryKeys
-                    .map((key) => {
-                      const val = getFieldValue(
-                        key,
-                        (edge as Edge).node,
-                        readField,
-                        edge,
-                      );
-                      return `${key}:${val === undefined ? 'undefined' : String(val)}`;
-                    })
-                    .join(','),
-                );
-                const targetId = primaryKeys
-                  .map(
-                    (key) =>
-                      `${key}:${(p.old as Record<string, unknown>)[key]}`,
-                  )
-                  .join(',');
-                console.warn(
-                  `⚠️ ${tableName} DELETE: Item not found in cache`,
-                  {
-                    target: targetId,
-                    cacheItems: cacheIds,
-                    cacheSize: edges.length,
-                  },
-                );
-                client.refetchQueries({
-                  include: [config.query],
-                });
-              }
-              break;
-            }
+            return {
+              ...existingConnection,
+              edges: updatedEdges,
+            } as ConnectionShape;
+          },
+        };
 
-            case 'UPDATE': {
-              const index = edges.findIndex((edge) =>
-                primaryKeys.every(
-                  (key) =>
-                    getFieldValue(key, (edge as Edge).node, readField, edge) ===
-                    (p.old as Record<string, unknown>)[key],
-                ),
-              );
+        client.cache.modify({
+          fields: fieldsObj as unknown as Record<string, Modifier<unknown>>,
+        });
+      } catch (error) {
+        console.error(`❌ ${tableName}: Cache update failed`, error);
+        const cfg = tableQueryMap[tableName];
+        if (cfg) {
+          client.refetchQueries({ include: [cfg.query] });
+        }
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [client],
+  );
 
-              const nowMatches = matchesFilter(
-                p.new as Record<string, unknown>,
-                filterArg,
-              );
+  const createChannel = useCallback(
+    (tableName: TableName) => {
+      const topic = `${tableName}-changes`;
+      const channel = supabase
+        .channel(topic)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: tableName },
+          (payload) => {
+            console.log(
+              `📡 [${tableName}] --> ${payload.eventType}:`,
+              payload.eventType === 'DELETE' ? payload.old : payload.new,
+            );
+            handlePayload(tableName, payload);
+          },
+        );
 
-              if (index !== -1 && !nowMatches) {
-                updatedEdges = edges.filter((_, i) => i !== index);
-              } else if (index === -1 && nowMatches) {
-                const pkVal = (p.new as Record<string, unknown>)[
-                  primaryKeys[0]
-                ];
-                const cursor = encode(`${tableName}:${pkVal}`);
-                const newEdge: Edge = {
-                  node: p.new as Record<string, unknown>,
-                  cursor,
-                  __typename: `${tableName}Edge`,
-                };
-                updatedEdges = [...edges, newEdge];
-              } else if (index !== -1 && nowMatches) {
-                const oldEdge = edges[index];
-                const merged = mergeNodes(
-                  oldEdge.node as Record<string, unknown>,
-                  p.new as Record<string, unknown>,
-                );
-                updatedEdges = edges.map((e, i) =>
-                  i === index ? { ...e, node: merged } : e,
-                );
-              }
-              break;
+      // Initialize entry BEFORE subscribe to prevent race condition
+      const key = String(tableName);
+      if (!globalChannels[key]) {
+        globalChannels[key] = {
+          channel,
+          refCount: 0,
+          reconnectAttempts: 0,
+          reconnectTimeout: null,
+          isReconnecting: false,
+          lingerTimeout: null,
+          persistent,
+        };
+      }
+
+      channel.subscribe((status, error) => {
+        const entry = globalChannels[key];
+
+        if (status === 'SUBSCRIBED') {
+          console.log(`✅ ${tableName}: Channel subscribed successfully`);
+          if (entry) {
+            entry.reconnectAttempts = 0;
+            entry.isReconnecting = false;
+            entry.lastError = undefined;
+            if (entry.reconnectTimeout) {
+              clearTimeout(entry.reconnectTimeout);
+              entry.reconnectTimeout = null;
             }
           }
+        } else if (status === 'CHANNEL_ERROR') {
+          const errorMsg = error?.message || error || 'Unknown channel error';
+          console.error(`❌ ${tableName}: Channel error -`, errorMsg);
 
-          return {
-            ...existingConnection,
-            edges: updatedEdges,
-          } as ConnectionShape;
-        },
-      };
+          if (!entry) {
+            console.warn(
+              `⚠️ ${tableName}: No entry found; skipping reconnection for now`,
+            );
+          }
 
-      client.cache.modify({
-        fields: fieldsObj as unknown as Record<string, Modifier<unknown>>,
+          // Prevent multiple simultaneous reconnection attempts
+          if (entry && entry.isReconnecting) {
+            console.log(`🔄 ${tableName}: Reconnection already in progress`);
+            return;
+          }
+
+          if (!entry) return; // no state to manage yet; subscribeLocal will create and can trigger recovery
+
+          entry.lastError =
+            typeof errorMsg === 'string' ? errorMsg : String(errorMsg);
+          const attempts = entry.reconnectAttempts || 0;
+          if (entry.persistent || attempts < MAX_RECONNECT_ATTEMPTS) {
+            entry.isReconnecting = true;
+            const delay = Math.min(
+              1000 * Math.pow(2, attempts),
+              MAX_RECONNECT_DELAY_MS,
+            );
+            entry.reconnectAttempts = attempts + 1;
+
+            console.log(
+              `🔄 ${tableName}: Reconnecting in ${delay}ms (attempt ${entry.reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`,
+            );
+
+            // Clear existing timeout
+            if (entry.reconnectTimeout) {
+              clearTimeout(entry.reconnectTimeout);
+            }
+
+            entry.reconnectTimeout = setTimeout(() => {
+              const entryToReconnect = globalChannels[key];
+              if (!entryToReconnect || !entryToReconnect.isReconnecting) {
+                console.warn(
+                  `⚠️ ${tableName}: Entry removed or not reconnecting, aborting`,
+                );
+                return;
+              }
+
+              console.log(
+                `🔄 ${tableName}: Starting reconnection attempt ${entryToReconnect.reconnectAttempts}`,
+              );
+
+              // Cleanup old channel
+              try {
+                if (entryToReconnect.channel) {
+                  entryToReconnect.channel.unsubscribe();
+                  supabase.removeChannel(entryToReconnect.channel);
+                }
+              } catch (cleanupError) {
+                console.warn(`⚠️ ${tableName}: Cleanup error:`, cleanupError);
+              }
+
+              // Recreate channel with same topic (simpler approach)
+              const newChannel = createChannel(tableName);
+              const updatedEntry = globalChannels[key];
+              if (updatedEntry) {
+                updatedEntry.channel = newChannel;
+                updatedEntry.isReconnecting = false;
+              }
+            }, delay);
+          } else {
+            console.error(
+              `❌ ${tableName}: Max reconnection attempts (${MAX_RECONNECT_ATTEMPTS}) reached. Giving up.`,
+            );
+            entry.isReconnecting = false;
+            entry.lastError = `Max reconnection attempts reached: ${errorMsg}`;
+            // Clean up the entry
+            if (entry.reconnectTimeout) {
+              clearTimeout(entry.reconnectTimeout);
+              entry.reconnectTimeout = null;
+            }
+          }
+        } else if (status === 'TIMED_OUT') {
+          console.error(`⏰ ${tableName}: Connection timed out`);
+          // Treat timeout as channel error for reconnection
+          if (
+            entry &&
+            (entry.persistent ||
+              entry.reconnectAttempts < MAX_RECONNECT_ATTEMPTS) &&
+            !entry.isReconnecting
+          ) {
+            entry.isReconnecting = true;
+            entry.lastError = 'Connection timed out';
+            // Trigger reconnection logic similar to CHANNEL_ERROR
+            const attempts = entry.reconnectAttempts || 0;
+            const delay = Math.min(
+              1000 * Math.pow(2, attempts),
+              MAX_RECONNECT_DELAY_MS,
+            );
+            entry.reconnectAttempts = attempts + 1;
+
+            if (entry.reconnectTimeout) {
+              clearTimeout(entry.reconnectTimeout);
+            }
+
+            entry.reconnectTimeout = setTimeout(() => {
+              const newChannel = createChannel(tableName);
+              const timeoutEntry = globalChannels[key];
+              if (timeoutEntry) {
+                timeoutEntry.channel = newChannel;
+                timeoutEntry.isReconnecting = false;
+              }
+            }, delay);
+          }
+        } else if (status === 'CLOSED') {
+          console.log(`🔒 ${tableName}: Channel closed`);
+          // Mark lastError so future subscribers can trigger recovery even if refCount is 0 (lingering)
+          const e = globalChannels[key];
+          if (e) {
+            e.lastError = 'Channel closed';
+          }
+          // Attempt reconnection if this wasn't an intentional unsubscribe or if persistent
+          if (
+            e &&
+            (e.refCount > 0 || e.persistent) &&
+            (e.persistent || e.reconnectAttempts < MAX_RECONNECT_ATTEMPTS) &&
+            !e.isReconnecting
+          ) {
+            e.isReconnecting = true;
+            const attempts = e.reconnectAttempts || 0;
+            const delay = Math.min(
+              1000 * Math.pow(2, attempts),
+              MAX_RECONNECT_DELAY_MS,
+            );
+            e.reconnectAttempts = attempts + 1;
+            if (e.reconnectTimeout) {
+              clearTimeout(e.reconnectTimeout);
+            }
+            e.reconnectTimeout = setTimeout(() => {
+              const newChannel = createChannel(tableName);
+              const closedEntry = globalChannels[key];
+              if (closedEntry) {
+                closedEntry.channel = newChannel;
+                closedEntry.isReconnecting = false;
+              }
+            }, delay);
+          }
+        }
       });
-    } catch (error) {
-      console.error(`❌ ${tableName}: Cache update failed`, error);
-      const cfg = tableQueryMap[tableName];
-      if (cfg) {
-        client.refetchQueries({ include: [cfg.query] });
-      }
-    }
-  };
 
-  const createChannel = (tableName: TableName) => {
-    const topic = `${tableName}-changes`;
-    const channel = supabase
-      .channel(topic)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: tableName },
-        (payload) => {
+      return channel;
+    },
+    [handlePayload, persistent],
+  );
+
+  const subscribeLocal = useCallback(
+    (tableName: TableName) => {
+      const key = String(tableName);
+      localTablesRef.current.add(key);
+
+      const existing = globalChannels[key];
+      if (existing) {
+        existing.refCount += 1;
+        // Promote to persistent if requested
+        if (persistent) existing.persistent = true;
+        // If existing channel has errors, try to reconnect
+        if (existing.lastError && !existing.isReconnecting) {
           console.log(
-            `📡 [${tableName}] --> ${payload.eventType}:`,
-            payload.eventType === 'DELETE' ? payload.old : payload.new,
+            `🔄 ${tableName}: Attempting to recover existing channel`,
           );
-          handlePayload(tableName, payload);
-        },
-      );
+          const newChannel = createChannel(tableName);
+          existing.channel = newChannel;
+          existing.reconnectAttempts = 0;
+          existing.lastError = undefined;
+        }
+        return;
+      }
 
-    // Ensure a provisional entry exists before subscribe fires any callbacks
-    if (!globalChannels[tableName]) {
-      globalChannels[tableName] = {
+      const channel = createChannel(tableName);
+      // Handle rare race condition: another subscriber might have created the
+      // same channel entry between the existence check and creation above.
+      if (globalChannels[key]) {
+        const existingEntry = globalChannels[key]!;
+        existingEntry.refCount += 1;
+        if (existingEntry.lingerTimeout) {
+          clearTimeout(existingEntry.lingerTimeout!);
+          existingEntry.lingerTimeout = null;
+        }
+        if (persistent) existingEntry.persistent = true;
+        // Only dispose the newly created channel if it's NOT the same instance
+        if (existingEntry.channel !== channel) {
+          try {
+            channel.unsubscribe();
+          } catch {}
+          try {
+            supabase.removeChannel(channel);
+          } catch {}
+        }
+        return;
+      }
+      globalChannels[key] = {
         channel,
-        refCount: 0,
+        refCount: 1,
         reconnectAttempts: 0,
         reconnectTimeout: null,
         isReconnecting: false,
         lingerTimeout: null,
         persistent,
       };
-    }
+    },
+    [persistent, createChannel],
+  );
 
-    channel.subscribe((status, error) => {
-      const entry = globalChannels[tableName];
-
-      if (status === 'SUBSCRIBED') {
-        console.log(`✅ ${tableName}: Channel subscribed successfully`);
-        if (entry) {
-          entry.reconnectAttempts = 0;
-          if (entry.reconnectTimeout) {
-            clearTimeout(entry.reconnectTimeout);
-            entry.reconnectTimeout = null;
-          }
-        }
-      } else if (status === 'CHANNEL_ERROR') {
-        const errorMsg = error?.message || error || 'Unknown channel error';
-        console.error(`❌ ${tableName}: Channel error -`, errorMsg);
-
-        if (!entry) {
-          console.warn(
-            `⚠️ ${tableName}: No entry found; skipping reconnection for now`,
-          );
-        }
-
-        // Prevent multiple simultaneous reconnection attempts
-        if (entry && entry.isReconnecting) {
-          console.log(`🔄 ${tableName}: Reconnection already in progress`);
-          return;
-        }
-
-        if (!entry) return; // no state to manage yet; subscribeLocal will create and can trigger recovery
-
-        entry.lastError =
-          typeof errorMsg === 'string' ? errorMsg : String(errorMsg);
-        const attempts = entry.reconnectAttempts || 0;
-        if (entry.persistent || attempts < MAX_RECONNECT_ATTEMPTS) {
-          entry.isReconnecting = true;
-          const delay = Math.min(
-            1000 * Math.pow(2, attempts),
-            MAX_RECONNECT_DELAY_MS,
-          );
-          entry.reconnectAttempts = attempts + 1;
-
-          console.log(
-            `🔄 ${tableName}: Reconnecting in ${delay}ms (attempt ${entry.reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`,
-          );
-
-          // Clear existing timeout
-          if (entry.reconnectTimeout) {
-            clearTimeout(entry.reconnectTimeout);
-          }
-
-          entry.reconnectTimeout = setTimeout(() => {
-            const currentEntry = globalChannels[tableName];
-            if (!currentEntry || !currentEntry.isReconnecting) {
-              console.warn(
-                `⚠️ ${tableName}: Entry removed or not reconnecting, aborting`,
-              );
-              return;
-            }
-
-            console.log(
-              `🔄 ${tableName}: Starting reconnection attempt ${currentEntry.reconnectAttempts}`,
-            );
-
-            // Cleanup old channel
-            try {
-              if (currentEntry.channel) {
-                currentEntry.channel.unsubscribe();
-                supabase.removeChannel(currentEntry.channel);
-              }
-            } catch (cleanupError) {
-              console.warn(`⚠️ ${tableName}: Cleanup error:`, cleanupError);
-            }
-
-            // Create new channel with unique topic
-            const newTopic = `${tableName}-changes-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-            const newChannel = supabase
-              .channel(newTopic)
-              .on(
-                'postgres_changes',
-                { event: '*', schema: 'public', table: tableName },
-                (payload) => {
-                  console.log(
-                    `📡 [${tableName}] --> ${payload.eventType}:`,
-                    payload.eventType === 'DELETE' ? payload.old : payload.new,
-                  );
-                  handlePayload(tableName, payload);
-                },
-              )
-              .subscribe((newStatus, newError) => {
-                const currentEntry = globalChannels[tableName];
-                if (!currentEntry) return;
-
-                if (newStatus === 'SUBSCRIBED') {
-                  console.log(`✅ ${tableName}: Reconnection successful`);
-                  currentEntry.channel = newChannel;
-                  currentEntry.reconnectAttempts = 0;
-                  currentEntry.isReconnecting = false;
-                  currentEntry.lastError = undefined;
-                  if (currentEntry.reconnectTimeout) {
-                    clearTimeout(currentEntry.reconnectTimeout);
-                    currentEntry.reconnectTimeout = null;
-                  }
-                } else if (newStatus === 'CHANNEL_ERROR') {
-                  const newErrorMsg =
-                    newError?.message ||
-                    newError ||
-                    'Unknown reconnection error';
-                  console.error(
-                    `❌ ${tableName}: Reconnection failed -`,
-                    newErrorMsg,
-                  );
-                  currentEntry.isReconnecting = false;
-                  currentEntry.lastError = newErrorMsg;
-                  // The new channel will trigger its own reconnection logic
-                } else if (newStatus === 'TIMED_OUT') {
-                  console.error(`⏰ ${tableName}: Reconnection timed out`);
-                  currentEntry.isReconnecting = false;
-                  currentEntry.lastError = 'Connection timed out';
-                }
-              });
-
-            // Update entry with new channel
-            if (globalChannels[tableName]) {
-              globalChannels[tableName]!.channel = newChannel;
-            }
-          }, delay);
-        } else {
-          console.error(
-            `❌ ${tableName}: Max reconnection attempts (${MAX_RECONNECT_ATTEMPTS}) reached. Giving up.`,
-          );
-          entry.isReconnecting = false;
-          entry.lastError = `Max reconnection attempts reached: ${errorMsg}`;
-          // Clean up the entry
-          if (entry.reconnectTimeout) {
-            clearTimeout(entry.reconnectTimeout);
-            entry.reconnectTimeout = null;
-          }
-        }
-      } else if (status === 'TIMED_OUT') {
-        console.error(`⏰ ${tableName}: Connection timed out`);
-        // Treat timeout as channel error for reconnection
-        if (
-          entry &&
-          (entry.persistent ||
-            entry.reconnectAttempts < MAX_RECONNECT_ATTEMPTS) &&
-          !entry.isReconnecting
-        ) {
-          entry.isReconnecting = true;
-          entry.lastError = 'Connection timed out';
-          // Trigger reconnection logic similar to CHANNEL_ERROR
-          const attempts = entry.reconnectAttempts || 0;
-          const delay = Math.min(
-            1000 * Math.pow(2, attempts),
-            MAX_RECONNECT_DELAY_MS,
-          );
-          entry.reconnectAttempts = attempts + 1;
-
-          if (entry.reconnectTimeout) {
-            clearTimeout(entry.reconnectTimeout);
-          }
-
-          entry.reconnectTimeout = setTimeout(() => {
-            const newChannel = createChannel(tableName);
-            const currentEntry = globalChannels[tableName];
-            if (currentEntry) {
-              currentEntry.channel = newChannel;
-              currentEntry.isReconnecting = false;
-            }
-          }, delay);
-        }
-      } else if (status === 'CLOSED') {
-        console.log(`🔒 ${tableName}: Channel closed`);
-        // Mark lastError so future subscribers can trigger recovery even if refCount is 0 (lingering)
-        const e = globalChannels[tableName];
-        if (e) {
-          e.lastError = 'Channel closed';
-        }
-        // Attempt reconnection if this wasn't an intentional unsubscribe or if persistent
-        if (
-          e &&
-          (e.refCount > 0 || e.persistent) &&
-          (e.persistent || e.reconnectAttempts < MAX_RECONNECT_ATTEMPTS) &&
-          !e.isReconnecting
-        ) {
-          e.isReconnecting = true;
-          const attempts = e.reconnectAttempts || 0;
-          const delay = Math.min(
-            1000 * Math.pow(2, attempts),
-            MAX_RECONNECT_DELAY_MS,
-          );
-          e.reconnectAttempts = attempts + 1;
-          if (e.reconnectTimeout) {
-            clearTimeout(e.reconnectTimeout);
-          }
-          e.reconnectTimeout = setTimeout(() => {
-            const newChannel = createChannel(tableName);
-            const currentEntry = globalChannels[tableName];
-            if (currentEntry) {
-              currentEntry.channel = newChannel;
-              currentEntry.isReconnecting = false;
-            }
-          }, delay);
-        }
-      }
-    });
-
-    return channel;
-  };
-
-  const subscribeLocal = (tableName: TableName) => {
-    const key = String(tableName);
-    localTablesRef.current.add(key);
-
-    const existing = globalChannels[key];
-    if (existing) {
-      existing.refCount += 1;
-      // Promote to persistent if requested
-      if (persistent) existing.persistent = true;
-      // If existing channel has errors, try to reconnect
-      if (existing.lastError && !existing.isReconnecting) {
-        console.log(`🔄 ${tableName}: Attempting to recover existing channel`);
-        const newChannel = createChannel(tableName);
-        existing.channel = newChannel;
-        existing.reconnectAttempts = 0;
-        existing.lastError = undefined;
-      }
-      return;
-    }
-
-    const channel = createChannel(tableName);
-    // Handle rare race condition: another subscriber might have created the
-    // same channel entry between the existence check and creation above.
-    if (globalChannels[key]) {
-      const existingEntry = globalChannels[key]!;
-      existingEntry.refCount += 1;
-      if (existingEntry.lingerTimeout) {
-        clearTimeout(existingEntry.lingerTimeout!);
-        existingEntry.lingerTimeout = null;
-      }
-      if (persistent) existingEntry.persistent = true;
-      // Only dispose the newly created channel if it's NOT the same instance
-      if (existingEntry.channel !== channel) {
-        try {
-          channel.unsubscribe();
-        } catch {}
-        try {
-          supabase.removeChannel(channel);
-        } catch {}
-      }
-      return;
-    }
-    globalChannels[key] = {
-      channel,
-      refCount: 1,
-      reconnectAttempts: 0,
-      reconnectTimeout: null,
-      isReconnecting: false,
-      lingerTimeout: null,
-      persistent,
-    };
-  };
-
-  const unsubscribeLocal = (tableName: TableName) => {
+  const unsubscribeLocal = useCallback((tableName: TableName) => {
     const key = String(tableName);
     localTablesRef.current.delete(key);
     const entry = globalChannels[key];
@@ -635,7 +617,7 @@ export const useRealtime = (
         delete globalChannels[key];
       }, CHANNEL_LINGER_MS);
     }
-  };
+  }, []);
 
   useEffect(() => {
     const subscribedInThisEffect = new Set<string>();
@@ -654,9 +636,7 @@ export const useRealtime = (
         unsubscribeLocal(k as TableName);
       });
     };
-    /* intentional: re-subscribe if `tables` reference changes; use stable array */
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [tables, persistent, subscribeLocal, unsubscribeLocal]);
 
   const manualUnsubscribeAll = () => {
     localTablesRef.current.forEach((k) => {
