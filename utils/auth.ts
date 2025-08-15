@@ -3,7 +3,11 @@ import { router } from 'expo-router';
 import { Alert } from 'react-native';
 
 import { UserProfile } from '@/domains';
-import { OrderByDirection, UserDocuments } from '@/generated/graphql';
+import {
+  DocumentVerificationStatus,
+  OrderByDirection,
+  UserDocuments,
+} from '@/generated/graphql';
 import { getProfiles } from '@/graphql/profiles';
 import { getUserAddresses } from '@/graphql/user_addresses';
 import { getUserDocument } from '@/graphql/user_documents';
@@ -138,6 +142,7 @@ export const updateProfileSession = async (
       });
 
       const userDocument = await client.query({
+        fetchPolicy: 'network-only',
         query: getUserDocument,
         variables: {
           filter: {
@@ -153,6 +158,12 @@ export const updateProfileSession = async (
 
       const userDocumentData =
         userDocument?.data?.user_documentsCollection?.edges?.[0]?.node;
+
+      if (!profileData?.is_profile_complete)
+        return router.replace('/screens/setup-profile/personal-info');
+
+      if (userDocumentData?.status === DocumentVerificationStatus.REJECTED)
+        return router.replace('/screens/setup-profile/document-rejected');
 
       callback(true, profileData, userDocumentData);
     } else {

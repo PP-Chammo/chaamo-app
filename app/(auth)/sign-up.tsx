@@ -1,29 +1,34 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { Link, router } from 'expo-router';
 import { View } from 'react-native';
 
 import { Button, Label, ScreenContainer } from '@/components/atoms';
-import { Checkbox, Header, PhoneInput } from '@/components/molecules';
-import { BooleanChangeParams, TextChangeParams } from '@/domains';
-import { loginWithGoogle } from '@/utils/auth';
+import { Checkbox, Header } from '@/components/molecules';
+import { useUserVar } from '@/hooks/useUserVar';
+import { loginWithGoogle, updateProfileSession } from '@/utils/auth';
 
 export default function SignUpScreen() {
-  const [form, setForm] = useState({
-    phone: '',
-    terms: false,
-  });
+  const [, setUser] = useUserVar();
 
-  const handleChange = ({
-    name,
-    value,
-  }: TextChangeParams | BooleanChangeParams) => {
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  const [loading, setLoading] = useState(false);
+  const [terms, setTerms] = useState(false);
 
-  const handleSendVerification = () => {
-    router.push('/(auth)/otp-verification');
-  };
+  const handleGoogleLogin = useCallback(async () => {
+    try {
+      setLoading(true);
+      await loginWithGoogle();
+      await updateProfileSession(setUser, (isSuccess) => {
+        setLoading(false);
+        if (isSuccess) {
+          return router.replace('/(tabs)/home');
+        }
+      });
+    } catch (e: unknown) {
+      setLoading(false);
+      console.error(e);
+    }
+  }, [setUser]);
 
   return (
     <ScreenContainer>
@@ -36,29 +41,19 @@ export default function SignUpScreen() {
           To get started, create an account. This will helps us keep your
           financial information safe and secure
         </Label>
-        <PhoneInput name="phone" value={form.phone} onChange={handleChange} />
         <Button
-          disabled={!form.phone.length}
-          onPress={handleSendVerification}
-          className={classes.sendButton}
+          disabled={!terms || loading}
+          icon="google"
+          onPress={handleGoogleLogin}
+          variant="primary-light"
         >
-          Send Verification Code
-        </Button>
-        <Label className={classes.login}>
-          Already have an account?{' '}
-          <Link className={classes.link} href="/sign-in">
-            Login
-          </Link>
-        </Label>
-        <Label className={classes.orLabel}>Or</Label>
-        <Button icon="google" onPress={loginWithGoogle} variant="primary-light">
           Continue with Google
         </Button>
       </View>
       <Checkbox
         className="mb-12 px-4.5"
-        checked={form.terms}
-        onChange={handleChange}
+        checked={terms}
+        onChange={() => setTerms(!terms)}
         name="terms"
       >
         <Label className={classes.terms}>

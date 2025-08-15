@@ -53,12 +53,6 @@ export default function StartPage() {
     try {
       await updateProfileSession(setUser, (isSuccess, user, userDocument) => {
         if (isSuccess) {
-          if (!user?.is_profile_complete)
-            return router.replace('/screens/setup-profile/personal-info');
-
-          if (userDocument?.status === 'rejected')
-            return router.replace('/screens/setup-profile/document-rejected');
-
           if (isDevelopment) {
             return router.replace('/(tabs)/home');
           }
