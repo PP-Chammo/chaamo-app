@@ -327,7 +327,7 @@ export default function ListingDetailScreen() {
               renderHeader={() => (
                 <TouchableOpacity
                   onPress={() => setShowImageZoom(false)}
-                  className="absolute top-10 right-5 z-10 bg-black/50 rounded-full p-2"
+                  className={classes.closeButton}
                 >
                   <Icon name="close" size={24} color="white" />
                 </TouchableOpacity>
@@ -477,4 +477,5 @@ const classes = {
     'text-md text-slate-600 text-center mx-16 mt-4 mb-8',
   deleteAccountModalButton: 'text-red-500',
   deleteAccountModalButtonText: 'text-red-700',
+  closeButton: 'absolute top-10 right-5 z-10 bg-black/50 rounded-full p-2',
 };
