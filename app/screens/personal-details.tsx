@@ -152,7 +152,6 @@ export default function PersonalDetailsScreen() {
                 },
                 onCompleted: (data) => {
                   if (data?.updateuser_addressesCollection?.records.length) {
-                    // Update the original form after successful save
                     setOriginalForm(structuredClone(form));
                     Alert.alert(
                       'Success',

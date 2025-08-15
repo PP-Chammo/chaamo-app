@@ -148,29 +148,6 @@ export default function PersonalInfoScreen() {
             onChange={handleChange}
             error={errors.phone_number}
           />
-
-          {/* Since we don't have authentication with password in the backend, we'll skip this for now */}
-
-          {/* <TextField
-            name="password"
-            label="Password"
-            placeholder="Password"
-            onChange={handleChange}
-            value={form.password}
-            required
-            type="password"
-            error={errors['password']}
-          />
-          <TextField
-            name="confirmPassword"
-            label="Confirm Password"
-            placeholder="Confirm Password"
-            onChange={handleChange}
-            value={form.confirmPassword}
-            required
-            type="password"
-            error={errors['confirmPassword']}
-          /> */}
         </KeyboardView>
         <Button
           className={classes.button}
