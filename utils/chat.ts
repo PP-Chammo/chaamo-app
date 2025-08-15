@@ -1,77 +1,60 @@
-import { format } from 'date-fns';
-
-export interface ChatMessage {
+export type ChatMessage = {
   id: number;
   message: string;
-  time: string;
+  time: string; // ISO date string
   sender: string;
   receiver: string;
-}
+};
 
-export interface GroupedMessage {
-  id: number;
-  messages: ChatMessage[];
+export type ChatMessageGroup = {
   sender: string;
-  time: string;
-}
+  messages: ChatMessage[];
+};
 
-export interface DateGroupedMessages {
-  date: string;
-  groups: GroupedMessage[];
-}
+export type ChatDateGroup = {
+  date: string; // YYYY-MM-DD
+  groups: ChatMessageGroup[];
+};
 
-export const groupMessagesByDateAndSender = (
+// Groups messages by date (YYYY-MM-DD), then by consecutive sender within that date.
+export function groupMessagesByDateAndSender(
   messages: ChatMessage[],
-): DateGroupedMessages[] => {
-  if (!messages.length) {
-    return [];
+): ChatDateGroup[] {
+  if (!messages || messages.length === 0) return [];
+
+  // Sort messages by time ascending to ensure deterministic grouping
+  const sorted = [...messages].sort((a, b) => {
+    const ta = new Date(a.time).getTime();
+    const tb = new Date(b.time).getTime();
+    return ta - tb;
+  });
+
+  // Bucket by date
+  const byDate: Record<string, ChatMessage[]> = {};
+  for (const msg of sorted) {
+    const date = new Date(msg.time).toISOString().slice(0, 10);
+    if (!byDate[date]) byDate[date] = [];
+    byDate[date].push(msg);
   }
 
-  const dateMap: Record<string, ChatMessage[]> = {};
+  // Build date groups with consecutive-sender grouping
+  const result: ChatDateGroup[] = Object.keys(byDate)
+    .sort() // ascending date order
+    .map((date) => {
+      const dayMessages = byDate[date];
+      const groups: ChatMessageGroup[] = [];
 
-  for (let msg of messages) {
-    const dateKey = format(new Date(msg.time), 'yyyy-MM-dd');
-    if (!dateMap[dateKey]) dateMap[dateKey] = [];
-    dateMap[dateKey].push(msg);
-  }
-
-  const result: DateGroupedMessages[] = [];
-  for (const date in dateMap) {
-    if (!Object.prototype.hasOwnProperty.call(dateMap, date)) continue;
-    const msgs = dateMap[date];
-    const groups: GroupedMessage[] = [];
-    let currentGroup: ChatMessage[] = [msgs[0]];
-
-    for (let i = 1; i < msgs.length; i++) {
-      const current = msgs[i];
-      const prev = msgs[i - 1];
-
-      if (current.sender === prev.sender) {
-        currentGroup.push(current);
-      } else {
-        groups.push({
-          id: currentGroup[0].id,
-          messages: currentGroup,
-          sender: currentGroup[0].sender,
-          time: currentGroup[0].time,
-        });
-        currentGroup = [current];
+      for (const msg of dayMessages) {
+        const lastGroup = groups[groups.length - 1];
+        if (!lastGroup || lastGroup.sender !== msg.sender) {
+          groups.push({ sender: msg.sender, messages: [msg] });
+        } else {
+          lastGroup.messages.push(msg);
+        }
       }
-    }
-    if (currentGroup.length > 0) {
-      groups.push({
-        id: currentGroup[0].id,
-        messages: currentGroup,
-        sender: currentGroup[0].sender,
-        time: currentGroup[0].time,
-      });
-    }
-    result.push({ date, groups });
-  }
 
-  result.sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-  );
+      return { date, groups };
+    });
 
   return result;
-};
+}

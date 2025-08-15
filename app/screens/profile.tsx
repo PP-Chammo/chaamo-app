@@ -95,10 +95,6 @@ export default function ProfileScreen() {
     setIsContextMenuVisible(true);
   }, [isSelfProfile]);
 
-  const handleEditProfilePress = useCallback(() => {
-    router.push('/screens/personal-details');
-  }, []);
-
   const handleToggleFollow = useCallback(
     (followeeUserId: string) => () => {
       if (getIsFollowingSelf(followeeUserId)) {
@@ -327,7 +323,7 @@ export default function ProfileScreen() {
           <Button
             icon="pencil-outline"
             className={classes.editProfileButton}
-            onPress={handleEditProfilePress}
+            onPress={() => router.push('/screens/personal-details')}
           >
             Edit Profile
           </Button>

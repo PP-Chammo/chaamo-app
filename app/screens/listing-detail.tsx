@@ -1,10 +1,17 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import { clsx } from 'clsx';
-import { Image } from 'expo-image';
+import { Image as ExpoImage } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { cssInterop } from 'nativewind';
-import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  Modal as RNModal,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 import {
   BottomSheetModal,
@@ -69,6 +76,7 @@ export default function ListingDetailScreen() {
   const [deleteUserCard, { loading: isDeleting }] = useDeleteUserCardMutation();
 
   const [showModal, setShowModal] = useState(false);
+  const [showImageZoom, setShowImageZoom] = useState(false);
 
   const detail = useMemo(
     () => data?.vw_chaamo_cardsCollection?.edges?.[0]?.node,
@@ -287,10 +295,17 @@ export default function ListingDetailScreen() {
         />
         <View className={classes.cardImageWrapper}>
           {detail?.image_url ? (
-            <Image
-              source={{ uri: detail?.image_url }}
-              className={classes.cardImage}
-            />
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => setShowImageZoom(true)}
+            >
+              <ExpoImage
+                source={{ uri: detail.image_url }}
+                className={classes.cardImage}
+                contentFit="cover"
+                transition={200}
+              />
+            </TouchableOpacity>
           ) : (
             <View className={classes.cardImage}>
               <Icon
@@ -301,6 +316,27 @@ export default function ListingDetailScreen() {
             </View>
           )}
         </View>
+
+        {detail?.image_url && (
+          <RNModal visible={showImageZoom} transparent={true}>
+            <ImageViewer
+              imageUrls={[{ url: detail.image_url }]}
+              onSwipeDown={() => setShowImageZoom(false)}
+              enableImageZoom={true}
+              enableSwipeDown={true}
+              renderHeader={() => (
+                <TouchableOpacity
+                  onPress={() => setShowImageZoom(false)}
+                  className={classes.closeButton}
+                >
+                  <Icon name="close" size={24} color="white" />
+                </TouchableOpacity>
+              )}
+              backgroundColor="rgba(0,0,0,0.9)"
+              renderIndicator={() => <></>}
+            />
+          </RNModal>
+        )}
         <ProductDetailInfo
           price={formatDisplay(detail?.currency, detail?.start_price ?? 0)}
           date={detail?.created_at ?? new Date().toISOString()}
@@ -441,4 +477,5 @@ const classes = {
     'text-md text-slate-600 text-center mx-16 mt-4 mb-8',
   deleteAccountModalButton: 'text-red-500',
   deleteAccountModalButtonText: 'text-red-700',
+  closeButton: 'absolute top-10 right-5 z-10 bg-black/50 rounded-full p-2',
 };

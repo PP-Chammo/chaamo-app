@@ -46,6 +46,7 @@ export default function ContactUs() {
           if (insertIntocontact_messagesCollection?.records?.length) {
             Alert.alert('Success', 'Form submitted successfully');
             setForm(initialForm);
+            router.back();
           } else {
             Alert.alert('Error', 'Failed to submit form');
           }

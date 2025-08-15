@@ -1,6 +1,7 @@
 import { getBlockedUserCaches } from '@/graphql/blocked_users';
 import { getFavoriteCaches } from '@/graphql/favorites';
 import { getFollowCaches } from '@/graphql/follows';
+import { getMessages } from '@/graphql/messages';
 import { getPostComments } from '@/graphql/post_comments';
 
 export const tableQueryMap = {
@@ -23,6 +24,10 @@ export const tableQueryMap = {
     query: getPostComments,
     dataKey: 'post_commentsCollection',
     primaryKey: ['id', 'post_id'],
-    hasHook: true,
+  },
+  messages: {
+    query: getMessages,
+    dataKey: 'messagesCollection',
+    primaryKey: ['id', 'conversation_id'],
   },
 };
