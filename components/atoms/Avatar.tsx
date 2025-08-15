@@ -10,7 +10,7 @@ import { getColor } from '@/utils/getColor';
 interface AvatarProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
-  imageUrl?: string;
+  imageUrl?: string | null;
   imageContainerClassName?: string;
   onPress?: () => void;
   testID?: string;

@@ -38,7 +38,13 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
     style,
     ...props
   }) {
-    useRealtime(['favorites', 'follows', 'blocked_users', 'post_comments']);
+    useRealtime([
+      'favorites',
+      'follows',
+      'blocked_users',
+      'post_comments',
+      'messages',
+    ]);
     const isAndroid = Platform.OS === 'android';
     const insets = useSafeAreaInsets();
 

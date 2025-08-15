@@ -6,6 +6,50 @@ import { dummyChatList } from '@/constants/dummy';
 
 import ChatList from '../ChatList';
 
+// Mock GraphQL generated hooks used by ChatList
+jest.mock('@/generated/graphql', () => {
+  const original = jest.requireActual('@/generated/graphql');
+  return {
+    __esModule: true,
+    ...original,
+    useGetVwMyConversationsLazyQuery: jest.fn(() => {
+      const { dummyChatList } = jest.requireActual('@/constants/dummy');
+      const edges = dummyChatList.map(
+        (item: {
+          id: number;
+          name: string;
+          message: string;
+          time: string;
+          unreadCount: number;
+          imageUrl: string;
+        }) => ({
+          node: {
+            id: item.id,
+            username: item.name,
+            content: item.message,
+            created_at: item.time,
+            unread_count: item.unreadCount,
+            profile_image_url: item.imageUrl,
+            partner_id: String(item.id),
+          },
+        }),
+      );
+      return [
+        jest.fn(),
+        {
+          data: {
+            vw_myconversationsCollection: {
+              edges,
+            },
+          },
+          refetch: jest.fn(),
+        },
+      ];
+    }),
+    useUpdateMessagesMutation: jest.fn(() => [jest.fn()]),
+  };
+});
+
 describe('ChatList', () => {
   const onPressMock = jest.fn();
 
@@ -24,9 +68,6 @@ describe('ChatList', () => {
     const { getAllByTestId } = render(<ChatList onPress={onPressMock} />);
     const chatListItems = getAllByTestId('chat-list-item');
     fireEvent.press(chatListItems[0]);
-    expect(onPressMock).toHaveBeenCalledWith(
-      dummyChatList[0].id,
-      dummyChatList[0].name,
-    );
+    expect(onPressMock).toHaveBeenCalledWith(String(dummyChatList[0].id));
   });
 });

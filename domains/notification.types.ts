@@ -24,3 +24,8 @@ export interface NotificationType extends BaseNotificationType {
   value: boolean;
   hasNotificationSettingServer: boolean;
 }
+
+// Flat list data structure for rendering grouped notifications with date separators
+export type FlatData<T> =
+  | { type: 'date'; date: string }
+  | { type: 'group'; group: T; date: string };

@@ -5,6 +5,7 @@ import ChatMessage from '../ChatMessage';
 describe('ChatMessage', () => {
   const defaultProps = {
     message: 'Test message',
+    position: 'left' as const,
   };
 
   it('renders correctly with default props', () => {
@@ -16,7 +17,9 @@ describe('ChatMessage', () => {
     const messages = ['Hello', 'How are you?', 'Goodbye'];
 
     messages.forEach((message) => {
-      const { getByText } = render(<ChatMessage message={message} />);
+      const { getByText } = render(
+        <ChatMessage position="left" message={message} />,
+      );
       expect(getByText(message)).toBeTruthy();
     });
   });
@@ -24,12 +27,14 @@ describe('ChatMessage', () => {
   it('renders with long message', () => {
     const longMessage =
       'This is a very long message that should still render correctly without any issues';
-    const { getByText } = render(<ChatMessage message={longMessage} />);
+    const { getByText } = render(
+      <ChatMessage position="left" message={longMessage} />,
+    );
     expect(getByText(longMessage)).toBeTruthy();
   });
 
   it('renders with empty message', () => {
-    const { getByText } = render(<ChatMessage message="" />);
+    const { getByText } = render(<ChatMessage position="left" message="" />);
     expect(getByText('')).toBeTruthy();
   });
 

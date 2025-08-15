@@ -5,11 +5,11 @@ import { Header } from '@/components/molecules';
 import { ChatList } from '@/components/organisms';
 
 export default function InboxLayout() {
-  const handlePress = (id: number) => {
+  const handlePress = (userId: string) => {
     router.push({
       pathname: '/screens/chat',
       params: {
-        id,
+        userId,
       },
     });
   };
