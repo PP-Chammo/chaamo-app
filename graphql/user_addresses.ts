@@ -15,3 +15,16 @@ export const getUserAddresses = gql`
     }
   }
 `;
+
+export const updateUserAddress = gql`
+  mutation UpdateUserAddress(
+    $set: user_addressesUpdateInput!
+    $filter: user_addressesFilter
+  ) {
+    updateuser_addressesCollection(set: $set, filter: $filter) {
+      records {
+        id
+      }
+    }
+  }
+`;

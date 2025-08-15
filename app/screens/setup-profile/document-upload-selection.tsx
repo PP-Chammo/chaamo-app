@@ -10,13 +10,17 @@ import {
   ProofIdentity,
   ScreenContainer,
 } from '@/components/atoms';
-import { Header } from '@/components/molecules';
+import { Header, SetupProfileTabs } from '@/components/molecules';
 
-export default function ProofIdentityScreen() {
+export default function DocumentUploadSelectionScreen() {
   return (
-    <ScreenContainer className={classes.container}>
-      <Header title="ID Verification" onBackPress={() => router.back()} />
-      <View className={classes.content}>
+    <ScreenContainer>
+      <Header
+        title="ID Verification"
+        onBackPress={() => router.replace('/screens/setup-profile/address')}
+      />
+      <View className={classes.container}>
+        <SetupProfileTabs />
         <View className={classes.iconContainer}>
           <IDVerificationIcon className={classes.icon} />
         </View>
@@ -28,12 +32,28 @@ export default function ProofIdentityScreen() {
         </Label>
         <ProofIdentity
           title="ID Card"
-          onPress={() => router.push('/id-card')}
+          onPress={() =>
+            router.push({
+              pathname: '/screens/setup-profile/document-input',
+              params: {
+                type: 'id_card',
+                title: 'ID Card',
+              },
+            })
+          }
           icon={<Icon name="badge-account-outline" size={24} color="black" />}
         />
         <ProofIdentity
           title="Passport"
-          onPress={() => router.push('/')}
+          onPress={() =>
+            router.push({
+              pathname: '/screens/setup-profile/document-input',
+              params: {
+                type: 'passport',
+                title: 'Passport',
+              },
+            })
+          }
           icon={
             <Icon
               name="badge-account-horizontal-outline"
@@ -44,7 +64,15 @@ export default function ProofIdentityScreen() {
         />
         <ProofIdentity
           title="License"
-          onPress={() => router.push('/')}
+          onPress={() =>
+            router.push({
+              pathname: '/screens/setup-profile/document-input',
+              params: {
+                type: 'license',
+                title: 'License',
+              },
+            })
+          }
           icon={<Icon name="credit-card-outline" size={24} color="black" />}
         />
       </View>
@@ -53,12 +81,11 @@ export default function ProofIdentityScreen() {
 }
 
 const classes = {
-  container: 'flex-1 gap-4',
+  container: 'flex-1 px-4.5',
   title: 'text-3xl font-bold text-primary-500',
   description: 'text-slate-500 font-medium text-lg mb-6',
   icon: 'w-10 h-10',
   proofIdentity:
     'flex-row items-center justify-between rounded-xl px-6 py-4 shadow',
   iconContainer: 'items-center justify-center my-12',
-  content: 'flex-1 px-4.5',
 };

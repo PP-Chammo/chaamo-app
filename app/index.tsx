@@ -51,7 +51,7 @@ export default function StartPage() {
     setHasCheckedSession(true);
 
     try {
-      await updateProfileSession(setUser, (isSuccess) => {
+      await updateProfileSession(setUser, (isSuccess, user, userDocument) => {
         if (isSuccess) {
           if (isDevelopment) {
             return router.replace('/(tabs)/home');

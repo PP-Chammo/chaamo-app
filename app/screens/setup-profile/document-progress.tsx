@@ -7,9 +7,9 @@ import { VerificationInProgressIcon } from '@/assets/svg';
 import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header } from '@/components/molecules';
 
-export default function IDCardProgressScreen() {
+export default function DocumentProgressScreen() {
   const handleContinue = () => {
-    router.push('/id-card-failed');
+    router.push('/(tabs)/home');
   };
 
   return (

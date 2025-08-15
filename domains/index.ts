@@ -6,4 +6,10 @@ export {
   BaseNotificationType,
   FlatData,
 } from './notification.types';
-export { BaseProfile, BaseUserAddress, BlockedUsers } from './user.types';
+export {
+  BaseProfile,
+  BaseUserAddress,
+  BlockedUsers,
+  UserAddress,
+  UserProfile,
+} from './user.types';

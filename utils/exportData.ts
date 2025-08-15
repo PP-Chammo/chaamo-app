@@ -17,7 +17,7 @@ interface ExportDataResult {
 }
 
 interface PersonalInfo {
-  profile: BaseProfile & { email: string };
+  profile: BaseProfile & { email?: string };
   address: BaseUserAddress;
 }
 
@@ -60,6 +60,7 @@ const getPersonalInfo = async (user: UserStore): Promise<PersonalInfo> => {
       profile_image_url: user?.profile?.profile_image_url ?? '',
       currency: user?.profile?.currency ?? '',
       created_at: user?.created_at ?? '',
+      is_profile_complete: user?.profile?.is_profile_complete ?? false,
     },
     address: {
       address_line_1: user?.profile?.address_line_1 ?? '',

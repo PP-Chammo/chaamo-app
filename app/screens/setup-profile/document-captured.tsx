@@ -1,32 +1,80 @@
 import React, { useCallback } from 'react';
 
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
-import { Text, View } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { Alert, Text, View } from 'react-native';
 
 import { Button, ScreenContainer, UploadInstruction } from '@/components/atoms';
 import { Header } from '@/components/molecules';
 import { FRAME_HEIGHT, FRAME_WIDTH } from '@/constants/setup-profile';
+import {
+  DocumentType,
+  useCreateUserDocumentMutation,
+  useUpdateProfileMutation,
+} from '@/generated/graphql';
 import { useImageCapturedVar } from '@/hooks/useImageCapturedVar';
+import { useUserVar } from '@/hooks/useUserVar';
+import { uploadToBucket } from '@/utils/supabase';
 
 export default function IDCardCapturedScreen() {
+  const [user] = useUserVar();
   const [imageCaptured, setImageCaptured] = useImageCapturedVar();
+  const { type, title } = useLocalSearchParams();
+
+  const [createUserDocument, { loading }] = useCreateUserDocumentMutation();
+  const [updateProfile] = useUpdateProfileMutation();
 
   const handleRetake = useCallback(() => {
     setImageCaptured(imageCaptured);
-    router.push('/id-card');
+    router.push('/screens/setup-profile/document-input');
   }, [imageCaptured, setImageCaptured]);
 
-  const handleSubmit = useCallback(() => {
-    // TODO: Implement submit logic save image to storage and send to backend
-    router.push('/id-card-progress');
-  }, []);
+  const handleSubmit = useCallback(async () => {
+    const uploadedUrl = await uploadToBucket(
+      imageCaptured.uri,
+      'chaamo',
+      'documents',
+    );
+
+    if (!uploadedUrl) {
+      Alert.alert('Error', 'Failed to upload image');
+      return;
+    }
+
+    await createUserDocument({
+      variables: {
+        objects: [
+          {
+            file_url: uploadedUrl,
+            document_type: type as DocumentType,
+            user_id: user?.id,
+          },
+        ],
+      },
+      onCompleted: async ({ insertIntouser_documentsCollection }) => {
+        if (insertIntouser_documentsCollection?.records?.length) {
+          await updateProfile({
+            variables: {
+              set: {
+                is_profile_complete: true,
+              },
+            },
+            onCompleted: ({ updateprofilesCollection }) => {
+              if (updateprofilesCollection?.records?.length) {
+                router.push('/screens/setup-profile/document-progress');
+              }
+            },
+          });
+        }
+      },
+    });
+  }, [createUserDocument, imageCaptured.uri, type, updateProfile, user?.id]);
 
   return (
     <ScreenContainer className={classes.container}>
       <Header title="ID Verification" onBackPress={() => router.back()} />
       <View className={classes.content}>
-        <Text className={classes.title}>Photo ID Card</Text>
+        <Text className={classes.title}>Photo {title}</Text>
         <Text className={classes.instructionText}>
           Please point the camera at the ID card. Position it inside the frame.
           Make sure it is clear enough
@@ -45,10 +93,16 @@ export default function IDCardCapturedScreen() {
           variant="light"
           onPress={handleRetake}
           className={classes.button}
+          disabled={loading}
         >
           Try Again
         </Button>
-        <Button onPress={handleSubmit} className={classes.button}>
+        <Button
+          loading={loading}
+          disabled={loading}
+          onPress={handleSubmit}
+          className={classes.button}
+        >
           Submit
         </Button>
       </View>

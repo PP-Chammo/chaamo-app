@@ -57,6 +57,7 @@ describe('BlockList', () => {
         username: 'John Doe',
         profile_image_url: 'https://example.com/john.jpg',
         created_at: '2024-01-01T00:00:00Z',
+        is_profile_complete: true,
       },
     },
     {
@@ -65,6 +66,7 @@ describe('BlockList', () => {
         username: 'Jane Smith',
         profile_image_url: 'https://example.com/jane.jpg',
         created_at: '2024-01-02T00:00:00Z',
+        is_profile_complete: true,
       },
     },
   ];

@@ -1,41 +1,17 @@
 import { useCallback, useState } from 'react';
 
 import { Link, router } from 'expo-router';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Button, Label, ScreenContainer } from '@/components/atoms';
-import { Header, PhoneInput, TextField } from '@/components/molecules';
-import { TextChangeParams } from '@/domains';
+import { Header } from '@/components/molecules';
 import { useUserVar } from '@/hooks/useUserVar';
 import { loginWithGoogle, updateProfileSession } from '@/utils/auth';
-
-interface SignInForm {
-  phone: string;
-  password: string;
-}
 
 export default function SignInScreen() {
   const [, setUser] = useUserVar();
 
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState<SignInForm>({
-    phone: '',
-    password: '',
-  });
-  const [errorText, setErrorText] = useState<string>('');
-
-  const handleChange = ({ name, value }: TextChangeParams) => {
-    setErrorText('');
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleLogin = useCallback(() => {
-    const phone = '+44123456';
-    const password = '123456';
-    if (password !== form.password || phone !== form.phone)
-      return setErrorText('Incorrect number or password');
-    return router.push('/(auth)/otp-verification');
-  }, [form.password, form.phone]);
 
   const handleGoogleLogin = useCallback(async () => {
     try {
@@ -44,7 +20,7 @@ export default function SignInScreen() {
       await updateProfileSession(setUser, (isSuccess) => {
         setLoading(false);
         if (isSuccess) {
-          router.replace('/(tabs)/home');
+          return router.replace('/(tabs)/home');
         }
       });
     } catch (e: unknown) {
@@ -66,30 +42,6 @@ export default function SignInScreen() {
         <Label className={classes.description}>
           Please enter your credentials below to login.
         </Label>
-        <View className={classes.inputContainer}>
-          <PhoneInput name="phone" value={form.phone} onChange={handleChange} />
-          <TextField
-            label="Password"
-            placeholder="Enter your password"
-            value={form.password}
-            onChange={handleChange}
-            name="password"
-            type="password"
-            required
-          />
-        </View>
-        {errorText && <Text className={classes.errorText}>{errorText}</Text>}
-        <Button
-          disabled={!form.phone.length || !form.password}
-          onPress={handleLogin}
-          className={classes.loginButton}
-        >
-          Login
-        </Button>
-        <Link className={classes.login} href="/forgot-password">
-          Forgot Password?
-        </Link>
-        <Label className={classes.orLabel}>Or</Label>
         <Button
           icon="google"
           onPress={handleGoogleLogin}

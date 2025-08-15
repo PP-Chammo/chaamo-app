@@ -7,14 +7,14 @@ import { VerificationFailedIcon } from '@/assets/svg';
 import { Button, Label, ScreenContainer } from '@/components/atoms';
 import { Header } from '@/components/molecules';
 
-export default function IDCardFailedScreen() {
+export default function DocumentRejectedScreen() {
   const handleReUpload = () => {
-    router.push('/id-card');
+    router.push('/screens/setup-profile/document-upload-selection');
   };
 
   return (
     <ScreenContainer className={classes.container}>
-      <Header title="ID Verification" onBackPress={() => router.back()} />
+      <Header title="ID Verification" />
       <View className={classes.content}>
         <VerificationFailedIcon />
         <Label variant="title" className={classes.title}>

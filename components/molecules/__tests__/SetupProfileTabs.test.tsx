@@ -34,7 +34,9 @@ describe('SetupProfileTabs', () => {
     const { getByTestId } = render(<SetupProfileTabs />);
     const firstTab = getByTestId('tab-personal-info');
     fireEvent.press(firstTab);
-    expect(mockRouter.push).toHaveBeenCalledWith('/personal-info');
+    expect(mockRouter.push).toHaveBeenCalledWith(
+      'screens/setup-profile/personal-info',
+    );
   });
 
   it('applies correct styling classes', () => {

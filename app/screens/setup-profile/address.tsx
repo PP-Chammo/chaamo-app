@@ -11,58 +11,84 @@ import {
   TextField,
 } from '@/components/molecules';
 import { Country, State, TextChangeParams } from '@/domains';
-import {
-  validateRequired,
-  ValidationErrors,
-  ValidationValues,
-} from '@/utils/validate';
-
-interface Form extends ValidationValues {
-  city: string;
-  state: string;
-  country: string;
-  postalCode: string;
-  addressLine1: string;
-  addressLine2: string;
-}
+import { useUpdateUserAddressMutation } from '@/generated/graphql';
+import { useUserVar } from '@/hooks/useUserVar';
+import { UserStore } from '@/stores/userStore';
+import { DeepGet } from '@/types/helper';
+import { validateRequired, ValidationErrors } from '@/utils/validate';
 
 export default function AddressScreen() {
-  const [form, setForm] = useState<Form>({
-    city: '',
-    state: '',
-    country: '',
-    postalCode: '',
-    addressLine1: '',
-    addressLine2: '',
-  });
+  const [form, setForm] = useUserVar();
+  const profile = form?.profile;
 
-  const [errors, setErrors] = useState<ValidationErrors<Form>>({});
+  const [errors, setErrors] = useState<
+    ValidationErrors<DeepGet<UserStore, ['profile']>>
+  >({});
   const [countries, setCountries] = useState<Country[]>([]);
   const [states, setStates] = useState<State[]>([]);
 
-  const handleChange = ({ name, value }: TextChangeParams) => {
-    setErrors((prev) => {
-      delete prev[name as keyof typeof prev];
-      return prev;
-    });
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  const [updateUserAddress, { loading }] = useUpdateUserAddressMutation();
 
-  const handleSubmit = () => {
-    const errors = validateRequired<Form>(form, [
-      'addressLine1',
+  const handleChange = useCallback(
+    ({ name, value }: TextChangeParams) => {
+      setErrors((prev) => {
+        delete prev[name as keyof typeof prev];
+        return prev;
+      });
+
+      setForm({
+        ...form,
+        profile: { ...form.profile, [name]: value } as DeepGet<
+          UserStore,
+          ['profile']
+        >,
+      });
+    },
+    [form, setForm],
+  );
+
+  const handleSubmit = useCallback(() => {
+    const requiredFields: (keyof DeepGet<UserStore, ['profile']>)[] = [
+      'address_line_1',
       'city',
-      'state',
+      'state_province',
       'country',
-      'postalCode',
-    ]);
-    if (Object.keys(errors).length > 0) {
-      setErrors(errors);
+      'postal_code',
+    ];
+
+    const validationErrors = validateRequired(
+      form.profile as unknown as Record<string, string>,
+      requiredFields,
+    );
+
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
       return;
     }
-    // TODO: Implement API call to update address
-    router.push('/(setup-profile)/(upload-identity)/proof-identity');
-  };
+
+    updateUserAddress({
+      variables: {
+        set: {
+          address_line_1: form.profile?.address_line_1 ?? '',
+          city: form.profile?.city ?? '',
+          state_province: form.profile?.state_province ?? '',
+          country: form.profile?.country ?? '',
+          postal_code: form.profile?.postal_code ?? '',
+        },
+        filter: {
+          user_id: {
+            eq: profile?.id,
+          },
+        },
+      },
+      onCompleted: ({ updateuser_addressesCollection }) => {
+        if (updateuser_addressesCollection?.records?.length) {
+          router.push('/screens/setup-profile/document-upload-selection');
+        }
+      },
+    });
+  }, [form, profile, updateUserAddress]);
 
   const lazyLoad = useCallback(async () => {
     const countriesData = await import('@/assets/data/countries.json');
@@ -83,52 +109,44 @@ export default function AddressScreen() {
         <SetupProfileTabs />
         <KeyboardView>
           <TextField
-            name="addressLine1"
+            name="address_line_1"
             label="Address Line 1"
             placeholder="Address Line 1"
             onChange={handleChange}
-            value={form.addressLine1}
+            value={profile?.address_line_1 ?? ''}
             required
-            error={errors['addressLine1']}
-          />
-          <TextField
-            name="addressLine2"
-            label="Address Line 2"
-            placeholder="Address Line 2"
-            onChange={handleChange}
-            value={form.addressLine2}
-            error={errors['addressLine2']}
+            error={errors?.address_line_1}
           />
           <SelectModal
             required
             name="country"
             label="Country"
-            value={form.country}
+            value={profile?.country ?? ''}
             onChange={handleChange}
             options={{
               data: countries,
               label: 'name',
               value: 'iso2',
             }}
-            error={errors['country']}
+            error={errors?.country}
             placeholder="--Select Country--"
             className={classes.input}
           />
           <Row className="gap-3">
             <SelectModal
               required
-              name="state"
+              name="state_province"
               label="State"
-              value={form.state}
+              value={profile?.state_province ?? ''}
               onChange={handleChange}
               options={{
                 data: states.filter(
-                  (state) => state.country_code === form.country,
+                  (state) => state.country_code === profile?.country,
                 ),
                 label: 'name',
                 value: 'iso2',
               }}
-              error={errors['state']}
+              error={errors?.state_province}
               placeholder="--Select State--"
               className={classes.input}
             />
@@ -137,26 +155,28 @@ export default function AddressScreen() {
               label="City"
               placeholder="City"
               onChange={handleChange}
-              value={form.city}
+              value={profile?.city ?? ''}
               required
-              error={errors['city']}
+              error={errors?.city}
               className={classes.input}
             />
           </Row>
           <TextField
-            name="postalCode"
+            name="postal_code"
             label="Postal Code"
             placeholder="Postal Code"
             onChange={handleChange}
-            value={form.postalCode}
+            value={profile?.postal_code ?? ''}
             required
-            error={errors['postalCode']}
+            error={errors?.postal_code}
           />
           <Button
             variant="primary"
             size="large"
             onPress={handleSubmit}
             className={classes.button}
+            disabled={loading}
+            loading={loading}
           >
             Continue
           </Button>
@@ -167,10 +187,8 @@ export default function AddressScreen() {
 }
 
 const classes = {
-  container: 'flex-1 p-4.5',
-  keyboardViewContent: 'flex-grow gap-3 pb-20',
+  container: 'flex-1 px-4.5',
   statePicker: 'border-1 border-gray-200 rounded-8 p-12 mt-8',
-  formContainer: 'pb-10 flex gap-4',
   input: 'flex-1',
   button: 'mt-5',
 };

@@ -12,6 +12,7 @@ export const getProfiles = gql`
           country_code
           currency
           created_at
+          is_profile_complete
         }
       }
     }
@@ -24,19 +25,6 @@ export const updateProfile = gql`
       records {
         id
         username
-      }
-    }
-  }
-`;
-
-export const updateUserAddress = gql`
-  mutation UpdateUserAddress(
-    $set: user_addressesUpdateInput!
-    $filter: user_addressesFilter
-  ) {
-    updateuser_addressesCollection(set: $set, filter: $filter) {
-      records {
-        id
       }
     }
   }
