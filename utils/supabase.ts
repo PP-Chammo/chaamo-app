@@ -32,8 +32,15 @@ export const supabase = createClient(
       detectSessionInUrl: false,
     },
     realtime: {
-      heartbeatIntervalMs: 30000, // 30s instead of 100ms - more reasonable
-      timeout: 20000, // 20s timeout
+      timeout: 30000,
+      heartbeatIntervalMs: 30000,
+      reconnectAfterMs: (tries: number) => {
+        console.log(`🔄 Supabase realtime reconnect attempt ${tries}`);
+        return [1000, 2000, 5000, 10000][tries - 1] || 10000;
+      },
+      params: {
+        eventsPerSecond: 10,
+      },
     },
     global: {
       headers: {
@@ -58,14 +65,12 @@ export async function uploadToBucket(
       throw new Error('File does not exist at path: ' + localUri);
     }
 
-    // Ambil ekstensi
     const fileExt = localUri.split('.').pop() || 'jpg';
     const fileName = `${randomString(16)}.${fileExt}`;
     const pathInBucket = folder ? `${folder}/${fileName}` : fileName;
     const contentType =
       mimeTypes[fileExt.toLowerCase()] || 'application/octet-stream';
 
-    // Baca sebagai base64
     const base64 = await FileSystem.readAsStringAsync(localUri, {
       encoding: FileSystem.EncodingType.Base64,
     });
