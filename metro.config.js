@@ -12,6 +12,9 @@ config.resolver = {
   ...resolver,
   assetExts: resolver.assetExts.filter((ext) => ext !== 'svg'),
   sourceExts: [...resolver.sourceExts, 'svg'],
+  alias: {
+    'ws': 'react-native',
+  },
 };
 
 module.exports = withNativeWind(config, { input: './global.css' });

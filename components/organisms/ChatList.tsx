@@ -51,6 +51,7 @@ const ChatList: React.FC<ChatListProps> = memo(function ChatList({ onPress }) {
                   set: {
                     deleted: true,
                   },
+                  atMost: 1000,
                 },
               });
               refetch();

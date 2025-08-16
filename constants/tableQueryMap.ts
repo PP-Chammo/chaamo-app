@@ -28,6 +28,6 @@ export const tableQueryMap = {
   messages: {
     query: getMessages,
     dataKey: 'messagesCollection',
-    primaryKey: ['id', 'conversation_id'],
+    primaryKey: ['id'],
   },
 };
