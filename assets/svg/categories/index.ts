@@ -3,10 +3,13 @@ export { default as Digimon } from './digimon.svg';
 export { default as Fortnite } from './fortnite.svg';
 export { default as Futera } from './futera.svg';
 export { default as GarbagePailKids } from './garbage-pail-kids.svg';
+export { default as Leaf } from './leaf.svg';
+export { default as Lorcana } from './lorcana.svg';
 export { default as Marvel } from './marvel.svg';
 export { default as Panini } from './panini.svg';
-export { default as Poker } from './poker.svg';
 export { default as PokeMon } from './pokemon.svg';
+export { default as Poker } from './poker.svg';
 export { default as Topps } from './topps.svg';
 export { default as Wrestling } from './wrestling.svg';
 export { default as YuGiOh } from './yugioh.svg';
+
