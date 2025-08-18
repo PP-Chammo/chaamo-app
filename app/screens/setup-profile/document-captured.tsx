@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -22,7 +22,9 @@ export default function IDCardCapturedScreen() {
   const [imageCaptured, setImageCaptured] = useImageCapturedVar();
   const { type, title } = useLocalSearchParams();
 
-  const [createUserDocument, { loading }] = useCreateUserDocumentMutation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [createUserDocument] = useCreateUserDocumentMutation();
   const [updateProfile] = useUpdateProfileMutation();
 
   const handleRetake = useCallback(() => {
@@ -34,44 +36,58 @@ export default function IDCardCapturedScreen() {
   }, [imageCaptured, params, setImageCaptured]);
 
   const handleSubmit = useCallback(async () => {
-    const uploadedUrl = await uploadToBucket(
-      imageCaptured.uri,
-      'chaamo',
-      'documents',
-    );
+    try {
+      setIsSubmitting(true);
+      const uploadedUrl = await uploadToBucket(
+        imageCaptured.uri,
+        'chaamo',
+        'documents',
+      );
 
-    if (!uploadedUrl) {
-      Alert.alert('Error', 'Failed to upload image');
-      return;
-    }
+      if (!uploadedUrl) {
+        Alert.alert('Error', 'Failed to upload image');
+        return;
+      }
 
-    await createUserDocument({
-      variables: {
-        objects: [
-          {
-            file_url: uploadedUrl,
-            document_type: type as DocumentType,
-            user_id: user?.id,
-          },
-        ],
-      },
-      onCompleted: async ({ insertIntouser_documentsCollection }) => {
-        if (insertIntouser_documentsCollection?.records?.length) {
-          await updateProfile({
-            variables: {
-              set: {
-                is_profile_complete: true,
+      await createUserDocument({
+        variables: {
+          objects: [
+            {
+              file_url: uploadedUrl,
+              document_type: type as DocumentType,
+              user_id: user?.id,
+            },
+          ],
+        },
+        onCompleted: async ({ insertIntouser_documentsCollection }) => {
+          if (insertIntouser_documentsCollection?.records?.length) {
+            await updateProfile({
+              variables: {
+                set: {
+                  is_profile_complete: true,
+                },
               },
-            },
-            onCompleted: ({ updateprofilesCollection }) => {
-              if (updateprofilesCollection?.records?.length) {
-                router.push('/screens/setup-profile/document-progress');
-              }
-            },
-          });
-        }
-      },
-    });
+              onCompleted: ({ updateprofilesCollection }) => {
+                if (updateprofilesCollection?.records?.length) {
+                  router.push('/screens/setup-profile/document-progress');
+                }
+              },
+            });
+          }
+
+          setIsSubmitting(false);
+        },
+        onError: () => {
+          setIsSubmitting(false);
+        },
+      });
+    } catch (error) {
+      console.error('Error uploading document:', error);
+      Alert.alert('Error', 'Failed to upload document');
+      setIsSubmitting(false);
+    } finally {
+      setIsSubmitting(false);
+    }
   }, [createUserDocument, imageCaptured.uri, type, updateProfile, user?.id]);
 
   return (
@@ -97,13 +113,13 @@ export default function IDCardCapturedScreen() {
           variant="light"
           onPress={handleRetake}
           className={classes.button}
-          disabled={loading}
+          disabled={isSubmitting}
         >
           Try Again
         </Button>
         <Button
-          loading={loading}
-          disabled={loading}
+          loading={isSubmitting}
+          disabled={isSubmitting}
           onPress={handleSubmit}
           className={classes.button}
         >

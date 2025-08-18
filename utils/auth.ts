@@ -178,3 +178,29 @@ export const updateProfileSession = async (
     errorAlert();
   }
 };
+
+export const deleteAccount = async (cb: () => void) => {
+  try {
+    const { data } = await supabase.auth.getSession();
+    const userId = data?.session?.user?.id;
+
+    if (!userId) {
+      return;
+    }
+
+    const { error } = await supabase.functions.invoke('delete-user', {
+      method: 'POST',
+      body: JSON.stringify({
+        user_id: userId,
+      }),
+    });
+
+    if (!error) {
+      await logout();
+      cb();
+    }
+  } catch (error) {
+    console.error('Error deleting account:', error);
+    Alert.alert('Error', 'Failed to delete account');
+  }
+};
