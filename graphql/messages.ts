@@ -30,18 +30,12 @@ export const createMessages = gql`
 `;
 
 export const updateMessages = gql`
-  mutation UpdateMessages($set: messagesUpdateInput!, $filter: messagesFilter) {
-    updatemessagesCollection(set: $set, filter: $filter) {
-      records {
-        id
-      }
-    }
-  }
-`;
-
-export const deleteMessages = gql`
-  mutation DeleteMessages($filter: messagesFilter!) {
-    deleteFrommessagesCollection(filter: $filter) {
+  mutation UpdateMessages(
+    $set: messagesUpdateInput!
+    $filter: messagesFilter
+    $atMost: Int
+  ) {
+    updatemessagesCollection(set: $set, filter: $filter, atMost: $atMost) {
       records {
         id
       }

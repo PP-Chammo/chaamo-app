@@ -1,42 +1,13 @@
 import { gql } from '@apollo/client';
 
-export const getConversationParticipants = gql`
-  query GetConversationParticipants(
+export const updateConversationParticipants = gql`
+  mutation UpdateConversationParticipants(
+    $set: conversation_participantsUpdateInput!
     $filter: conversation_participantsFilter
-    $last: Int
-    $first: Int
   ) {
-    conversation_participantsCollection(
-      filter: $filter
-      last: $last
-      first: $first
-    ) {
-      edges {
-        node {
-          conversation_id
-          profiles {
-            id
-            username
-            profile_image_url
-          }
-        }
-      }
-    }
-  }
-`;
-
-export const createConversationParticipants = gql`
-  mutation CreateConversationParticipants(
-    $objects: [conversation_participantsInsertInput!]!
-  ) {
-    insertIntoconversation_participantsCollection(objects: $objects) {
+    updateconversation_participantsCollection(set: $set, filter: $filter) {
       records {
         conversation_id
-        profiles {
-          id
-          username
-          profile_image_url
-        }
       }
     }
   }
