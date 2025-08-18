@@ -7,7 +7,6 @@ export { default as Category } from './Category';
 export { default as Chart } from './Chart';
 export { default as ChatListItem } from './ChatListItem';
 export { default as Checkbox } from './Checkbox';
-export { default as ListingCard } from './ListingCard';
 export { default as EmptyState } from './EmptyState';
 export { default as EventCard } from './EventCard';
 export { default as FilterAdPropertiesInput } from './FilterAdPropertiesInput';
@@ -24,6 +23,7 @@ export {
   default as ListContainer,
   ListContainerDirection,
 } from './ListContainer';
+export { default as ListingCard } from './ListingCard';
 export { default as NotificationListItem } from './NotificationListItem';
 export { default as OrderItem } from './OrderItem';
 export { default as OtpInput } from './OtpInput';

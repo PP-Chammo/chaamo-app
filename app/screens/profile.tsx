@@ -20,6 +20,8 @@ import {
 import { Header, Lazy, TabView } from '@/components/molecules';
 import { profileTabs } from '@/constants/tabs';
 import {
+  ListingType,
+  OrderByDirection,
   useCreateBlockedUsersMutation,
   useCreateFollowsMutation,
   useGetProfilesQuery,
@@ -66,8 +68,19 @@ export default function ProfileScreen() {
       filter: {
         seller_id: { eq: currentUser },
       },
+      orderBy: {
+        created_at: OrderByDirection.DESCNULLSLAST,
+      },
     },
   });
+
+  const lastSoldPrice = useMemo(() => {
+    const lastSold = listingData?.vw_chaamo_cardsCollection?.edges?.find(
+      (edge) => edge.node.listing_type === ListingType.SELL,
+    );
+
+    return lastSold?.node.last_sold_price ?? 0;
+  }, [listingData?.vw_chaamo_cardsCollection?.edges]);
 
   const [removeFollow, { loading: loadingUnfollow }] =
     useRemoveFollowsMutation();
@@ -268,7 +281,7 @@ export default function ProfileScreen() {
                   className={classes.portfolioValueContainer}
                 >
                   <Label className={classes.portfolioValue}>
-                    {formatDisplay(user?.profile?.currency, 0)}
+                    {formatDisplay(user?.profile?.currency, lastSoldPrice)}
                   </Label>
                   <View className={classes.portfolioValueIconContainer}>
                     <Icon
