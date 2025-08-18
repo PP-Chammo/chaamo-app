@@ -12,12 +12,21 @@ import { Header } from '@/components/molecules';
 import { FRAME_HEIGHT, FRAME_WIDTH } from '@/constants/setup-profile';
 import { useImageCapturedVar } from '@/hooks/useImageCapturedVar';
 
+cssInterop(CameraView, {
+  className: {
+    target: 'style',
+  },
+});
+
 export default function DocumentInputScreen() {
-  const { title } = useLocalSearchParams();
+  const params = useLocalSearchParams();
+  const { title } = params;
 
   const cameraRef = useRef<CameraView>(null);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
+  const [isFocused, setIsFocused] = useState(true);
+  const [enableTorch, setEnableTorch] = useState<boolean>(false);
 
   const setImageCaptured = useImageCapturedVar()[1];
 
@@ -28,9 +37,14 @@ export default function DocumentInputScreen() {
         skipProcessing: true,
       });
 
-      setImageCaptured(photo);
+      setImageCaptured(photo, () => {
+        router.replace({
+          pathname: '/screens/setup-profile/document-captured',
+          params,
+        });
+      });
     }
-  }, [cameraRef, isCameraReady, setImageCaptured]);
+  }, [isCameraReady, params, setImageCaptured]);
 
   const requestCameraPermission = useCallback(async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
@@ -50,8 +64,13 @@ export default function DocumentInputScreen() {
 
     const photo = result.assets[0];
 
-    setImageCaptured(photo);
-  }, [setImageCaptured]);
+    setImageCaptured(photo, () => {
+      router.replace({
+        pathname: '/screens/setup-profile/document-captured',
+        params,
+      });
+    });
+  }, [params, setImageCaptured]);
 
   useFocusEffect(
     useCallback(() => {
@@ -59,11 +78,12 @@ export default function DocumentInputScreen() {
     }, [requestCameraPermission]),
   );
 
-  cssInterop(CameraView, {
-    className: {
-      target: 'style',
-    },
-  });
+  useFocusEffect(
+    useCallback(() => {
+      setIsFocused(true);
+      return () => setIsFocused(false);
+    }, []),
+  );
 
   if (hasPermission === null) {
     return (
@@ -93,14 +113,21 @@ export default function DocumentInputScreen() {
     <ScreenContainer>
       <Header
         className={classes.header}
-        title={title as string}
         onBackPress={() => router.back()}
+        leftIconColor="white"
+        rightIcon={enableTorch ? 'flash' : 'flash-outline'}
+        rightIconColor="white"
+        onRightPress={() => setEnableTorch((prev) => !prev)}
       />
-      <CameraView
-        ref={cameraRef}
-        className={classes.camera}
-        onCameraReady={() => setIsCameraReady(true)}
-      />
+      {isFocused && (
+        <CameraView
+          ref={cameraRef}
+          className={classes.camera}
+          facing="back"
+          onCameraReady={() => setIsCameraReady(true)}
+          enableTorch={enableTorch}
+        />
+      )}
       <View className={classes.overlay}>
         <Text className={classes.title}>Photo {title}</Text>
         <Text className={classes.instructionText}>
@@ -141,10 +168,10 @@ const classes = {
   camera: 'absolute inset-0',
   overlay: 'absolute inset-0 mx-4.5 mt-24 mb-24',
   instructionText: 'text-white text-base',
-  uploadInstruction: 'bottom-24',
+  uploadInstruction: 'bottom-20',
   frameContainer: 'flex-1 justify-center items-center',
   frame: `border-4 border-cyan-400 rounded-lg bg-transparent`,
-  header: 'bg-transparent p-6',
+  header: 'bg-transparent p-6 z-40',
   captureButton:
     'absolute -bottom-5 self-center w-20 h-20 rounded-full bg-white/20 justify-center items-center border-4 border-slate-400',
   captureButtonIcon: 'w-16 h-16 rounded-full bg-cyan-400',

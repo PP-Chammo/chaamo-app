@@ -1,8 +1,6 @@
 import { memo } from 'react';
 
 import { clsx } from 'clsx';
-import { LinearGradient } from 'expo-linear-gradient';
-import { cssInterop } from 'nativewind';
 import {
   Platform,
   SafeAreaView as RNSafeAreaView,
@@ -15,7 +13,6 @@ import {
 } from 'react-native-safe-area-context';
 
 import { useRealtime } from '@/hooks/useRealtime';
-import { getColor } from '@/utils/getColor';
 
 interface ScreenContainerProps extends ViewProps {
   children: React.ReactNode;
@@ -23,10 +20,6 @@ interface ScreenContainerProps extends ViewProps {
   classNameBottom?: string;
   enableBottomSafeArea?: boolean;
 }
-
-const StyledGradient = cssInterop(LinearGradient, {
-  className: { target: 'style' },
-});
 
 const ScreenContainer: React.FC<ScreenContainerProps> = memo(
   function ScreenContainer({
@@ -64,18 +57,15 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
             style={isAndroid ? { paddingTop: insets.top } : {}}
           />
         )}
-        <StyledGradient
-          colors={[getColor('slate-50'), getColor('slate-50')]}
-          className="flex-1"
-        >
+        <View className={classes.container}>
           <SafeAreaView
             edges={enableBottomSafeArea && isAndroid ? ['bottom'] : []}
-            className={clsx(classes.container, className)}
+            className={clsx(classes.content, className)}
             {...props}
           >
             {children}
           </SafeAreaView>
-        </StyledGradient>
+        </View>
         <RNSafeAreaView
           className={clsx(classNameBottom, {
             'bg-slate-50': !classNameBottom?.includes('bg-'),
@@ -87,7 +77,8 @@ const ScreenContainer: React.FC<ScreenContainerProps> = memo(
 );
 
 const classes = {
-  container: 'flex-1',
+  container: 'flex-1 bg-off-white',
+  content: 'flex-1',
 };
 
 export default ScreenContainer;

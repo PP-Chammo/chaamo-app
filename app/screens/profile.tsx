@@ -51,6 +51,7 @@ export default function ProfileScreen() {
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 
   const { data, refetch } = useGetProfilesQuery({
+    fetchPolicy: 'cache-and-network',
     variables: {
       filter: {
         id: { eq: currentUser },

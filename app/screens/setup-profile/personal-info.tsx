@@ -21,6 +21,8 @@ import { useUpdateProfileMutation } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 import { UserStore } from '@/stores/userStore';
 import { DeepGet } from '@/types/helper';
+import { logout } from '@/utils/auth';
+import { uploadToBucket } from '@/utils/supabase';
 import { validateRequired, ValidationErrors } from '@/utils/validate';
 
 export default function PersonalInfoScreen() {
@@ -101,15 +103,40 @@ export default function PersonalInfoScreen() {
 
     const selectedImage = result.assets[0];
 
-    setForm({
-      ...form,
-      profile: { ...form.profile, profile_image_url: selectedImage.uri },
-    });
+    if (selectedImage?.uri) {
+      const uploadedUrl = await uploadToBucket(
+        selectedImage.uri,
+        'chaamo',
+        'profiles',
+      );
+
+      updateProfile({
+        variables: {
+          filter: {
+            id: { eq: form?.id },
+          },
+          set: {
+            profile_image_url: uploadedUrl,
+          },
+        },
+        onCompleted: ({ updateprofilesCollection }) => {
+          if (updateprofilesCollection?.records?.length) {
+            setForm({
+              ...form,
+              profile: {
+                ...profile,
+                profile_image_url: uploadedUrl,
+              },
+            });
+          }
+        },
+      });
+    }
   };
 
   return (
     <ScreenContainer>
-      <Header title="Setting Up Profile" />
+      <Header title="Setting Up Profile" onBackPress={logout} />
       <View className={classes.container}>
         <SetupProfileTabs />
         <KeyboardView>

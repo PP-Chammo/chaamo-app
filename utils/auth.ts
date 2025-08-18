@@ -2,7 +2,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { router } from 'expo-router';
 import { Alert } from 'react-native';
 
-import { UserProfile } from '@/domains';
+import { BaseProfile } from '@/domains';
 import {
   DocumentVerificationStatus,
   OrderByDirection,
@@ -70,7 +70,7 @@ export const updateProfileSession = async (
   setUser: (value: Partial<UserStore>) => void,
   callback: (
     success: boolean,
-    user?: UserProfile,
+    user?: BaseProfile,
     userDocument?: UserDocuments,
   ) => void,
 ) => {
@@ -98,6 +98,7 @@ export const updateProfileSession = async (
 
     if (data?.session) {
       const selectedProfile = await client.query({
+        fetchPolicy: 'network-only',
         query: getProfiles,
         variables: {
           filter: {
@@ -116,6 +117,7 @@ export const updateProfileSession = async (
         selectedProfile?.data?.profilesCollection?.edges?.[0]?.node;
 
       const selectedUserAddress = await client.query({
+        fetchPolicy: 'network-only',
         query: getUserAddresses,
         variables: {
           filter: {

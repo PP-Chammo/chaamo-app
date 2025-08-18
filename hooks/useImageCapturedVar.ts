@@ -1,5 +1,3 @@
-import { router, useLocalSearchParams } from 'expo-router';
-
 import {
   imageCapturedStore,
   ImageCapturedStore,
@@ -11,16 +9,15 @@ const imageCapturedVar =
 
 function useImageCapturedVar(): [
   ImageCapturedStore,
-  (image: ImageCapturedStore) => void,
+  (image: ImageCapturedStore, callback?: () => void) => void,
 ] {
-  const params = useLocalSearchParams();
   const imageState = imageCapturedVar.useVar();
-  const setImageCapturedVar = (image: ImageCapturedStore) => {
+  const setImageCapturedVar = (
+    image: ImageCapturedStore,
+    callback?: () => void,
+  ) => {
     imageCapturedVar.set(image);
-    router.push({
-      pathname: '/screens/setup-profile/document-captured',
-      params,
-    });
+    callback?.();
   };
   return [imageState, setImageCapturedVar];
 }

@@ -388,20 +388,24 @@ export default function ListingDetailScreen() {
         >
           <Label className={classes.contextMenuText}>Boost Post</Label>
         </TouchableOpacity>
-        <Divider position="horizontal" />
-        <TouchableOpacity
-          onPress={handleEditDetails}
-          className={classes.contextMenu}
-        >
-          <Label className={classes.contextMenuText}>Edit Details</Label>
-        </TouchableOpacity>
-        <Divider position="horizontal" />
-        <TouchableOpacity
-          onPress={handleDeletePopup}
-          className={classes.contextMenu}
-        >
-          <Label className={classes.deleteText}>Delete</Label>
-        </TouchableOpacity>
+        {detail?.listing_type !== ListingType.AUCTION && (
+          <>
+            <Divider position="horizontal" />
+            <TouchableOpacity
+              onPress={handleEditDetails}
+              className={classes.contextMenu}
+            >
+              <Label className={classes.contextMenuText}>Edit Details</Label>
+            </TouchableOpacity>
+            <Divider position="horizontal" />
+            <TouchableOpacity
+              onPress={handleDeletePopup}
+              className={classes.contextMenu}
+            >
+              <Label className={classes.deleteText}>Delete</Label>
+            </TouchableOpacity>
+          </>
+        )}
       </ContextMenu>
       <Modal
         visible={isDeletePopupVisible}

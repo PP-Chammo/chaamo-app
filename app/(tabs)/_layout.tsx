@@ -1,11 +1,37 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 
-import { Tabs } from 'expo-router';
+import { Tabs, useFocusEffect } from 'expo-router';
+import { View } from 'react-native';
 
-import { Icon } from '@/components/atoms';
+import { Icon, Label } from '@/components/atoms';
+import { useGetVwMyConversationsLazyQuery } from '@/generated/graphql';
 import { getColor } from '@/utils/getColor';
 
 export default function TabLayout() {
+  const [getVwMyConversations, { data }] = useGetVwMyConversationsLazyQuery({
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const conversations = useMemo(
+    () => data?.vw_myconversationsCollection?.edges ?? [],
+    [data],
+  );
+
+  const unreadTotal = useMemo(() => {
+    return conversations.reduce((sum, edge) => {
+      const c = edge?.node?.unread_count ?? 0;
+      return sum + (typeof c === 'number' ? c : 0);
+    }, 0);
+  }, [conversations]);
+
+  const unreadTotalText = unreadTotal > 99 ? '99+' : `${unreadTotal}`;
+
+  useFocusEffect(
+    useCallback(() => {
+      getVwMyConversations();
+    }, [getVwMyConversations]),
+  );
+
   return (
     <Tabs
       screenOptions={{
@@ -53,7 +79,14 @@ export default function TabLayout() {
           title: 'Inbox',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <Icon size={28} name="message-outline" color={color} />
+            <View className="relative">
+              <Icon size={28} name="message-outline" color={color} />
+              {!!unreadTotal && (
+                <Label className="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-red-500 rounded-full flex items-center justify-center text-white text-[10px]">
+                  {unreadTotalText}
+                </Label>
+              )}
+            </View>
           ),
         }}
       />

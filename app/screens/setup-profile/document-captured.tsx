@@ -17,6 +17,7 @@ import { useUserVar } from '@/hooks/useUserVar';
 import { uploadToBucket } from '@/utils/supabase';
 
 export default function IDCardCapturedScreen() {
+  const params = useLocalSearchParams();
   const [user] = useUserVar();
   const [imageCaptured, setImageCaptured] = useImageCapturedVar();
   const { type, title } = useLocalSearchParams();
@@ -26,8 +27,11 @@ export default function IDCardCapturedScreen() {
 
   const handleRetake = useCallback(() => {
     setImageCaptured(imageCaptured);
-    router.push('/screens/setup-profile/document-input');
-  }, [imageCaptured, setImageCaptured]);
+    router.replace({
+      pathname: '/screens/setup-profile/document-input',
+      params,
+    });
+  }, [imageCaptured, params, setImageCaptured]);
 
   const handleSubmit = useCallback(async () => {
     const uploadedUrl = await uploadToBucket(
