@@ -93,7 +93,7 @@ export default function ContactUs() {
           />
           <View className={classes.emailContainer}>
             <Label variant="title">Or Contact us by email</Label>
-            <Label>Email us at hello@chaamo.com</Label>
+            <Label>Email us at support@chaamo.com</Label>
           </View>
         </KeyboardView>
         <Button
