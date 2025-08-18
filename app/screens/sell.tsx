@@ -9,7 +9,6 @@ import React, {
 
 import { useFocusEffect } from '@react-navigation/native';
 import { formatISO, parse } from 'date-fns';
-import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { Alert, FlatList, View } from 'react-native';
@@ -28,6 +27,7 @@ import {
   TextArea,
   TextField,
 } from '@/components/molecules';
+import { Camera } from '@/components/organisms';
 import { conditions, conditionSells } from '@/constants/condition';
 import { currencySymbolMap } from '@/constants/currencies';
 import {
@@ -47,8 +47,10 @@ import {
   useUpdateUserCardMutation,
 } from '@/generated/graphql';
 import useDebounce from '@/hooks/useDebounce';
+import { useImageCapturedVar } from '@/hooks/useImageCapturedVar';
 import { initialSellFormState, useSellFormVar } from '@/hooks/useSellFormVar';
 import { useUserVar } from '@/hooks/useUserVar';
+import { imageCapturedStore } from '@/stores/imageCapturedStore';
 import { SellFormStore } from '@/stores/sellFormStore';
 import { SupportedCurrency } from '@/types/currency';
 import { getColor } from '@/utils/getColor';
@@ -85,6 +87,9 @@ export default function SellScreen() {
   const [getDetail, { data }] = useGetVwChaamoDetailLazyQuery();
   const hasProcessedCard = useRef(false);
   const hasResetForm = useRef(false);
+
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [imageCaptured, setImageCaptured] = useImageCapturedVar();
 
   const userCurrencySymbol = useMemo(() => {
     if (!user) return '$';
@@ -165,11 +170,11 @@ export default function SellScreen() {
         if (detail && !hasProcessedCard.current) {
           hasProcessedCard.current = true;
           hasResetForm.current = false;
+          setImageCaptured(imageCapturedStore);
           setForm({
             title: detail.name ?? '',
             description: detail.description ?? '',
             category_id: '4',
-            imageUrl: detail.image_url ?? '',
             start_price: detail.start_price ?? '',
             reserved_price: detail.reserve_price ?? '',
             end_time: detail.end_time ?? '',
@@ -183,9 +188,15 @@ export default function SellScreen() {
           hasProcessedCard.current = false;
           hasResetForm.current = true;
           setForm(structuredClone(initialSellFormState));
+          setImageCaptured(imageCapturedStore);
         }
       }
-    }, [cardId, data?.vw_chaamo_cardsCollection?.edges, setForm]),
+    }, [
+      cardId,
+      data?.vw_chaamo_cardsCollection?.edges,
+      setForm,
+      setImageCaptured,
+    ]),
   );
 
   const handleAutocompletePress = useCallback(
@@ -207,26 +218,13 @@ export default function SellScreen() {
     [setForm],
   );
 
-  const handlePickImage = useCallback(async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      return Alert.alert(
-        'Permission required',
-        'We need permission to access your photos.',
-      );
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      quality: 0.8,
-    });
-    if (result.canceled || !result.assets.length)
-      return Alert.alert('No image selected');
-    const selectedImage = result.assets[0];
-    setForm({ imageUrl: selectedImage.uri });
-  }, [setForm]);
+  const handleTakeImage = useCallback(async () => {
+    setIsCameraOpen(true);
+  }, []);
 
   const handleRemoveImage = useCallback(() => {
-    setForm({ imageUrl: '' });
-  }, [setForm]);
+    setImageCaptured(imageCapturedStore);
+  }, [setImageCaptured]);
 
   const handleCreateCard = useCallback(
     async (card: UserCardsInsertInput, listing: ListingsInsertInput) => {
@@ -284,6 +282,7 @@ export default function SellScreen() {
                 onError: console.log,
               }),
             ]);
+            setImageCaptured(imageCapturedStore);
           }
         },
         onError: console.log,
@@ -294,6 +293,7 @@ export default function SellScreen() {
       createUserCard,
       form.listing_type,
       setForm,
+      setImageCaptured,
       user?.id,
       user?.profile?.currency,
     ],
@@ -356,6 +356,7 @@ export default function SellScreen() {
                 onError: console.log,
               }),
             ]);
+            setImageCaptured(imageCapturedStore);
           }
         },
       });
@@ -364,6 +365,7 @@ export default function SellScreen() {
       cardId,
       form.listing_type,
       setForm,
+      setImageCaptured,
       updateListings,
       updateUserCard,
       user?.profile?.currency,
@@ -394,7 +396,7 @@ export default function SellScreen() {
 
     if (Object.keys(validationErrors).length === 0) {
       const uploadedUrl = await uploadToBucket(
-        form.imageUrl,
+        imageCaptured.uri,
         'chaamo',
         'user_cards',
       );
@@ -449,12 +451,26 @@ export default function SellScreen() {
     }
   }, [
     form,
+    imageCaptured.uri,
     user?.id,
     user?.profile?.currency,
     cardId,
     handleUpdateCard,
     handleCreateCard,
   ]);
+
+  const handleCloseCamera = useCallback(() => {
+    setIsCameraOpen(false);
+  }, []);
+
+  if (isCameraOpen) {
+    return (
+      <Camera
+        onTakeCallback={handleCloseCamera}
+        onBackPress={handleCloseCamera}
+      />
+    );
+  }
 
   return (
     <ScreenContainer>
@@ -465,9 +481,9 @@ export default function SellScreen() {
       <KeyboardView>
         <View className={classes.container}>
           <PhotoUpload
-            imageUrl={form.imageUrl}
-            onPick={handlePickImage}
-            onRemove={form.imageUrl ? handleRemoveImage : undefined}
+            imageUrl={imageCaptured.uri}
+            onPick={handleTakeImage}
+            onRemove={imageCaptured.uri ? handleRemoveImage : undefined}
           />
           <TextField
             name="title"

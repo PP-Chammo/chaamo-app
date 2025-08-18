@@ -6,6 +6,8 @@ import {
   Fortnite,
   Futera,
   GarbagePailKids,
+  Leaf,
+  Lorcana,
   Marvel,
   Panini,
   PokeMon,
@@ -28,6 +30,8 @@ export const imageCategories: Record<string, React.FC<SvgProps>> = {
   Poker: Poker,
   Wrestling: Wrestling,
   'Yu-Gi-Oh!': YuGiOh,
+  Lorcana: Lorcana,
+  Leaf: Leaf,
 };
 
 export const typeCategories: Record<string, string> = {

@@ -21,9 +21,10 @@ export default function DocumentProgressScreen() {
           ID Verification in Progress
         </Label>
         <Label className={classes.description}>
-          Thank you! Your ID verification is in process and will be completed
-          within 1 business day. You can use the app with some features
-          restricted until your ID isn’t verified. We appreciate your patience.
+          Thank you! Your ID verification is being processed and will be
+          completed within 72hrs. You can still use the app, however if your ID
+          has been rejected access to the app will be restricted. We appreciate
+          your patience.
         </Label>
       </View>
       <Button className={classes.button} onPress={handleContinue}>

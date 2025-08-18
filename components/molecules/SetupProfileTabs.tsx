@@ -25,12 +25,18 @@ const SetupProfileTabs = memo(function SetupProfileTabs() {
           return 'active';
         };
 
+        const handlePress = () => {
+          if (!isActive) {
+            router.push(tab.route as Href);
+          }
+        };
+
         return (
           <Pressable
             key={tab.route}
             testID={`tab-${tab.route.split('/').pop()}`}
             className={classes.tabContainer}
-            onPress={() => router.push(tab.route as Href)}
+            onPress={handlePress}
           >
             <Text
               testID={`tab-title-${tab.route}`}

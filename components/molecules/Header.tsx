@@ -15,6 +15,7 @@ interface HeaderProps {
   rightIconColor?: IconProp['color'];
   rightIconSize?: IconProp['size'];
   leftComponent?: React.ReactNode;
+  leftIconColor?: IconProp['color'];
   rightRef?: React.RefObject<View | null>;
 }
 
@@ -26,6 +27,7 @@ const Header: React.FC<HeaderProps> = memo(function Header({
   onBackPress,
   onRightPress,
   className,
+  leftIconColor,
   rightIcon,
   rightIconColor,
   rightIconSize,
@@ -39,7 +41,11 @@ const Header: React.FC<HeaderProps> = memo(function Header({
           onPress={onBackPress}
           className={classes.buttonContainerLeft}
         >
-          <Icon name="arrow-left" size={24} color={getColor('slate-700')} />
+          <Icon
+            name="arrow-left"
+            size={24}
+            color={getColor(leftIconColor ?? 'slate-700')}
+          />
         </TouchableOpacity>
       ) : (
         <View className={classes.buttonContainerLeft} />

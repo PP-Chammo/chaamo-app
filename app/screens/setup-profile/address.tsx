@@ -11,7 +11,10 @@ import {
   TextField,
 } from '@/components/molecules';
 import { Country, State, TextChangeParams } from '@/domains';
-import { useUpdateUserAddressMutation } from '@/generated/graphql';
+import {
+  useCreateUserAddressMutation,
+  useUpdateUserAddressMutation,
+} from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 import { UserStore } from '@/stores/userStore';
 import { DeepGet } from '@/types/helper';
@@ -27,7 +30,10 @@ export default function AddressScreen() {
   const [countries, setCountries] = useState<Country[]>([]);
   const [states, setStates] = useState<State[]>([]);
 
-  const [updateUserAddress, { loading }] = useUpdateUserAddressMutation();
+  const [updateUserAddress, { loading: isUpdatingUserAddress }] =
+    useUpdateUserAddressMutation();
+  const [createUserAddress, { loading: isCreatingUserAddress }] =
+    useCreateUserAddressMutation();
 
   const handleChange = useCallback(
     ({ name, value }: TextChangeParams) => {
@@ -67,28 +73,56 @@ export default function AddressScreen() {
       return;
     }
 
-    updateUserAddress({
-      variables: {
-        set: {
-          address_line_1: form.profile?.address_line_1 ?? '',
-          city: form.profile?.city ?? '',
-          state_province: form.profile?.state_province ?? '',
-          country: form.profile?.country ?? '',
-          postal_code: form.profile?.postal_code ?? '',
-        },
-        filter: {
-          user_id: {
-            eq: profile?.id,
+    if (!!profile?.user_addresses_id) {
+      updateUserAddress({
+        variables: {
+          set: {
+            address_line_1: form.profile?.address_line_1 ?? '',
+            city: form.profile?.city ?? '',
+            state_province: form.profile?.state_province ?? '',
+            country: form.profile?.country ?? '',
+            postal_code: form.profile?.postal_code ?? '',
+          },
+          filter: {
+            user_id: {
+              eq: profile?.id,
+            },
           },
         },
-      },
-      onCompleted: ({ updateuser_addressesCollection }) => {
-        if (updateuser_addressesCollection?.records?.length) {
-          router.push('/screens/setup-profile/document-upload-selection');
-        }
-      },
-    });
-  }, [form, profile, updateUserAddress]);
+        onCompleted: ({ updateuser_addressesCollection }) => {
+          if (updateuser_addressesCollection?.records?.length) {
+            router.push('/screens/setup-profile/document-upload-selection');
+          }
+        },
+      });
+    } else {
+      createUserAddress({
+        variables: {
+          objects: [
+            {
+              user_id: profile?.id,
+              address_line_1: form.profile?.address_line_1 ?? '',
+              city: form.profile?.city ?? '',
+              state_province: form.profile?.state_province ?? '',
+              country: form.profile?.country ?? '',
+              postal_code: form.profile?.postal_code ?? '',
+            },
+          ],
+        },
+        onCompleted: ({ insertIntouser_addressesCollection }) => {
+          if (insertIntouser_addressesCollection?.records?.length) {
+            router.push('/screens/setup-profile/document-upload-selection');
+          }
+        },
+      });
+    }
+  }, [
+    createUserAddress,
+    form.profile,
+    profile?.id,
+    profile?.user_addresses_id,
+    updateUserAddress,
+  ]);
 
   const lazyLoad = useCallback(async () => {
     const countriesData = await import('@/assets/data/countries.json');
@@ -175,8 +209,8 @@ export default function AddressScreen() {
             size="large"
             onPress={handleSubmit}
             className={classes.button}
-            disabled={loading}
-            loading={loading}
+            disabled={isUpdatingUserAddress || isCreatingUserAddress}
+            loading={isUpdatingUserAddress || isCreatingUserAddress}
           >
             Continue
           </Button>

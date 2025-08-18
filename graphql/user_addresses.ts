@@ -5,12 +5,23 @@ export const getUserAddresses = gql`
     user_addressesCollection(filter: $filter) {
       edges {
         node {
+          user_addresses_id: id
           address_line_1
           city
           state_province
           country
           postal_code
         }
+      }
+    }
+  }
+`;
+
+export const createUserAddress = gql`
+  mutation CreateUserAddress($objects: [user_addressesInsertInput!]!) {
+    insertIntouser_addressesCollection(objects: $objects) {
+      records {
+        id
       }
     }
   }

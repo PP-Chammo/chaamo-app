@@ -22,6 +22,7 @@ module.exports = {
           800: '#0c625f',
           900: '#064943',
         },
+        'off-white': '#F9FBFA',
         splash: '#11b39b',
       },
       spacing: {

@@ -5,7 +5,6 @@ import { View } from 'react-native';
 
 import {
   BankAccount,
-  Button,
   Divider,
   Icon,
   Label,
@@ -15,6 +14,8 @@ import { Header } from '@/components/molecules';
 import { getColor } from '@/utils/getColor';
 
 export default function WalletScreen() {
+  const hasBankAccount = false;
+  const hasPendingBalance = false;
   return (
     <ScreenContainer>
       <Header title="Wallet" onBackPress={() => router.back()} />
@@ -23,36 +24,32 @@ export default function WalletScreen() {
           <Label className={classes.availableBalanceText}>
             Available Balance
           </Label>
-          <Label variant="title">$2000</Label>
-          <Button className={classes.withdrawButton}>
-            Withdraw to back account
-          </Button>
-          <Divider position="horizontal" className={classes.divider} />
-          <View className={classes.statusContainer}>
-            <Label className={classes.statusTitle}>Pending</Label>
-            <View className={classes.statusAmountContainer}>
-              <Label className={classes.statusAmount}>$500</Label>
-              <Icon
-                name="information-outline"
-                size={24}
-                color={getColor('slate-400')}
-              />
-            </View>
-          </View>
+          <Label variant="title">$0</Label>
+          {hasPendingBalance && (
+            <>
+              <Divider position="horizontal" className={classes.divider} />
+              <View className={classes.statusContainer}>
+                <Label className={classes.statusTitle}>Pending</Label>
+                <View className={classes.statusAmountContainer}>
+                  <Label className={classes.statusAmount}>$500</Label>
+                  <Icon
+                    name="information-outline"
+                    size={24}
+                    color={getColor('slate-400')}
+                  />
+                </View>
+              </View>
+            </>
+          )}
         </View>
 
         <View className={classes.withdrawContainer}>
           <Label className={classes.withdrawTitle}>Withdraw Methods</Label>
-          <Button
-            variant="primary-light"
-            className={classes.addMethodButton}
-            onPress={() => router.push('/screens/wallets/add-bank-account')}
-          >
-            Add a method
-          </Button>
-          <View className={classes.bankAccountsContainer}>
-            <BankAccount cardNumber="6754" onPress={() => {}} />
-          </View>
+          {hasBankAccount && (
+            <View className={classes.bankAccountsContainer}>
+              <BankAccount cardNumber="6754" onPress={() => {}} />
+            </View>
+          )}
         </View>
       </View>
     </ScreenContainer>

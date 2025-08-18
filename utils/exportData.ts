@@ -63,6 +63,7 @@ const getPersonalInfo = async (user: UserStore): Promise<PersonalInfo> => {
       is_profile_complete: user?.profile?.is_profile_complete ?? false,
     },
     address: {
+      user_addresses_id: user?.profile?.user_addresses_id ?? '',
       address_line_1: user?.profile?.address_line_1 ?? '',
       city: user?.profile?.city ?? '',
       state_province: user?.profile?.state_province ?? '',

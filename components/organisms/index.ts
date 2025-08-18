@@ -1,3 +1,4 @@
+export { default as Camera } from '../organisms/Camera';
 export { default as AccountBar } from './AccountBar';
 export { default as AuctionList } from './AuctionList';
 export { default as BlockList } from './BlockList';
@@ -12,8 +13,8 @@ export { default as NotificationList } from './NotificationList';
 export { default as PaymentForm } from './PaymentForm';
 export { default as PeopleList } from './PeopleList';
 export { default as PortfolioProfile } from './PortfolioProfile';
-export { default as ProductAuctionList } from './ProductAuctionList';
 export { default as ProductAllList } from './ProductAllList';
+export { default as ProductAuctionList } from './ProductAuctionList';
 export { default as ProductFixedList } from './ProductFixedList';
 export { default as RecentlyAddedList } from './RecentlyAddedList';
 export { default as ReviewsProfile } from './ReviewsProfile';

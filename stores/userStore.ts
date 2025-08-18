@@ -1,9 +1,9 @@
 import { User } from '@supabase/supabase-js';
 
-import { UserAddress, UserProfile } from '@/domains';
+import { BaseProfile, BaseUserAddress } from '@/domains';
 import { SupportedCurrency } from '@/types/currency';
 
-type ProfileAndAddress = UserProfile & UserAddress;
+type ProfileAndAddress = BaseProfile & BaseUserAddress;
 
 interface ProfileWithAddress extends ProfileAndAddress {
   email: string;
