@@ -775,6 +775,19 @@ jest.mock('react-native-screens', () => ({
 
 jest.mock('react-native-webview', () => 'WebView');
 
+// Mock Sentry to avoid requiring native bindings in tests
+jest.mock('@sentry/react-native', () => ({
+  init: jest.fn(),
+  wrap: (Component) => Component,
+  captureException: jest.fn(),
+  captureMessage: jest.fn(),
+  getGlobalScope: () => ({
+    setTag: jest.fn(),
+    setUser: jest.fn(),
+    setContext: jest.fn(),
+  }),
+}));
+
 jest.mock('@expo/vector-icons', () => ({
   MaterialCommunityIcons: 'MaterialCommunityIcons',
   MaterialIcons: 'MaterialIcons',
