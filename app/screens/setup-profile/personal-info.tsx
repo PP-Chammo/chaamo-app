@@ -174,6 +174,7 @@ export default function PersonalInfoScreen() {
             countryCode={profile?.country_code ?? ''}
             onChange={handleChange}
             error={errors.phone_number}
+            required
           />
         </KeyboardView>
         <Button

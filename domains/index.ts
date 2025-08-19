@@ -1,4 +1,5 @@
 export { Country, State } from './address.types';
+export { SendEmailProps } from './email.types';
 export { BooleanChangeParams, TextChangeParams } from './input.types';
 export {
   BaseNotification,

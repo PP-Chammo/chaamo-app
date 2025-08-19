@@ -18,13 +18,16 @@ import {
 } from '@/generated/graphql';
 import { useBlockedUsers } from '@/hooks/useBlockedUsers';
 import { useUserVar } from '@/hooks/useUserVar';
-import { logout } from '@/utils/auth';
+import { deleteAccount, logout } from '@/utils/auth';
+import { sendAccountDeletionEmail } from '@/utils/email';
 import { exportUserData } from '@/utils/exportData';
 import { getColor } from '@/utils/getColor';
 
 export default function SettingsScreen() {
   const [user] = useUserVar();
   const { blockedUsers } = useBlockedUsers();
+
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
   const [isDeleteAccountModalVisible, setIsDeleteAccountModalVisible] =
     useState<boolean>(false);
@@ -48,49 +51,74 @@ export default function SettingsScreen() {
 
   const [getNotifications] = useGetNotificationsLazyQuery();
 
-  const handleExportPress = useCallback(async () => {
-    await Alert.alert(
-      'Export Data',
-      'Are you sure you want to export your data?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Export',
-          onPress: async () => {
-            const { data } = await getNotifications({
-              variables: {
-                filter: {
-                  user_id: { eq: user.id },
-                },
-              },
-            });
+  const handleDeleteAccountModal = useCallback(() => {
+    setIsDeleteAccountModalVisible(!isDeleteAccountModalVisible);
+  }, [isDeleteAccountModalVisible]);
 
-            const notifications =
-              data?.notificationsCollection?.edges?.map(
-                (notification) => notification?.node,
-              ) ?? [];
+  const handleDeleteAccount = useCallback(async () => {
+    try {
+      setIsDeletingAccount(true);
 
-            const notificationPreferences =
-              userNotificationSettingsData?.user_notification_settingsCollection?.edges?.map(
-                (setting) => setting?.node,
-              ) ?? [];
-
-            const activityData = {
-              notifications,
-            };
-
-            const settings = {
-              notificationPreferences,
-            };
-
-            exportUserData(user, activityData, settings);
+      await deleteAccount(async () => {
+        Alert.alert('Success', 'Account deleted successfully', [
+          {
+            text: 'OK',
+            onPress: handleDeleteAccountModal,
           },
+        ]);
+
+        await sendAccountDeletionEmail(
+          user?.email ?? '',
+          user?.profile?.username,
+        );
+      });
+    } catch {
+      Alert.alert('Error', 'Failed to delete account');
+      setIsDeletingAccount(false);
+    } finally {
+      setIsDeletingAccount(false);
+    }
+  }, [handleDeleteAccountModal, user?.email, user?.profile?.username]);
+
+  const handleExportPress = useCallback(async () => {
+    Alert.alert('Export Data', 'Are you sure you want to export your data?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Export',
+        onPress: async () => {
+          const { data } = await getNotifications({
+            variables: {
+              filter: {
+                user_id: { eq: user.id },
+              },
+            },
+          });
+
+          const notifications =
+            data?.notificationsCollection?.edges?.map(
+              (notification) => notification?.node,
+            ) ?? [];
+
+          const notificationPreferences =
+            userNotificationSettingsData?.user_notification_settingsCollection?.edges?.map(
+              (setting) => setting?.node,
+            ) ?? [];
+
+          const activityData = {
+            notifications,
+          };
+
+          const settings = {
+            notificationPreferences,
+          };
+
+          exportUserData(user, activityData, settings);
         },
-      ],
-    );
+      },
+    ]);
   }, [
     getNotifications,
     user,
@@ -116,10 +144,6 @@ export default function SettingsScreen() {
         ?.length,
     ],
   );
-
-  const handleDeleteAccount = useCallback(() => {
-    setIsDeleteAccountModalVisible(!isDeleteAccountModalVisible);
-  }, [isDeleteAccountModalVisible]);
 
   const handleLogout = useCallback(() => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
@@ -230,7 +254,7 @@ export default function SettingsScreen() {
               iconName="delete-outline"
               iconColor={getColor('red-500')}
               title="Delete my account"
-              onPress={handleDeleteAccount}
+              onPress={handleDeleteAccountModal}
             />
             <SettingItem
               iconName="logout"
@@ -245,7 +269,7 @@ export default function SettingsScreen() {
       {/* Delete Account Modal */}
       <Modal
         visible={isDeleteAccountModalVisible}
-        onClose={handleDeleteAccount}
+        onClose={handleDeleteAccountModal}
         className={classes.deleteAccountModal}
       >
         <Label className={classes.deleteAccountModalTitle}>
@@ -260,11 +284,14 @@ export default function SettingsScreen() {
           variant="ghost"
           className={classes.deleteAccountModalButton}
           textClassName={classes.deleteAccountModalButtonText}
+          onPress={handleDeleteAccount}
+          disabled={isDeletingAccount}
+          loading={isDeletingAccount}
         >
           Delete
         </Button>
         <Divider position="horizontal" />
-        <Button variant="ghost" onPress={handleDeleteAccount}>
+        <Button variant="ghost" onPress={handleDeleteAccountModal}>
           Cancel
         </Button>
       </Modal>
