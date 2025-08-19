@@ -22,7 +22,9 @@
     "fix": "npm run lint:fix && npm run prettier:fix",
     "codegen": "dotenv -e .env -- graphql-codegen --config codegen.yml",
     "build:android": "react-native build-android --mode=release",
-    "build:android:apk": "expo run:android --variant release"
+    "build:android:apk": "expo run:android --variant release",
+    "sentry:upload-update": "npx sentry-expo-upload-sourcemaps dist",
+    "sentry:test-error": "node -e \"throw new Error('Sentry test error');\""
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",
@@ -82,7 +84,8 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5",
-    "zustand": "^5.0.5"
+    "zustand": "^5.0.5",
+    "@sentry/react-native": "^5.36.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
