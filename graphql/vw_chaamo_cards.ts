@@ -44,6 +44,7 @@ export const getVwChaamoDetail = gql`
           currency
           start_price
           reserve_price
+          highest_bid_currency
           highest_bid_price
           last_sold_currency
           last_sold_price

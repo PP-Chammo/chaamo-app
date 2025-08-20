@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 
+import { useQuery } from '@apollo/client';
 import { router, useFocusEffect } from 'expo-router';
 import { Alert, TouchableOpacity, View } from 'react-native';
 
@@ -13,7 +14,7 @@ import {
 import { Header } from '@/components/molecules';
 import { NotificationList } from '@/components/organisms';
 import { BaseNotification, FlatData } from '@/domains';
-import { useGetNotificationsQuery } from '@/generated/graphql';
+import { getNotifications } from '@/graphql/notifications';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
 import { groupNotificationsByDate } from '@/utils/notification';
@@ -24,7 +25,7 @@ export default function Notifications() {
 
   const [user] = useUserVar();
 
-  const { data: notificationData } = useGetNotificationsQuery({
+  const { data: notificationData } = useQuery(getNotifications, {
     skip: !user?.id,
     variables: {
       filter: {
@@ -36,7 +37,7 @@ export default function Notifications() {
   const notifications = useMemo(
     () =>
       notificationData?.notificationsCollection?.edges?.map(
-        (edge) => edge.node,
+        (edge: { node: BaseNotification }) => edge.node,
       ) ?? [],
     [notificationData?.notificationsCollection?.edges],
   );

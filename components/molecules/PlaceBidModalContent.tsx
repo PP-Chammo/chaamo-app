@@ -11,18 +11,18 @@ import { formatElapsedTime } from '@/utils/date';
 
 interface PlaceBidModalContentProps {
   id: string;
+  sellerId: string;
   minimumBidAmount: string;
   currentBidAmount: string;
-  highestBidAmount: string;
   endDate: string;
   onDismiss: () => void;
 }
 
 const PlaceBidModalContent: React.FC<PlaceBidModalContentProps> = ({
   id,
+  sellerId,
   minimumBidAmount,
   currentBidAmount,
-  highestBidAmount,
   endDate,
   onDismiss,
 }) => {
@@ -36,9 +36,9 @@ const PlaceBidModalContent: React.FC<PlaceBidModalContentProps> = ({
 
   const quickBids = useMemo(() => {
     return [
-      Number(currentBidAmount) + Number(minimumBidAmount),
-      Number(currentBidAmount) + Number(minimumBidAmount) * 1.5,
-      Number(currentBidAmount) + Number(minimumBidAmount) * 3,
+      (Number(currentBidAmount) + Number(minimumBidAmount)).toFixed(2),
+      (Number(currentBidAmount) + Number(minimumBidAmount) * 1.5).toFixed(2),
+      (Number(currentBidAmount) + Number(minimumBidAmount) * 3).toFixed(2),
     ];
   }, [currentBidAmount, minimumBidAmount]);
 
@@ -46,7 +46,7 @@ const PlaceBidModalContent: React.FC<PlaceBidModalContentProps> = ({
     return currencySymbolMap[user.profile?.currency ?? 'USD'];
   }, [user.profile?.currency]);
 
-  const handleQuickBid = (value: number, idx: number) => {
+  const handleQuickBid = (value: string, idx: number) => {
     setBid(String(value));
     setSelected(idx);
   };
@@ -58,6 +58,8 @@ const PlaceBidModalContent: React.FC<PlaceBidModalContentProps> = ({
           {
             listing_id: id,
             buyer_id: user.id,
+            seller_id: sellerId,
+            bid_currency: user.profile?.currency,
             bid_amount: Number(bid).toFixed(2),
           },
         ],
@@ -80,7 +82,15 @@ const PlaceBidModalContent: React.FC<PlaceBidModalContentProps> = ({
         ]);
       },
     });
-  }, [bid, createBids, id, onDismiss, user.id]);
+  }, [
+    bid,
+    createBids,
+    id,
+    onDismiss,
+    user.id,
+    user.profile?.currency,
+    sellerId,
+  ]);
 
   return (
     <View className={classes.container}>

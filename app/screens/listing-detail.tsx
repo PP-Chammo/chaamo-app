@@ -207,7 +207,7 @@ export default function ListingDetailScreen() {
           <AuctionDetailBottomBar
             showModal={showModal}
             highestBidPrice={formatDisplay(
-              detail?.currency,
+              detail?.highest_bid_currency,
               detail?.highest_bid_price ?? detail?.reserve_price ?? 0,
             )}
             endDate={detail?.end_time ?? new Date()}
@@ -221,13 +221,17 @@ export default function ListingDetailScreen() {
           >
             <PlaceBidModalContent
               id={detail?.id ?? ''}
-              minimumBidAmount={detail?.reserve_price ?? 0}
-              currentBidAmount={
-                detail?.highest_bid_price ?? detail?.reserve_price ?? 0
-              }
-              highestBidAmount={
-                detail?.highest_bid_price ?? detail?.reserve_price ?? 0
-              }
+              sellerId={detail?.seller_id ?? ''}
+              minimumBidAmount={formatDisplay(
+                detail?.currency,
+                detail?.reserve_price ?? 0,
+                { showSymbol: false },
+              )}
+              currentBidAmount={formatDisplay(
+                detail?.highest_bid_currency,
+                detail?.highest_bid_price ?? detail?.reserve_price ?? 0,
+                { showSymbol: false },
+              )}
               endDate={detail?.end_time ?? new Date()}
               onDismiss={() => setShowModal(false)}
             />
@@ -260,11 +264,12 @@ export default function ListingDetailScreen() {
   }, [
     isSeller,
     detail?.listing_type,
-    detail?.currency,
+    detail?.highest_bid_currency,
     detail?.highest_bid_price,
     detail?.reserve_price,
     detail?.end_time,
     detail?.id,
+    detail?.currency,
     detail?.seller_id,
     showModal,
     formatDisplay,
@@ -355,6 +360,7 @@ export default function ListingDetailScreen() {
           <Chart data={dummyPortfolioValueData} />
         </View>
         <ListedByList
+          listingId={detail?.id ?? ''}
           userId={detail?.seller_id ?? ''}
           imageUrl={detail?.seller_image_url ?? ''}
           username={detail?.seller_username ?? ''}

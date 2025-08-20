@@ -1,16 +1,17 @@
 import { memo, useMemo } from 'react';
 
+import { useQuery } from '@apollo/client';
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import { Label, Row } from '@/components/atoms';
 import { ButtonIcon } from '@/components/molecules';
-import { useGetNotificationsQuery } from '@/generated/graphql';
+import { getNotifications } from '@/graphql/notifications';
 import { useUserVar } from '@/hooks/useUserVar';
 
 const AccountBar = memo(function AccountBar() {
   const [user] = useUserVar();
-  const { data } = useGetNotificationsQuery({
+  const { data } = useQuery(getNotifications, {
     skip: !user?.id,
     variables: {
       filter: {

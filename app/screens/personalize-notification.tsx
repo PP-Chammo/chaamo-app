@@ -34,9 +34,9 @@ export default function SettingsScreen() {
       },
     });
 
-  const [updateNotificationSetting] =
+  const [updateNotificationSetting, { loading: isUpdating }] =
     useUpdateUserNotificationSettingsMutation();
-  const [createNotificationSetting] =
+  const [createNotificationSetting, { loading: isCreating }] =
     useCreateUserNotificationSettingsMutation();
 
   const notificationTypes = useMemo(() => {
@@ -166,6 +166,7 @@ export default function SettingsScreen() {
             onValueChange={() =>
               handleToggleNotification(item as NotificationSetting)
             }
+            disabled={isUpdating || isCreating}
           />
         ))}
       </ScrollView>
