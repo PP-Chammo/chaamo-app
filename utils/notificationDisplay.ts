@@ -1,13 +1,7 @@
 import { BaseNotification } from '@/domains';
 import { NotificationType } from '@/generated/graphql';
 
-// Converts strings like "new_bid" or "auction_won" to "New Bid" / "Auction Won"
-const toTitle = (s: string) =>
-  s
-    .replace(/_/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .replace(/\b\w/g, (m) => m.toUpperCase());
+import { titleCase } from './char';
 
 /**
  * Returns a user-friendly category name for a notification.
@@ -19,6 +13,6 @@ type CompatNotification = BaseNotification & {
 
 export function getNotificationCategory(n: CompatNotification): string {
   const enumType = n.type as string | null | undefined;
-  if (enumType) return toTitle(enumType);
+  if (enumType) return titleCase(enumType);
   return 'Unknown';
 }

@@ -1,4 +1,5 @@
 import { BaseNotification } from '@/domains';
+import { NotificationType } from '@/generated/graphql';
 
 import { groupNotificationsByDate } from '../notification';
 
@@ -13,7 +14,7 @@ describe('groupNotificationsByDate', () => {
         id: 1,
         content: 'Shipped!',
         created_at: '2024-06-01T10:00:00Z',
-        type: 'ORDER_SHIPPED',
+        type: NotificationType.ITEM_SHIPPED,
       },
     ];
     const result = groupNotificationsByDate(notifications);
@@ -27,19 +28,19 @@ describe('groupNotificationsByDate', () => {
         id: 1,
         content: 'Shipped!',
         created_at: '2024-06-01T10:00:00Z',
-        type: 'ORDER_SHIPPED',
+        type: NotificationType.ITEM_SHIPPED,
       },
       {
         id: 2,
-        content: 'Bid placed!',
+        content: 'You have a new bid on your listing!',
         created_at: '2024-06-01T12:00:00Z',
-        type: 'NEW_BID',
+        type: NotificationType.NEW_OFFER,
       },
       {
         id: 3,
-        content: 'Ending soon!',
+        content: 'You have won the auction!',
         created_at: '2024-06-02T09:00:00Z',
-        type: 'BID_ENDING',
+        type: NotificationType.AUCTION_WON,
       },
     ];
     const result = groupNotificationsByDate(notifications);
@@ -52,15 +53,15 @@ describe('groupNotificationsByDate', () => {
     const notifications: BaseNotification[] = [
       {
         id: 1,
-        content: 'Shipped!',
+        content: 'Item delivered!',
         created_at: '2024-06-01T10:00:00Z',
-        type: 'ORDER_SHIPPED',
+        type: NotificationType.ITEM_DELIVERED,
       },
       {
         id: 2,
-        content: 'Ending soon!',
+        content: 'You have won the auction!',
         created_at: '2024-06-02T09:00:00Z',
-        type: 'BID_ENDING',
+        type: NotificationType.AUCTION_WON,
       },
     ];
     const result = groupNotificationsByDate(notifications);

@@ -5,67 +5,68 @@ import { ScrollView } from 'react-native';
 
 import { ScreenContainer } from '@/components/atoms';
 import { Header, SwitchInput } from '@/components/molecules';
-import { NotificationType } from '@/domains/notification.types';
+import { NotificationSetting } from '@/domains/notification.types';
 import {
+  NotificationType as ListNotificationType,
   useCreateUserNotificationSettingsMutation,
+  useGetUserNotificationSettingsQuery,
   useUpdateUserNotificationSettingsMutation,
 } from '@/generated/graphql';
+import { getUserNotificationSettings } from '@/graphql/user_notification_settings';
 import { useUserVar } from '@/hooks/useUserVar';
+import { titleCase } from '@/utils/char';
 
 export default function SettingsScreen() {
   const [user] = useUserVar();
-  const [, setLocalNotificationSettings] = useState<Record<string, boolean>>(
-    {},
-  );
+  const [localNotificationSettings, setLocalNotificationSettings] = useState<
+    Record<string, boolean>
+  >({});
 
-  // const { data: notificationTypesData } = useGetNotificationTypesQuery({
-  //   fetchPolicy: 'cache-and-network',
-  // });
+  const { data: userNotificationSettingsData } =
+    useGetUserNotificationSettingsQuery({
+      fetchPolicy: 'cache-and-network',
+      variables: {
+        filter: {
+          user_id: {
+            eq: user.id,
+          },
+        },
+      },
+    });
 
-  // const { data: userNotificationSettingsData } =
-  //   useGetUserNotificationSettingsQuery({
-  //     variables: {
-  //       filter: {
-  //         user_id: {
-  //           eq: user.id,
-  //         },
-  //       },
-  //     },
-  //   });
-
-  const [updateNotificationSetting] =
+  const [updateNotificationSetting, { loading: isUpdating }] =
     useUpdateUserNotificationSettingsMutation();
-  const [createNotificationSetting] =
+  const [createNotificationSetting, { loading: isCreating }] =
     useCreateUserNotificationSettingsMutation();
 
-  const notificationTypes = useMemo<NotificationType[]>(() => {
-    // const userNotificationSettings =
-    //   userNotificationSettingsData?.user_notification_settingsCollection
-    //     ?.edges ?? [];
+  const notificationTypes = useMemo(() => {
+    const notificationTypes = Object.values(ListNotificationType);
 
-    // TODO: If backend provides an enum of notification types, map it here.
-    // For now, return an empty list to avoid depending on the removed notification_types table.
-    return [];
+    const userNotificationSettings =
+      userNotificationSettingsData?.user_notification_settingsCollection
+        ?.edges ?? [];
 
-    // return notificationTypesData?.notification_typesCollection?.edges?.map(
-    //   (edge) => {
-    //     const currentUserNotification = userNotificationSettings?.find(
-    //       (item) => item.node.notification_type_id === edge.node.id,
-    //     );
-    //     const serverValue = currentUserNotification?.node.is_enabled || false;
-    //     const localValue = localNotificationSettings[edge.node.id];
+    return notificationTypes?.map((type) => {
+      const currentUserNotification = userNotificationSettings?.find(
+        (item) => item.node.notification_type === type,
+      );
+      const serverValue = currentUserNotification?.node.is_enabled || false;
+      const localValue = localNotificationSettings[type];
 
-    //     return {
-    //       ...edge?.node,
-    //       hasNotificationSettingServer: !!currentUserNotification,
-    //       value: localValue ?? serverValue,
-    //     };
-    //   },
-    // );
-  }, []);
+      return {
+        id: type,
+        notification_type: titleCase(type),
+        hasNotificationSettingServer: !!currentUserNotification,
+        value: localValue ?? serverValue,
+      };
+    });
+  }, [
+    localNotificationSettings,
+    userNotificationSettingsData?.user_notification_settingsCollection?.edges,
+  ]);
 
   const handleToggleNotification = useCallback(
-    (notification: NotificationType) => {
+    (notification: NotificationSetting) => {
       const { id, value, hasNotificationSettingServer } = notification ?? {};
 
       setLocalNotificationSettings((prev) => ({
@@ -80,15 +81,27 @@ export default function SettingsScreen() {
               is_enabled: !value,
             },
             filter: {
-              //FIXME: Update to use notification_type enum
-              // notification_type_id: {
-              //   eq: id,
-              // },
+              notification_type: {
+                eq: id,
+              },
               user_id: {
                 eq: user.id,
               },
             },
           },
+          refetchQueries: [
+            {
+              query: getUserNotificationSettings,
+              variables: {
+                filter: {
+                  user_id: {
+                    eq: user.id,
+                  },
+                },
+              },
+            },
+          ],
+          awaitRefetchQueries: true,
           onError: (error) => {
             setLocalNotificationSettings((prev) => ({
               ...prev,
@@ -103,12 +116,24 @@ export default function SettingsScreen() {
             objects: [
               {
                 user_id: user.id,
-                //FIXME: Update to use notification_type enum
-                // notification_type_id: id,
+                notification_type: id,
                 is_enabled: !value,
               },
             ],
           },
+          refetchQueries: [
+            {
+              query: getUserNotificationSettings,
+              variables: {
+                filter: {
+                  user_id: {
+                    eq: user.id,
+                  },
+                },
+              },
+            },
+          ],
+          awaitRefetchQueries: true,
           onError: (error) => {
             setLocalNotificationSettings((prev) => ({
               ...prev,
@@ -135,10 +160,13 @@ export default function SettingsScreen() {
       >
         {notificationTypes?.map((item) => (
           <SwitchInput
-            key={item.id}
-            label={item.name}
+            key={item.notification_type}
+            label={item.notification_type}
             value={item.value}
-            onValueChange={() => handleToggleNotification(item)}
+            onValueChange={() =>
+              handleToggleNotification(item as NotificationSetting)
+            }
+            disabled={isUpdating || isCreating}
           />
         ))}
       </ScrollView>
