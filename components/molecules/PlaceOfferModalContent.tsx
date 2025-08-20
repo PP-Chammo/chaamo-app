@@ -36,6 +36,7 @@ const PlaceOfferModalContent: React.FC<PlaceOfferModalContentProps> = ({
             listing_id: id,
             buyer_id: user.id,
             seller_id: sellerId,
+            offer_currency: user.profile?.currency,
             offer_amount: Number(offer).toFixed(2),
           },
         ],
@@ -58,7 +59,15 @@ const PlaceOfferModalContent: React.FC<PlaceOfferModalContentProps> = ({
         ]);
       },
     });
-  }, [createOffers, id, offer, onDismiss, sellerId, user.id]);
+  }, [
+    createOffers,
+    id,
+    offer,
+    onDismiss,
+    sellerId,
+    user.id,
+    user.profile?.currency,
+  ]);
 
   return (
     <View className={classes.container}>

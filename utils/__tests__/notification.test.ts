@@ -13,7 +13,7 @@ describe('groupNotificationsByDate', () => {
         id: 1,
         content: 'Shipped!',
         created_at: '2024-06-01T10:00:00Z',
-        notification_types: { name: 'Order Shipped' },
+        type: 'ORDER_SHIPPED',
       },
     ];
     const result = groupNotificationsByDate(notifications);
@@ -27,19 +27,19 @@ describe('groupNotificationsByDate', () => {
         id: 1,
         content: 'Shipped!',
         created_at: '2024-06-01T10:00:00Z',
-        notification_types: { name: 'Order Shipped' },
+        type: 'ORDER_SHIPPED',
       },
       {
         id: 2,
         content: 'Bid placed!',
         created_at: '2024-06-01T12:00:00Z',
-        notification_types: { name: 'New Bid' },
+        type: 'NEW_BID',
       },
       {
         id: 3,
         content: 'Ending soon!',
         created_at: '2024-06-02T09:00:00Z',
-        notification_types: { name: 'Bid Ending' },
+        type: 'BID_ENDING',
       },
     ];
     const result = groupNotificationsByDate(notifications);
@@ -54,13 +54,13 @@ describe('groupNotificationsByDate', () => {
         id: 1,
         content: 'Shipped!',
         created_at: '2024-06-01T10:00:00Z',
-        notification_types: { name: 'Order Shipped' },
+        type: 'ORDER_SHIPPED',
       },
       {
         id: 2,
         content: 'Ending soon!',
         created_at: '2024-06-02T09:00:00Z',
-        notification_types: { name: 'Bid Ending' },
+        type: 'BID_ENDING',
       },
     ];
     const result = groupNotificationsByDate(notifications);

@@ -9,3 +9,18 @@ export const createBids = gql`
     }
   }
 `;
+
+export const updateBids = gql`
+  mutation UpdateBids(
+    $set: bidsUpdateInput!
+    $filter: bidsFilter
+    $atMost: Int
+  ) {
+    updatebidsCollection(set: $set, filter: $filter, atMost: $atMost) {
+      records {
+        id
+        status
+      }
+    }
+  }
+`;

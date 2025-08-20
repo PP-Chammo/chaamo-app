@@ -9,3 +9,18 @@ export const createOffers = gql`
     }
   }
 `;
+
+export const updateOffers = gql`
+  mutation UpdateOffers(
+    $set: offersUpdateInput!
+    $filter: offersFilter
+    $atMost: Int
+  ) {
+    updateoffersCollection(set: $set, filter: $filter, atMost: $atMost) {
+      records {
+        id
+        status
+      }
+    }
+  }
+`;
