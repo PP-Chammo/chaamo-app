@@ -579,6 +579,23 @@ jest.mock('@/generated/graphql', () => ({
     PENDING: 'PENDING',
   },
   OrderByDirection: { DESCNULLSLAST: 'DESCNULLSLAST', ASCNULLSLAST: 'ASCNULLSLAST' },
+  NotificationType:{
+    AUCTION_WON: 'auction_won',
+    FEEDBACK_REMINDER: 'feedback_reminder',
+    ITEM_DELIVERED: 'item_delivered',
+    ITEM_SHIPPED: 'item_shipped',
+    NEW_FOLLOWER: 'new_follower',
+    NEW_OFFER: 'new_offer',
+    OFFER_ACCEPTED: 'offer_accepted',
+    OFFER_DECLINED: 'offer_declined',
+    OUTBID: 'outbid',
+    PAYMENT_RECEIVED: 'payment_received',
+    POST_COMMENT: 'post_comment',
+    POST_LIKED: 'post_liked',
+    PRICE_UPDATE: 'price_update',
+    SALE_CONFIRMED: 'sale_confirmed',
+    SHIPPING_REMINDER: 'shipping_reminder'
+  }
 }));
 
 // Mock hooks with reactive behavior

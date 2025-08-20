@@ -57,7 +57,7 @@ const PlaceBidModalContent: React.FC<PlaceBidModalContentProps> = ({
         objects: [
           {
             listing_id: id,
-            user_id: user.id,
+            buyer_id: user.id,
             bid_amount: Number(bid).toFixed(2),
           },
         ],

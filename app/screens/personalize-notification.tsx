@@ -5,14 +5,16 @@ import { ScrollView } from 'react-native';
 
 import { ScreenContainer } from '@/components/atoms';
 import { Header, SwitchInput } from '@/components/molecules';
-import { NotificationType } from '@/domains/notification.types';
+import { NotificationSetting } from '@/domains/notification.types';
 import {
+  NotificationType as ListNotificationType,
   useCreateUserNotificationSettingsMutation,
-  useGetNotificationTypesQuery,
   useGetUserNotificationSettingsQuery,
   useUpdateUserNotificationSettingsMutation,
 } from '@/generated/graphql';
+import { getUserNotificationSettings } from '@/graphql/user_notification_settings';
 import { useUserVar } from '@/hooks/useUserVar';
+import { titleCase } from '@/utils/char';
 
 export default function SettingsScreen() {
   const [user] = useUserVar();
@@ -20,12 +22,9 @@ export default function SettingsScreen() {
     Record<string, boolean>
   >({});
 
-  const { data: notificationTypesData } = useGetNotificationTypesQuery({
-    fetchPolicy: 'cache-and-network',
-  });
-
   const { data: userNotificationSettingsData } =
     useGetUserNotificationSettingsQuery({
+      fetchPolicy: 'cache-and-network',
       variables: {
         filter: {
           user_id: {
@@ -41,33 +40,33 @@ export default function SettingsScreen() {
     useCreateUserNotificationSettingsMutation();
 
   const notificationTypes = useMemo(() => {
+    const notificationTypes = Object.values(ListNotificationType);
+
     const userNotificationSettings =
       userNotificationSettingsData?.user_notification_settingsCollection
         ?.edges ?? [];
 
-    return notificationTypesData?.notification_typesCollection?.edges?.map(
-      (edge) => {
-        const currentUserNotification = userNotificationSettings?.find(
-          (item) => item.node.notification_type_id === edge.node.id,
-        );
-        const serverValue = currentUserNotification?.node.is_enabled || false;
-        const localValue = localNotificationSettings[edge.node.id];
+    return notificationTypes?.map((type) => {
+      const currentUserNotification = userNotificationSettings?.find(
+        (item) => item.node.notification_type === type,
+      );
+      const serverValue = currentUserNotification?.node.is_enabled || false;
+      const localValue = localNotificationSettings[type];
 
-        return {
-          ...edge?.node,
-          hasNotificationSettingServer: !!currentUserNotification,
-          value: localValue ?? serverValue,
-        };
-      },
-    );
+      return {
+        id: type,
+        notification_type: titleCase(type),
+        hasNotificationSettingServer: !!currentUserNotification,
+        value: localValue ?? serverValue,
+      };
+    });
   }, [
-    notificationTypesData?.notification_typesCollection?.edges,
-    userNotificationSettingsData?.user_notification_settingsCollection?.edges,
     localNotificationSettings,
+    userNotificationSettingsData?.user_notification_settingsCollection?.edges,
   ]);
 
   const handleToggleNotification = useCallback(
-    (notification: NotificationType) => {
+    (notification: NotificationSetting) => {
       const { id, value, hasNotificationSettingServer } = notification ?? {};
 
       setLocalNotificationSettings((prev) => ({
@@ -82,7 +81,7 @@ export default function SettingsScreen() {
               is_enabled: !value,
             },
             filter: {
-              notification_type_id: {
+              notification_type: {
                 eq: id,
               },
               user_id: {
@@ -90,6 +89,19 @@ export default function SettingsScreen() {
               },
             },
           },
+          refetchQueries: [
+            {
+              query: getUserNotificationSettings,
+              variables: {
+                filter: {
+                  user_id: {
+                    eq: user.id,
+                  },
+                },
+              },
+            },
+          ],
+          awaitRefetchQueries: true,
           onError: (error) => {
             setLocalNotificationSettings((prev) => ({
               ...prev,
@@ -104,11 +116,24 @@ export default function SettingsScreen() {
             objects: [
               {
                 user_id: user.id,
-                notification_type_id: id,
+                notification_type: id,
                 is_enabled: !value,
               },
             ],
           },
+          refetchQueries: [
+            {
+              query: getUserNotificationSettings,
+              variables: {
+                filter: {
+                  user_id: {
+                    eq: user.id,
+                  },
+                },
+              },
+            },
+          ],
+          awaitRefetchQueries: true,
           onError: (error) => {
             setLocalNotificationSettings((prev) => ({
               ...prev,
@@ -135,10 +160,12 @@ export default function SettingsScreen() {
       >
         {notificationTypes?.map((item) => (
           <SwitchInput
-            key={item.id}
-            label={item.name}
+            key={item.notification_type}
+            label={item.notification_type}
             value={item.value}
-            onValueChange={() => handleToggleNotification(item)}
+            onValueChange={() =>
+              handleToggleNotification(item as NotificationSetting)
+            }
           />
         ))}
       </ScrollView>

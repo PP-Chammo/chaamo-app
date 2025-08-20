@@ -5,6 +5,7 @@ import { FlatList } from 'react-native';
 import { Label } from '@/components/atoms';
 import { NotificationListItem } from '@/components/molecules';
 import { BaseNotification, FlatData } from '@/domains';
+import { titleCase } from '@/utils/char';
 import { formatDate } from '@/utils/date';
 
 interface NotificationListProps {
@@ -35,7 +36,7 @@ const NotificationList: React.FC<NotificationListProps> = memo(
           const group = item.group;
           return (
             <NotificationListItem
-              category={group.notification_types?.name || 'Unknown'}
+              category={titleCase(group.type) || 'Unknown'}
               message={group.content}
               date={group.created_at}
               onPress={onPress}

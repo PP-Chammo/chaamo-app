@@ -1,7 +1,7 @@
 import {
   GetNotificationsQuery,
-  GetNotificationTypesQuery,
   GetUserNotificationSettingsQuery,
+  NotificationType,
 } from '@/generated/graphql';
 import { DeepGet } from '@/types/helper';
 
@@ -10,17 +10,14 @@ export type BaseNotificationSetting = DeepGet<
   ['user_notification_settingsCollection', 'edges', number, 'node']
 >;
 
-export type BaseNotificationType = DeepGet<
-  GetNotificationTypesQuery,
-  ['notification_typesCollection', 'edges', number, 'node']
->;
-
 export type BaseNotification = DeepGet<
   GetNotificationsQuery,
   ['notificationsCollection', 'edges', number, 'node']
 >;
 
-export interface NotificationType extends BaseNotificationType {
+export interface NotificationSetting {
+  id: NotificationType;
+  notification_type: string;
   value: boolean;
   hasNotificationSettingServer: boolean;
 }
