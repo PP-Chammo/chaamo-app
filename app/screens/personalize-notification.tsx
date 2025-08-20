@@ -8,63 +8,61 @@ import { Header, SwitchInput } from '@/components/molecules';
 import { NotificationType } from '@/domains/notification.types';
 import {
   useCreateUserNotificationSettingsMutation,
-  useGetNotificationTypesQuery,
-  useGetUserNotificationSettingsQuery,
   useUpdateUserNotificationSettingsMutation,
 } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 
 export default function SettingsScreen() {
   const [user] = useUserVar();
-  const [localNotificationSettings, setLocalNotificationSettings] = useState<
-    Record<string, boolean>
-  >({});
+  const [, setLocalNotificationSettings] = useState<Record<string, boolean>>(
+    {},
+  );
 
-  const { data: notificationTypesData } = useGetNotificationTypesQuery({
-    fetchPolicy: 'cache-and-network',
-  });
+  // const { data: notificationTypesData } = useGetNotificationTypesQuery({
+  //   fetchPolicy: 'cache-and-network',
+  // });
 
-  const { data: userNotificationSettingsData } =
-    useGetUserNotificationSettingsQuery({
-      variables: {
-        filter: {
-          user_id: {
-            eq: user.id,
-          },
-        },
-      },
-    });
+  // const { data: userNotificationSettingsData } =
+  //   useGetUserNotificationSettingsQuery({
+  //     variables: {
+  //       filter: {
+  //         user_id: {
+  //           eq: user.id,
+  //         },
+  //       },
+  //     },
+  //   });
 
   const [updateNotificationSetting] =
     useUpdateUserNotificationSettingsMutation();
   const [createNotificationSetting] =
     useCreateUserNotificationSettingsMutation();
 
-  const notificationTypes = useMemo(() => {
-    const userNotificationSettings =
-      userNotificationSettingsData?.user_notification_settingsCollection
-        ?.edges ?? [];
+  const notificationTypes = useMemo<NotificationType[]>(() => {
+    // const userNotificationSettings =
+    //   userNotificationSettingsData?.user_notification_settingsCollection
+    //     ?.edges ?? [];
 
-    return notificationTypesData?.notification_typesCollection?.edges?.map(
-      (edge) => {
-        const currentUserNotification = userNotificationSettings?.find(
-          (item) => item.node.notification_type_id === edge.node.id,
-        );
-        const serverValue = currentUserNotification?.node.is_enabled || false;
-        const localValue = localNotificationSettings[edge.node.id];
+    // TODO: If backend provides an enum of notification types, map it here.
+    // For now, return an empty list to avoid depending on the removed notification_types table.
+    return [];
 
-        return {
-          ...edge?.node,
-          hasNotificationSettingServer: !!currentUserNotification,
-          value: localValue ?? serverValue,
-        };
-      },
-    );
-  }, [
-    notificationTypesData?.notification_typesCollection?.edges,
-    userNotificationSettingsData?.user_notification_settingsCollection?.edges,
-    localNotificationSettings,
-  ]);
+    // return notificationTypesData?.notification_typesCollection?.edges?.map(
+    //   (edge) => {
+    //     const currentUserNotification = userNotificationSettings?.find(
+    //       (item) => item.node.notification_type_id === edge.node.id,
+    //     );
+    //     const serverValue = currentUserNotification?.node.is_enabled || false;
+    //     const localValue = localNotificationSettings[edge.node.id];
+
+    //     return {
+    //       ...edge?.node,
+    //       hasNotificationSettingServer: !!currentUserNotification,
+    //       value: localValue ?? serverValue,
+    //     };
+    //   },
+    // );
+  }, []);
 
   const handleToggleNotification = useCallback(
     (notification: NotificationType) => {
@@ -82,9 +80,10 @@ export default function SettingsScreen() {
               is_enabled: !value,
             },
             filter: {
-              notification_type_id: {
-                eq: id,
-              },
+              //FIXME: Update to use notification_type enum
+              // notification_type_id: {
+              //   eq: id,
+              // },
               user_id: {
                 eq: user.id,
               },
@@ -104,7 +103,8 @@ export default function SettingsScreen() {
             objects: [
               {
                 user_id: user.id,
-                notification_type_id: id,
+                //FIXME: Update to use notification_type enum
+                // notification_type_id: id,
                 is_enabled: !value,
               },
             ],

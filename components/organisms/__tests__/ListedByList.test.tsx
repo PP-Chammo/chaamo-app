@@ -6,6 +6,7 @@ import ListedByList from '../ListedByList';
 
 describe('ListedByList', () => {
   const defaultProps = {
+    listingId: 'test-listing-id',
     userId: 'test-user-id',
     imageUrl: 'https://example.com/avatar.jpg',
     username: 'John Doe',

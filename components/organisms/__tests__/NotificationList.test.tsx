@@ -13,7 +13,7 @@ const mockNotifications: FlatData<BaseNotification>[] = [
     group: {
       id: 1,
       content: 'Test notification',
-      notification_types: { name: 'Order Shipped' },
+      type: 'order_shipped',
       created_at: '2023-01-01',
     },
     date: '2023-01-01',
@@ -113,7 +113,7 @@ describe('NotificationList', () => {
         group: {
           id: 1,
           content: 'Test notification',
-          notification_types: { name: 'Order Shipped' },
+          type: 'order_shipped',
           created_at: '2023-01-01',
         },
         date: '2023-01-01',
@@ -123,7 +123,7 @@ describe('NotificationList', () => {
         group: {
           id: 2,
           content: 'Test notification',
-          notification_types: { name: 'Order Shipped' },
+          type: 'order_shipped',
           created_at: '2023-01-01',
         },
         date: '2023-01-01',

@@ -13,6 +13,25 @@ export const getMessages = gql`
           sender_id
           content
           created_at
+          type
+          listing_id
+          listings {
+            seller_id
+          }
+          bid_id
+          offer_id
+          bids {
+            id
+            bid_amount
+            bid_currency
+            status
+          }
+          offers {
+            id
+            offer_amount
+            offer_currency
+            status
+          }
         }
       }
     }

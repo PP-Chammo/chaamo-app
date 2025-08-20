@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { format } from 'date-fns';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
@@ -12,20 +18,24 @@ import Animated, {
 
 import {
   Avatar,
-  ChatMessage,
   Icon,
   Label,
   Loading,
   Row,
   ScreenContainer,
 } from '@/components/atoms';
-import { Header, TextField } from '@/components/molecules';
+import { Header, TextField, ChatMessage } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
 import {
+  OrderByDirection,
   useCreateMessagesMutation,
-  useFnGetOrCreateConversationMutation,
   useGetMessagesLazyQuery,
   useUpdateConversationParticipantsMutation,
+  OfferStatus,
+  useUpdateOffersMutation,
+  useUpdateBidsMutation,
+  useGetVwMyConversationsQuery,
+  BidStatus,
 } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
@@ -37,9 +47,20 @@ export default function ChatScreen() {
 
   const keyboardHeight = useSharedValue(0);
   const [message, setMessage] = useState('');
+  const [actioningOfferId, setActioningOfferId] = useState<string | null>(null);
+  const [actioningBidId, setActioningBidId] = useState<string | null>(null);
 
-  const [getOrCreateConversation, { data: conversationData }] =
-    useFnGetOrCreateConversationMutation();
+  const { data: myConversationsData } = useGetVwMyConversationsQuery({
+    variables: {
+      filter: {
+        partner_id: { eq: userId as string },
+      },
+      last: 1,
+      orderBy: [{ created_at: OrderByDirection.DESCNULLSLAST }],
+    },
+    fetchPolicy: 'cache-and-network',
+    skip: !userId,
+  });
   const [updateReadMessage] = useUpdateConversationParticipantsMutation();
   const [getMessages, { data: messagesData, loading }] =
     useGetMessagesLazyQuery({
@@ -47,15 +68,20 @@ export default function ChatScreen() {
     });
   const [createMessages, { loading: sendMessageLoading }] =
     useCreateMessagesMutation();
+  const [updateOffers, { loading: updateOffersLoading }] =
+    useUpdateOffersMutation();
+  const [updateBids, { loading: updateBidsLoading }] = useUpdateBidsMutation();
 
-  const conversation = useMemo(
-    () => conversationData?.fn_get_or_create_conversation,
-    [conversationData?.fn_get_or_create_conversation],
-  );
+  const conversation = useMemo(() => {
+    const edges = myConversationsData?.vw_myconversationsCollection?.edges;
+    return edges && edges.length > 0 ? edges[0]?.node : undefined;
+  }, [myConversationsData?.vw_myconversationsCollection?.edges]);
   const messages = useMemo(
     () => messagesData?.messagesCollection?.edges ?? [],
     [messagesData],
   );
+
+  // removed: latest/effective listing tracking - inline per message instead
 
   const handleChangeMessage = ({ value }: TextChangeParams) => {
     setMessage(value);
@@ -111,11 +137,13 @@ export default function ChatScreen() {
     }
   }, [sendMessageLoading, messages, scrollToBottom]);
 
+  // removed: route/effective listing id and handler - replaced by per-message navigation
+
   const handleBack = useCallback(() => {
     updateReadMessage({
       variables: {
         filter: {
-          conversation_id: { eq: conversation?.conversation_id },
+          conversation_id: { eq: conversation?.id },
           user_id: { eq: user?.id },
         },
         set: {
@@ -127,7 +155,7 @@ export default function ChatScreen() {
         router.back();
       },
     });
-  }, [updateReadMessage, conversation?.conversation_id, user?.id]);
+  }, [updateReadMessage, conversation?.id, user?.id]);
 
   const handleSendMessage = useCallback(async () => {
     if (message.trim().length > 0) {
@@ -135,7 +163,7 @@ export default function ChatScreen() {
         variables: {
           objects: [
             {
-              conversation_id: conversation?.conversation_id,
+              conversation_id: conversation?.id,
               content: message,
               sender_id: user?.id,
             },
@@ -144,60 +172,133 @@ export default function ChatScreen() {
       });
       setMessage('');
     }
-  }, [conversation?.conversation_id, createMessages, message, user?.id]);
+  }, [conversation?.id, createMessages, message, user?.id]);
+
+  const handleAcceptOffer = useCallback(
+    async (offerId: string) => {
+      if (!offerId) return;
+      setActioningOfferId(offerId);
+      try {
+        await updateOffers({
+          variables: {
+            filter: { id: { eq: offerId } },
+            set: { status: OfferStatus.ACCEPTED },
+            atMost: 1,
+          },
+        });
+      } catch (e) {
+        console.error('Failed to accept offer', e);
+      } finally {
+        setActioningOfferId(null);
+      }
+    },
+    [updateOffers],
+  );
+
+  const handleDeclineOffer = useCallback(
+    async (offerId: string) => {
+      if (!offerId) return;
+      setActioningOfferId(offerId);
+      try {
+        await updateOffers({
+          variables: {
+            filter: { id: { eq: offerId } },
+            set: { status: OfferStatus.DECLINED },
+            atMost: 1,
+          },
+        });
+      } catch (e) {
+        console.error('Failed to decline offer', e);
+      } finally {
+        setActioningOfferId(null);
+      }
+    },
+    [updateOffers],
+  );
+
+  const handleAcceptBid = useCallback(
+    async (bidId: string) => {
+      if (!bidId) return;
+      setActioningBidId(bidId);
+      try {
+        await updateBids({
+          variables: {
+            filter: { id: { eq: bidId } },
+            set: { status: BidStatus.ACCEPTED },
+            atMost: 1,
+          },
+        });
+      } catch (e) {
+        console.error('Failed to accept bid', e);
+      } finally {
+        setActioningBidId(null);
+      }
+    },
+    [updateBids],
+  );
+
+  const handleDeclineBid = useCallback(
+    async (bidId: string) => {
+      if (!bidId || !conversation?.id || !user?.id) return;
+      setActioningBidId(bidId);
+      try {
+        await updateBids({
+          variables: {
+            filter: { id: { eq: bidId } },
+            set: { status: BidStatus.DECLINED },
+            atMost: 1,
+          },
+        });
+      } catch (e) {
+        console.error('Failed to decline bid', e);
+      } finally {
+        setActioningBidId(null);
+      }
+    },
+    [conversation?.id, user?.id, updateBids],
+  );
 
   useFocusEffect(
     useCallback(() => {
       (async () => {
         try {
-          if (userId) {
-            const { data: conversationData } = await getOrCreateConversation({
+          const conversationId = conversation?.id as string | undefined;
+          if (conversationId) {
+            const { data: messages } = await getMessages({
               variables: {
-                partner_id: userId,
+                filter: {
+                  conversation_id: { eq: conversationId },
+                  deleted: { eq: false },
+                },
+                orderBy: {
+                  created_at: OrderByDirection.ASCNULLSFIRST,
+                },
               },
             });
-            const conversationId =
-              conversationData?.fn_get_or_create_conversation?.conversation_id;
-            if (conversationId) {
-              const { data: messages } = await getMessages({
+            const lastMessageId =
+              messages?.messagesCollection?.edges?.[
+                messages?.messagesCollection?.edges?.length - 1
+              ]?.node?.id;
+            if (lastMessageId) {
+              updateReadMessage({
                 variables: {
                   filter: {
                     conversation_id: { eq: conversationId },
-                    deleted: { eq: false },
+                    user_id: { eq: user?.id },
+                  },
+                  set: {
+                    unread_count: 0,
+                    last_read_message_id: lastMessageId,
                   },
                 },
               });
-              const lastMessageId =
-                messages?.messagesCollection?.edges?.[
-                  messages?.messagesCollection?.edges?.length - 1
-                ]?.node?.id;
-              if (lastMessageId) {
-                updateReadMessage({
-                  variables: {
-                    filter: {
-                      conversation_id: { eq: conversationId },
-                      user_id: { eq: user?.id },
-                    },
-                    set: {
-                      unread_count: 0,
-                      last_read_message_id: lastMessageId,
-                    },
-                  },
-                });
-              }
             }
           }
         } catch (e: unknown) {
-          console.error('error create conversation participants', e);
+          console.error('error fetching conversation/messages', e);
         }
       })();
-    }, [
-      getMessages,
-      getOrCreateConversation,
-      updateReadMessage,
-      user?.id,
-      userId,
-    ]),
+    }, [getMessages, updateReadMessage, user?.id, conversation?.id]),
   );
 
   return (
@@ -212,6 +313,7 @@ export default function ChatScreen() {
         onBackPress={handleBack}
         className={classes.header}
       />
+      {/* MessageListingDetail is now shown inline for specific messages */}
       <View style={{ flex: 1 }}>
         {loading ? (
           <Loading />
@@ -238,6 +340,7 @@ export default function ChatScreen() {
                       new Date(messages[index - 1]?.node?.created_at),
                       'yyyy-MM-dd',
                     ));
+              // MessageListingDetail now handled inside ChatMessage
 
               return (
                 <View>
@@ -252,6 +355,24 @@ export default function ChatScreen() {
                         key={item.node?.id}
                         message={item.node?.content}
                         position="right"
+                        type={item.node?.type}
+                        bidId={item.node?.bid_id}
+                        bidAmount={item.node?.bids?.bid_amount}
+                        bidCurrency={item.node?.bids?.bid_currency}
+                        bidStatus={item.node?.bids?.status}
+                        offerId={item.node?.offer_id}
+                        offerAmount={item.node?.offers?.offer_amount}
+                        offerCurrency={item.node?.offers?.offer_currency}
+                        offerStatus={item.node?.offers?.status}
+                        partnerUsername={conversation?.username ?? ''}
+                        listingId={item.node?.listing_id as string}
+                        sellerId={item.node?.listings?.seller_id}
+                        onListingDetailPress={(id) =>
+                          router.push({
+                            pathname: '/screens/listing-detail',
+                            params: { id },
+                          })
+                        }
                       />
                     </View>
                   ) : (
@@ -268,6 +389,54 @@ export default function ChatScreen() {
                         key={item.node?.id}
                         message={item.node?.content}
                         position="left"
+                        type={item.node?.type}
+                        bidId={item.node?.bid_id}
+                        bidAmount={item.node?.bids?.bid_amount}
+                        bidCurrency={item.node?.bids?.bid_currency}
+                        bidStatus={item.node?.bids?.status}
+                        offerId={item.node?.offer_id}
+                        offerAmount={item.node?.offers?.offer_amount}
+                        offerCurrency={item.node?.offers?.offer_currency}
+                        offerStatus={item.node?.offers?.status}
+                        partnerUsername={conversation?.username ?? ''}
+                        listingId={item.node?.listing_id as string}
+                        sellerId={item.node?.listings?.seller_id}
+                        onListingDetailPress={(id) =>
+                          router.push({
+                            pathname: '/screens/listing-detail',
+                            params: { id },
+                          })
+                        }
+                        onAccept={
+                          item.node?.bid_id
+                            ? () => handleAcceptBid(item.node?.bid_id as string)
+                            : item.node?.offer_id
+                              ? () =>
+                                  handleAcceptOffer(
+                                    item.node?.offer_id as string,
+                                  )
+                              : undefined
+                        }
+                        onDecline={
+                          item.node?.bid_id
+                            ? () =>
+                                handleDeclineBid(item.node?.bid_id as string)
+                            : item.node?.offer_id
+                              ? () =>
+                                  handleDeclineOffer(
+                                    item.node?.offer_id as string,
+                                  )
+                              : undefined
+                        }
+                        actionLoading={
+                          (!!item.node?.offer_id &&
+                            actioningOfferId ===
+                              (item.node?.offer_id as string) &&
+                            updateOffersLoading) ||
+                          (!!item.node?.bid_id &&
+                            actioningBidId === (item.node?.bid_id as string) &&
+                            updateBidsLoading)
+                        }
                       />
                     </Row>
                   )}

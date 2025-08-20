@@ -1,8 +1,4 @@
-import {
-  GetNotificationsQuery,
-  GetNotificationTypesQuery,
-  GetUserNotificationSettingsQuery,
-} from '@/generated/graphql';
+import { GetUserNotificationSettingsQuery } from '@/generated/graphql';
 import { DeepGet } from '@/types/helper';
 
 export type BaseNotificationSetting = DeepGet<
@@ -10,15 +6,19 @@ export type BaseNotificationSetting = DeepGet<
   ['user_notification_settingsCollection', 'edges', number, 'node']
 >;
 
-export type BaseNotificationType = DeepGet<
-  GetNotificationTypesQuery,
-  ['notification_typesCollection', 'edges', number, 'node']
->;
+// Minimal shape for a notification type option (replaces legacy notification_types table)
+export interface BaseNotificationType {
+  id: string;
+  name: string;
+}
 
-export type BaseNotification = DeepGet<
-  GetNotificationsQuery,
-  ['notificationsCollection', 'edges', number, 'node']
->;
+export interface BaseNotification {
+  id: string | number;
+  content: string;
+  created_at: string;
+  // Preferred enum field on notifications
+  type?: string | null;
+}
 
 export interface NotificationType extends BaseNotificationType {
   value: boolean;

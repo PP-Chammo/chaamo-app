@@ -6,7 +6,7 @@ export const getUserNotificationSettings = gql`
       edges {
         node {
           user_id
-          notification_type_id
+          notification_type
           is_enabled
         }
       }
@@ -21,7 +21,7 @@ export const updateUserNotificationSettings = gql`
   ) {
     updateuser_notification_settingsCollection(set: $set, filter: $filter) {
       records {
-        notification_type_id
+        notification_type
       }
     }
   }
@@ -33,7 +33,7 @@ export const createUserNotificationSettings = gql`
   ) {
     insertIntouser_notification_settingsCollection(objects: $objects) {
       records {
-        notification_type_id
+        notification_type
       }
     }
   }

@@ -7,6 +7,7 @@ import PlaceBidModalContent from '../PlaceBidModalContent';
 describe('PlaceBidModalContent', () => {
   const defaultProps = {
     id: 'test-id',
+    sellerId: 'seller-1',
     minimumBidAmount: '100',
     currentBidAmount: '4000',
     highestBidAmount: '4000',
@@ -63,7 +64,7 @@ describe('PlaceBidModalContent', () => {
     const quickBid4100 = screen.getByText(/\$\s*4100/);
     fireEvent.press(quickBid4100);
 
-    expect(screen.getByDisplayValue('4100')).toBeTruthy();
+    expect(screen.getByDisplayValue('4100.00')).toBeTruthy();
   });
 
   it('displays place bid button', () => {
@@ -105,7 +106,7 @@ describe('PlaceBidModalContent', () => {
     const quickBid4300 = screen.getByText(/\$\s*4300/);
     fireEvent.press(quickBid4300);
 
-    expect(screen.getByDisplayValue('4300')).toBeTruthy();
+    expect(screen.getByDisplayValue('4300.00')).toBeTruthy();
   });
 
   it('maintains selected state for quick bid buttons', () => {
@@ -114,6 +115,6 @@ describe('PlaceBidModalContent', () => {
     const quickBid4100 = screen.getByText(/\$\s*4100/);
     fireEvent.press(quickBid4100);
 
-    expect(screen.getByDisplayValue('4100')).toBeTruthy();
+    expect(screen.getByDisplayValue('4100.00')).toBeTruthy();
   });
 });
