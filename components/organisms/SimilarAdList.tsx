@@ -58,6 +58,8 @@ const SimilarAdList: React.FC<SimilarAdListProps> = memo(
             price={card.node?.start_price}
             marketCurrency={card.node?.last_sold_currency}
             marketPrice={card.node?.last_sold_price}
+            lastSoldIsChecked={card.node?.last_sold_is_checked ?? false}
+            lastSoldIsCorrect={card.node?.last_sold_is_correct ?? false}
             indicator={getIndicator(
               card.node?.start_price,
               card.node?.last_sold_price,

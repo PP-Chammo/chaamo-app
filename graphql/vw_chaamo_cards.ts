@@ -17,6 +17,8 @@ export const getVwChaamoListings = gql`
           start_price
           last_sold_currency
           last_sold_price
+          last_sold_is_checked
+          last_sold_is_correct
           seller_username
           created_at
           is_favorite
@@ -48,6 +50,8 @@ export const getVwChaamoDetail = gql`
           highest_bid_price
           last_sold_currency
           last_sold_price
+          last_sold_is_checked
+          last_sold_is_correct
           created_at
           end_time
           category_id

@@ -29,7 +29,9 @@ describe('CardItem', () => {
     expect(getByTestId('card-item-subtitle').props.children).toBe(
       'Test Subtitle',
     );
-    expect(getByTestId('card-item-price').props.children).toBe('$120.00');
+    expect(getByTestId('card-item-price').props.children).toBe(
+      'calculating...',
+    );
     expect(getByTestId('card-item-market-price').props.children).toBe(
       '$100.00',
     );
@@ -89,7 +91,9 @@ describe('CardItem', () => {
     expect(getByTestId('card-item-subtitle').props.children).toBe(
       'Test Subtitle',
     );
-    expect(getByTestId('card-item-price').props.children).toBe('$120.00');
+    expect(getByTestId('card-item-price').props.children).toBe(
+      'calculating...',
+    );
     expect(getByTestId('card-item-market-price').props.children).toBe(
       '$100.00',
     );
@@ -115,7 +119,7 @@ describe('CardItem', () => {
       'A very long card title for testing purposes',
     );
     expect(getByTestId('card-item-price').props.children).toBe(
-      '$1,234,567,890.00',
+      'calculating...',
     );
   });
 });

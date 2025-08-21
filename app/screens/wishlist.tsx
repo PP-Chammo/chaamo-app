@@ -80,6 +80,8 @@ export default function WishlistScreen() {
               price={item.node?.start_price}
               marketCurrency={item.node?.last_sold_currency}
               marketPrice={item.node?.last_sold_price}
+              lastSoldIsChecked={item.node?.last_sold_is_checked ?? false}
+              lastSoldIsCorrect={item.node?.last_sold_is_correct ?? false}
               indicator={getIndicator(
                 item.node?.start_price,
                 item.node?.last_sold_price,

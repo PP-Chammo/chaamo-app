@@ -1,11 +1,12 @@
 import React, { useRef, useState } from 'react';
 
 import { formatDistanceToNow } from 'date-fns';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
 
-import EBayImage from '@/assets/svg/ebay.svg';
+import ChaamoLogo from '@/assets/images/logo.png';
 import {
   ContextMenu,
   Icon,
@@ -125,7 +126,7 @@ export default function PortfolioDetailScreen() {
           {card.title}
         </Label>
         <View className={classes.ebayRow}>
-          <EBayImage />
+          <Image source={ChaamoLogo} className={classes.chaamoLogo} />
           <Label className={classes.priceValueLabel}>Price Value: </Label>
           <Label className={classes.priceValue}>{card.bidPrice}</Label>
         </View>
@@ -158,6 +159,7 @@ const classes = {
   chartWrapper: 'mt-6 mb-8',
   priceValueLabel: 'text-xs text-gray-500',
   priceValue: 'text-xs text-gray-700 font-bold',
+  chaamoLogo: 'w-8 h-8',
   contextMenuItem: 'py-2 px-3',
   contextMenuDelete: 'py-2 px-3 !text-red-900',
   contextMenuDivider: 'h-px bg-gray-200',

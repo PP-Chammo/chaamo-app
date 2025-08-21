@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
-import { router } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Alert, View } from 'react-native';
 
 import {
@@ -11,7 +11,11 @@ import {
 } from '@/components/atoms';
 import { Header, TextArea, TextField } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
-import { useCreateContactMessagesMutation } from '@/generated/graphql';
+import {
+  useCreateContactMessagesMutation,
+  useGetVwChaamoDetailLazyQuery,
+  useUpdateUserCardMutation,
+} from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 import { areFieldsEmpty, ValidationValues } from '@/utils/validate';
 
@@ -27,8 +31,14 @@ const initialForm: Form = {
 
 export default function ContactUs() {
   const [user] = useUserVar();
+  const { listingId } = useLocalSearchParams();
   const [form, setForm] = useState<Form>(initialForm);
 
+  const [getListingDetail, { data: listingDetail }] =
+    useGetVwChaamoDetailLazyQuery({
+      fetchPolicy: 'cache-and-network',
+    });
+  const [updateCheckedLastSold] = useUpdateUserCardMutation();
   const [createContactMessages, { loading }] =
     useCreateContactMessagesMutation();
 
@@ -38,15 +48,51 @@ export default function ContactUs() {
 
   const handleSubmit = async () => {
     try {
+      const userCardId = listingDetail?.vw_chaamo_cardsCollection?.edges?.length
+        ? listingDetail?.vw_chaamo_cardsCollection.edges[0].node.user_card_id
+        : null;
       await createContactMessages({
         variables: {
-          objects: [{ ...form, user_id: user?.id }],
+          objects: [
+            {
+              ...form,
+              user_id: user?.id,
+              ...(listingId && userCardId
+                ? {
+                    user_card_id: userCardId,
+                  }
+                : {}),
+            },
+          ],
         },
         onCompleted({ insertIntocontact_messagesCollection }) {
           if (insertIntocontact_messagesCollection?.records?.length) {
-            Alert.alert('Success', 'Form submitted successfully');
-            setForm(initialForm);
-            router.back();
+            if (listingId && userCardId) {
+              updateCheckedLastSold({
+                variables: {
+                  filter: {
+                    id: { eq: userCardId },
+                  },
+                  set: {
+                    last_sold_is_checked: true,
+                    last_sold_is_correct: false,
+                  },
+                },
+                onCompleted({ updateuser_cardsCollection }) {
+                  if (updateuser_cardsCollection?.records?.length) {
+                    Alert.alert('Success', 'Form submitted successfully');
+                    setForm(initialForm);
+                    router.back();
+                  } else {
+                    Alert.alert('Error', 'Failed to submit form');
+                  }
+                },
+              });
+            } else {
+              Alert.alert('Success', 'Form submitted successfully');
+              setForm(initialForm);
+              router.back();
+            }
           } else {
             Alert.alert('Error', 'Failed to submit form');
           }
@@ -61,6 +107,33 @@ export default function ContactUs() {
   const disabledForm = useMemo(() => {
     return areFieldsEmpty(form);
   }, [form]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (listingId) {
+        getListingDetail({
+          variables: {
+            filter: {
+              id: { eq: listingId },
+            },
+          },
+          onCompleted({ vw_chaamo_cardsCollection }) {
+            if (vw_chaamo_cardsCollection?.edges?.length) {
+              setForm({
+                user_card_id: user?.id,
+                subject: `Incorrect price value`,
+                message: `Please correct the price value for "${vw_chaamo_cardsCollection.edges[0].node.name}".`,
+              });
+            }
+          },
+          onError(error) {
+            console.error(error);
+            Alert.alert('Error', 'Failed to fetch listing detail');
+          },
+        });
+      }
+    }, [listingId, getListingDetail, user?.id]),
+  );
 
   return (
     <ScreenContainer>
