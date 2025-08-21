@@ -34,8 +34,8 @@ import {
   OfferStatus,
   useUpdateOffersMutation,
   useUpdateBidsMutation,
-  useGetVwMyConversationsQuery,
   BidStatus,
+  useFnGetOrCreateConversationMutation,
 } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
@@ -50,17 +50,9 @@ export default function ChatScreen() {
   const [actioningOfferId, setActioningOfferId] = useState<string | null>(null);
   const [actioningBidId, setActioningBidId] = useState<string | null>(null);
 
-  const { data: myConversationsData } = useGetVwMyConversationsQuery({
-    variables: {
-      filter: {
-        partner_id: { eq: userId as string },
-      },
-      last: 1,
-      orderBy: [{ created_at: OrderByDirection.DESCNULLSLAST }],
-    },
-    fetchPolicy: 'cache-and-network',
-    skip: !userId,
-  });
+  const [getOrCreateConversation, { data: conversationData }] =
+    useFnGetOrCreateConversationMutation();
+
   const [updateReadMessage] = useUpdateConversationParticipantsMutation();
   const [getMessages, { data: messagesData, loading }] =
     useGetMessagesLazyQuery({
@@ -72,10 +64,10 @@ export default function ChatScreen() {
     useUpdateOffersMutation();
   const [updateBids, { loading: updateBidsLoading }] = useUpdateBidsMutation();
 
-  const conversation = useMemo(() => {
-    const edges = myConversationsData?.vw_myconversationsCollection?.edges;
-    return edges && edges.length > 0 ? edges[0]?.node : undefined;
-  }, [myConversationsData?.vw_myconversationsCollection?.edges]);
+  const conversation = useMemo(
+    () => conversationData?.fn_get_or_create_conversation,
+    [conversationData?.fn_get_or_create_conversation],
+  );
   const messages = useMemo(
     () => messagesData?.messagesCollection?.edges ?? [],
     [messagesData],
@@ -137,13 +129,11 @@ export default function ChatScreen() {
     }
   }, [sendMessageLoading, messages, scrollToBottom]);
 
-  // removed: route/effective listing id and handler - replaced by per-message navigation
-
   const handleBack = useCallback(() => {
     updateReadMessage({
       variables: {
         filter: {
-          conversation_id: { eq: conversation?.id },
+          conversation_id: { eq: conversation?.conversation_id },
           user_id: { eq: user?.id },
         },
         set: {
@@ -155,7 +145,7 @@ export default function ChatScreen() {
         router.back();
       },
     });
-  }, [updateReadMessage, conversation?.id, user?.id]);
+  }, [updateReadMessage, conversation?.conversation_id, user?.id]);
 
   const handleSendMessage = useCallback(async () => {
     if (message.trim().length > 0) {
@@ -163,7 +153,7 @@ export default function ChatScreen() {
         variables: {
           objects: [
             {
-              conversation_id: conversation?.id,
+              conversation_id: conversation?.conversation_id,
               content: message,
               sender_id: user?.id,
             },
@@ -172,7 +162,7 @@ export default function ChatScreen() {
       });
       setMessage('');
     }
-  }, [conversation?.id, createMessages, message, user?.id]);
+  }, [conversation?.conversation_id, createMessages, message, user?.id]);
 
   const handleAcceptOffer = useCallback(
     async (offerId: string) => {
@@ -239,7 +229,7 @@ export default function ChatScreen() {
 
   const handleDeclineBid = useCallback(
     async (bidId: string) => {
-      if (!bidId || !conversation?.id || !user?.id) return;
+      if (!bidId || !conversation?.conversation_id || !user?.id) return;
       setActioningBidId(bidId);
       try {
         await updateBids({
@@ -255,50 +245,64 @@ export default function ChatScreen() {
         setActioningBidId(null);
       }
     },
-    [conversation?.id, user?.id, updateBids],
+    [conversation?.conversation_id, user?.id, updateBids],
   );
 
   useFocusEffect(
     useCallback(() => {
       (async () => {
         try {
-          const conversationId = conversation?.id as string | undefined;
-          if (conversationId) {
-            const { data: messages } = await getMessages({
+          if (userId) {
+            const { data: conversationData } = await getOrCreateConversation({
               variables: {
-                filter: {
-                  conversation_id: { eq: conversationId },
-                  deleted: { eq: false },
-                },
-                orderBy: {
-                  created_at: OrderByDirection.ASCNULLSFIRST,
-                },
+                partner_id: userId,
               },
             });
-            const lastMessageId =
-              messages?.messagesCollection?.edges?.[
-                messages?.messagesCollection?.edges?.length - 1
-              ]?.node?.id;
-            if (lastMessageId) {
-              updateReadMessage({
+            const conversationId =
+              conversationData?.fn_get_or_create_conversation?.conversation_id;
+            if (conversationId) {
+              const { data: messages } = await getMessages({
                 variables: {
                   filter: {
                     conversation_id: { eq: conversationId },
-                    user_id: { eq: user?.id },
+                    deleted: { eq: false },
                   },
-                  set: {
-                    unread_count: 0,
-                    last_read_message_id: lastMessageId,
+                  orderBy: {
+                    created_at: OrderByDirection.ASCNULLSFIRST,
                   },
                 },
               });
+              const lastMessageId =
+                messages?.messagesCollection?.edges?.[
+                  messages?.messagesCollection?.edges?.length - 1
+                ]?.node?.id;
+              if (lastMessageId) {
+                updateReadMessage({
+                  variables: {
+                    filter: {
+                      conversation_id: { eq: conversationId },
+                      user_id: { eq: user?.id },
+                    },
+                    set: {
+                      unread_count: 0,
+                      last_read_message_id: lastMessageId,
+                    },
+                  },
+                });
+              }
             }
           }
         } catch (e: unknown) {
           console.error('error fetching conversation/messages', e);
         }
       })();
-    }, [getMessages, updateReadMessage, user?.id, conversation?.id]),
+    }, [
+      userId,
+      getOrCreateConversation,
+      getMessages,
+      updateReadMessage,
+      user?.id,
+    ]),
   );
 
   return (

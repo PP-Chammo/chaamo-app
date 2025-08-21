@@ -13,6 +13,8 @@ export const getVwMyFavorites = gql`
           start_price
           last_sold_currency
           last_sold_price
+          last_sold_is_checked
+          last_sold_is_correct
           seller_username
           created_at
           bid_count

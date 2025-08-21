@@ -5,7 +5,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { Image } from 'expo-image';
 import { TouchableOpacity, View } from 'react-native';
 
-import EBayLogo from '@/assets/svg/ebay.svg';
+import ChaamoLogo from '@/assets/images/logo.png';
 import { Icon, Label, PriceIndicator, Row, Tag } from '@/components/atoms';
 import { ListingType } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
@@ -31,6 +31,8 @@ type CardItemProps = {
   featured?: boolean;
   className?: string;
   onPress?: () => void;
+  lastSoldIsChecked?: boolean;
+  lastSoldIsCorrect?: boolean;
 };
 
 const CardItem: React.FC<CardItemProps> = memo(function CardItem({
@@ -52,6 +54,8 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
   onRightIconPress,
   className,
   onPress,
+  lastSoldIsChecked,
+  lastSoldIsCorrect,
 }) {
   const { formatDisplay } = useCurrencyDisplay();
 
@@ -61,11 +65,15 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
   );
 
   const renderMarketPrice = useCallback(() => {
-    if (marketPrice === null) {
+    if (
+      !lastSoldIsChecked ||
+      (lastSoldIsChecked && !lastSoldIsCorrect) ||
+      marketPrice === null
+    ) {
       return (
         <>
           <Label className={classes.textProcessing} testID="card-item-price">
-            process last sold...
+            {lastSoldIsChecked ? 'checking...' : 'calculating...'}
           </Label>
         </>
       );
@@ -78,7 +86,14 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
         <PriceIndicator direction={indicator} />
       </>
     );
-  }, [formatDisplay, indicator, marketPrice, marketCurrency]);
+  }, [
+    formatDisplay,
+    indicator,
+    marketPrice,
+    marketCurrency,
+    lastSoldIsChecked,
+    lastSoldIsCorrect,
+  ]);
 
   const renderRightIcon = useCallback(
     () =>
@@ -128,7 +143,7 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
           <Label
             className={classes.title}
             testID="card-item-title"
-            numberOfLines={2}
+            numberOfLines={3}
           >
             {title}
           </Label>
@@ -151,7 +166,7 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
 
         <Row between className={classes.priceContainer}>
           <View>
-            <EBayLogo />
+            <Image source={ChaamoLogo} className={classes.chaamoLogo} />
             <Row>
               <Label className={classes.text}>Price Value:</Label>
               {renderMarketPrice()}
@@ -169,12 +184,6 @@ const CardItem: React.FC<CardItemProps> = memo(function CardItem({
             >
               {priceDisplay}
             </Label>
-            {listingType === ListingType.SELL && (
-              <Image
-                source={require('@/assets/images/logo.png')}
-                className={classes.logoImage}
-              />
-            )}
           </Row>
         </Row>
       </View>
@@ -188,9 +197,10 @@ const classes = {
     'w-28 aspect-[7/10] h-auto flex items-center justify-center bg-slate-200 rounded-lg',
   contentContainer: 'flex-1 justify-between gap-0.5 py-1',
   titleContainer: 'gap-2 !items-start',
-  title: 'flex-1 text-base font-bold !text-gray-800 truncate',
+  title: 'flex-1 text-base font-bold !text-gray-800 truncate pr-10',
   rightIconButton:
-    'z-10 w-8 h-8 bg-white rounded-full items-center justify-center',
+    'absolute top-2 right-2 z-10 w-8 h-8 bg-white rounded-full items-center justify-center',
+  chaamoLogo: 'w-5 h-5 mb-1',
   dateContainer: 'flex flex-col gap-0.5 pb-1',
   text: 'text-sm !text-gray-700',
   textBold: 'text-sm font-semibold',

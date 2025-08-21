@@ -5,7 +5,7 @@ import { clsx } from 'clsx';
 import { Image } from 'expo-image';
 import { TouchableOpacity, View } from 'react-native';
 
-import EBayImage from '@/assets/svg/ebay.svg';
+import ChaamoLogo from '@/assets/images/logo.png';
 import { Icon, Label, PriceIndicator, Tag } from '@/components/atoms';
 import { ListingType } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
@@ -21,6 +21,8 @@ interface ListingCardProps extends ListingCardType {
   rightComponent?: React.ReactNode;
   className?: string;
   imageClassName?: string;
+  lastSoldIsChecked?: boolean;
+  lastSoldIsCorrect?: boolean;
 }
 
 const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
@@ -40,6 +42,8 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
   rightComponent,
   className,
   imageClassName,
+  lastSoldIsChecked,
+  lastSoldIsCorrect,
 }) {
   const { formatDisplay } = useCurrencyDisplay();
 
@@ -49,11 +53,18 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
   );
 
   const renderMarketPrice = useCallback(() => {
-    if (marketPrice === null) {
+    if (
+      !lastSoldIsChecked ||
+      (lastSoldIsChecked && !lastSoldIsCorrect) ||
+      marketPrice === null
+    ) {
       return (
         <>
-          <Label className={classes.textProcessing} testID="card-item-price">
-            process last sold...
+          <Label
+            className={classes.textProcessing}
+            testID="listing-card-market-price"
+          >
+            {lastSoldIsChecked ? 'checking...' : 'calculating...'}
           </Label>
         </>
       );
@@ -71,7 +82,15 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
         {indicator && <PriceIndicator direction={indicator} />}
       </>
     );
-  }, [formatDisplay, indicator, marketCurrency, marketPrice, price]);
+  }, [
+    formatDisplay,
+    indicator,
+    marketCurrency,
+    marketPrice,
+    price,
+    lastSoldIsCorrect,
+    lastSoldIsChecked,
+  ]);
 
   const renderRightIcon = useCallback(
     () =>
@@ -156,7 +175,7 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
             </Label>
           </View>
           <View className={classes.marketContainer}>
-            <EBayImage />
+            <Image source={ChaamoLogo} className={classes.chaamoLogo} />
             {renderMarketPrice()}
           </View>
         </View>
@@ -180,4 +199,5 @@ const classes = {
     'absolute top-2 right-2 z-10 w-8 h-8 bg-white rounded-full items-center justify-center',
   bidContainer: 'flex gap-2',
   textProcessing: 'text-xs !text-gray-500/70 font-normal',
+  chaamoLogo: 'w-5 h-5',
 };

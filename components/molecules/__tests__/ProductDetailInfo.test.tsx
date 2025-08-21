@@ -4,6 +4,11 @@ import { render, screen } from '@testing-library/react-native';
 
 import ProductDetailInfo from '../ProductDetailInfo';
 
+jest.mock('@/generated/graphql', () => ({
+  ...jest.requireActual('@/generated/graphql'),
+  useUpdateUserCardMutation: jest.fn(() => [jest.fn(), { loading: false }]),
+}));
+
 describe('ProductDetailInfo', () => {
   const mockProps = {
     price: '$100',
@@ -21,8 +26,6 @@ describe('ProductDetailInfo', () => {
     render(<ProductDetailInfo {...mockProps} />);
 
     expect(screen.getByText('Test Product')).toBeTruthy();
-    expect(screen.getByText('$100')).toBeTruthy();
-    expect(screen.getByText('$120')).toBeTruthy();
     expect(screen.getByText('This is a test product description')).toBeTruthy();
   });
 
@@ -32,34 +35,16 @@ describe('ProductDetailInfo', () => {
     expect(screen.getByText('Test Product')).toBeTruthy();
   });
 
-  it('displays product price', () => {
+  it('displays product description', () => {
     render(<ProductDetailInfo {...mockProps} />);
 
-    expect(screen.getByText('$100')).toBeTruthy();
-  });
-
-  it('displays market price', () => {
-    render(<ProductDetailInfo {...mockProps} />);
-
-    expect(screen.getByText('$120')).toBeTruthy();
-  });
-
-  it('displays price value label', () => {
-    render(<ProductDetailInfo {...mockProps} />);
-
-    expect(screen.getByText(/Price Value:/)).toBeTruthy();
+    expect(screen.getByText('This is a test product description')).toBeTruthy();
   });
 
   it('displays description title', () => {
     render(<ProductDetailInfo {...mockProps} />);
 
     expect(screen.getByText('Description')).toBeTruthy();
-  });
-
-  it('displays description content', () => {
-    render(<ProductDetailInfo {...mockProps} />);
-
-    expect(screen.getByText('This is a test product description')).toBeTruthy();
   });
 
   it('displays date information', () => {
@@ -72,23 +57,8 @@ describe('ProductDetailInfo', () => {
     render(<ProductDetailInfo {...mockProps} />);
 
     expect(screen.getByText('Test Product')).toBeTruthy();
-    expect(screen.getByText('$100')).toBeTruthy();
-    expect(screen.getByText('$120')).toBeTruthy();
     expect(screen.getByText('Description')).toBeTruthy();
     expect(screen.getByText('This is a test product description')).toBeTruthy();
-  });
-
-  it('handles numeric price values', () => {
-    const propsWithNumericPrice = {
-      ...mockProps,
-      price: 150,
-      marketPrice: 180,
-    };
-
-    render(<ProductDetailInfo {...propsWithNumericPrice} />);
-
-    expect(screen.getByText('150')).toBeTruthy();
-    expect(screen.getByText('180')).toBeTruthy();
   });
 
   it('handles Date object for date prop', () => {
@@ -105,5 +75,10 @@ describe('ProductDetailInfo', () => {
   it('displays eBay logo or text', () => {
     render(<ProductDetailInfo {...mockProps} />);
     expect(screen.getByText(/Price Value:/)).toBeTruthy();
+  });
+
+  it('displays calculating text', () => {
+    render(<ProductDetailInfo {...mockProps} />);
+    expect(screen.getByText('calculating...')).toBeTruthy();
   });
 });

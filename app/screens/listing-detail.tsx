@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import { clsx } from 'clsx';
 import { Image as ExpoImage } from 'expo-image';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import {
   Alert,
@@ -38,13 +38,14 @@ import {
   ListingType,
   useCreateFavoritesMutation,
   useDeleteUserCardMutation,
-  useGetVwChaamoDetailQuery,
+  useGetVwChaamoDetailLazyQuery,
   useRemoveFavoritesMutation,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
+import { getIndicator } from '@/utils/getIndicator';
 
 cssInterop(ScrollView, {
   contentContainerClassName: {
@@ -62,14 +63,8 @@ export default function ListingDetailScreen() {
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 
   const { id, preview } = useLocalSearchParams();
-  const { data } = useGetVwChaamoDetailQuery({
-    skip: !id,
+  const [getDetail, { data, refetch }] = useGetVwChaamoDetailLazyQuery({
     fetchPolicy: 'cache-and-network',
-    variables: {
-      filter: {
-        id: { eq: id },
-      },
-    },
   });
   const [createFavorites] = useCreateFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
@@ -195,6 +190,20 @@ export default function ListingDetailScreen() {
       },
     });
   }, [deleteUserCard, detail?.user_card_id, handleDeletePopup]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (id) {
+        getDetail({
+          variables: {
+            filter: {
+              id: { eq: id },
+            },
+          },
+        });
+      }
+    }, [getDetail, id]),
+  );
 
   const renderBottomBar = useCallback(() => {
     if (isSeller) {
@@ -346,15 +355,22 @@ export default function ListingDetailScreen() {
           price={formatDisplay(detail?.currency, detail?.start_price ?? 0)}
           date={detail?.created_at ?? new Date().toISOString()}
           title={detail?.name ?? ''}
+          listingId={detail?.id ?? ''}
+          userCardId={detail?.user_card_id ?? ''}
+          sellerId={detail?.seller_id ?? ''}
+          lastSoldIsChecked={detail?.last_sold_is_checked ?? false}
+          lastSoldIsCorrect={detail?.last_sold_is_correct ?? false}
           marketPrice={
             detail?.last_sold_price === null
-              ? 'process last sold...'
+              ? 'calculating...'
               : formatDisplay(
                   detail?.last_sold_currency,
                   detail?.last_sold_price,
                 )
           }
+          indicator={getIndicator(detail?.start_price, detail?.last_sold_price)}
           description={detail?.description ?? ''}
+          detailRefetch={refetch}
         />
         <View className={classes.chartWrapper}>
           <Chart data={dummyPortfolioValueData} />
