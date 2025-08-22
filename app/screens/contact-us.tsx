@@ -14,9 +14,9 @@ import { TextChangeParams } from '@/domains';
 import {
   useCreateContactMessagesMutation,
   useGetVwChaamoDetailLazyQuery,
-  useUpdateUserCardMutation,
 } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
+import { sendEmail } from '@/utils/email';
 import { areFieldsEmpty, ValidationValues } from '@/utils/validate';
 
 interface Form extends ValidationValues {
@@ -33,12 +33,12 @@ export default function ContactUs() {
   const [user] = useUserVar();
   const { listingId } = useLocalSearchParams();
   const [form, setForm] = useState<Form>(initialForm);
+  const [recipient, setRecipient] = useState('support@chaamo.com');
 
   const [getListingDetail, { data: listingDetail }] =
     useGetVwChaamoDetailLazyQuery({
       fetchPolicy: 'cache-and-network',
     });
-  const [updateCheckedLastSold] = useUpdateUserCardMutation();
   const [createContactMessages, { loading }] =
     useCreateContactMessagesMutation();
 
@@ -68,26 +68,12 @@ export default function ContactUs() {
         onCompleted({ insertIntocontact_messagesCollection }) {
           if (insertIntocontact_messagesCollection?.records?.length) {
             if (listingId && userCardId) {
-              updateCheckedLastSold({
-                variables: {
-                  filter: {
-                    id: { eq: userCardId },
-                  },
-                  set: {
-                    last_sold_is_checked: true,
-                    last_sold_is_correct: false,
-                  },
-                },
-                onCompleted({ updateuser_cardsCollection }) {
-                  if (updateuser_cardsCollection?.records?.length) {
-                    Alert.alert('Success', 'Form submitted successfully');
-                    setForm(initialForm);
-                    router.back();
-                  } else {
-                    Alert.alert('Error', 'Failed to submit form');
-                  }
-                },
+              sendEmail({
+                to: recipient,
+                subject: form.subject,
+                html: `<p>${form.message}</p>`,
               });
+              Alert.alert('Sent', 'Form sent to support team');
             } else {
               Alert.alert('Success', 'Form submitted successfully');
               setForm(initialForm);
@@ -121,9 +107,10 @@ export default function ContactUs() {
             if (vw_chaamo_cardsCollection?.edges?.length) {
               setForm({
                 user_card_id: user?.id,
-                subject: `Incorrect price value`,
-                message: `Please correct the price value for "${vw_chaamo_cardsCollection.edges[0].node.name}".`,
+                subject: `I have a question about last sold price`,
+                message: `I have a question about the price value for "${vw_chaamo_cardsCollection.edges[0].node.name}".`,
               });
+              setRecipient('technicalsupport@chaamo.com');
             }
           },
           onError(error) {
@@ -166,7 +153,7 @@ export default function ContactUs() {
           />
           <View className={classes.emailContainer}>
             <Label variant="title">Or Contact us by email</Label>
-            <Label>Email us at support@chaamo.com</Label>
+            <Label>Email us at {recipient}</Label>
           </View>
         </KeyboardView>
         <Button
