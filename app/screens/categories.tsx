@@ -5,7 +5,7 @@ import { upperFirst } from 'lodash';
 import { cssInterop } from 'nativewind';
 import { FlatList, View } from 'react-native';
 
-import { Divider, Label, ScreenContainer } from '@/components/atoms';
+import { Label, ScreenContainer } from '@/components/atoms';
 import { Category, Header } from '@/components/molecules';
 import { imageCategories, typeCategories } from '@/constants/categories';
 import { useGetCategoriesQuery } from '@/generated/graphql';
@@ -55,13 +55,6 @@ export default function CategoriesScreen() {
                 <Label variant="subtitle" className={classes.headerCategory}>
                   {upperFirst(item.node.type)}
                 </Label>
-              )}
-
-              {isNotSameType && !isPopular && (
-                <Divider
-                  position="horizontal"
-                  className="border-slate-200 border-2 mb-5 "
-                />
               )}
 
               <Category

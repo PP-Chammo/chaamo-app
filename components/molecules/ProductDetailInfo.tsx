@@ -8,7 +8,6 @@ import { View } from 'react-native';
 
 import ChaamoLogo from '@/assets/images/logo.png';
 import { Button, Icon, Label, PriceIndicator, Row } from '@/components/atoms';
-import { useUpdateUserCardMutation } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 
 interface ProductDetailInfoProps {
@@ -42,13 +41,9 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
 }) => {
   const [user] = useUserVar();
 
-  const [updateCheckedLastSold, { loading }] = useUpdateUserCardMutation();
-
   const marketPriceDisplay = useMemo(() => {
     if (user?.id === sellerId && !String(marketPrice).includes('calculating')) {
-      return lastSoldIsChecked
-        ? marketPrice
-        : `${marketPrice} - (need confirm)`;
+      return marketPrice;
     }
     return lastSoldIsChecked && lastSoldIsCorrect
       ? marketPrice
@@ -58,28 +53,6 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
   const isCalculating = useMemo(() => {
     return String(marketPriceDisplay).includes('calculating');
   }, [marketPriceDisplay]);
-
-  const handleConfirmCorrect = useCallback(() => {
-    updateCheckedLastSold({
-      variables: {
-        filter: {
-          id: { eq: userCardId },
-        },
-        set: {
-          last_sold_is_checked: true,
-          last_sold_is_correct: true,
-        },
-      },
-      onCompleted: ({ updateuser_cardsCollection }) => {
-        if (updateuser_cardsCollection?.records?.length) {
-          detailRefetch?.();
-        }
-      },
-      onError: (error) => {
-        console.log(error);
-      },
-    });
-  }, [userCardId, updateCheckedLastSold, detailRefetch]);
 
   const handleConfirmIncorrect = useCallback(() => {
     router.push({
@@ -123,7 +96,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
       {!lastSoldIsChecked && user?.id === sellerId && (
         <View className={classes.actionContainer}>
           <Label className={classes.actionLabel}>
-            What is this price value correct?
+            Have a question about the price?
           </Label>
           <Row center className={classes.buttonActionContainer}>
             <Button
@@ -131,18 +104,8 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
               size="small"
               className={classes.buttonAction}
               onPress={handleConfirmIncorrect}
-              disabled={loading}
             >
-              Incorrect
-            </Button>
-            <Button
-              variant="primary-light"
-              size="small"
-              className={classes.buttonAction}
-              onPress={handleConfirmCorrect}
-              disabled={loading}
-            >
-              Correct
+              Contact Us
             </Button>
           </Row>
         </View>

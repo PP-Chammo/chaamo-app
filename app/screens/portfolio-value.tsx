@@ -13,6 +13,7 @@ import {
 } from '@/components/molecules';
 import { dummyPortfolioValueData } from '@/constants/dummy';
 import {
+  ListingType,
   OrderByDirection,
   useGetVwChaamoListingsQuery,
 } from '@/generated/graphql';
@@ -47,10 +48,18 @@ export default function PortfolioValueScreen() {
     },
   });
 
-  const recentlyList = useMemo(
+  const mostValuableList = useMemo(
     () => data?.vw_chaamo_cardsCollection?.edges ?? [],
     [data?.vw_chaamo_cardsCollection?.edges],
   );
+
+  const lastSoldPrice = useMemo(() => {
+    const lastSold = mostValuableList?.find(
+      (edge) => edge.node.listing_type === ListingType.SELL,
+    );
+
+    return lastSold?.node.last_sold_price ?? 0;
+  }, [mostValuableList]);
 
   return (
     <ScreenContainer classNameTop={classes.containerTop}>
@@ -66,7 +75,7 @@ export default function PortfolioValueScreen() {
               Your current collection
             </Label>
             <Label className={classes.currentCollectionValue}>
-              {formatDisplay(user?.profile?.currency, 0)}
+              {formatDisplay(user?.profile?.currency, lastSoldPrice)}
             </Label>
           </View>
           <Row className={classes.currentCollectionRow}>
@@ -103,9 +112,15 @@ export default function PortfolioValueScreen() {
           </Row>
         </View>
         <ListContainer
-          title="Recently Added"
-          onViewAllHref="/screens/product-list"
-          data={recentlyList}
+          title="Most Valuable"
+          titleLink="View Portfolio"
+          onViewAllHref={{
+            pathname: '/(tabs)/profile',
+            params: {
+              userId: user?.id,
+            },
+          }}
+          data={mostValuableList}
         >
           {(item) => (
             <ListingCard

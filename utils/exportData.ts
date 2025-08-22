@@ -1,4 +1,4 @@
-import { Alert, Platform } from 'react-native';
+import { Alert, Platform, PermissionsAndroid } from 'react-native';
 import RNFS from 'react-native-fs';
 
 import {
@@ -111,16 +111,66 @@ export const exportUserData = async (
 
     const fileName = `chaamo-export-${user.id}-${Date.now()}.json`;
 
-    // Use platform-appropriate directory via RNFS only
-    const baseDir =
-      Platform.OS === 'android'
-        ? RNFS.DownloadDirectoryPath
-        : RNFS.DocumentDirectoryPath;
-    const fileUri = `${baseDir}/${fileName}`;
+    let baseDir = RNFS.DocumentDirectoryPath;
 
-    // Ensure directory exists (no-op if already exists)
+    if (Platform.OS === 'android') {
+      try {
+        const writeGranted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'Storage Permission',
+            message:
+              'Chaamo needs access to your storage to export your data to Downloads.',
+            buttonPositive: 'OK',
+          },
+        );
+
+        const readGranted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          {
+            title: 'Storage Permission',
+            message:
+              'Chaamo needs access to your storage to export your data to Downloads.',
+            buttonPositive: 'OK',
+          },
+        );
+
+        const hasPermission =
+          writeGranted === PermissionsAndroid.RESULTS.GRANTED ||
+          readGranted === PermissionsAndroid.RESULTS.GRANTED;
+
+        if (hasPermission && RNFS.DownloadDirectoryPath) {
+          baseDir = RNFS.DownloadDirectoryPath;
+        } else if (RNFS.ExternalDirectoryPath) {
+          baseDir = RNFS.ExternalDirectoryPath;
+        }
+      } catch {
+        baseDir = RNFS.ExternalDirectoryPath ?? RNFS.DocumentDirectoryPath;
+      }
+    }
+
+    let fileUri = `${baseDir}/${fileName}`;
+
     await RNFS.mkdir(baseDir);
-    await RNFS.writeFile(fileUri, jsonData, 'utf8');
+
+    try {
+      await RNFS.writeFile(fileUri, jsonData, 'utf8');
+    } catch (writeErr) {
+      if (Platform.OS === 'android') {
+        const fallbackDir =
+          RNFS.ExternalDirectoryPath ?? RNFS.DocumentDirectoryPath;
+        if (fallbackDir && fallbackDir !== baseDir) {
+          baseDir = fallbackDir;
+          fileUri = `${baseDir}/${fileName}`;
+          await RNFS.mkdir(baseDir);
+          await RNFS.writeFile(fileUri, jsonData, 'utf8');
+        } else {
+          throw writeErr;
+        }
+      } else {
+        throw writeErr;
+      }
+    }
 
     Alert.alert(
       'Export Successful',
