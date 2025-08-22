@@ -25,10 +25,13 @@ export default function CategoriesScreen() {
   const { data } = useGetCategoriesQuery();
   const edges = data?.categoriesCollection?.edges ?? [];
 
-  const handleCtaCards = useCallback(
-    (category: string) => {
-      setSearch({ category });
-      router.push('/screens/product-list');
+  const handleCtaCard = useCallback(
+    (id: number) => (category: string) => {
+      setSearch({ categoryId: id, category });
+      router.push({
+        pathname: '/screens/product-list',
+        params: { ebayOnly: 'true' },
+      });
     },
     [setSearch],
   );
@@ -59,7 +62,7 @@ export default function CategoriesScreen() {
 
               <Category
                 horizontal
-                onPress={handleCtaCards}
+                onPress={handleCtaCard(item.node.id)}
                 title={item.node.name}
                 image={imageCategories?.[item.node.name]}
               />

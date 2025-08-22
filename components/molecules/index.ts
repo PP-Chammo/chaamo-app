@@ -2,7 +2,7 @@ export { default as AuctionDetailBottomBar } from './AuctionDetailBottomBar';
 export { default as AutocompleteCardItem } from './AutocompleteCardItem';
 export { default as BlockListItem } from './BlockListItem';
 export { default as ButtonIcon } from './ButtonIcon';
-export { default as CardItem } from './CardItem';
+export { default as ListingItem } from './ListingItem';
 export { default as Category } from './Category';
 export { default as Chart } from './Chart';
 export { default as ChatListItem } from './ChatListItem';

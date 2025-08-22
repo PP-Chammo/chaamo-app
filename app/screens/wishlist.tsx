@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { FlatList, View } from 'react-native';
 
 import { Label, ScreenContainer } from '@/components/atoms';
-import { CardItem, Header } from '@/components/molecules';
+import { ListingItem, Header } from '@/components/molecules';
 import {
   ListingType,
   useGetVwMyFavoritesQuery,
@@ -70,7 +70,7 @@ export default function WishlistScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerClassName={classes.contentContainer}
           renderItem={({ item }) => (
-            <CardItem
+            <ListingItem
               listingType={item.node?.listing_type ?? ListingType.SELL}
               imageUrl={item.node?.image_url ?? ''}
               title={item.node?.name ?? ''}

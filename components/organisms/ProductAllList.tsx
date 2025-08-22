@@ -5,7 +5,7 @@ import { cssInterop } from 'nativewind';
 import { ActivityIndicator, FlatList, View } from 'react-native';
 
 import { Label } from '@/components/atoms';
-import { CardItem } from '@/components/molecules';
+import { ListingItem } from '@/components/molecules';
 import { GetVwChaamoListingsQuery, ListingType } from '@/generated/graphql';
 import { useFavorites } from '@/hooks/useFavorites';
 import { DeepGet } from '@/types/helper';
@@ -50,7 +50,7 @@ const ProductAllList: React.FC<ProductAllListProps> = memo(function AllCards({
       data={cards}
       keyExtractor={(item) => item.node.id}
       renderItem={({ item }) => (
-        <CardItem
+        <ListingItem
           listingType={item.node?.listing_type ?? ListingType.SELL}
           imageUrl={item.node?.image_url ?? ''}
           title={item.node?.name ?? ''}

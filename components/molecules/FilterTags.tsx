@@ -5,6 +5,10 @@ import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useSearchVar } from '@/hooks/useSearchVar';
 import { useUserVar } from '@/hooks/useUserVar';
 
+function isMultiValueKey(k: string): k is 'condition' | 'adProperties' {
+  return k === 'condition' || k === 'adProperties';
+}
+
 const FilterTags = memo(function FilterTags() {
   const [user] = useUserVar();
   const [search, setSearch] = useSearchVar();
@@ -99,12 +103,13 @@ const FilterTags = memo(function FilterTags() {
           size="small"
           variant="light"
           onPress={() => {
-            if (['condition', 'adProperties'].includes(key)) {
+            if (isMultiValueKey(key)) {
+              const current = (search[key] ?? '') as string;
               setSearch({
                 ...search,
-                [key]: (search?.[key as keyof typeof search] ?? '')
+                [key]: current
                   .split(',')
-                  .filter((item) => item !== value)
+                  .filter((item: string) => item !== value)
                   .join(','),
               });
             } else {
