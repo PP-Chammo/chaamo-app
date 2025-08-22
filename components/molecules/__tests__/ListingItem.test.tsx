@@ -4,9 +4,9 @@ import { render, fireEvent } from '@testing-library/react-native';
 
 import { ListingType } from '@/generated/graphql';
 
-import CardItem from '../CardItem';
+import ListingItem from '../ListingItem';
 
-describe('CardItem', () => {
+describe('ListingItem', () => {
   const defaultProps = {
     listingType: ListingType.SELL,
     imageUrl: 'https://example.com/image.jpg',
@@ -22,7 +22,7 @@ describe('CardItem', () => {
   };
 
   it('renders correctly with default props', () => {
-    const { getByTestId } = render(<CardItem {...defaultProps} />);
+    const { getByTestId } = render(<ListingItem {...defaultProps} />);
     expect(getByTestId('card-item')).toBeTruthy();
     expect(getByTestId('card-item-image')).toBeTruthy();
     expect(getByTestId('card-item-title').props.children).toBe('Test Card');
@@ -39,14 +39,16 @@ describe('CardItem', () => {
   });
 
   it('renders image placeholder when imageUrl is not provided', () => {
-    const { getByTestId } = render(<CardItem {...defaultProps} imageUrl="" />);
+    const { getByTestId } = render(
+      <ListingItem {...defaultProps} imageUrl="" />,
+    );
     expect(getByTestId('card-item-image-placeholder')).toBeTruthy();
   });
 
   it('renders right icon button when onRightIconPress is provided', () => {
     const onRightIconPress = jest.fn();
     const { getByTestId } = render(
-      <CardItem
+      <ListingItem
         {...defaultProps}
         onRightIconPress={onRightIconPress}
         rightIcon="heart"
@@ -60,7 +62,7 @@ describe('CardItem', () => {
   it('calls onRightIconPress when right icon button is pressed', () => {
     const onRightIconPress = jest.fn();
     const { getByTestId } = render(
-      <CardItem
+      <ListingItem
         {...defaultProps}
         onRightIconPress={onRightIconPress}
         rightIcon="heart"
@@ -75,7 +77,7 @@ describe('CardItem', () => {
   it('renders with all props combined', () => {
     const onRightIconPress = jest.fn();
     const { getByTestId } = render(
-      <CardItem
+      <ListingItem
         {...defaultProps}
         onRightIconPress={onRightIconPress}
         rightIcon="star"
@@ -102,14 +104,14 @@ describe('CardItem', () => {
 
   it('applies correct styling classes', () => {
     const { getByTestId } = render(
-      <CardItem {...defaultProps} className="custom-class" />,
+      <ListingItem {...defaultProps} className="custom-class" />,
     );
     expect(getByTestId('card-item')).toBeTruthy();
   });
 
   it('renders with long title and price', () => {
     const { getByTestId } = render(
-      <CardItem
+      <ListingItem
         {...defaultProps}
         title={'A very long card title for testing purposes'}
         marketPrice={'1234567890'}

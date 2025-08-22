@@ -9,7 +9,7 @@ import { useSearchVar } from '@/hooks/useSearchVar';
 import { useUserVar } from '@/hooks/useUserVar';
 
 interface FilterSectionProps {
-  resultCount?: number;
+  resultCount?: number | string;
 }
 
 const FilterSection: React.FC<FilterSectionProps> = memo(
@@ -44,7 +44,7 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
             size="small"
             icon="sliders"
             iconVariant="FontAwesome"
-            className={classes.filterButton}
+            className={classes.filterButtonWithClose}
           >
             Filters
           </Button>
@@ -53,7 +53,7 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
               testID="filter-search-button"
               variant="light"
               size="small"
-              className={classes.filterButton}
+              className={classes.filterButtonWithClose}
               rightIcon="close"
               onPress={() => setSearch({ query: '' })}
             >
@@ -66,7 +66,6 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
               variant="light"
               size="small"
               className={classes.filterButton}
-              rightIcon="close"
               onPress={() => setSearch({ category: '' })}
             >
               {search?.category}
@@ -77,7 +76,7 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
               testID="filter-location-button"
               variant="light"
               size="small"
-              className={classes.filterButton}
+              className={classes.filterButtonWithClose}
               rightIcon="close"
               onPress={() => setSearch({ location: '' })}
             >
@@ -89,7 +88,7 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
               testID="filter-price-button"
               variant="light"
               size="small"
-              className={classes.filterButton}
+              className={classes.filterButtonWithClose}
               rightIcon="close"
               onPress={() => setSearch({ priceRange: '' })}
             >
@@ -103,7 +102,7 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
                 testID="filter-condition-button"
                 variant="light"
                 size="small"
-                className={classes.filterButton}
+                className={classes.filterButtonWithClose}
                 rightIcon="close"
                 onPress={() =>
                   setSearch({
@@ -121,7 +120,7 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
               testID="filter-adProperties-button"
               variant="light"
               size="small"
-              className={classes.filterButton}
+              className={classes.filterButtonWithClose}
               rightIcon="close"
               onPress={() => setSearch({ adProperties: '' })}
             >
@@ -144,7 +143,8 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
 
 const classes = {
   filterContainer: 'px-4.5 py-3 gap-2',
-  filterButton: '!px-3',
+  filterButtonWithClose: '!px-3',
+  filterButton: '!px-5',
   filterTextContainer: 'px-4.5 pt-1 pb-4 !gap-1',
   filterPlaceholder: 'font-light text-gray-500',
   resultText: 'font-semibold',

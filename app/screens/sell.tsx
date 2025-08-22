@@ -16,6 +16,7 @@ import { Alert, FlatList, View } from 'react-native';
 import {
   Button,
   KeyboardView,
+  Loading,
   Modal,
   ScreenContainer,
 } from '@/components/atoms';
@@ -78,8 +79,10 @@ export default function SellScreen() {
   const [showModal, setShowModal] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [errors, setErrors] = useState<ValidationErrors<SellFormStore>>({});
-  const [getAutocompleteList, { data: masterCards }] =
-    useGetMasterCardsAutocompleteLazyQuery();
+  const [
+    getAutocompleteList,
+    { data: masterCards, loading: autocompleteLoading },
+  ] = useGetMasterCardsAutocompleteLazyQuery();
   const [createListings] = useCreateListingsMutation();
   const [updateListings] = useUpdateListingsMutation();
   const [createUserCard] = useCreateUserCardMutation();
@@ -149,6 +152,15 @@ export default function SellScreen() {
       ),
     [form, requiredFields],
   );
+
+  useEffect(() => {
+    if (form.imageUrl !== imageCaptured?.uri) {
+      setForm({
+        ...form,
+        imageUrl: imageCaptured.uri,
+      });
+    }
+  }, [form, imageCaptured.uri, setForm]);
 
   useFocusEffect(
     useCallback(() => {
@@ -597,7 +609,7 @@ export default function SellScreen() {
       <View className={classes.buttonContainer}>
         <Button
           onPress={handleSubmit}
-          disabled={!isFormValid || !form.imageUrl || loading}
+          disabled={!isFormValid || !imageCaptured?.uri || loading}
           loading={loading}
         >
           {cardId ? 'Update Your Card' : 'Post Your Card'}
@@ -615,27 +627,31 @@ export default function SellScreen() {
           onChange={({ value }) => setSearchText(value)}
         />
         <View className={classes.modalContainer}>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={[
-              ...autocompleteList,
-              ...(searchText.length > 2
-                ? [{ node: { id: null, name: `Use title "${searchText}"` } }]
-                : []),
-            ]}
-            renderItem={({ item }) => (
-              <AutocompleteCardItem
-                onPress={() =>
-                  handleAutocompletePress(item.node as MasterCards)
-                }
-                imageUrl={item.node?.canonical_image_url ?? ''}
-                name={item.node?.name}
-                category={item.node.categories?.name ?? ''}
-              />
-            )}
-            className={classes.list}
-            contentContainerClassName={classes.listContainer}
-          />
+          {autocompleteLoading ? (
+            <Loading />
+          ) : (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={[
+                ...autocompleteList,
+                ...(searchText.length > 2
+                  ? [{ node: { id: null, name: `Use title "${searchText}"` } }]
+                  : []),
+              ]}
+              renderItem={({ item }) => (
+                <AutocompleteCardItem
+                  onPress={() =>
+                    handleAutocompletePress(item.node as MasterCards)
+                  }
+                  imageUrl={item.node?.canonical_image_url ?? ''}
+                  name={item.node?.name}
+                  category={item.node.categories?.name ?? ''}
+                />
+              )}
+              className={classes.list}
+              contentContainerClassName={classes.listContainer}
+            />
+          )}
         </View>
       </Modal>
     </ScreenContainer>

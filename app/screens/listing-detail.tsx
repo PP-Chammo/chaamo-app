@@ -56,7 +56,7 @@ cssInterop(ScrollView, {
 export default function ListingDetailScreen() {
   const [user] = useUserVar();
   const { getIsFavorite } = useFavorites();
-  const { formatDisplay } = useCurrencyDisplay();
+  const { formatDisplay, formatPrice } = useCurrencyDisplay();
   const [isDeletePopupVisible, setIsDeletePopupVisible] = useState(false);
 
   const dotsRef = useRef<View>(null);
@@ -231,15 +231,14 @@ export default function ListingDetailScreen() {
             <PlaceBidModalContent
               id={detail?.id ?? ''}
               sellerId={detail?.seller_id ?? ''}
-              minimumBidAmount={formatDisplay(
-                detail?.currency,
-                detail?.reserve_price ?? 0,
-                { showSymbol: false },
+              minimumBidAmount={String(
+                formatPrice(detail?.currency, detail?.reserve_price ?? 0),
               )}
-              currentBidAmount={formatDisplay(
-                detail?.highest_bid_currency,
-                detail?.highest_bid_price ?? detail?.reserve_price ?? 0,
-                { showSymbol: false },
+              currentBidAmount={String(
+                formatPrice(
+                  detail?.highest_bid_currency,
+                  detail?.highest_bid_price ?? detail?.reserve_price ?? 0,
+                ),
               )}
               endDate={detail?.end_time ?? new Date()}
               onDismiss={() => setShowModal(false)}
@@ -282,6 +281,7 @@ export default function ListingDetailScreen() {
     detail?.seller_id,
     showModal,
     formatDisplay,
+    formatPrice,
     handleShowModal,
     handleBuyNow,
   ]);

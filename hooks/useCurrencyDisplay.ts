@@ -132,10 +132,8 @@ export function useCurrencyDisplay() {
     amount?: string | number | null | undefined,
     options: {
       unfixed?: boolean;
-      showSymbol?: boolean;
     } = {
       unfixed: false,
-      showSymbol: true,
     },
   ): string {
     if (!baseCurrency) return `? ${amount ?? 0}`;
@@ -159,7 +157,37 @@ export function useCurrencyDisplay() {
       maximumFractionDigits: 2,
     }).format(convertedAmount);
 
-    return options?.showSymbol ? `${userSymbol}${formatted}` : formatted;
+    return `${userSymbol}${formatted}`;
+  }
+
+  function formatPrice(
+    baseCurrency?: string | SupportedCurrency | null,
+    amount?: string | number | null | undefined,
+    options: {
+      unfixed?: boolean;
+    } = {
+      unfixed: false,
+    },
+  ): number {
+    if (!baseCurrency) return Number(amount ?? 0);
+
+    let currencyCode: SupportedCurrency;
+    if (baseCurrency in currencySymbolMap) {
+      currencyCode = baseCurrency as SupportedCurrency;
+    } else {
+      const foundCode = Object.entries(currencySymbolMap).find(
+        ([_, symbol]) => symbol === baseCurrency,
+      )?.[0] as SupportedCurrency;
+      currencyCode = foundCode ?? 'USD';
+    }
+
+    // Convert to user's display currency (numeric)
+    const convertedAmount = convertBaseToUser(amount, currencyCode);
+
+    // Ensure numeric result (avoid locale string -> Number issues)
+    // We already round to 2 decimals in convertBaseToUser; return directly.
+    // Keep options.unfixed for API parity with formatDisplay.
+    return convertedAmount;
   }
 
   return {
@@ -168,5 +196,6 @@ export function useCurrencyDisplay() {
     convertBaseToUser,
     convertUserToBase,
     formatDisplay,
+    formatPrice,
   };
 }

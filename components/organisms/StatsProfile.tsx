@@ -18,7 +18,7 @@ import { useUserVar } from '@/hooks/useUserVar';
 export default function StatsProfile() {
   const { userId } = useLocalSearchParams();
   const [user] = useUserVar();
-  const { formatDisplay, convertSymbolToCurrency, convertCurrencyToSymbol } =
+  const { formatPrice, convertSymbolToCurrency, convertCurrencyToSymbol } =
     useCurrencyDisplay();
 
   const { data: publicUserData } = useGetProfilesQuery({
@@ -98,12 +98,9 @@ export default function StatsProfile() {
           (acc, listing) =>
             acc +
             Number(
-              formatDisplay(
+              formatPrice(
                 convertSymbolToCurrency('USD'),
                 listing.node?.start_price ?? 0,
-                {
-                  showSymbol: false,
-                },
               ),
             ),
           0,
@@ -112,7 +109,7 @@ export default function StatsProfile() {
     );
   }, [
     convertSymbolToCurrency,
-    formatDisplay,
+    formatPrice,
     listingsData?.vw_chaamo_cardsCollection?.edges,
   ]);
 

@@ -4,21 +4,20 @@ import { router } from 'expo-router';
 
 import { Category, ListContainer } from '@/components/molecules';
 import { imageCategories } from '@/constants/categories';
-import { GetCategoriesQuery, useGetCategoriesQuery } from '@/generated/graphql';
+import { useCategoryVar } from '@/hooks/useCategoryVar';
 import { useSearchVar } from '@/hooks/useSearchVar';
-import { DeepGet } from '@/types/helper';
 
 const CategoryList = memo(function CategoryList() {
   const [, setSearch] = useSearchVar();
-  const { data, loading } = useGetCategoriesQuery({
-    fetchPolicy: 'cache-and-network',
-  });
-  const edges = data?.categoriesCollection?.edges ?? [];
+  const { data, loading } = useCategoryVar();
 
-  const handleCtaCards = useCallback(
-    (category: string) => {
-      setSearch({ category });
-      router.push({ pathname: '/screens/product-list' });
+  const handleCtaCard = useCallback(
+    (id: number) => (category: string) => {
+      setSearch({ categoryId: id, category });
+      router.push({
+        pathname: '/screens/product-list',
+        params: { ebayOnly: 'true' },
+      });
     },
     [setSearch],
   );
@@ -28,19 +27,17 @@ const CategoryList = memo(function CategoryList() {
   }
 
   return (
-    <ListContainer<
-      DeepGet<GetCategoriesQuery, ['categoriesCollection', 'edges', number]>
-    >
+    <ListContainer
       title="Categories"
       onViewAllHref="/screens/categories"
-      data={edges}
+      data={data}
     >
       {(edge) => (
         <Category
           key={edge.node.name}
           title={edge.node.name}
           image={imageCategories?.[edge.node.name]}
-          onPress={handleCtaCards}
+          onPress={handleCtaCard(edge.node.id)}
         />
       )}
     </ListContainer>

@@ -1,7 +1,7 @@
 import { ScrollView, View } from 'react-native';
 
 import { Icon, Label } from '@/components/atoms';
-import { Rating, Review } from '@/components/molecules';
+import { Rating } from '@/components/molecules';
 
 export default function ReviewsProfile() {
   return (
@@ -11,35 +11,26 @@ export default function ReviewsProfile() {
       contentContainerClassName={classes.contentContainer}
     >
       <View className={classes.reviewContainer}>
-        <Rating value={4.8} />
-        <Label variant="subtitle">4.8 (200 Reviews)</Label>
+        <Rating value={5} />
+        <Label variant="subtitle">5 (0 Reviews)</Label>
         <Label className={classes.outstandingText}>
-          Outstanding: Rated 4.8 with 2 reviews
+          Outstanding: 0 reviews
         </Label>
       </View>
       <View className={classes.reviewHeader}>
-        <Label variant="subtitle">3 Reviews</Label>
+        <Label variant="subtitle">0 Reviews</Label>
         <View className={classes.reviewHeaderRight}>
           <Label>Latest</Label>
           <Icon name="chevron-down" size={16} color="black" />
         </View>
       </View>
       <View className={classes.reviewList}>
-        <Review
+        {/* FIXME: */}
+        {/* <Review
           name="John Doe"
           rating={4.8}
           comment="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
-        />
-        <Review
-          name="John Doe"
-          rating={4.8}
-          comment="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
-        />
-        <Review
-          name="John Doe"
-          rating={4.8}
-          comment="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
-        />
+        /> */}
       </View>
     </ScrollView>
   );

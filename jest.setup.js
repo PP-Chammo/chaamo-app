@@ -641,6 +641,15 @@ jest.mock('@/hooks/useCurrencyDisplay', () => ({
       if (options?.showSymbol === false) return formatted;
       return `$${formatted}`;
     }),
+    formatPrice: jest.fn((baseCurrency, amount, options) => {
+      const num = typeof amount === 'string' ? parseFloat(amount) : amount || 0;
+      const formatted = new Intl.NumberFormat(undefined, {
+        style: 'decimal',
+        minimumFractionDigits: options?.unfixed ? 0 : 2,
+        maximumFractionDigits: 2,
+      }).format(isNaN(num) ? 0 : num);
+      return Number(formatted);
+    }),
     convertSymbolToCurrency: jest.fn(() => 'USD'),
     convertCurrencyToSymbol: jest.fn(() => '$'),
   })),
