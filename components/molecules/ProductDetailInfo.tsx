@@ -94,21 +94,19 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
         )}
       </View>
       {!lastSoldIsChecked && user?.id === sellerId && (
-        <View className={classes.actionContainer}>
+        <Row between className={classes.actionContainer}>
           <Label className={classes.actionLabel}>
             Have a question about the price?
           </Label>
-          <Row center className={classes.buttonActionContainer}>
-            <Button
-              variant="danger-light"
-              size="small"
-              className={classes.buttonAction}
-              onPress={handleConfirmIncorrect}
-            >
-              Contact Us
-            </Button>
-          </Row>
-        </View>
+          <Button
+            variant="danger-light"
+            size="small"
+            className={classes.buttonAction}
+            onPress={handleConfirmIncorrect}
+          >
+            Contact Us
+          </Button>
+        </Row>
       )}
       <View className={classes.descriptionWrapper}>
         <Label className={classes.descriptionTitle}>Description</Label>
@@ -132,10 +130,9 @@ const classes = {
   descriptionWrapper: 'mt-4',
   descriptionTitle: 'text-base font-semibold mb-1',
   description: 'text-base text-gray-700',
-  actionContainer: 'gap-5 p-4.5 mt-3 bg-orange-100/60 rounded-xl',
+  actionContainer: 'gap-5 p-4 items-center mt-3 bg-orange-100/60 rounded-xl',
   actionLabel: 'text-base font-normal text-center',
-  buttonActionContainer: 'flex-row items-center gap-8',
-  buttonAction: 'w-40',
+  buttonAction: '',
 };
 
 export default ProductDetailInfo;
