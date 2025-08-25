@@ -21,9 +21,6 @@ describe('ListingCard', () => {
     expect(getByTestId('listing-card')).toBeTruthy();
     expect(getByTestId('listing-card-image')).toBeTruthy();
     expect(getByTestId('listing-card-title').props.children).toBe('Test Card');
-    expect(getByTestId('listing-card-market-price').props.children).toBe(
-      'calculating...',
-    );
   });
 
   it('renders image placeholder when imageUrl is not provided', () => {
@@ -39,10 +36,6 @@ describe('ListingCard', () => {
     );
     expect(getByTestId('listing-card-price')).toBeTruthy();
     expect(getByTestId('listing-card-price').props.children).toBe('$100.00');
-    expect(getByTestId('listing-card-market-price')).toBeTruthy();
-    expect(getByTestId('listing-card-market-price').props.children).toBe(
-      'calculating...',
-    );
   });
 
   it('does not render price when not provided', () => {
@@ -107,9 +100,6 @@ describe('ListingCard', () => {
     expect(getByTestId('listing-card-image')).toBeTruthy();
     expect(getByTestId('listing-card-title').props.children).toBe('Test Card');
     expect(getByTestId('listing-card-price').props.children).toBe('$100.00');
-    expect(getByTestId('listing-card-market-price').props.children).toBe(
-      'calculating...',
-    );
   });
 
   it('applies correct styling classes', () => {

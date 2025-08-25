@@ -56,8 +56,6 @@ const ListingItem: React.FC<ListingItemProps> = memo(function ListingItem({
   onRightIconPress,
   className,
   onPress,
-  lastSoldIsChecked,
-  lastSoldIsCorrect,
   type = 'chaamo',
 }) {
   const { formatDisplay } = useCurrencyDisplay();
@@ -70,19 +68,6 @@ const ListingItem: React.FC<ListingItemProps> = memo(function ListingItem({
   );
 
   const renderMarketPrice = useCallback(() => {
-    if (
-      !lastSoldIsChecked ||
-      (lastSoldIsChecked && !lastSoldIsCorrect) ||
-      marketPrice === null
-    ) {
-      return (
-        <>
-          <Label className={classes.textProcessing} testID="card-item-price">
-            {lastSoldIsChecked ? 'checking...' : 'calculating...'}
-          </Label>
-        </>
-      );
-    }
     return (
       <>
         <Label className={classes.textBold} testID="card-item-price">
@@ -91,14 +76,7 @@ const ListingItem: React.FC<ListingItemProps> = memo(function ListingItem({
         <PriceIndicator direction={indicator} />
       </>
     );
-  }, [
-    formatDisplay,
-    indicator,
-    marketPrice,
-    marketCurrency,
-    lastSoldIsChecked,
-    lastSoldIsCorrect,
-  ]);
+  }, [formatDisplay, indicator, marketPrice, marketCurrency]);
 
   const renderRightIcon = useCallback(
     () =>

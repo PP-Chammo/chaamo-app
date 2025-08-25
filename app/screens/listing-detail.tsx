@@ -63,7 +63,7 @@ export default function ListingDetailScreen() {
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 
   const { id, preview } = useLocalSearchParams();
-  const [getDetail, { data, refetch }] = useGetVwChaamoDetailLazyQuery({
+  const [getDetail, { data }] = useGetVwChaamoDetailLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
   const [createFavorites] = useCreateFavoritesMutation();
@@ -356,21 +356,14 @@ export default function ListingDetailScreen() {
           date={detail?.created_at ?? new Date().toISOString()}
           title={detail?.name ?? ''}
           listingId={detail?.id ?? ''}
-          userCardId={detail?.user_card_id ?? ''}
           sellerId={detail?.seller_id ?? ''}
           lastSoldIsChecked={detail?.last_sold_is_checked ?? false}
-          lastSoldIsCorrect={detail?.last_sold_is_correct ?? false}
-          marketPrice={
-            detail?.last_sold_price === null
-              ? 'calculating...'
-              : formatDisplay(
-                  detail?.last_sold_currency,
-                  detail?.last_sold_price,
-                )
-          }
+          marketPrice={formatDisplay(
+            detail?.last_sold_currency,
+            detail?.last_sold_price,
+          )}
           indicator={getIndicator(detail?.start_price, detail?.last_sold_price)}
           description={detail?.description ?? ''}
-          detailRefetch={refetch}
         />
         <View className={classes.chartWrapper}>
           <Chart data={dummyPortfolioValueData} />

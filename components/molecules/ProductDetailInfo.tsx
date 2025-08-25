@@ -18,11 +18,8 @@ interface ProductDetailInfoProps {
   description: string;
   indicator?: 'up' | 'down';
   listingId?: string;
-  userCardId?: string;
   sellerId?: string;
   lastSoldIsChecked?: boolean;
-  lastSoldIsCorrect?: boolean;
-  detailRefetch?: () => void;
 }
 
 const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
@@ -30,29 +27,19 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
   date,
   title,
   listingId,
-  userCardId,
   sellerId,
   marketPrice,
   description,
   indicator,
   lastSoldIsChecked,
-  lastSoldIsCorrect,
-  detailRefetch,
 }) => {
   const [user] = useUserVar();
 
   const marketPriceDisplay = useMemo(() => {
-    if (user?.id === sellerId && !String(marketPrice).includes('calculating')) {
+    if (user?.id === sellerId) {
       return marketPrice;
     }
-    return lastSoldIsChecked && lastSoldIsCorrect
-      ? marketPrice
-      : 'calculating...';
-  }, [marketPrice, user?.id, sellerId, lastSoldIsChecked, lastSoldIsCorrect]);
-
-  const isCalculating = useMemo(() => {
-    return String(marketPriceDisplay).includes('calculating');
-  }, [marketPriceDisplay]);
+  }, [marketPrice, user?.id, sellerId]);
 
   const handleConfirmIncorrect = useCallback(() => {
     router.push({
@@ -89,9 +76,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
         <Image source={ChaamoLogo} className={classes.chaamoLogo} />
         <Label className={classes.priceValueLabel}>Price Value: </Label>
         <Label className={classes.priceValue}>{marketPriceDisplay}</Label>
-        {!isCalculating && indicator && (
-          <PriceIndicator direction={indicator} />
-        )}
+        {indicator && <PriceIndicator direction={indicator} />}
       </View>
       {!lastSoldIsChecked && user?.id === sellerId && (
         <View className={classes.actionContainer}>

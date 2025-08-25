@@ -29,9 +29,6 @@ describe('ListingItem', () => {
     expect(getByTestId('card-item-subtitle').props.children).toBe(
       'Test Subtitle',
     );
-    expect(getByTestId('card-item-price').props.children).toBe(
-      'calculating...',
-    );
     expect(getByTestId('card-item-market-price').props.children).toBe(
       '$100.00',
     );
@@ -93,9 +90,6 @@ describe('ListingItem', () => {
     expect(getByTestId('card-item-subtitle').props.children).toBe(
       'Test Subtitle',
     );
-    expect(getByTestId('card-item-price').props.children).toBe(
-      'calculating...',
-    );
     expect(getByTestId('card-item-market-price').props.children).toBe(
       '$100.00',
     );
@@ -119,9 +113,6 @@ describe('ListingItem', () => {
     );
     expect(getByTestId('card-item-title').props.children).toBe(
       'A very long card title for testing purposes',
-    );
-    expect(getByTestId('card-item-price').props.children).toBe(
-      'calculating...',
     );
   });
 });
