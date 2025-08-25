@@ -47,7 +47,7 @@ const Modal = memo(function Modal({
 const classes = {
   container: 'flex-1 justify-center bg-black/40',
   content: 'bg-white mx-10 min-h-52 rounded-lg',
-  modalBackdrop: 'absolute inset-0',
+  modalBackdrop: 'absolute right-0 left-0 bottom-0 top-0',
 };
 
 export default Modal;

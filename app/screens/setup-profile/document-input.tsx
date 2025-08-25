@@ -165,8 +165,8 @@ export default function DocumentInputScreen() {
 
 const classes = {
   title: 'text-white text-3xl font-bold mb-8',
-  camera: 'absolute inset-0',
-  overlay: 'absolute inset-0 mx-4.5 mt-24 mb-24',
+  camera: 'absolute right-0 left-0 bottom-0 top-0',
+  overlay: 'absolute right-0 left-0 bottom-0 top-0 mx-4.5 mt-24 mb-24',
   instructionText: 'text-white text-base',
   uploadInstruction: 'bottom-20',
   frameContainer: 'flex-1 justify-center items-center',
@@ -176,5 +176,6 @@ const classes = {
     'absolute -bottom-5 self-center w-20 h-20 rounded-full bg-white/20 justify-center items-center border-4 border-slate-400',
   captureButtonIcon: 'w-16 h-16 rounded-full bg-cyan-400',
   browseDocument: 'w-10 h-10 rounded-full',
-  browseDocumentImage: 'absolute inset-0 rounded-full bg-white',
+  browseDocumentImage:
+    'absolute right-0 left-0 bottom-0 top-0 rounded-full bg-white',
 };

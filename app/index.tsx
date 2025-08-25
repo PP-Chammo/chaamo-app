@@ -99,5 +99,5 @@ export default function StartPage() {
 
 const classes = {
   container: 'bg-splash w-full h-full',
-  image: 'absolute inset-0',
+  image: 'absolute right-0 left-0 bottom-0 top-0',
 };
