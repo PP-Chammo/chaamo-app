@@ -10,11 +10,7 @@ import {
   HeaderSearch,
   TabView,
 } from '@/components/molecules';
-import {
-  ProductAllList,
-  ProductAuctionList,
-  ProductFixedList,
-} from '@/components/organisms';
+import { ProductAuctionList, ProductFixedList } from '@/components/organisms';
 import { productListTabs } from '@/constants/tabs';
 import { TextChangeParams } from '@/domains';
 import {
@@ -28,6 +24,7 @@ import {
   type VwChaamoCardsFilter,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { useFavorites } from '@/hooks/useFavorites';
 import { useSearchVar } from '@/hooks/useSearchVar';
 import { useUserVar } from '@/hooks/useUserVar';
 import { searchStore } from '@/stores/searchStore';
@@ -64,6 +61,7 @@ export default function ProductListScreen() {
   ] = useGetEbayPostsLazyQuery({ fetchPolicy: 'cache-and-network' });
   const [createFavorites] = useCreateFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
+  const { getIsFavorite } = useFavorites();
 
   const allCards = useMemo(() => {
     return data?.vw_chaamo_cardsCollection?.edges ?? [];
@@ -101,34 +99,21 @@ export default function ProductListScreen() {
     };
   }, [convertUserToBase, search.priceRange]);
 
-  const nonQueryFilter = useMemo<
-    Partial<EbayPostsFilter> & Partial<VwChaamoCardsFilter>
-  >(() => {
+  // Build separate filters for Chaamo listings and eBay posts
+  const chaamoFilter = useMemo<VwChaamoCardsFilter>(() => {
     const and: Record<string, unknown>[] = [];
     if (search.categoryId && search.category) {
       and.push({ category_id: { eq: Number(search.categoryId) } });
     }
     if (search.location) {
-      and.push(
-        ...(ebayOnly === 'true'
-          ? [{ region: { ilike: `%${search.location}%` } }]
-          : [{ seller_country: { ilike: `%${search.location}%` } }]),
-      );
+      and.push({ seller_country: { ilike: `%${search.location}%` } });
     }
     if (search.priceRange) {
       if (Number(priceRange.min) > 0) {
-        and.push(
-          ...(ebayOnly === 'true'
-            ? [{ price: { gte: priceRange.min } }]
-            : [{ start_price: { gte: priceRange.min } }]),
-        );
+        and.push({ start_price: { gte: priceRange.min } });
       }
       if (Number(priceRange.max) > 0) {
-        and.push(
-          ...(ebayOnly === 'true'
-            ? [{ price: { lte: priceRange.max } }]
-            : [{ start_price: { lte: priceRange.max } }]),
-        );
+        and.push({ start_price: { lte: priceRange.max } });
       }
     }
     if (search.condition === 'graded') {
@@ -160,20 +145,16 @@ export default function ProductListScreen() {
         },
       });
     }
-    if (ebayOnly !== 'true') {
-      if (search.adProperties === 'featured') {
-        and.push({ is_boosted: { eq: true } });
-      }
+    if (search.adProperties === 'featured') {
+      and.push({ is_boosted: { eq: true } });
     }
-    const base =
-      ebayOnly === 'true'
-        ? {}
-        : { listing_type: { neq: ListingType.PORTFOLIO } };
-
+    if (search.query) {
+      and.push({ name: { ilike: `%${search.query}%` } });
+    }
     return {
-      ...base,
+      listing_type: { neq: ListingType.PORTFOLIO },
       and,
-    };
+    } as VwChaamoCardsFilter;
   }, [
     search.categoryId,
     search.category,
@@ -181,29 +162,79 @@ export default function ProductListScreen() {
     search.priceRange,
     search.condition,
     search.adProperties,
-    ebayOnly,
+    search.query,
     priceRange.min,
     priceRange.max,
   ]);
 
-  const productFilter = useMemo<
-    Partial<EbayPostsFilter> & Partial<VwChaamoCardsFilter>
-  >(() => {
-    type AndFilter = { and?: Record<string, unknown>[] };
-    const baseAnd = (nonQueryFilter as AndFilter).and ?? [];
-    const and = [...baseAnd];
+  const ebayFilter = useMemo<EbayPostsFilter>(() => {
+    const and: Record<string, unknown>[] = [];
+    if (search.categoryId && search.category) {
+      and.push({ category_id: { eq: Number(search.categoryId) } });
+    }
+    if (search.location) {
+      and.push({ region: { ilike: `%${search.location}%` } });
+    }
+    if (search.priceRange) {
+      if (Number(priceRange.min) > 0) {
+        and.push({ price: { gte: priceRange.min } });
+      }
+      if (Number(priceRange.max) > 0) {
+        and.push({ price: { lte: priceRange.max } });
+      }
+    }
+    if (search.condition === 'graded') {
+      and.push({
+        or: [
+          { name: { ilike: `%PSA%` } },
+          { name: { ilike: `%BGS%` } },
+          { name: { ilike: `%SGC%` } },
+          { name: { ilike: `%CGC%` } },
+          { name: { ilike: `%CSG%` } },
+          { name: { ilike: `%HGA%` } },
+          { name: { ilike: `%GMA%` } },
+          { name: { ilike: `%Beckett%` } },
+        ],
+      });
+    } else if (search.condition === 'raw') {
+      and.push({
+        not: {
+          or: [
+            { name: { ilike: `%PSA%` } },
+            { name: { ilike: `%BGS%` } },
+            { name: { ilike: `%SGC%` } },
+            { name: { ilike: `%CGC%` } },
+            { name: { ilike: `%CSG%` } },
+            { name: { ilike: `%HGA%` } },
+            { name: { ilike: `%GMA%` } },
+            { name: { ilike: `%Beckett%` } },
+          ],
+        },
+      });
+    }
     if (search.query) {
       and.push({ name: { ilike: `%${search.query}%` } });
     }
-    return { ...nonQueryFilter, and };
-  }, [nonQueryFilter, search.query]);
+    return { and } as EbayPostsFilter;
+  }, [
+    search.categoryId,
+    search.category,
+    search.location,
+    search.priceRange,
+    search.condition,
+    search.query,
+    priceRange.min,
+    priceRange.max,
+  ]);
 
-  const productFilterRef = useRef<
-    Partial<EbayPostsFilter> & Partial<VwChaamoCardsFilter>
-  >(productFilter);
+  const chaamoFilterRef = useRef<VwChaamoCardsFilter>(chaamoFilter);
+  const ebayFilterRef = useRef<EbayPostsFilter>(ebayFilter);
   useEffect(() => {
-    productFilterRef.current = productFilter;
-  }, [productFilter]);
+    chaamoFilterRef.current = chaamoFilter;
+  }, [chaamoFilter]);
+  useEffect(() => {
+    ebayFilterRef.current = ebayFilter;
+  }, [ebayFilter]);
 
   const handleChange = useCallback(
     ({ value }: TextChangeParams) => setSearchText(value),
@@ -252,7 +283,7 @@ export default function ProductListScreen() {
     try {
       if (ebayOnly === 'true') {
         const variables = {
-          filter: productFilterRef.current as EbayPostsFilter,
+          filter: ebayFilterRef.current as EbayPostsFilter,
           orderBy: [{ sold_at: OrderByDirection.DESCNULLSLAST }],
           first: INITIAL_PAGE_SIZE,
         };
@@ -266,11 +297,22 @@ export default function ProductListScreen() {
           setFirstLoading(false);
         });
       } else {
-        getChaamoCards({
-          variables: {
-            filter: productFilterRef.current as VwChaamoCardsFilter,
-          },
-        }).finally(() => {
+        setFirstLoading(true);
+        Promise.all([
+          getChaamoCards({
+            variables: {
+              filter: chaamoFilterRef.current as VwChaamoCardsFilter,
+            },
+          }),
+          getEbayPosts({
+            variables: {
+              filter: ebayFilterRef.current as EbayPostsFilter,
+              orderBy: [{ sold_at: OrderByDirection.DESCNULLSLAST }],
+              first: INITIAL_PAGE_SIZE,
+            },
+            notifyOnNetworkStatusChange: true,
+          }),
+        ]).finally(() => {
           setFirstLoading(false);
         });
       }
@@ -288,7 +330,7 @@ export default function ProductListScreen() {
     setEbayPaging(true);
     try {
       const variables = {
-        filter: productFilter as EbayPostsFilter,
+        filter: ebayFilter as EbayPostsFilter,
         orderBy: [{ sold_at: OrderByDirection.DESCNULLSLAST }],
         first: LOAD_MORE_SIZE,
         after: endCursor,
@@ -328,14 +370,14 @@ export default function ProductListScreen() {
     ebayData?.ebay_postsCollection?.pageInfo?.endCursor,
     ebayData?.ebay_postsCollection?.pageInfo?.hasNextPage,
     fetchMoreEbay,
-    productFilter,
+    ebayFilter,
   ]);
 
   const handleRetryInitialEbay = useCallback(async () => {
     if (ebayLoading || ebayPaging) return;
 
     const variables = {
-      filter: productFilter as EbayPostsFilter,
+      filter: ebayFilter as EbayPostsFilter,
       orderBy: [{ sold_at: OrderByDirection.DESCNULLSLAST }],
       first: INITIAL_PAGE_SIZE,
     };
@@ -346,7 +388,7 @@ export default function ProductListScreen() {
     } finally {
       setEbayPaging(false);
     }
-  }, [ebayLoading, ebayPaging, getEbayPosts, productFilter]);
+  }, [ebayLoading, ebayPaging, getEbayPosts, ebayFilter]);
 
   const handleBackScreen = useCallback(() => {
     if (ebayOnly === 'true') {
@@ -387,6 +429,25 @@ export default function ProductListScreen() {
     }, [getChaamoCards, search.category, search.query, searchText]),
   );
 
+  // Build merged list for first tab: Chaamo first, then eBay
+  type MergedItem =
+    | { kind: 'chaamo'; id: string; edge: (typeof allCards)[number] }
+    | { kind: 'ebay'; id: string; edge: (typeof allEbay)[number] };
+
+  const mergedItems = useMemo<MergedItem[]>(() => {
+    const chaamoItems: MergedItem[] = (allCards ?? []).map((edge) => ({
+      kind: 'chaamo',
+      id: edge.node.id,
+      edge,
+    }));
+    const ebayItems: MergedItem[] = (allEbay ?? []).map((edge) => ({
+      kind: 'ebay',
+      id: edge.node.id,
+      edge,
+    }));
+    return [...chaamoItems, ...ebayItems];
+  }, [allCards, allEbay]);
+
   const renderTitleWithHighlight = useCallback(
     (titleText: string) => {
       const q = (search.query ?? '').trim();
@@ -424,7 +485,7 @@ export default function ProductListScreen() {
             ? formatThousand(
                 ebayData?.ebay_postsCollection?.totalCount ?? allEbay.length,
               )
-            : formatThousand(allCards.length)
+            : formatThousand(allCards.length + allEbay.length)
         }
       />
       {firstLoading ? (
@@ -502,16 +563,143 @@ export default function ProductListScreen() {
             />
           ) : (
             <TabView className={classes.tabView} tabs={productListTabs}>
-              <ProductAllList
-                loading={loading}
-                cards={allCards}
-                onFavoritePress={handleToggleFavorite}
+              {/* All Cards tab: merged Chaamo + eBay */}
+              <FlatList
+                testID="merged-product-list"
+                showsVerticalScrollIndicator={false}
+                data={mergedItems}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => {
+                  if (item.kind === 'chaamo') {
+                    const edge = item.edge;
+                    return (
+                      <ListingItem
+                        listingType={
+                          edge.node?.listing_type ?? ListingType.SELL
+                        }
+                        imageUrl={edge.node?.image_url ?? ''}
+                        title={edge.node?.name ?? ''}
+                        subtitle={edge.node?.seller_username ?? ''}
+                        date={edge.node.created_at ?? new Date().toISOString()}
+                        currency={edge.node?.currency}
+                        price={edge.node?.start_price}
+                        marketCurrency={edge.node?.last_sold_currency}
+                        marketPrice={edge.node?.last_sold_price}
+                        lastSoldIsChecked={
+                          edge.node?.last_sold_is_checked ?? false
+                        }
+                        lastSoldIsCorrect={
+                          edge.node?.last_sold_is_correct ?? false
+                        }
+                        indicator={getIndicator(
+                          edge.node?.start_price,
+                          edge.node?.last_sold_price,
+                        )}
+                        onPress={() =>
+                          router.push({
+                            pathname: '/screens/listing-detail',
+                            params: { id: edge.node?.id },
+                          })
+                        }
+                        rightIcon={
+                          getIsFavorite(edge.node?.id)
+                            ? 'heart'
+                            : 'heart-outline'
+                        }
+                        rightIconColor={
+                          getIsFavorite(edge.node?.id)
+                            ? getColor('red-600')
+                            : undefined
+                        }
+                        rightIconSize={22}
+                        onRightIconPress={() => {
+                          handleToggleFavorite(
+                            edge.node?.id,
+                            getIsFavorite(edge.node?.id),
+                          );
+                        }}
+                      />
+                    );
+                  }
+                  // ebay item
+                  const edge = item.edge;
+                  return (
+                    <ListingItem
+                      type="ebay"
+                      listingType={ListingType.SELL}
+                      imageUrl={edge.node?.image_url ?? ''}
+                      title={
+                        search.query?.trim()
+                          ? renderTitleWithHighlight(edge.node?.name ?? '')
+                          : (edge.node?.name ?? '')
+                      }
+                      subtitle={edge.node?.region ?? ''}
+                      date={edge.node.sold_at ?? new Date().toISOString()}
+                      currency={edge.node?.currency}
+                      price={edge.node?.price}
+                      marketCurrency={edge.node?.currency}
+                      marketPrice={edge.node?.price}
+                      indicator={getIndicator(
+                        edge.node?.price,
+                        edge.node?.price,
+                      )}
+                      rightIcon={undefined}
+                      onPress={() => {
+                        router.push({
+                          pathname: '/screens/listing-detail',
+                          params: {
+                            ebayOnly: 'true',
+                            image_url: edge.node?.image_url ?? '',
+                            name: edge.node?.name ?? '',
+                            currency: edge.node?.currency ?? '',
+                            price: String(edge.node?.price ?? 0),
+                            date:
+                              edge.node?.sold_at ?? new Date().toISOString(),
+                          },
+                        });
+                      }}
+                    />
+                  );
+                }}
+                contentContainerClassName={classes.listContentContainer}
+                ListFooterComponent={
+                  ebayLoading || ebayPaging ? (
+                    <Row className={classes.loadingRow}>
+                      <ActivityIndicator
+                        size="small"
+                        color={getColor('primary-500')}
+                      />
+                      <Text className={classes.footerText}>
+                        {ebayLoading ? 'Loading...' : 'Load more...'}
+                      </Text>
+                    </Row>
+                  ) : ebayError && allEbay.length === 0 ? (
+                    <View className={classes.errorContainer}>
+                      <Text className={classes.footerText}>
+                        Failed to fetch.
+                      </Text>
+                      <Button
+                        variant="primary-light"
+                        size="small"
+                        disabled={ebayLoading || ebayPaging}
+                        onPress={handleRetryInitialEbay}
+                        className={classes.retryButton}
+                      >
+                        Retry
+                      </Button>
+                    </View>
+                  ) : null
+                }
+                onEndReached={handleLoadMore}
+                onEndReachedThreshold={3}
               />
+              {/* Auction tab */}
               <ProductAuctionList
                 loading={loading}
                 cards={auctionCards}
                 onFavoritePress={handleToggleFavorite}
               />
+              {/* Fixed price tab */}
               <ProductFixedList
                 loading={loading}
                 cards={fixedCards}
