@@ -92,8 +92,8 @@ android {
         applicationId 'com.chaamo.app.chaamo'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 16
-        versionName "2.0.7"
+        versionCode 18
+        versionName "2.0.9"
     }
     signingConfigs {
           release {
