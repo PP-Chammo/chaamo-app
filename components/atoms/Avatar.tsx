@@ -77,7 +77,7 @@ const Avatar = memo(function Avatar({
                   <Pressable className={classes.modifyIcon}>
                     <MaterialCommunityIcons
                       name="pencil"
-                      size={20}
+                      size={18}
                       color={getColor('slate-700')}
                     />
                   </Pressable>
@@ -94,7 +94,7 @@ const Avatar = memo(function Avatar({
                   <Pressable className={classes.modifyIcon}>
                     <MaterialCommunityIcons
                       name="plus"
-                      size={20}
+                      size={18}
                       color={getColor('slate-700')}
                     />
                   </Pressable>
