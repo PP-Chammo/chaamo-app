@@ -3,7 +3,12 @@ import React, { Fragment, memo, useMemo, useState } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { clsx } from 'clsx';
 import { Image } from 'expo-image';
-import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import { getColor } from '@/utils/getColor';
 
@@ -69,12 +74,13 @@ const Avatar = memo(function Avatar({
                   contentFit="cover"
                 />
                 {onPress && (
-                  <MaterialCommunityIcons
-                    name="pencil"
-                    size={20}
-                    color={getColor('slate-700')}
-                    className={classes.modifyIcon}
-                  />
+                  <Pressable className={classes.modifyIcon}>
+                    <MaterialCommunityIcons
+                      name="pencil"
+                      size={20}
+                      color={getColor('slate-700')}
+                    />
+                  </Pressable>
                 )}
               </Fragment>
             ) : (
@@ -85,12 +91,13 @@ const Avatar = memo(function Avatar({
                   color="white"
                 />
                 {onPress && (
-                  <MaterialCommunityIcons
-                    name="plus"
-                    size={20}
-                    color={getColor('slate-700')}
-                    className={classes.modifyIcon}
-                  />
+                  <Pressable className={classes.modifyIcon}>
+                    <MaterialCommunityIcons
+                      name="plus"
+                      size={20}
+                      color={getColor('slate-700')}
+                    />
+                  </Pressable>
                 )}
               </Fragment>
             )}
@@ -111,7 +118,7 @@ const classes = {
   },
   imageContainer:
     'flex items-center justify-center bg-slate-300 rounded-full self-center',
-  modifyIcon: 'absolute bottom-2 right-0 bg-primary-100 rounded-full p-1',
+  modifyIcon: 'absolute bottom-1 right-0 bg-primary-100 rounded-full p-1',
   image: 'rounded-full border-2 border-white',
 };
 
