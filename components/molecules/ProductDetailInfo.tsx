@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 
 import { clsx } from 'clsx';
 import { formatDistanceToNow } from 'date-fns';
@@ -35,12 +35,6 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
 }) => {
   const [user] = useUserVar();
 
-  const marketPriceDisplay = useMemo(() => {
-    if (user?.id === sellerId) {
-      return marketPrice;
-    }
-  }, [marketPrice, user?.id, sellerId]);
-
   const handleConfirmIncorrect = useCallback(() => {
     router.push({
       pathname: '/screens/contact-us',
@@ -75,7 +69,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
       <View className={classes.ebayRow}>
         <Image source={ChaamoLogo} className={classes.chaamoLogo} />
         <Label className={classes.priceValueLabel}>Price Value: </Label>
-        <Label className={classes.priceValue}>{marketPriceDisplay}</Label>
+        <Label className={classes.priceValue}>{marketPrice}</Label>
         {indicator && <PriceIndicator direction={indicator} />}
       </View>
       {!lastSoldIsChecked && user?.id === sellerId && (
