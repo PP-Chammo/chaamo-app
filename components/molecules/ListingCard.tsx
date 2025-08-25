@@ -42,8 +42,6 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
   rightComponent,
   className,
   imageClassName,
-  lastSoldIsChecked,
-  lastSoldIsCorrect,
 }) {
   const { formatDisplay } = useCurrencyDisplay();
 
@@ -53,22 +51,6 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
   );
 
   const renderMarketPrice = useCallback(() => {
-    if (
-      !lastSoldIsChecked ||
-      (lastSoldIsChecked && !lastSoldIsCorrect) ||
-      marketPrice === null
-    ) {
-      return (
-        <>
-          <Label
-            className={classes.textProcessing}
-            testID="listing-card-market-price"
-          >
-            {lastSoldIsChecked ? 'checking...' : 'calculating...'}
-          </Label>
-        </>
-      );
-    }
     return (
       <>
         <Label
@@ -82,15 +64,7 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
         {indicator && <PriceIndicator direction={indicator} />}
       </>
     );
-  }, [
-    formatDisplay,
-    indicator,
-    marketCurrency,
-    marketPrice,
-    price,
-    lastSoldIsCorrect,
-    lastSoldIsChecked,
-  ]);
+  }, [formatDisplay, indicator, marketCurrency, marketPrice, price]);
 
   const renderRightIcon = useCallback(
     () =>

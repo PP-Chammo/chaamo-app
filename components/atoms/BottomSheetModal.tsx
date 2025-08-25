@@ -189,8 +189,8 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
 };
 
 const classes = {
-  container: 'z-90 absolute inset-0',
-  overlay: 'absolute inset-0 bg-black/30',
+  container: 'z-90 absolute right-0 left-0 bottom-0 top-0',
+  overlay: 'absolute right-0 left-0 bottom-0 top-0 bg-black/30',
   sheet: {
     base: 'absolute left-0 right-0 bottom-0 rounded-t-3xl shadow-lg',
     default: 'bg-neutral-500',

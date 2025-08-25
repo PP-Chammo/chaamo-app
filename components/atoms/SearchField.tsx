@@ -3,7 +3,6 @@ import { forwardRef, memo, useCallback } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { clsx } from 'clsx';
 import {
-  Pressable,
   TextInput,
   TextInputProps,
   TouchableOpacity,
@@ -16,7 +15,6 @@ import { getColor } from '@/utils/getColor';
 interface SearchFieldProps extends Omit<TextInputProps, 'onChange'> {
   value: string;
   onChange: ({ name, value }: TextChangeParams) => void;
-  onPress?: () => void;
   onSubmit?: () => void;
   className?: string;
   inputClassName?: string;
@@ -25,16 +23,7 @@ interface SearchFieldProps extends Omit<TextInputProps, 'onChange'> {
 
 const SearchField = forwardRef<TextInput, SearchFieldProps>(
   function SearchField(
-    {
-      value,
-      onChange,
-      onPress,
-      onSubmit,
-      className,
-      inputClassName,
-      testID,
-      ...props
-    },
+    { value, onChange, onSubmit, className, inputClassName, testID, ...props },
     ref,
   ) {
     const handleChange = useCallback(
@@ -50,18 +39,16 @@ const SearchField = forwardRef<TextInput, SearchFieldProps>(
 
     return (
       <View testID={testID} className={clsx(classes.container, className)}>
-        <Pressable onPress={onPress} className={classes.inputContainer}>
-          <TextInput
-            ref={ref}
-            value={value}
-            placeholder="Search"
-            className={clsx(classes.input, inputClassName)}
-            onChangeText={handleChange}
-            enterKeyHint="search"
-            onSubmitEditing={() => onSubmit?.()}
-            {...props}
-          />
-        </Pressable>
+        <TextInput
+          ref={ref}
+          value={value}
+          placeholder="Search"
+          className={clsx(classes.input, inputClassName)}
+          onChangeText={handleChange}
+          enterKeyHint="search"
+          onSubmitEditing={() => onSubmit?.()}
+          {...props}
+        />
         <TouchableOpacity
           accessibilityRole="button"
           onPress={handleClear}

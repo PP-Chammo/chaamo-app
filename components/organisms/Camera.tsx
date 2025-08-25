@@ -137,14 +137,16 @@ const CameraComponent = memo(function CameraComponent({
 });
 
 const classes = {
-  camera: 'absolute inset-0',
+  camera: 'absolute right-0 left-0 bottom-0 top-0',
   header: 'bg-transparent p-6 z-40',
   captureButton:
     'absolute -bottom-5 self-center w-20 h-20 rounded-full bg-white/20 justify-center items-center border-4 border-slate-400',
   captureButtonIcon: 'w-16 h-16 rounded-full bg-cyan-400',
   browseDocument: 'absolute -bottom-2 w-12 h-12 rounded-full',
-  browseDocumentIcon: 'absolute inset-0 rounded-full bg-white',
-  overlay: 'absolute inset-0 mx-4.5 mt-24 mb-24 justify-center',
+  browseDocumentIcon:
+    'absolute right-0 left-0 bottom-0 top-0 rounded-full bg-white',
+  overlay:
+    'absolute right-0 left-0 bottom-0 top-0 mx-4.5 mt-24 mb-24 justify-center',
 };
 
 export default CameraComponent;

@@ -76,9 +76,4 @@ describe('ProductDetailInfo', () => {
     render(<ProductDetailInfo {...mockProps} />);
     expect(screen.getByText(/Price Value:/)).toBeTruthy();
   });
-
-  it('displays calculating text', () => {
-    render(<ProductDetailInfo {...mockProps} />);
-    expect(screen.getByText('calculating...')).toBeTruthy();
-  });
 });
