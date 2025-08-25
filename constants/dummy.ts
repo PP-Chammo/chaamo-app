@@ -143,23 +143,23 @@ export const COUNTRIES = [
 
 export const dummyEvents = [
   {
-    title: 'The London Card Show',
-    date: '2 Nov 2025',
-    location: 'TBA',
+    title: 'Coming soon',
+    date: 'TBA',
+    location: undefined,
     imageUrl: undefined,
     // image: require('@/assets/events/london-card-show.png'),
   },
   {
-    title: 'Card Con',
-    date: '29 March 2025',
-    location: 'TBA',
+    title: 'Coming soon',
+    date: 'TBA',
+    location: undefined,
     imageUrl: undefined,
     // image: require('@/assets/events/card-con.png'),a
   },
   {
-    title: 'The London Show',
-    date: '30 March 2025',
-    location: 'TBA',
+    title: 'Coming soon',
+    date: 'TBA',
+    location: undefined,
     imageUrl: undefined,
     // image: require('@/assets/events/card-con.png'),a
   },

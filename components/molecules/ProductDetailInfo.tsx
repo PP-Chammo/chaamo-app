@@ -11,6 +11,7 @@ import { Button, Icon, Label, PriceIndicator, Row } from '@/components/atoms';
 import { useUserVar } from '@/hooks/useUserVar';
 
 interface ProductDetailInfoProps {
+  isEbayOnly?: boolean;
   price?: string | number;
   date: string | Date;
   title: string;
@@ -23,6 +24,7 @@ interface ProductDetailInfoProps {
 }
 
 const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
+  isEbayOnly,
   price,
   date,
   title,
@@ -66,12 +68,14 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
       >
         {title}
       </Label>
-      <View className={classes.ebayRow}>
-        <Image source={ChaamoLogo} className={classes.chaamoLogo} />
-        <Label className={classes.priceValueLabel}>Price Value: </Label>
-        <Label className={classes.priceValue}>{marketPrice}</Label>
-        {indicator && <PriceIndicator direction={indicator} />}
-      </View>
+      {!isEbayOnly && (
+        <View className={classes.ebayRow}>
+          <Image source={ChaamoLogo} className={classes.chaamoLogo} />
+          <Label className={classes.priceValueLabel}>Price Value: </Label>
+          <Label className={classes.priceValue}>{marketPrice}</Label>
+          {indicator && <PriceIndicator direction={indicator} />}
+        </View>
+      )}
       {!lastSoldIsChecked && user?.id === sellerId && (
         <View className={classes.actionContainer}>
           <Label className={classes.actionLabel}>
@@ -89,10 +93,12 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
           </Row>
         </View>
       )}
-      <View className={classes.descriptionWrapper}>
-        <Label className={classes.descriptionTitle}>Description</Label>
-        <Label className={classes.description}>{description}</Label>
-      </View>
+      {!isEbayOnly && (
+        <View className={classes.descriptionWrapper}>
+          <Label className={classes.descriptionTitle}>Description</Label>
+          <Label className={classes.description}>{description}</Label>
+        </View>
+      )}
     </View>
   );
 };

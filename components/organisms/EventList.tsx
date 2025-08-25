@@ -15,7 +15,7 @@ const EventList = memo(function EventList() {
         <EventCard
           title={event.title}
           date={event.date}
-          location={event.location}
+          location={event?.location}
           imageUrl={event?.imageUrl}
         />
       )}

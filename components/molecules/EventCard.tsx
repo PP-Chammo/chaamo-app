@@ -8,7 +8,7 @@ import { Icon, Label, Row } from '@/components/atoms';
 type EventCardProps = {
   title: string;
   date: string;
-  location: string;
+  location?: string | null;
   imageUrl?: string | null;
 };
 
@@ -44,15 +44,17 @@ const EventCard: React.FC<EventCardProps> = memo(function EventCard({
           />
           <Label className={classes.eventDate}>{date}</Label>
         </Row>
-        <Row className={classes.rowLabel}>
-          <Icon
-            testID="location-icon"
-            name="location-pin"
-            variant="SimpleLineIcons"
-            size={10}
-          />
-          <Label className={classes.eventLocation}>{location}</Label>
-        </Row>
+        {location && (
+          <Row className={classes.rowLabel}>
+            <Icon
+              testID="location-icon"
+              name="location-pin"
+              variant="SimpleLineIcons"
+              size={10}
+            />
+            <Label className={classes.eventLocation}>{location}</Label>
+          </Row>
+        )}
       </View>
     </TouchableOpacity>
   );

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import * as WebBrowser from 'expo-web-browser';
 import { ActivityIndicator, FlatList, View, Text } from 'react-native';
 
 import { Button, Loading, Row, ScreenContainer } from '@/components/atoms';
@@ -456,10 +455,18 @@ export default function ProductListScreen() {
                   marketPrice={item.node?.price}
                   indicator={getIndicator(item.node?.price, item.node?.price)}
                   rightIcon={undefined}
-                  onPress={async () => {
-                    if (item.node?.post_url) {
-                      await WebBrowser.openBrowserAsync(item.node.post_url);
-                    }
+                  onPress={() => {
+                    router.push({
+                      pathname: '/screens/listing-detail',
+                      params: {
+                        ebayOnly: 'true',
+                        image_url: item.node?.image_url ?? '',
+                        name: item.node?.name ?? '',
+                        currency: item.node?.currency ?? '',
+                        price: String(item.node?.price ?? 0),
+                        date: item.node?.sold_at ?? new Date().toISOString(),
+                      },
+                    });
                   }}
                 />
               )}
