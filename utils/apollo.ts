@@ -9,6 +9,7 @@ import {
   Observable,
   Operation,
 } from '@apollo/client';
+import { RetryLink } from '@apollo/client/link/retry';
 import { Session } from '@supabase/supabase-js';
 
 import { supabase } from '@/utils/supabase';
@@ -18,6 +19,17 @@ const graphqlUrl = process.env.EXPO_PUBLIC_SUPABASE_GRAPHQL_URL!;
 
 const cache = new InMemoryCache({
   addTypename: true,
+});
+
+const retryLink = new RetryLink({
+  delay: {
+    initial: 300,
+    max: 1500,
+    jitter: true,
+  },
+  attempts: (count, _operation, error) => {
+    return !!error && count < 2;
+  },
 });
 
 const authLink = new ApolloLink((operation: Operation, forward: NextLink) => {
@@ -53,8 +65,19 @@ const httpLink = new HttpLink({
 });
 
 const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: ApolloLink.from([retryLink, authLink, httpLink]),
   cache,
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: 'cache-and-network',
+      nextFetchPolicy: 'cache-first',
+      errorPolicy: 'all',
+    },
+    query: {
+      fetchPolicy: 'network-only',
+      errorPolicy: 'all',
+    },
+  },
 });
 
 export default client;

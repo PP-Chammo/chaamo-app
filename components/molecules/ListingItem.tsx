@@ -227,7 +227,7 @@ const classes = {
   textBold: 'text-sm font-semibold',
   rowDate: 'gap-2',
   bidContainer: 'flex items-center justify-end gap-1.5',
-  textBid: 'text-base !text-gray-700',
+  textBid: 'text-sm !text-gray-700',
   textBidPrice: 'text-base text-right font-semibold text-primary-500 pr-1',
   priceContainer: '!items-end',
   logoImage: 'w-6 h-6',
