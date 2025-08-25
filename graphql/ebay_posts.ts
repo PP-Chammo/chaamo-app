@@ -17,6 +17,7 @@ export const getEbayPosts = gql`
         node {
           id
           name
+          normalised_name
           image_url
           currency
           price

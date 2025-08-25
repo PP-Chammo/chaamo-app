@@ -62,7 +62,8 @@ export default function ListingDetailScreen() {
   const dotsRef = useRef<View>(null);
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 
-  const { id, preview } = useLocalSearchParams();
+  const { id, ebayOnly, image_url, name, currency, price, date } =
+    useLocalSearchParams();
   const [getDetail, { data }] = useGetVwChaamoDetailLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
@@ -73,14 +74,51 @@ export default function ListingDetailScreen() {
   const [showModal, setShowModal] = useState(false);
   const [showImageZoom, setShowImageZoom] = useState(false);
 
-  const detail = useMemo(
+  const isEbayOnly = useMemo(() => ebayOnly === 'true', [ebayOnly]);
+
+  const fetchedDetail = useMemo(
     () => data?.vw_chaamo_cardsCollection?.edges?.[0]?.node,
     [data],
   );
 
+  const ebayDetail = useMemo(() => {
+    if (!isEbayOnly) return null;
+    const img = typeof image_url === 'string' ? image_url : '';
+    const nm = typeof name === 'string' ? name : '';
+    const cur = typeof currency === 'string' ? currency : undefined;
+    const pr = typeof price === 'string' ? Number(price) : undefined;
+    const dt = typeof date === 'string' ? date : new Date().toISOString();
+    return {
+      id: 'preview',
+      listing_type: ListingType.SELL,
+      image_url: img,
+      name: nm,
+      currency: cur,
+      start_price: pr,
+      created_at: dt,
+      seller_id: '',
+      last_sold_currency: undefined,
+      last_sold_price: undefined,
+      last_sold_is_checked: false,
+      description: '',
+      seller_image_url: '',
+      seller_username: '',
+      highest_bid_currency: undefined,
+      highest_bid_price: undefined,
+      reserve_price: undefined,
+      end_time: undefined,
+      user_card_id: undefined,
+    } as const;
+  }, [isEbayOnly, image_url, name, currency, price, date]);
+
+  const detail = useMemo(
+    () => (isEbayOnly ? ebayDetail : fetchedDetail),
+    [isEbayOnly, ebayDetail, fetchedDetail],
+  );
+
   const isSeller = useMemo(
-    () => user?.id === detail?.seller_id || preview === 'true',
-    [detail?.seller_id, user?.id, preview],
+    () => user?.id === detail?.seller_id || isEbayOnly,
+    [detail?.seller_id, user?.id, isEbayOnly],
   );
 
   const handleToggleFavorite = useCallback(() => {
@@ -123,26 +161,29 @@ export default function ListingDetailScreen() {
   }, []);
 
   const rightIconHeader = useMemo(() => {
+    if (isEbayOnly) return undefined;
     if (isSeller) {
       return 'dots-vertical';
     }
     return getIsFavorite(id as string) ? 'heart' : 'heart-outline';
-  }, [isSeller, id, getIsFavorite]);
+  }, [isEbayOnly, isSeller, id, getIsFavorite]);
 
   const rightIconColor = useMemo(() => {
+    if (isEbayOnly) return undefined;
     if (isSeller) {
       return getColor('gray-600');
     }
     return getColor(getIsFavorite(id as string) ? 'red-500' : 'gray-600');
-  }, [id, getIsFavorite, isSeller]);
+  }, [id, getIsFavorite, isSeller, isEbayOnly]);
 
   const onRightPress = useCallback(() => {
+    if (isEbayOnly) return;
     if (isSeller) {
       setIsContextMenuVisible(true);
     } else {
       handleToggleFavorite();
     }
-  }, [handleToggleFavorite, isSeller]);
+  }, [handleToggleFavorite, isSeller, isEbayOnly]);
 
   const handleBoostPost = useCallback(() => {
     router.push({
@@ -193,6 +234,7 @@ export default function ListingDetailScreen() {
 
   useFocusEffect(
     useCallback(() => {
+      if (isEbayOnly) return;
       if (id) {
         getDetail({
           variables: {
@@ -202,7 +244,7 @@ export default function ListingDetailScreen() {
           },
         });
       }
-    }, [getDetail, id]),
+    }, [getDetail, id, isEbayOnly]),
   );
 
   const renderBottomBar = useCallback(() => {
@@ -352,6 +394,7 @@ export default function ListingDetailScreen() {
           </RNModal>
         )}
         <ProductDetailInfo
+          isEbayOnly={isEbayOnly}
           price={formatDisplay(detail?.currency, detail?.start_price ?? 0)}
           date={detail?.created_at ?? new Date().toISOString()}
           title={detail?.name ?? ''}
@@ -368,12 +411,14 @@ export default function ListingDetailScreen() {
         <View className={classes.chartWrapper}>
           <Chart data={dummyPortfolioValueData} />
         </View>
-        <ListedByList
-          listingId={detail?.id ?? ''}
-          userId={detail?.seller_id ?? ''}
-          imageUrl={detail?.seller_image_url ?? ''}
-          username={detail?.seller_username ?? ''}
-        />
+        {!isEbayOnly && (
+          <ListedByList
+            listingId={detail?.id ?? ''}
+            userId={detail?.seller_id ?? ''}
+            imageUrl={detail?.seller_image_url ?? ''}
+            username={detail?.seller_username ?? ''}
+          />
+        )}
         {!isSeller && (
           <TouchableOpacity
             activeOpacity={0.7}
@@ -391,37 +436,39 @@ export default function ListingDetailScreen() {
         />
       </ScrollView>
       {renderBottomBar()}
-      <ContextMenu
-        visible={isContextMenuVisible}
-        onClose={() => setIsContextMenuVisible(false)}
-        triggerRef={dotsRef}
-        menuHeight={60}
-      >
-        <TouchableOpacity
-          onPress={handleBoostPost}
-          className={classes.contextMenu}
+      {!isEbayOnly && (
+        <ContextMenu
+          visible={isContextMenuVisible}
+          onClose={() => setIsContextMenuVisible(false)}
+          triggerRef={dotsRef}
+          menuHeight={60}
         >
-          <Label className={classes.contextMenuText}>Boost Post</Label>
-        </TouchableOpacity>
-        {detail?.listing_type !== ListingType.AUCTION && (
-          <>
-            <Divider position="horizontal" />
-            <TouchableOpacity
-              onPress={handleEditDetails}
-              className={classes.contextMenu}
-            >
-              <Label className={classes.contextMenuText}>Edit Details</Label>
-            </TouchableOpacity>
-            <Divider position="horizontal" />
-            <TouchableOpacity
-              onPress={handleDeletePopup}
-              className={classes.contextMenu}
-            >
-              <Label className={classes.deleteText}>Delete</Label>
-            </TouchableOpacity>
-          </>
-        )}
-      </ContextMenu>
+          <TouchableOpacity
+            onPress={handleBoostPost}
+            className={classes.contextMenu}
+          >
+            <Label className={classes.contextMenuText}>Boost Post</Label>
+          </TouchableOpacity>
+          {detail?.listing_type !== ListingType.AUCTION && (
+            <>
+              <Divider position="horizontal" />
+              <TouchableOpacity
+                onPress={handleEditDetails}
+                className={classes.contextMenu}
+              >
+                <Label className={classes.contextMenuText}>Edit Details</Label>
+              </TouchableOpacity>
+              <Divider position="horizontal" />
+              <TouchableOpacity
+                onPress={handleDeletePopup}
+                className={classes.contextMenu}
+              >
+                <Label className={classes.deleteText}>Delete</Label>
+              </TouchableOpacity>
+            </>
+          )}
+        </ContextMenu>
+      )}
       <Modal
         visible={isDeletePopupVisible}
         onClose={handleDeletePopup}
