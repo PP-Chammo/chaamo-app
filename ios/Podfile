@@ -35,6 +35,7 @@ target 'Chaamo' do
   use_frameworks! :linkage => ENV['USE_FRAMEWORKS'].to_sym if ENV['USE_FRAMEWORKS']
 
   pod 'RNFS', :path => '../node_modules/react-native-fs'
+  pod 'GoogleSignIn', '8.0.0'
 
   use_react_native!(
     :path => config[:reactNativePath],
