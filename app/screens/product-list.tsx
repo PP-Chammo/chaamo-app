@@ -4,7 +4,7 @@ import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { ActivityIndicator, FlatList, View, Text } from 'react-native';
 
-import { Button, Row, ScreenContainer } from '@/components/atoms';
+import { Button, Loading, Row, ScreenContainer } from '@/components/atoms';
 import {
   ListingItem,
   FilterSection,
@@ -49,6 +49,7 @@ export default function ProductListScreen() {
 
   const [searchText, setSearchText] = useState('');
   const [ebayPaging, setEbayPaging] = useState(false);
+  const [firstLoading, setFirstLoading] = useState(false);
 
   const [getChaamoCards, { data, loading }] = useGetVwChaamoListingsLazyQuery({
     fetchPolicy: 'cache-and-network',
@@ -249,31 +250,35 @@ export default function ProductListScreen() {
   );
 
   useEffect(() => {
-    if (ebayOnly === 'true') {
-      const variables = {
-        filter: productFilterRef.current as EbayPostsFilter,
-        orderBy: [{ sold_at: OrderByDirection.DESCNULLSLAST }],
-        first: INITIAL_PAGE_SIZE,
-      };
-      setEbayPaging(true);
-      getEbayPosts({ variables }).finally(() => setEbayPaging(false));
-    } else {
-      getChaamoCards({
-        variables: {
-          filter: productFilterRef.current as VwChaamoCardsFilter,
-        },
-      });
+    try {
+      if (ebayOnly === 'true') {
+        const variables = {
+          filter: productFilterRef.current as EbayPostsFilter,
+          orderBy: [{ sold_at: OrderByDirection.DESCNULLSLAST }],
+          first: INITIAL_PAGE_SIZE,
+        };
+        setEbayPaging(true);
+        setFirstLoading(true);
+        getEbayPosts({
+          variables,
+          notifyOnNetworkStatusChange: true,
+        }).finally(() => {
+          setEbayPaging(false);
+          setFirstLoading(false);
+        });
+      } else {
+        getChaamoCards({
+          variables: {
+            filter: productFilterRef.current as VwChaamoCardsFilter,
+          },
+        }).finally(() => {
+          setFirstLoading(false);
+        });
+      }
+    } catch {
+      setFirstLoading(false);
     }
-  }, [
-    ebayOnly,
-    search.category,
-    search.location,
-    search.priceRange,
-    search.condition,
-    search.adProperties,
-    getEbayPosts,
-    getChaamoCards,
-  ]);
+  }, [ebayOnly, search, getEbayPosts, getChaamoCards]);
 
   const handleLoadMore = useCallback(async () => {
     if (ebayPaging || ebayLoading) return;
@@ -423,90 +428,92 @@ export default function ProductListScreen() {
             : formatThousand(allCards.length)
         }
       />
-      <View className={classes.tabViewContainer}>
-        {ebayOnly === 'true' ? (
-          <FlatList
-            testID="ebay-posts-list"
-            showsVerticalScrollIndicator={false}
-            data={allEbay}
-            keyExtractor={(item) => item.node.id}
-            renderItem={({ item }) => (
-              <ListingItem
-                type="ebay"
-                listingType={ListingType.SELL}
-                imageUrl={item.node?.image_url ?? ''}
-                title={
-                  search.query?.trim()
-                    ? renderTitleWithHighlight(item.node?.name ?? '')
-                    : (item.node?.name ?? '')
-                }
-                subtitle={item.node?.region ?? ''}
-                date={item.node.sold_at ?? new Date().toISOString()}
-                currency={item.node?.currency}
-                price={item.node?.price}
-                marketCurrency={item.node?.currency}
-                marketPrice={item.node?.price}
-                lastSoldIsChecked={true}
-                lastSoldIsCorrect={true}
-                indicator={getIndicator(item.node?.price, item.node?.price)}
-                rightIcon={undefined}
-                onPress={async () => {
-                  if (item.node?.post_url) {
-                    await WebBrowser.openBrowserAsync(item.node.post_url);
+      {firstLoading ? (
+        <Loading />
+      ) : (
+        <View className={classes.tabViewContainer}>
+          {ebayOnly === 'true' ? (
+            <FlatList
+              testID="ebay-posts-list"
+              showsVerticalScrollIndicator={false}
+              data={allEbay}
+              keyExtractor={(item) => item.node.id}
+              renderItem={({ item }) => (
+                <ListingItem
+                  type="ebay"
+                  listingType={ListingType.SELL}
+                  imageUrl={item.node?.image_url ?? ''}
+                  title={
+                    search.query?.trim()
+                      ? renderTitleWithHighlight(item.node?.name ?? '')
+                      : (item.node?.name ?? '')
                   }
-                }}
+                  subtitle={item.node?.region ?? ''}
+                  date={item.node.sold_at ?? new Date().toISOString()}
+                  currency={item.node?.currency}
+                  price={item.node?.price}
+                  marketCurrency={item.node?.currency}
+                  marketPrice={item.node?.price}
+                  indicator={getIndicator(item.node?.price, item.node?.price)}
+                  rightIcon={undefined}
+                  onPress={async () => {
+                    if (item.node?.post_url) {
+                      await WebBrowser.openBrowserAsync(item.node.post_url);
+                    }
+                  }}
+                />
+              )}
+              contentContainerClassName={classes.listContentContainer}
+              ListFooterComponent={
+                ebayLoading || ebayPaging ? (
+                  <Row className={classes.loadingRow}>
+                    <ActivityIndicator
+                      size="small"
+                      color={getColor('primary-500')}
+                    />
+                    <Text className={classes.footerText}>
+                      {ebayLoading ? 'Loading...' : 'Load more...'}
+                    </Text>
+                  </Row>
+                ) : ebayError && allEbay.length === 0 ? (
+                  <View className={classes.errorContainer}>
+                    <Text className={classes.footerText}>Failed to fetch.</Text>
+                    <Button
+                      variant="primary-light"
+                      size="small"
+                      disabled={ebayLoading || ebayPaging}
+                      onPress={handleRetryInitialEbay}
+                      className={classes.retryButton}
+                    >
+                      Retry
+                    </Button>
+                  </View>
+                ) : null
+              }
+              onEndReached={handleLoadMore}
+              onEndReachedThreshold={3}
+            />
+          ) : (
+            <TabView className={classes.tabView} tabs={productListTabs}>
+              <ProductAllList
+                loading={loading}
+                cards={allCards}
+                onFavoritePress={handleToggleFavorite}
               />
-            )}
-            contentContainerClassName={classes.listContentContainer}
-            ListFooterComponent={
-              ebayLoading || ebayPaging ? (
-                <Row className={classes.loadingRow}>
-                  <ActivityIndicator
-                    size="small"
-                    color={getColor('primary-500')}
-                  />
-                  <Text className={classes.footerText}>
-                    {ebayLoading ? 'Loading...' : 'Load more...'}
-                  </Text>
-                </Row>
-              ) : ebayError && allEbay.length === 0 ? (
-                <View className={classes.errorContainer}>
-                  <Text className={classes.footerText}>Failed to fetch.</Text>
-                  <Button
-                    variant="primary-light"
-                    size="small"
-                    disabled={ebayLoading || ebayPaging}
-                    onPress={handleRetryInitialEbay}
-                    className={classes.retryButton}
-                  >
-                    Retry
-                  </Button>
-                </View>
-              ) : null
-            }
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={3}
-          />
-        ) : (
-          <TabView className={classes.tabView} tabs={productListTabs}>
-            <ProductAllList
-              loading={loading}
-              cards={allCards}
-              onFavoritePress={handleToggleFavorite}
-            />
-            <ProductAuctionList
-              loading={loading}
-              cards={auctionCards}
-              onFavoritePress={handleToggleFavorite}
-            />
-            <ProductFixedList
-              loading={loading}
-              cards={fixedCards}
-              onFavoritePress={handleToggleFavorite}
-            />
-          </TabView>
-        )}
-      </View>
+              <ProductAuctionList
+                loading={loading}
+                cards={auctionCards}
+                onFavoritePress={handleToggleFavorite}
+              />
+              <ProductFixedList
+                loading={loading}
+                cards={fixedCards}
+                onFavoritePress={handleToggleFavorite}
+              />
+            </TabView>
+          )}
+        </View>
+      )}
     </ScreenContainer>
   );
 }
