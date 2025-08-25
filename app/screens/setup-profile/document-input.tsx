@@ -119,7 +119,7 @@ export default function DocumentInputScreen() {
         rightIconColor="white"
         onRightPress={() => setEnableTorch((prev) => !prev)}
       />
-      {isFocused && (
+      {isFocused && hasPermission && (
         <CameraView
           ref={cameraRef}
           className={classes.camera}

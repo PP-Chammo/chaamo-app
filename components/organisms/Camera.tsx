@@ -80,7 +80,7 @@ const CameraComponent = memo(function CameraComponent({
     }, []),
   );
 
-  if (isCameraReady && !hasPermission) {
+  if (hasPermission === null) {
     return (
       <View className="flex-1 bg-gray-900 justify-center items-center">
         <Text className="text-white mb-4">
@@ -96,6 +96,14 @@ const CameraComponent = memo(function CameraComponent({
     );
   }
 
+  if (hasPermission === false) {
+    return (
+      <View className="flex-1 bg-gray-900 justify-center items-center">
+        <Text className="text-white">No access to camera</Text>
+      </View>
+    );
+  }
+
   return (
     <ScreenContainer>
       <Header
@@ -106,7 +114,7 @@ const CameraComponent = memo(function CameraComponent({
         rightIconColor="white"
         onRightPress={() => setEnableTorch((prev) => !prev)}
       />
-      {isFocused && (
+      {isFocused && hasPermission && (
         <CameraView
           ref={cameraRef}
           className={classes.camera}
