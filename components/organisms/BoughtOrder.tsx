@@ -77,7 +77,7 @@ const BoughtOrder = memo(function BoughtOrder() {
                 item.node?.currency,
                 item.node?.final_price ?? 0,
               )}
-              imageUrl={item.node?.image_url ?? ''}
+              imageUrls={item.node?.image_urls ?? ''}
               status={item.node?.status ?? OrderStatus.AWAITING_SHIPMENT}
             />
           )}

@@ -8,6 +8,7 @@ import { TouchableOpacity, View } from 'react-native';
 import { Divider, Icon, Label, Row } from '@/components/atoms';
 import { ListingType, OrderStatus } from '@/generated/graphql';
 import { getColor } from '@/utils/getColor';
+import { getFirstImageUrl } from '@/utils/imageUrls';
 
 interface OrderItemProps {
   id: string;
@@ -15,7 +16,7 @@ interface OrderItemProps {
   listingType: ListingType;
   title: string;
   price: string;
-  imageUrl: string;
+  imageUrls: string | string[] | null;
   status: OrderStatus;
 }
 
@@ -25,9 +26,10 @@ const OrderItem: React.FC<OrderItemProps> = memo(function OrderItem({
   listingType,
   title,
   price,
-  imageUrl,
+  imageUrls,
   status,
 }) {
+  const imageUrl = getFirstImageUrl(imageUrls);
   const getIcon = useMemo(() => {
     const iconMap = {
       awaiting_payment: 'timer',

@@ -17,7 +17,7 @@ export const getVwMyOrders = gql`
           currency
           final_price
           seller_earnings
-          image_url
+          image_urls
         }
       }
     }
