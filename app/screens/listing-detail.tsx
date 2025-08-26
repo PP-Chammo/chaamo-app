@@ -165,20 +165,18 @@ export default function ListingDetailScreen() {
   }, []);
 
   const rightIconHeader = useMemo(() => {
-    // if (isEbayOnly) return undefined;
-    if (isSeller) {
+    if (isEbayOnly || isSeller) {
       return 'dots-vertical';
     }
     return getIsFavorite(id as string) ? 'heart' : 'heart-outline';
-  }, [isSeller, id, getIsFavorite]);
+  }, [isEbayOnly, isSeller, getIsFavorite, id]);
 
   const rightIconColor = useMemo(() => {
-    // if (isEbayOnly) return undefined;
-    if (isSeller) {
+    if (isEbayOnly || isSeller) {
       return getColor('gray-600');
     }
     return getColor(getIsFavorite(id as string) ? 'red-500' : 'gray-600');
-  }, [id, getIsFavorite, isSeller]);
+  }, [id, getIsFavorite, isSeller, isEbayOnly]);
 
   const onRightPress = useCallback(() => {
     if (isEbayOnly || isSeller) {
@@ -217,8 +215,6 @@ export default function ListingDetailScreen() {
         },
       },
       onCompleted: ({ deleteFromebay_postsCollection }) => {
-        console.log(deleteFromebay_postsCollection?.records);
-
         if (deleteFromebay_postsCollection?.records?.length) {
           handleDeletePopup();
           cache.modify({
@@ -270,8 +266,8 @@ export default function ListingDetailScreen() {
   }, [deleteUserCard, detail?.user_card_id, handleDeletePopup]);
 
   const handleDeleteCard = useCallback(() => {
-    if (isEbayOnly) handleDeleteEbayCard();
-    else handleDeleteChaamoCard();
+    if (isEbayOnly) return handleDeleteEbayCard();
+    return handleDeleteChaamoCard();
   }, [handleDeleteChaamoCard, handleDeleteEbayCard, isEbayOnly]);
 
   useFocusEffect(
