@@ -115,7 +115,7 @@ export default function ContactUs() {
                 subject: `I have a question about last sold price`,
                 message: `I have a question about the price value for "${detailEdges[0].node.name}".`,
               });
-              setRecipient('technicalsupport@chaamo.com');
+              setRecipient('technicalteam@chaamo.com');
             }
           }
         } catch (e) {

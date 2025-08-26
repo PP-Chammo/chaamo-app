@@ -37,3 +37,13 @@ export const getEbayPosts = gql`
     }
   }
 `;
+
+export const deleteEbayPosts = gql`
+  mutation DeleteEbayPosts($filter: ebay_postsFilter) {
+    deleteFromebay_postsCollection(filter: $filter) {
+      records {
+        id
+      }
+    }
+  }
+`;
