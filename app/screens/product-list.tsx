@@ -459,6 +459,7 @@ export default function ProductListScreen() {
                     router.push({
                       pathname: '/screens/listing-detail',
                       params: {
+                        ebayPostId: item.node?.id,
                         ebayOnly: 'true',
                         image_url: item.node?.image_url ?? '',
                         name: item.node?.name ?? '',

@@ -34,9 +34,11 @@ import {
 } from '@/components/molecules';
 import { ListedByList, SimilarAdList } from '@/components/organisms';
 import { dummyPortfolioValueData } from '@/constants/dummy';
+import { BaseEbayPost } from '@/domains/ebay_post.types';
 import {
   ListingType,
   useCreateFavoritesMutation,
+  useDeleteEbayPostsMutation,
   useDeleteUserCardMutation,
   useGetVwChaamoDetailLazyQuery,
   useRemoveFavoritesMutation,
@@ -44,6 +46,7 @@ import {
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useUserVar } from '@/hooks/useUserVar';
+import { cache } from '@/utils/apollo';
 import { getColor } from '@/utils/getColor';
 import { getIndicator } from '@/utils/getIndicator';
 
@@ -62,14 +65,15 @@ export default function ListingDetailScreen() {
   const dotsRef = useRef<View>(null);
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 
-  const { id, ebayOnly, image_url, name, currency, price, date } =
+  const { id, ebayPostId, ebayOnly, image_url, name, currency, price, date } =
     useLocalSearchParams();
-  const [getDetail, { data }] = useGetVwChaamoDetailLazyQuery({
+  const [getDetail, { data, refetch }] = useGetVwChaamoDetailLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
   const [createFavorites] = useCreateFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
   const [deleteUserCard, { loading: isDeleting }] = useDeleteUserCardMutation();
+  const [deleteEbayPost] = useDeleteEbayPostsMutation();
 
   const [showModal, setShowModal] = useState(false);
   const [showImageZoom, setShowImageZoom] = useState(false);
@@ -161,24 +165,23 @@ export default function ListingDetailScreen() {
   }, []);
 
   const rightIconHeader = useMemo(() => {
-    if (isEbayOnly) return undefined;
+    // if (isEbayOnly) return undefined;
     if (isSeller) {
       return 'dots-vertical';
     }
     return getIsFavorite(id as string) ? 'heart' : 'heart-outline';
-  }, [isEbayOnly, isSeller, id, getIsFavorite]);
+  }, [isSeller, id, getIsFavorite]);
 
   const rightIconColor = useMemo(() => {
-    if (isEbayOnly) return undefined;
+    // if (isEbayOnly) return undefined;
     if (isSeller) {
       return getColor('gray-600');
     }
     return getColor(getIsFavorite(id as string) ? 'red-500' : 'gray-600');
-  }, [id, getIsFavorite, isSeller, isEbayOnly]);
+  }, [id, getIsFavorite, isSeller]);
 
   const onRightPress = useCallback(() => {
-    if (isEbayOnly) return;
-    if (isSeller) {
+    if (isEbayOnly || isSeller) {
       setIsContextMenuVisible(true);
     } else {
       handleToggleFavorite();
@@ -206,7 +209,41 @@ export default function ListingDetailScreen() {
     setIsDeletePopupVisible(!isDeletePopupVisible);
   }, [isDeletePopupVisible]);
 
-  const handleDeleteAccount = useCallback(() => {
+  const handleDeleteEbayCard = useCallback(() => {
+    deleteEbayPost({
+      variables: {
+        filter: {
+          id: { eq: ebayPostId as string },
+        },
+      },
+      onCompleted: ({ deleteFromebay_postsCollection }) => {
+        console.log(deleteFromebay_postsCollection?.records);
+
+        if (deleteFromebay_postsCollection?.records?.length) {
+          handleDeletePopup();
+          cache.modify({
+            fields: {
+              ebay_postsCollection(prev) {
+                return prev?.edges?.filter(
+                  (item: BaseEbayPost) => item.id !== ebayPostId,
+                );
+              },
+            },
+          });
+          Alert.alert('Success', 'the card has been deleted', [
+            {
+              text: 'OK',
+              onPress: () => {
+                router.back();
+              },
+            },
+          ]);
+        }
+      },
+    });
+  }, [deleteEbayPost, ebayPostId, handleDeletePopup]);
+
+  const handleDeleteChaamoCard = useCallback(() => {
     deleteUserCard({
       variables: {
         filter: {
@@ -231,6 +268,11 @@ export default function ListingDetailScreen() {
       },
     });
   }, [deleteUserCard, detail?.user_card_id, handleDeletePopup]);
+
+  const handleDeleteCard = useCallback(() => {
+    if (isEbayOnly) handleDeleteEbayCard();
+    else handleDeleteChaamoCard();
+  }, [handleDeleteChaamoCard, handleDeleteEbayCard, isEbayOnly]);
 
   useFocusEffect(
     useCallback(() => {
@@ -407,6 +449,8 @@ export default function ListingDetailScreen() {
           )}
           indicator={getIndicator(detail?.start_price, detail?.last_sold_price)}
           description={detail?.description ?? ''}
+          userCardId={detail?.user_card_id ?? ''}
+          refetch={refetch}
         />
         <View className={classes.chartWrapper}>
           <Chart data={dummyPortfolioValueData} />
@@ -436,39 +480,46 @@ export default function ListingDetailScreen() {
         />
       </ScrollView>
       {renderBottomBar()}
-      {!isEbayOnly && (
-        <ContextMenu
-          visible={isContextMenuVisible}
-          onClose={() => setIsContextMenuVisible(false)}
-          triggerRef={dotsRef}
-          menuHeight={60}
-        >
+      <ContextMenu
+        visible={isContextMenuVisible}
+        onClose={() => setIsContextMenuVisible(false)}
+        triggerRef={dotsRef}
+        menuHeight={60}
+      >
+        {!isEbayOnly && (
           <TouchableOpacity
             onPress={handleBoostPost}
             className={classes.contextMenu}
           >
             <Label className={classes.contextMenuText}>Boost Post</Label>
           </TouchableOpacity>
-          {detail?.listing_type !== ListingType.AUCTION && (
-            <>
-              <Divider position="horizontal" />
-              <TouchableOpacity
-                onPress={handleEditDetails}
-                className={classes.contextMenu}
-              >
-                <Label className={classes.contextMenuText}>Edit Details</Label>
-              </TouchableOpacity>
-              <Divider position="horizontal" />
-              <TouchableOpacity
-                onPress={handleDeletePopup}
-                className={classes.contextMenu}
-              >
-                <Label className={classes.deleteText}>Delete</Label>
-              </TouchableOpacity>
-            </>
-          )}
-        </ContextMenu>
-      )}
+        )}
+        {detail?.listing_type !== ListingType.AUCTION && (
+          <>
+            {!isEbayOnly && (
+              <>
+                <Divider position="horizontal" />
+                <TouchableOpacity
+                  onPress={handleEditDetails}
+                  className={classes.contextMenu}
+                >
+                  <Label className={classes.contextMenuText}>
+                    Edit Details
+                  </Label>
+                </TouchableOpacity>
+                <Divider position="horizontal" />
+              </>
+            )}
+            <TouchableOpacity
+              onPress={handleDeletePopup}
+              className={classes.contextMenu}
+            >
+              <Label className={classes.deleteText}>Delete</Label>
+            </TouchableOpacity>
+          </>
+        )}
+      </ContextMenu>
+
       <Modal
         visible={isDeletePopupVisible}
         onClose={handleDeletePopup}
@@ -488,7 +539,7 @@ export default function ListingDetailScreen() {
           textClassName={classes.deleteAccountModalButtonText}
           loading={isDeleting}
           disabled={isDeleting}
-          onPress={handleDeleteAccount}
+          onPress={handleDeleteCard}
         >
           Delete
         </Button>
