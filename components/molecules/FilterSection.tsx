@@ -9,11 +9,12 @@ import { useSearchVar } from '@/hooks/useSearchVar';
 import { useUserVar } from '@/hooks/useUserVar';
 
 interface FilterSectionProps {
+  loading?: boolean;
   resultCount?: number | string;
 }
 
 const FilterSection: React.FC<FilterSectionProps> = memo(
-  function FilterSection({ resultCount = 0 }) {
+  function FilterSection({ loading, resultCount = 0 }) {
     const [user] = useUserVar();
     const [search, setSearch] = useSearchVar();
     const { formatDisplay } = useCurrencyDisplay();
@@ -66,7 +67,6 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
               variant="light"
               size="small"
               className={classes.filterButton}
-              onPress={() => setSearch({ category: '' })}
             >
               {search?.category}
             </Button>
@@ -132,7 +132,10 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
           <Row className={classes.filterTextContainer}>
             <Label className={classes.filterPlaceholder}>Showing:</Label>
             <Label className={classes.resultText} testID="filter-result-text">
-              {resultCount} results for {search?.query || search?.category}
+              {!loading && resultCount} results for{' '}
+              {search?.query && search?.category
+                ? `"${search?.query}" in "${search?.category}"`
+                : `"${search?.query || search?.category}"`}
             </Label>
           </Row>
         )}
