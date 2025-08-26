@@ -16,7 +16,7 @@ const CategoryList = memo(function CategoryList() {
       setSearch({ categoryId: id, category });
       router.push({
         pathname: '/screens/product-list',
-        params: { ebayOnly: 'true' },
+        params: { mergedList: 'true' },
       });
     },
     [setSearch],
