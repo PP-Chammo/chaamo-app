@@ -35,8 +35,6 @@ export default function ContactUs() {
   const [form, setForm] = useState<Form>(initialForm);
   const [recipient, setRecipient] = useState('support@chaamo.com');
 
-  console.log(listingId);
-
   const [getListingDetail, { data: listingDetail }] =
     useGetVwChaamoDetailLazyQuery({
       fetchPolicy: 'cache-and-network',
