@@ -11,7 +11,7 @@ import { Button, Icon, Label, PriceIndicator, Row } from '@/components/atoms';
 import { useUserVar } from '@/hooks/useUserVar';
 
 interface ProductDetailInfoProps {
-  isEbayOnly?: boolean;
+  isEbay?: boolean;
   price?: string | number;
   date: string | Date;
   title: string;
@@ -24,7 +24,7 @@ interface ProductDetailInfoProps {
 }
 
 const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
-  isEbayOnly,
+  isEbay,
   price,
   date,
   title,
@@ -47,9 +47,16 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
   return (
     <View className={classes.cardInfoWrapper}>
       <View className={classes.priceRow}>
-        <Label variant="subtitle" className={classes.price}>
-          {price}
-        </Label>
+        <Row>
+          {isEbay && (
+            <Label variant="subtitle" className={classes.priceLastSold}>
+              Last sold:
+            </Label>
+          )}
+          <Label variant="subtitle" className={classes.price}>
+            {price}
+          </Label>
+        </Row>
         <Row className={classes.dateRow}>
           <Icon
             name="calendar"
@@ -68,7 +75,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
       >
         {title}
       </Label>
-      {!isEbayOnly && (
+      {!isEbay && (
         <View className={classes.ebayRow}>
           <Image source={ChaamoLogo} className={classes.chaamoLogo} />
           <Label className={classes.priceValueLabel}>Price Value: </Label>
@@ -93,7 +100,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
           </Row>
         </View>
       )}
-      {!isEbayOnly && (
+      {!isEbay && (
         <View className={classes.descriptionWrapper}>
           <Label className={classes.descriptionTitle}>Description</Label>
           <Label className={classes.description}>{description}</Label>
@@ -106,6 +113,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
 const classes = {
   cardInfoWrapper: 'px-4.5',
   priceRow: 'flex-row items-center justify-between',
+  priceLastSold: 'text-gray-600 text-xl font-bold',
   price: 'text-primary-500 text-xl font-bold',
   dateRow: 'gap-1.5',
   date: 'text-sm text-gray-400',

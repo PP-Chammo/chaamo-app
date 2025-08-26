@@ -96,29 +96,33 @@ export default function ContactUs() {
 
   useFocusEffect(
     useCallback(() => {
-      if (listingId) {
-        getListingDetail({
-          variables: {
-            filter: {
-              id: { eq: listingId },
-            },
-          },
-          onCompleted({ vw_chaamo_cardsCollection }) {
-            if (vw_chaamo_cardsCollection?.edges?.length) {
+      (async () => {
+        try {
+          if (listingId) {
+            const { data: vwChaamoCardsCollection } = await getListingDetail({
+              variables: {
+                filter: {
+                  id: { eq: listingId },
+                },
+              },
+            });
+            const detailEdges =
+              vwChaamoCardsCollection?.vw_chaamo_cardsCollection?.edges;
+
+            if (detailEdges?.length) {
               setForm({
                 user_card_id: user?.id,
                 subject: `I have a question about last sold price`,
-                message: `I have a question about the price value for "${vw_chaamo_cardsCollection.edges[0].node.name}".`,
+                message: `I have a question about the price value for "${detailEdges[0].node.name}".`,
               });
               setRecipient('technicalsupport@chaamo.com');
             }
-          },
-          onError(error) {
-            console.error(error);
-            Alert.alert('Error', 'Failed to fetch listing detail');
-          },
-        });
-      }
+          }
+        } catch (e) {
+          console.error('Failed to fetch listing detail', e);
+          Alert.alert('Error', 'Failed to fetch listing detail');
+        }
+      })();
     }, [listingId, getListingDetail, user?.id]),
   );
 

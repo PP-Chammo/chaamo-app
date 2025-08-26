@@ -28,16 +28,18 @@ const SimilarAdList: React.FC<SimilarAdListProps> = memo(
 
     useFocusEffect(
       useCallback(() => {
-        getRecentlyAddedListings({
-          variables: {
-            filter: {
-              id: { neq: ignoreId },
-              listing_type: { eq: listingType },
-              is_boosted: { eq: true },
+        if (ignoreId) {
+          getRecentlyAddedListings({
+            variables: {
+              filter: {
+                id: { neq: ignoreId },
+                listing_type: { eq: listingType },
+                is_boosted: { eq: true },
+              },
+              last: 10,
             },
-            last: 10,
-          },
-        });
+          });
+        }
       }, [getRecentlyAddedListings, ignoreId, listingType]),
     );
 
