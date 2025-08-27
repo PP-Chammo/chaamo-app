@@ -2,12 +2,7 @@ import { forwardRef, memo, useCallback } from 'react';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { clsx } from 'clsx';
-import {
-  TextInput,
-  TextInputProps,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { TextInput, TextInputProps, Pressable } from 'react-native';
 
 import { TextChangeParams } from '@/domains';
 import { getColor } from '@/utils/getColor';
@@ -15,6 +10,7 @@ import { getColor } from '@/utils/getColor';
 interface SearchFieldProps extends Omit<TextInputProps, 'onChange'> {
   value: string;
   onChange: ({ name, value }: TextChangeParams) => void;
+  onPress?: () => void;
   onSubmit?: () => void;
   className?: string;
   inputClassName?: string;
@@ -23,7 +19,16 @@ interface SearchFieldProps extends Omit<TextInputProps, 'onChange'> {
 
 const SearchField = forwardRef<TextInput, SearchFieldProps>(
   function SearchField(
-    { value, onChange, onSubmit, className, inputClassName, testID, ...props },
+    {
+      value,
+      onChange,
+      onPress,
+      onSubmit,
+      className,
+      inputClassName,
+      testID,
+      ...props
+    },
     ref,
   ) {
     const handleChange = useCallback(
@@ -38,7 +43,11 @@ const SearchField = forwardRef<TextInput, SearchFieldProps>(
     }, [onChange]);
 
     return (
-      <View testID={testID} className={clsx(classes.container, className)}>
+      <Pressable
+        testID={testID}
+        onPress={onPress}
+        className={clsx(classes.container, className)}
+      >
         <TextInput
           ref={ref}
           value={value}
@@ -50,7 +59,7 @@ const SearchField = forwardRef<TextInput, SearchFieldProps>(
           onSubmitEditing={() => onSubmit?.()}
           {...props}
         />
-        <TouchableOpacity
+        <Pressable
           accessibilityRole="button"
           onPress={handleClear}
           className={clsx(classes.clearButton, value.length === 0 && 'hidden')}
@@ -60,8 +69,8 @@ const SearchField = forwardRef<TextInput, SearchFieldProps>(
             size={18}
             color={getColor('gray-600')}
           />
-        </TouchableOpacity>
-      </View>
+        </Pressable>
+      </Pressable>
     );
   },
 );

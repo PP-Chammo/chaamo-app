@@ -20,7 +20,6 @@ import {
 import { Header, Lazy, TabView } from '@/components/molecules';
 import { profileTabs } from '@/constants/tabs';
 import {
-  ListingType,
   OrderByDirection,
   useCreateBlockedUsersMutation,
   useCreateFollowsMutation,
@@ -41,7 +40,7 @@ export default function ProfileScreen() {
   const [user] = useUserVar();
   const { userId } = useLocalSearchParams();
   const { getIsBlocked } = useBlockedUsers();
-  const { formatDisplay } = useCurrencyDisplay();
+  const { formatDisplay, formatPrice } = useCurrencyDisplay();
   const { getIsFollowing: getIsFollowingSelf } = useFollows();
   const { followers, followings, getIsFollowing } = useFollows(
     userId as string,
@@ -74,13 +73,28 @@ export default function ProfileScreen() {
     },
   });
 
-  const lastSoldPrice = useMemo(() => {
-    const lastSold = listingData?.vw_chaamo_cardsCollection?.edges?.find(
-      (edge) => edge.node.listing_type === ListingType.SELL,
-    );
-
-    return lastSold?.node.last_sold_price ?? 0;
-  }, [listingData?.vw_chaamo_cardsCollection?.edges]);
+  const lastSoldValuation = useMemo(() => {
+    if (listingData?.vw_chaamo_cardsCollection?.edges?.length) {
+      const lastSoldTotal =
+        listingData?.vw_chaamo_cardsCollection?.edges?.reduce((acc, edge) => {
+          const value =
+            (edge?.node?.last_sold_price ?? 0) > 0
+              ? formatPrice(
+                  edge.node.last_sold_currency,
+                  edge.node.last_sold_price,
+                )
+              : formatPrice(edge.node.currency, edge.node.start_price);
+          return acc + Number(value);
+        }, 0);
+      return formatDisplay(user?.profile?.currency, lastSoldTotal);
+    }
+    return 0;
+  }, [
+    formatDisplay,
+    formatPrice,
+    listingData?.vw_chaamo_cardsCollection?.edges,
+    user?.profile?.currency,
+  ]);
 
   const [removeFollow, { loading: loadingUnfollow }] =
     useRemoveFollowsMutation();
@@ -281,7 +295,7 @@ export default function ProfileScreen() {
                   className={classes.portfolioValueContainer}
                 >
                   <Label className={classes.portfolioValue}>
-                    {formatDisplay(user?.profile?.currency, lastSoldPrice)}
+                    {lastSoldValuation}
                   </Label>
                   <View className={classes.portfolioValueIconContainer}>
                     <Icon

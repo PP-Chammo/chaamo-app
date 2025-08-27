@@ -299,18 +299,23 @@ export default function ProductListScreen() {
     let cancelled = false;
     const run = async () => {
       try {
-        setFirstLoading(true);
-        await Promise.all([
-          getChaamoCards({ variables: { filter: chaamoFilter } }),
-          getEbayPosts({
-            variables: {
-              filter: ebayFilterRef.current,
-              orderBy: [{ sold_at: OrderByDirection.DESCNULLSLAST }],
-              first: INITIAL_PAGE_SIZE,
-            },
-            notifyOnNetworkStatusChange: true,
-          }),
-        ]);
+        if (mergedList) {
+          setFirstLoading(true);
+          await Promise.all([
+            getChaamoCards({ variables: { filter: chaamoFilter } }),
+            getEbayPosts({
+              variables: {
+                filter: ebayFilterRef.current,
+                orderBy: [{ sold_at: OrderByDirection.DESCNULLSLAST }],
+                first: INITIAL_PAGE_SIZE,
+              },
+              notifyOnNetworkStatusChange: true,
+            }),
+          ]);
+        } else {
+          setFirstLoading(true);
+          await getChaamoCards({ variables: { filter: chaamoFilter } });
+        }
       } finally {
         if (!cancelled) {
           setEbayPaging(false);
@@ -322,7 +327,7 @@ export default function ProductListScreen() {
     return () => {
       cancelled = true;
     };
-  }, [search, getEbayPosts, getChaamoCards, chaamoFilter]);
+  }, [search, getEbayPosts, getChaamoCards, chaamoFilter, mergedList]);
 
   const handleLoadMore = useCallback(async () => {
     if (ebayPaging || ebayLoading) return;

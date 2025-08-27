@@ -94,7 +94,7 @@ export default function ListingDetailScreen() {
       return {
         id: ebayNode.id,
         listing_type: ListingType.SELL,
-        image_url: ebayNode.image_hd_url ?? '',
+        image_urls: ebayNode.image_hd_url ? [ebayNode.image_hd_url] : [],
         name: ebayNode.name ?? '',
         currency: ebayNode.currency ?? undefined,
         start_price: ebayNode.price ?? undefined,
@@ -115,15 +115,6 @@ export default function ListingDetailScreen() {
     }
     return chaamoDetail;
   }, [chaamoDetail, ebayData, isEbay]);
-
-  const imageUrls = useMemo(() => {
-    if (isEbay) {
-      const ebayDetail = detail as { image_url?: string };
-      return ebayDetail?.image_url || null;
-    }
-    const chaamoDetail = detail as { image_urls?: string | string[] };
-    return chaamoDetail?.image_urls || null;
-  }, [detail, isEbay]);
 
   const isSeller = useMemo(
     () => (isEbay ? false : user?.id === detail?.seller_id),
@@ -417,7 +408,7 @@ export default function ListingDetailScreen() {
       >
         <View className={classes.cardImageWrapper}>
           <ImageGallery
-            imageUrls={imageUrls}
+            imageUrls={detail?.image_urls}
             imageClassName={classes.cardImage}
             showIndicators={true}
           />
@@ -551,7 +542,7 @@ const classes = {
   cardImageWrapper: 'items-center',
   cardImage:
     'w-56 h-80 rounded-xl border border-gray-200 bg-gray-200 items-center justify-center',
-  chartWrapper: 'px-4.5',
+  chartWrapper: 'px-4.5 flex-row justify-center items-center',
   priceValueLabel: 'text-sm text-gray-500',
   priceValue: 'text-sm text-gray-700 font-bold',
   contextMenuItem: 'py-2 px-3',

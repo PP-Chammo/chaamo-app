@@ -1,5 +1,5 @@
-import { Alert, Platform, PermissionsAndroid } from 'react-native';
-import RNFS from 'react-native-fs';
+import * as FileSystem from 'expo-file-system';
+import { Alert, Platform, Share } from 'react-native';
 
 import {
   BaseNotification,
@@ -111,71 +111,69 @@ export const exportUserData = async (
 
     const fileName = `chaamo-export-${user.id}-${Date.now()}.json`;
 
-    let baseDir = RNFS.DocumentDirectoryPath;
-
     if (Platform.OS === 'android') {
       try {
-        const writeGranted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          {
-            title: 'Storage Permission',
-            message:
-              'Chaamo needs access to your storage to export your data to Downloads.',
-            buttonPositive: 'OK',
-          },
-        );
-
-        const readGranted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-          {
-            title: 'Storage Permission',
-            message:
-              'Chaamo needs access to your storage to export your data to Downloads.',
-            buttonPositive: 'OK',
-          },
-        );
-
-        const hasPermission =
-          writeGranted === PermissionsAndroid.RESULTS.GRANTED ||
-          readGranted === PermissionsAndroid.RESULTS.GRANTED;
-
-        if (hasPermission && RNFS.DownloadDirectoryPath) {
-          baseDir = RNFS.DownloadDirectoryPath;
-        } else if (RNFS.ExternalDirectoryPath) {
-          baseDir = RNFS.ExternalDirectoryPath;
+        const perms =
+          await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+        if (!perms.granted || !perms.directoryUri) {
+          Alert.alert(
+            'Export Cancelled',
+            'Please select a destination folder to save your data.',
+          );
+          return;
         }
-      } catch {
-        baseDir = RNFS.ExternalDirectoryPath ?? RNFS.DocumentDirectoryPath;
+
+        const androidFileUri =
+          await FileSystem.StorageAccessFramework.createFileAsync(
+            perms.directoryUri,
+            fileName,
+            'application/json',
+          );
+
+        await FileSystem.writeAsStringAsync(androidFileUri, jsonData, {
+          encoding: FileSystem.EncodingType.UTF8,
+        });
+
+        Alert.alert(
+          'Export Successful',
+          `Your data has been exported to:\n${fileName}`,
+        );
+        return;
+      } catch (err) {
+        console.error('Android export via SAF failed:', err);
+        Alert.alert(
+          'Export Failed',
+          'There was an error exporting your data. Please try again.',
+        );
+        return;
       }
     }
 
-    let fileUri = `${baseDir}/${fileName}`;
-
-    await RNFS.mkdir(baseDir);
-
+    // iOS - write to temp file and use Share API for folder selection
     try {
-      await RNFS.writeFile(fileUri, jsonData, 'utf8');
-    } catch (writeErr) {
-      if (Platform.OS === 'android') {
-        const fallbackDir =
-          RNFS.ExternalDirectoryPath ?? RNFS.DocumentDirectoryPath;
-        if (fallbackDir && fallbackDir !== baseDir) {
-          baseDir = fallbackDir;
-          fileUri = `${baseDir}/${fileName}`;
-          await RNFS.mkdir(baseDir);
-          await RNFS.writeFile(fileUri, jsonData, 'utf8');
-        } else {
-          throw writeErr;
-        }
-      } else {
-        throw writeErr;
-      }
-    }
+      const tempFileUri = `${FileSystem.documentDirectory}${fileName}`;
+      await FileSystem.writeAsStringAsync(tempFileUri, jsonData, {
+        encoding: FileSystem.EncodingType.UTF8,
+      });
 
-    Alert.alert(
-      'Export Successful',
-      `Your data has been exported to:\n${fileName}\n\nFile location: ${fileUri}`,
-    );
+      const shareResult = await Share.share({
+        url: tempFileUri,
+        title: 'Export Chaamo Data',
+      });
+
+      if (shareResult.action === Share.sharedAction) {
+        Alert.alert(
+          'Export Successful',
+          `Your data has been exported as:\n${fileName}`,
+        );
+      }
+    } catch (iosErr) {
+      console.error('iOS export failed:', iosErr);
+      Alert.alert(
+        'Export Failed',
+        'There was an error exporting your data. Please try again.',
+      );
+    }
   } catch (error) {
     console.error('Export failed:', error);
     Alert.alert(
