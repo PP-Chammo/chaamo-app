@@ -61,7 +61,7 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
           })}
           testID="listing-card-market-price"
         >
-          {formatDisplay(marketCurrency, marketPrice)}
+          Price value: {formatDisplay(marketCurrency, marketPrice)}
         </Label>
         {indicator && <PriceIndicator direction={indicator} />}
       </>
@@ -170,7 +170,7 @@ const classes = {
   price: 'text-sm text-primary-500 !font-bold',
   marketPrice: 'text-xs text-gray-500',
   title: 'text-sm !text-gray-800',
-  marketContainer: 'flex flex-row items-center gap-2',
+  marketContainer: 'flex flex-row items-center gap-1',
   rightIconButton:
     'absolute top-2 right-2 z-10 w-8 h-8 bg-white rounded-full items-center justify-center',
   bidContainer: 'flex gap-2',
