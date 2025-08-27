@@ -46,6 +46,7 @@ const SearchField = forwardRef<TextInput, SearchFieldProps>(
           className={clsx(classes.input, inputClassName)}
           onChangeText={handleChange}
           enterKeyHint="search"
+          placeholderTextColor={getColor('gray-400')}
           onSubmitEditing={() => onSubmit?.()}
           {...props}
         />

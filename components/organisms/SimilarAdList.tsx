@@ -28,16 +28,18 @@ const SimilarAdList: React.FC<SimilarAdListProps> = memo(
 
     useFocusEffect(
       useCallback(() => {
-        getRecentlyAddedListings({
-          variables: {
-            filter: {
-              id: { neq: ignoreId },
-              listing_type: { eq: listingType },
-              is_boosted: { eq: true },
+        if (ignoreId) {
+          getRecentlyAddedListings({
+            variables: {
+              filter: {
+                id: { neq: ignoreId },
+                listing_type: { eq: listingType },
+                is_boosted: { eq: true },
+              },
+              last: 10,
             },
-            last: 10,
-          },
-        });
+          });
+        }
       }, [getRecentlyAddedListings, ignoreId, listingType]),
     );
 
@@ -52,7 +54,7 @@ const SimilarAdList: React.FC<SimilarAdListProps> = memo(
             key={card.node.id}
             id={card.node.id}
             type={card.node.listing_type}
-            imageUrl={card.node?.image_url ?? ''}
+            imageUrls={card.node?.image_urls ?? ''}
             title={card.node?.name ?? ''}
             currency={card.node?.currency}
             price={card.node?.start_price}

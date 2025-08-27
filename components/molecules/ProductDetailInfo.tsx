@@ -8,10 +8,11 @@ import { View } from 'react-native';
 
 import ChaamoLogo from '@/assets/images/logo.png';
 import { Button, Icon, Label, PriceIndicator, Row } from '@/components/atoms';
+import { useUpdateUserCardMutation } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 
 interface ProductDetailInfoProps {
-  isEbayOnly?: boolean;
+  isEbay?: boolean;
   price?: string | number;
   date: string | Date;
   title: string;
@@ -21,10 +22,12 @@ interface ProductDetailInfoProps {
   listingId?: string;
   sellerId?: string;
   lastSoldIsChecked?: boolean;
+  userCardId?: string;
+  refetch?: () => void;
 }
 
 const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
-  isEbayOnly,
+  isEbay,
   price,
   date,
   title,
@@ -34,8 +37,12 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
   description,
   indicator,
   lastSoldIsChecked,
+  userCardId,
+  refetch,
 }) => {
   const [user] = useUserVar();
+
+  const [updateUserCard, { loading }] = useUpdateUserCardMutation();
 
   const handleConfirmIncorrect = useCallback(() => {
     router.push({
@@ -44,12 +51,38 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
     });
   }, [listingId]);
 
+  const handleClosePriceInfo = useCallback(() => {
+    updateUserCard({
+      variables: {
+        set: {
+          last_sold_is_checked: true,
+          last_sold_is_correct: true,
+        },
+        filter: {
+          id: { eq: userCardId },
+        },
+      },
+      onCompleted: ({ updateuser_cardsCollection }) => {
+        if (updateuser_cardsCollection?.records?.length) {
+          refetch?.();
+        }
+      },
+    });
+  }, [updateUserCard, userCardId, refetch]);
+
   return (
     <View className={classes.cardInfoWrapper}>
       <View className={classes.priceRow}>
-        <Label variant="subtitle" className={classes.price}>
-          {price}
-        </Label>
+        <Row>
+          {isEbay && (
+            <Label variant="subtitle" className={classes.priceLastSold}>
+              Last sold:
+            </Label>
+          )}
+          <Label variant="subtitle" className={classes.price}>
+            {price}
+          </Label>
+        </Row>
         <Row className={classes.dateRow}>
           <Icon
             name="calendar"
@@ -68,7 +101,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
       >
         {title}
       </Label>
-      {!isEbayOnly && (
+      {!isEbay && (
         <View className={classes.ebayRow}>
           <Image source={ChaamoLogo} className={classes.chaamoLogo} />
           <Label className={classes.priceValueLabel}>Price Value: </Label>
@@ -86,14 +119,25 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
               variant="danger-light"
               size="small"
               className={classes.buttonAction}
+              onPress={handleClosePriceInfo}
+              loading={loading}
+              disabled={loading}
+            >
+              No
+            </Button>
+            <Button
+              variant="primary-light"
+              size="small"
+              className={classes.buttonAction}
               onPress={handleConfirmIncorrect}
+              disabled={loading}
             >
               Contact Us
             </Button>
           </Row>
         </View>
       )}
-      {!isEbayOnly && (
+      {!isEbay && (
         <View className={classes.descriptionWrapper}>
           <Label className={classes.descriptionTitle}>Description</Label>
           <Label className={classes.description}>{description}</Label>
@@ -106,6 +150,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
 const classes = {
   cardInfoWrapper: 'px-4.5',
   priceRow: 'flex-row items-center justify-between',
+  priceLastSold: 'text-gray-600 text-xl font-bold',
   price: 'text-primary-500 text-xl font-bold',
   dateRow: 'gap-1.5',
   date: 'text-sm text-gray-400',

@@ -7,7 +7,7 @@ export const getVwMyFavorites = gql`
         node {
           id
           listing_type
-          image_url
+          image_urls
           name
           currency
           start_price

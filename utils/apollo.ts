@@ -28,7 +28,7 @@ const retryLink = new RetryLink({
     jitter: true,
   },
   attempts: (count, _operation, error) => {
-    return !!error && count < 2;
+    return !!error && count < 5;
   },
 });
 

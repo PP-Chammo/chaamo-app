@@ -21,13 +21,13 @@ jest.mock('@/generated/graphql', () => ({
 
 describe('OrderItem', () => {
   const defaultProps = {
-    id: 'order-1',
-    listingId: 'listing-1',
+    id: 'test-id',
+    listingId: 'test-listing-id',
     listingType: ListingType.SELL,
     title: 'Test Product',
     price: '$99.99',
-    imageUrl: 'https://example.com/image.jpg',
-    status: OrderStatus.AWAITING_PAYMENT,
+    imageUrls: 'https://example.com/image.jpg',
+    status: OrderStatus.AWAITING_SHIPMENT,
   };
 
   it('renders correctly with default props', () => {
@@ -74,7 +74,7 @@ describe('OrderItem', () => {
     const { getByText } = render(
       <OrderItem
         {...defaultProps}
-        imageUrl="https://example.com/different-image.jpg"
+        imageUrls="https://example.com/different-image.jpg"
       />,
     );
 

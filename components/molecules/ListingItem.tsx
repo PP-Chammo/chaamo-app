@@ -11,10 +11,11 @@ import { Icon, Label, PriceIndicator, Row, Tag } from '@/components/atoms';
 import { ListingType } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { getColor } from '@/utils/getColor';
+import { getFirstImageUrl } from '@/utils/imageUrls';
 
 type ListingItemProps = {
   listingType: ListingType;
-  imageUrl: string;
+  imageUrls: string | string[] | null;
   title: string | React.ReactNode;
   subtitle?: string;
   date: string;
@@ -39,7 +40,7 @@ type ListingItemProps = {
 
 const ListingItem: React.FC<ListingItemProps> = memo(function ListingItem({
   listingType,
-  imageUrl,
+  imageUrls,
   title,
   subtitle,
   date,
@@ -58,6 +59,7 @@ const ListingItem: React.FC<ListingItemProps> = memo(function ListingItem({
   onPress,
   type = 'chaamo',
 }) {
+  const imageUrl = getFirstImageUrl(imageUrls);
   const { formatDisplay } = useCurrencyDisplay();
 
   const [showImageZoom, setShowImageZoom] = useState(false);

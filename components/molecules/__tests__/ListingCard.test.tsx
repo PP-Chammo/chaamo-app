@@ -8,7 +8,7 @@ import ListingCard from '../ListingCard';
 describe('ListingCard', () => {
   const defaultProps = {
     id: '1',
-    imageUrl: 'https://example.com/image.jpg',
+    imageUrls: 'https://example.com/image.jpg',
     title: 'Test Card',
     currency: 'USD',
     marketCurrency: 'USD',
@@ -25,7 +25,7 @@ describe('ListingCard', () => {
 
   it('renders image placeholder when imageUrl is not provided', () => {
     const { getByTestId } = render(
-      <ListingCard {...defaultProps} imageUrl="" />,
+      <ListingCard {...defaultProps} imageUrls="" />,
     );
     expect(getByTestId('listing-card-image-placeholder')).toBeTruthy();
   });

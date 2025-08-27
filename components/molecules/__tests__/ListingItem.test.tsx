@@ -9,7 +9,7 @@ import ListingItem from '../ListingItem';
 describe('ListingItem', () => {
   const defaultProps = {
     listingType: ListingType.SELL,
-    imageUrl: 'https://example.com/image.jpg',
+    imageUrls: 'https://example.com/image.jpg',
     title: 'Test Card',
     subtitle: 'Test Subtitle',
     currency: 'USD',
@@ -37,7 +37,7 @@ describe('ListingItem', () => {
 
   it('renders image placeholder when imageUrl is not provided', () => {
     const { getByTestId } = render(
-      <ListingItem {...defaultProps} imageUrl="" />,
+      <ListingItem {...defaultProps} imageUrls="" />,
     );
     expect(getByTestId('card-item-image-placeholder')).toBeTruthy();
   });

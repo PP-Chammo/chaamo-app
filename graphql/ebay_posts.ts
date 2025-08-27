@@ -37,3 +37,31 @@ export const getEbayPosts = gql`
     }
   }
 `;
+
+export const ebayPostDetail = gql`
+  query GetEbayPostDetail($filter: ebay_postsFilter) {
+    ebay_postsCollection(filter: $filter, first: 1) {
+      edges {
+        node {
+          id
+          name
+          normalised_name
+          image_hd_url
+          currency
+          price
+          sold_at
+        }
+      }
+    }
+  }
+`;
+
+export const deleteEbayPosts = gql`
+  mutation DeleteEbayPosts($filter: ebay_postsFilter) {
+    deleteFromebay_postsCollection(filter: $filter) {
+      records {
+        id
+      }
+    }
+  }
+`;

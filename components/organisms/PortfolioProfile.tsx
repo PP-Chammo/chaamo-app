@@ -28,7 +28,7 @@ export default function Portfolio() {
 
   const [filter, setFilter] = useState<ListingType | 'all'>('all');
 
-  const { data } = useGetVwChaamoListingsQuery({
+  const { data, loading, refetch } = useGetVwChaamoListingsQuery({
     skip: !userId && !user?.id,
     fetchPolicy: 'cache-and-network',
     variables: {
@@ -99,7 +99,7 @@ export default function Portfolio() {
                 imageClassName={classes.listingCardImage}
                 type={item.node.listing_type}
                 id={item.node.id}
-                imageUrl={item.node.image_url ?? ''}
+                imageUrls={item.node.image_urls ?? ''}
                 title={item.node.name ?? ''}
                 currency={item.node?.currency}
                 price={item.node?.start_price}
@@ -126,6 +126,8 @@ export default function Portfolio() {
             </View>
           );
         }}
+        onRefresh={refetch}
+        refreshing={loading}
       />
     </View>
   );

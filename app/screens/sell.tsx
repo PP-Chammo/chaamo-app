@@ -9,9 +9,10 @@ import React, {
 
 import { useFocusEffect } from '@react-navigation/native';
 import { formatISO, parse } from 'date-fns';
+import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { cssInterop } from 'nativewind';
-import { Alert, FlatList, View } from 'react-native';
+import { Alert, FlatList, View, TouchableOpacity } from 'react-native';
 
 import {
   Button,
@@ -20,6 +21,7 @@ import {
   Modal,
   ScreenContainer,
 } from '@/components/atoms';
+import Icon from '@/components/atoms/Icon';
 import {
   AutocompleteCardItem,
   Header,
@@ -154,13 +156,20 @@ export default function SellScreen() {
   );
 
   useEffect(() => {
-    if (form.imageUrl !== imageCaptured?.uri) {
+    if (
+      imageCaptured?.uri &&
+      imageCaptured.uri.trim() !== '' &&
+      !form.imageUrls.includes(imageCaptured.uri)
+    ) {
       setForm({
         ...form,
-        imageUrl: imageCaptured.uri,
+        imageUrls: [...form.imageUrls, imageCaptured.uri],
       });
+      setImageCaptured(imageCapturedStore);
     }
-  }, [form, imageCaptured.uri, setForm]);
+    // keep this to avoid infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imageCaptured.uri]);
 
   useFocusEffect(
     useCallback(() => {
@@ -178,24 +187,38 @@ export default function SellScreen() {
     useCallback(() => {
       if (cardId) {
         const detail = data?.vw_chaamo_cardsCollection?.edges[0]?.node;
-
         if (detail && !hasProcessedCard.current) {
           hasProcessedCard.current = true;
           hasResetForm.current = false;
           setImageCaptured(imageCapturedStore);
+
+          let parsedImageUrls: string[] = [];
+          if (detail.image_urls) {
+            try {
+              if (typeof detail.image_urls === 'string') {
+                parsedImageUrls = JSON.parse(detail.image_urls);
+              } else if (Array.isArray(detail.image_urls)) {
+                parsedImageUrls = detail.image_urls;
+              }
+            } catch (parseError) {
+              console.log('Error parsing image_urls:', parseError);
+              parsedImageUrls = [];
+            }
+          }
+
           setForm({
             title: detail.name ?? '',
             description: detail.description ?? '',
-            category_id: '4',
+            category_id: detail.category_id?.toString() ?? '',
             start_price: detail.start_price ?? '',
             reserved_price: detail.reserve_price ?? '',
             end_time: detail.end_time ?? '',
             condition: detail.condition ?? CardCondition.RAW,
             listing_type: detail.listing_type ?? ListingType.PORTFOLIO,
+            imageUrls: parsedImageUrls,
           });
         }
       } else {
-        // Only reset form once when opening new sell screen
         if (!hasResetForm.current) {
           hasProcessedCard.current = false;
           hasResetForm.current = true;
@@ -234,71 +257,79 @@ export default function SellScreen() {
     setIsCameraOpen(true);
   }, []);
 
-  const handleRemoveImage = useCallback(() => {
-    setImageCaptured(imageCapturedStore);
-  }, [setImageCaptured]);
+  const handleRemoveImage = useCallback(
+    (index: number) => {
+      const next = [...form.imageUrls];
+      next.splice(index, 1);
+      setForm({
+        imageUrls: next,
+      });
+    },
+    [form.imageUrls, setForm],
+  );
 
   const handleCreateCard = useCallback(
     async (card: UserCardsInsertInput, listing: ListingsInsertInput) => {
-      createUserCard({
-        variables: {
-          objects: [
-            {
-              ...card,
-              user_id: user?.id,
-            },
-          ],
-        },
-        onCompleted: async ({ insertIntouser_cardsCollection }) => {
-          if (insertIntouser_cardsCollection?.records?.length) {
-            const userCardId = insertIntouser_cardsCollection.records[0].id;
-            await Promise.all([
-              fetch(
-                `${process.env.EXPO_PUBLIC_BACKEND_URL}/ebay_scrape?user_card_id=${userCardId}&region=${user?.profile?.currency === 'GBP' ? 'uk' : 'us'}`,
-              ),
-              createListings({
-                variables: {
-                  objects: [
-                    {
-                      ...listing,
-                      user_card_id: userCardId,
-                    },
-                  ],
+      try {
+        const { data: userCardData } = await createUserCard({
+          variables: {
+            objects: [
+              {
+                ...card,
+                user_id: user?.id,
+              },
+            ],
+          },
+        });
+
+        if (userCardData?.insertIntouser_cardsCollection?.records?.length) {
+          const userCardId =
+            userCardData.insertIntouser_cardsCollection.records[0].id;
+          const [, listingResult] = await Promise.all([
+            fetch(
+              `${process.env.EXPO_PUBLIC_BACKEND_URL}/ebay_scrape?user_card_id=${userCardId}&region=${user?.profile?.currency === 'GBP' ? 'uk' : 'us'}`,
+            ),
+            createListings({
+              variables: {
+                objects: [
+                  {
+                    ...listing,
+                    user_card_id: userCardId,
+                  },
+                ],
+              },
+            }),
+          ]);
+
+          if (
+            listingResult.data?.insertIntolistingsCollection?.records?.length
+          ) {
+            if (form.listing_type === ListingType.PORTFOLIO) {
+              Alert.alert('Success!', 'Your portfolio has been saved.', [
+                {
+                  text: 'OK',
+                  onPress: () => {
+                    setForm(structuredClone(initialSellFormState));
+                    router.replace('/(tabs)/home');
+                  },
                 },
-                onCompleted: ({ insertIntolistingsCollection }) => {
-                  if (insertIntolistingsCollection?.records?.length) {
-                    if (form.listing_type === ListingType.PORTFOLIO) {
-                      Alert.alert(
-                        'Success!',
-                        'Your portfolio has been saved.',
-                        [
-                          {
-                            text: 'OK',
-                            onPress: () => {
-                              setForm(structuredClone(initialSellFormState));
-                              router.replace('/(tabs)/home');
-                            },
-                          },
-                        ],
-                      );
-                    } else {
-                      setForm({
-                        user_card_id: userCardId,
-                        listing_id: insertIntolistingsCollection.records[0].id,
-                      });
-                      setLoading(false);
-                      router.push('/screens/select-ad-package');
-                    }
-                  }
-                },
-                onError: console.log,
-              }),
-            ]);
-            setImageCaptured(imageCapturedStore);
+              ]);
+            } else {
+              setForm({
+                user_card_id: userCardId,
+                listing_id:
+                  listingResult.data.insertIntolistingsCollection.records[0].id,
+              });
+              setLoading(false);
+              router.push('/screens/select-ad-package');
+            }
           }
-        },
-        onError: console.log,
-      });
+          setImageCaptured(imageCapturedStore);
+        }
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
     },
     [
       createListings,
@@ -313,65 +344,88 @@ export default function SellScreen() {
 
   const handleUpdateCard = useCallback(
     async (card: UserCardsUpdateInput, listing: ListingsUpdateInput) => {
-      updateUserCard({
-        variables: {
-          set: card,
-          filter: {
-            id: { eq: cardId },
+      try {
+        const { data: userCardData } = await updateUserCard({
+          variables: {
+            set: card,
+            filter: {
+              id: { eq: cardId },
+            },
           },
-        },
-        onCompleted: async ({ updateuser_cardsCollection }) => {
-          if (updateuser_cardsCollection?.records?.length) {
-            const userCardId = updateuser_cardsCollection.records[0].id;
-            await Promise.all([
-              fetch(
-                `${process.env.EXPO_PUBLIC_BACKEND_URL}/ebay_scrape?user_card_id=${userCardId}&region=${user?.profile?.currency === 'GBP' ? 'uk' : 'us'}`,
-              ),
-              updateListings({
-                variables: {
-                  set: listing,
-                  filter: {
-                    user_card_id: { eq: userCardId },
-                  },
+        });
+
+        if (!userCardData?.updateuser_cardsCollection?.records?.length) {
+          setLoading(false);
+          Alert.alert('Error', 'Failed to update card. Please try again.');
+          return;
+        }
+
+        const userCardId =
+          userCardData.updateuser_cardsCollection.records[0].id;
+
+        try {
+          const [, listingResult] = await Promise.all([
+            fetch(
+              `${process.env.EXPO_PUBLIC_BACKEND_URL}/ebay_scrape?user_card_id=${userCardId}&region=${user?.profile?.currency === 'GBP' ? 'uk' : 'us'}`,
+            ),
+            updateListings({
+              variables: {
+                set: listing,
+                filter: {
+                  user_card_id: { eq: userCardId },
                 },
-                onCompleted: ({ updatelistingsCollection }) => {
-                  if (updatelistingsCollection?.records?.length) {
-                    if (form.listing_type === ListingType.PORTFOLIO) {
-                      Alert.alert(
-                        'Success!',
-                        'Your portfolio has been updated.',
-                        [
-                          {
-                            text: 'OK',
-                            onPress: () => {
-                              setForm(structuredClone(initialSellFormState));
-                              router.replace('/(tabs)/home');
-                            },
-                          },
-                        ],
-                      );
-                    } else {
-                      setForm({
-                        user_card_id: userCardId,
-                        listing_id: updatelistingsCollection.records[0].id,
-                      });
-                      setLoading(false);
-                      router.push({
-                        pathname: '/screens/listing-detail',
-                        params: {
-                          id: updatelistingsCollection.records[0].id,
-                        },
-                      });
-                    }
-                  }
-                },
-                onError: console.log,
-              }),
-            ]);
-            setImageCaptured(imageCapturedStore);
+              },
+            }),
+          ]);
+
+          if (!listingResult.data?.updatelistingsCollection?.records?.length) {
+            setLoading(false);
+            Alert.alert(
+              'Error',
+              'Card updated but failed to update listing. Please try again.',
+            );
+            return;
           }
-        },
-      });
+
+          if (form.listing_type === ListingType.PORTFOLIO) {
+            setLoading(false);
+            Alert.alert('Success!', 'Your portfolio has been updated.', [
+              {
+                text: 'OK',
+                onPress: () => {
+                  setForm(structuredClone(initialSellFormState));
+                  router.replace('/(tabs)/home');
+                },
+              },
+            ]);
+          } else {
+            setForm({
+              user_card_id: userCardId,
+              listing_id:
+                listingResult.data.updatelistingsCollection.records[0].id,
+            });
+            setLoading(false);
+            router.push({
+              pathname: '/screens/listing-detail',
+              params: {
+                id: listingResult.data.updatelistingsCollection.records[0].id,
+              },
+            });
+          }
+          setImageCaptured(imageCapturedStore);
+        } catch (listingError) {
+          setLoading(false);
+          console.log('Listing update error:', listingError);
+          Alert.alert(
+            'Error',
+            'Card updated but failed to update listing. Please try again.',
+          );
+        }
+      } catch (error) {
+        setLoading(false);
+        console.log('Card update error:', error);
+        Alert.alert('Error', 'Failed to update card. Please try again.');
+      }
     },
     [
       cardId,
@@ -387,7 +441,6 @@ export default function SellScreen() {
   const handleSubmit = useCallback(async () => {
     setLoading(true);
     const requiredFields: (keyof SellFormStore)[] = [
-      'imageUrl',
       'title',
       'description',
       'category_id',
@@ -407,11 +460,20 @@ export default function SellScreen() {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      const uploadedUrl = await uploadToBucket(
-        imageCaptured.uri,
-        'chaamo',
-        'user_cards',
+      if (!form.imageUrls || form.imageUrls.length === 0) {
+        setErrors({ ...validationErrors, imageUrls: 'Image is required' });
+        setLoading(false);
+        return;
+      }
+
+      const uploadedUrlsPromises = form.imageUrls.map((uri) =>
+        uploadToBucket(uri, 'chaamo', 'user_cards'),
       );
+      const uploadedResults = await Promise.all(uploadedUrlsPromises);
+      const uploadedUrls = uploadedResults.filter(
+        (u): u is string => typeof u === 'string' && u.length > 0,
+      );
+      const imageUrls = uploadedUrls.map((u) => String(u));
 
       const card = {
         category_id: Number(form.category_id),
@@ -427,7 +489,7 @@ export default function SellScreen() {
         condition: form.condition,
         grading_company: form.grading_company,
         grade: '0.0',
-        image_url: uploadedUrl,
+        image_urls: JSON.stringify(imageUrls),
       };
 
       const listing = {
@@ -463,7 +525,6 @@ export default function SellScreen() {
     }
   }, [
     form,
-    imageCaptured.uri,
     user?.id,
     user?.profile?.currency,
     cardId,
@@ -492,11 +553,36 @@ export default function SellScreen() {
       />
       <KeyboardView>
         <View className={classes.container}>
-          <PhotoUpload
-            imageUrl={imageCaptured.uri}
-            onPick={handleTakeImage}
-            onRemove={imageCaptured.uri ? handleRemoveImage : undefined}
-          />
+          <View className={classes.imagesContainer}>
+            <PhotoUpload onPick={handleTakeImage} loading={loading} />
+            {form.imageUrls?.length ? (
+              <View className={classes.imageThumbs}>
+                {form.imageUrls.map((uri, idx) => (
+                  <View
+                    key={`${uri}-${idx}`}
+                    className={classes.imageThumbWrap}
+                  >
+                    <Image
+                      source={{ uri }}
+                      className={classes.imageThumb}
+                      contentFit="cover"
+                    />
+                    <TouchableOpacity
+                      className={classes.removeImageBtnSmall}
+                      onPress={() => handleRemoveImage(idx)}
+                      accessibilityLabel={`remove-image-${idx}`}
+                    >
+                      <Icon
+                        name="close"
+                        size={14}
+                        color={getColor('gray-600')}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+            ) : null}
+          </View>
           <TextField
             name="title"
             label="Title"
@@ -609,7 +695,9 @@ export default function SellScreen() {
       <View className={classes.buttonContainer}>
         <Button
           onPress={handleSubmit}
-          disabled={!isFormValid || !imageCaptured?.uri || loading}
+          disabled={
+            !isFormValid || (form.imageUrls?.length ?? 0) === 0 || loading
+          }
           loading={loading}
         >
           {cardId ? 'Update Your Card' : 'Post Your Card'}
@@ -660,6 +748,13 @@ export default function SellScreen() {
 
 const classes = {
   container: 'flex-1 p-4.5 mb-32 gap-4.5',
+  imagesContainer: 'gap-2',
+  imageThumbs: 'flex-row flex-wrap gap-2 mb-2',
+  imageThumbWrap:
+    'relative w-24 aspect-[7/10] rounded-md overflow-hidden bg-white',
+  imageThumb: 'w-24 aspect-[7/10]',
+  removeImageBtnSmall:
+    'absolute top-1 right-1 bg-primary-100 rounded-full w-7 h-7 items-center justify-center z-10 shadow-sm',
   pickerModal:
     'absolute left-0 right-0 bottom-0 bg-white p-4 rounded-t-2xl border-t border-gray-200 z-50',
   pickerOption: 'py-3',

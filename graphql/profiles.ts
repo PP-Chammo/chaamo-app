@@ -13,6 +13,7 @@ export const getProfiles = gql`
           currency
           created_at
           is_profile_complete
+          is_admin
         }
       }
     }

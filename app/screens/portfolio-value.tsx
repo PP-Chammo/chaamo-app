@@ -15,7 +15,9 @@ import { dummyPortfolioValueData } from '@/constants/dummy';
 import {
   ListingType,
   OrderByDirection,
+  OrderStatus,
   useGetVwChaamoListingsQuery,
+  useGetVwMyOrdersQuery,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useUserVar } from '@/hooks/useUserVar';
@@ -42,16 +44,35 @@ export default function PortfolioValueScreen() {
       filter: {
         seller_id: { eq: user?.id },
       },
-      orderBy: {
-        created_at: OrderByDirection.DESCNULLSLAST,
+      orderBy: [
+        { last_sold_price: OrderByDirection.DESCNULLSLAST },
+        { start_price: OrderByDirection.DESCNULLSLAST },
+      ],
+    },
+  });
+
+  const { data: myOrdersData } = useGetVwMyOrdersQuery({
+    skip: !user?.id,
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      filter: {
+        seller_id: { eq: user?.id },
       },
     },
   });
 
-  const mostValuableList = useMemo(
-    () => data?.vw_chaamo_cardsCollection?.edges ?? [],
-    [data?.vw_chaamo_cardsCollection?.edges],
-  );
+  const mostValuableList = useMemo(() => {
+    const edges = data?.vw_chaamo_cardsCollection?.edges ?? [];
+    return [...edges].sort((a, b) => {
+      const va = (a?.node?.last_sold_price ??
+        a?.node?.start_price ??
+        0) as number;
+      const vb = (b?.node?.last_sold_price ??
+        b?.node?.start_price ??
+        0) as number;
+      return vb - va;
+    });
+  }, [data?.vw_chaamo_cardsCollection?.edges]);
 
   const lastSoldPrice = useMemo(() => {
     const lastSold = mostValuableList?.find(
@@ -60,6 +81,34 @@ export default function PortfolioValueScreen() {
 
     return lastSold?.node.last_sold_price ?? 0;
   }, [mostValuableList]);
+
+  const myOrders = useMemo(
+    () => myOrdersData?.vw_myordersCollection?.edges ?? [],
+    [myOrdersData?.vw_myordersCollection?.edges],
+  );
+
+  const soldItemsRevenue = useMemo(() => {
+    return myOrders.reduce((sum, edge) => {
+      const status = edge?.node?.status;
+      const isCompleted =
+        status === OrderStatus.COMPLETED || status === OrderStatus.DELIVERED;
+      const amount = Number(edge?.node?.seller_earnings ?? 0);
+      return isCompleted ? sum + amount : sum;
+    }, 0);
+  }, [myOrders]);
+
+  const pendingRevenue = useMemo(() => {
+    return myOrders.reduce((sum, edge) => {
+      const status = edge?.node?.status;
+      const isPending =
+        status === OrderStatus.AWAITING_PAYMENT ||
+        status === OrderStatus.AWAITING_SHIPMENT ||
+        status === OrderStatus.SHIPPED ||
+        status === OrderStatus.REFUND_REQUESTED;
+      const amount = Number(edge?.node?.seller_earnings ?? 0);
+      return isPending ? sum + amount : sum;
+    }, 0);
+  }, [myOrders]);
 
   return (
     <ScreenContainer classNameTop={classes.containerTop}>
@@ -91,7 +140,7 @@ export default function PortfolioValueScreen() {
                 />
               </Row>
               <Label className={classes.currentCollectionValue}>
-                {formatDisplay(user?.profile?.currency, 0)}
+                {formatDisplay(user?.profile?.currency, soldItemsRevenue)}
               </Label>
             </View>
             <View className={classes.currentCollectionContainerRed}>
@@ -106,7 +155,7 @@ export default function PortfolioValueScreen() {
                 />
               </Row>
               <Label className={classes.currentCollectionValue}>
-                {formatDisplay(user?.profile?.currency, 0)}
+                {formatDisplay(user?.profile?.currency, pendingRevenue)}
               </Label>
             </View>
           </Row>
@@ -126,7 +175,7 @@ export default function PortfolioValueScreen() {
             <ListingCard
               type={item.node.listing_type}
               id={item.node.id}
-              imageUrl={item.node.image_url ?? ''}
+              imageUrls={item.node.image_urls ?? ''}
               title={item.node.name ?? ''}
               currency={item.node?.currency}
               price={item.node?.start_price}
