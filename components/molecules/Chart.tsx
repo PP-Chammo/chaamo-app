@@ -107,6 +107,7 @@ const Chart = memo(function Chart({ data }: ChartProps) {
         selected={selectedPeriod}
         onChange={setSelectedPeriod}
         getTabTestID={(tab) => `period-${tab.value}`}
+        className={classes.filterTabsContainer}
       />
       <View className={classes.chartContainer} testID="chart-container">
         <View className={classes.xAxisContainer} pointerEvents="none">
@@ -187,7 +188,7 @@ const Chart = memo(function Chart({ data }: ChartProps) {
 export default Chart;
 
 const classes = {
-  card: 'bg-white rounded-2xl p-4.5 shadow-sm border border-slate-200',
+  card: 'w-full bg-white rounded-2xl p-4.5 shadow-sm border border-slate-200',
   tabContainer:
     'flex-row border border-primary-100 rounded-full p-0.5 mb-3 mt-1',
   tab: 'flex-1 items-center py-2.5 rounded-full bg-white',
@@ -209,4 +210,5 @@ const classes = {
   statValueBolder: 'text-xs font-bold text-slate-900 text-right',
   chart: 'mt-16 w-full',
   areaChartContainer: 'px-3.5 border-b border-primary-500',
+  filterTabsContainer: 'w-full flex-row justify-center items-center',
 };

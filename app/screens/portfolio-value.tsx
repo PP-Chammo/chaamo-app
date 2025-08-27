@@ -13,7 +13,6 @@ import {
 } from '@/components/molecules';
 import { dummyPortfolioValueData } from '@/constants/dummy';
 import {
-  ListingType,
   OrderByDirection,
   OrderStatus,
   useGetVwChaamoListingsQuery,
@@ -35,7 +34,7 @@ cssInterop(ScrollView, {
 
 export default function PortfolioValueScreen() {
   const [user] = useUserVar();
-  const { formatDisplay } = useCurrencyDisplay();
+  const { formatDisplay, formatPrice } = useCurrencyDisplay();
 
   const { data } = useGetVwChaamoListingsQuery({
     skip: !user?.id,
@@ -63,24 +62,58 @@ export default function PortfolioValueScreen() {
 
   const mostValuableList = useMemo(() => {
     const edges = data?.vw_chaamo_cardsCollection?.edges ?? [];
-    return [...edges].sort((a, b) => {
-      const va = (a?.node?.last_sold_price ??
-        a?.node?.start_price ??
-        0) as number;
-      const vb = (b?.node?.last_sold_price ??
-        b?.node?.start_price ??
-        0) as number;
-      return vb - va;
+    const withValue = edges.map((edge) => {
+      const hasLastSold =
+        typeof edge?.node?.last_sold_price === 'number' &&
+        edge?.node?.last_sold_price > 0;
+      const value = hasLastSold
+        ? Number(
+            formatPrice(
+              edge?.node?.last_sold_currency,
+              edge?.node?.last_sold_price,
+            ),
+          )
+        : Number(formatPrice(edge?.node?.currency, edge?.node?.start_price));
+
+      return { edge, value, hasLastSold };
     });
-  }, [data?.vw_chaamo_cardsCollection?.edges]);
 
-  const lastSoldPrice = useMemo(() => {
-    const lastSold = mostValuableList?.find(
-      (edge) => edge.node.listing_type === ListingType.SELL,
-    );
+    return withValue
+      .sort((a, b) => {
+        // First sort by hasLastSold (descending: true first)
+        if (a.hasLastSold !== b.hasLastSold) {
+          return a.hasLastSold ? -1 : 1;
+        }
+        // Then sort by value (descending)
+        return b.value - a.value;
+      })
+      .map((item) => item.edge);
+  }, [data?.vw_chaamo_cardsCollection?.edges, formatPrice]);
 
-    return lastSold?.node.last_sold_price ?? 0;
-  }, [mostValuableList]);
+  const lastSoldValuation = useMemo(() => {
+    if (data?.vw_chaamo_cardsCollection?.edges?.length) {
+      const lastSoldTotal = data?.vw_chaamo_cardsCollection?.edges?.reduce(
+        (acc, edge) => {
+          const value =
+            (edge?.node?.last_sold_price ?? 0) > 0
+              ? formatPrice(
+                  edge.node.last_sold_currency,
+                  edge.node.last_sold_price,
+                )
+              : formatPrice(edge.node.currency, edge.node.start_price);
+          return acc + Number(value);
+        },
+        0,
+      );
+      return formatDisplay(user?.profile?.currency, lastSoldTotal);
+    }
+    return 0;
+  }, [
+    data?.vw_chaamo_cardsCollection?.edges,
+    formatDisplay,
+    formatPrice,
+    user?.profile?.currency,
+  ]);
 
   const myOrders = useMemo(
     () => myOrdersData?.vw_myordersCollection?.edges ?? [],
@@ -124,7 +157,7 @@ export default function PortfolioValueScreen() {
               Your current collection
             </Label>
             <Label className={classes.currentCollectionValue}>
-              {formatDisplay(user?.profile?.currency, lastSoldPrice)}
+              {lastSoldValuation}
             </Label>
           </View>
           <Row className={classes.currentCollectionRow}>

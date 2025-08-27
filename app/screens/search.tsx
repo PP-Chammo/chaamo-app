@@ -25,7 +25,7 @@ export default function CardsScreen() {
 
   const handleChange = useCallback(
     ({ value }: TextChangeParams) => {
-      setSearchVar({ query: value.trim() });
+      setSearchVar({ query: value });
     },
     [setSearchVar],
   );
