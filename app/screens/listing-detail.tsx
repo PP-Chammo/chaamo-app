@@ -542,7 +542,7 @@ const classes = {
   cardImageWrapper: 'items-center',
   cardImage:
     'w-56 h-80 rounded-xl border border-gray-200 bg-gray-200 items-center justify-center',
-  chartWrapper: 'px-4.5',
+  chartWrapper: 'px-4.5 flex-row justify-center items-center',
   priceValueLabel: 'text-sm text-gray-500',
   priceValue: 'text-sm text-gray-700 font-bold',
   contextMenuItem: 'py-2 px-3',
