@@ -136,7 +136,20 @@ export function useCurrencyDisplay() {
       unfixed: false,
     },
   ): string {
-    if (!baseCurrency) return `? ${amount ?? 0}`;
+    if (!baseCurrency) {
+      const numericAmount =
+        typeof amount === 'string' ? parseFloat(amount) : (amount ?? 0);
+      const safeAmount = isNaN(numericAmount) ? 0 : numericAmount;
+      const userSymbol = convertCurrencyToSymbol(userCurrency);
+
+      const formatted = new Intl.NumberFormat(undefined, {
+        style: 'decimal',
+        minimumFractionDigits: options?.unfixed ? 0 : 2,
+        maximumFractionDigits: 2,
+      }).format(safeAmount);
+
+      return `${userSymbol}${formatted}`;
+    }
 
     let currencyCode: SupportedCurrency;
     if (baseCurrency in currencySymbolMap) {
