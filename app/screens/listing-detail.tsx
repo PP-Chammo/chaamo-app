@@ -3,7 +3,13 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { clsx } from 'clsx';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { cssInterop } from 'nativewind';
-import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  RefreshControl,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import {
   BottomSheetModal,
@@ -59,6 +65,7 @@ export default function ListingDetailScreen() {
   const [isDeletePopupVisible, setIsDeletePopupVisible] = useState(false);
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const dotsRef = useRef<View>(null);
 
   const [getDetail, { data, refetch: refetchDetail }] =
@@ -175,6 +182,19 @@ export default function ListingDetailScreen() {
     }
     return getColor(getIsFavorite(id as string) ? 'red-500' : 'gray-600');
   }, [ebay, isSeller, getIsFavorite, id]);
+
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      if (isEbay) {
+        await refetchEbayPost?.();
+      } else {
+        await refetchDetail?.();
+      }
+    } finally {
+      setRefreshing(false);
+    }
+  }, [isEbay, refetchDetail, refetchEbayPost]);
 
   const onRightPress = useCallback(() => {
     if (ebay || isSeller) {
@@ -379,20 +399,22 @@ export default function ListingDetailScreen() {
         [classes.containerBottomPrimary]: showModal,
       })}
     >
+      <Header
+        onBackPress={() => router.back()}
+        className={classes.header}
+        rightIcon={rightIconHeader}
+        rightIconColor={rightIconColor}
+        rightIconSize={28}
+        onRightPress={onRightPress}
+        rightRef={dotsRef}
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerClassName={classes.scrollView}
-        stickyHeaderIndices={[0]}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
       >
-        <Header
-          onBackPress={() => router.back()}
-          className={classes.header}
-          rightIcon={rightIconHeader}
-          rightIconColor={rightIconColor}
-          rightIconSize={28}
-          onRightPress={onRightPress}
-          rightRef={dotsRef}
-        />
         <View className={classes.cardImageWrapper}>
           <ImageGallery
             imageUrls={imageUrls}
