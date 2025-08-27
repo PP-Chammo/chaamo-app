@@ -11,6 +11,7 @@ import { ListingType } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { ListingCardType } from '@/types/card';
 import { getColor } from '@/utils/getColor';
+import { getFirstImageUrl } from '@/utils/imageUrls';
 
 interface ListingCardProps extends ListingCardType {
   onPress?: () => void;
@@ -27,7 +28,7 @@ interface ListingCardProps extends ListingCardType {
 
 const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
   type = ListingType.SELL,
-  imageUrl,
+  imageUrls,
   title,
   currency,
   price,
@@ -43,6 +44,7 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
   className,
   imageClassName,
 }) {
+  const imageUrl = getFirstImageUrl(imageUrls);
   const { formatDisplay } = useCurrencyDisplay();
 
   const priceDisplay = useMemo(

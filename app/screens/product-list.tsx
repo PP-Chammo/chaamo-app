@@ -86,6 +86,22 @@ export default function ProductListScreen() {
     return data?.vw_chaamo_cardsCollection?.edges ?? [];
   }, [data?.vw_chaamo_cardsCollection?.edges]);
 
+  const auctionCards = useMemo(() => {
+    return (
+      data?.vw_chaamo_cardsCollection?.edges.filter(
+        (item) => item.node.listing_type === ListingType.AUCTION,
+      ) ?? []
+    );
+  }, [data?.vw_chaamo_cardsCollection?.edges]);
+
+  const fixedCards = useMemo(() => {
+    return (
+      data?.vw_chaamo_cardsCollection?.edges.filter(
+        (item) => item.node.listing_type === ListingType.SELL,
+      ) ?? []
+    );
+  }, [data?.vw_chaamo_cardsCollection?.edges]);
+
   const allEbay = useMemo(() => {
     return ebayData?.ebay_postsCollection?.edges ?? [];
   }, [ebayData?.ebay_postsCollection?.edges]);
@@ -104,7 +120,6 @@ export default function ProductListScreen() {
     };
   }, [convertUserToBase, search.priceRange]);
 
-  // Dedicated filters for each data source
   const chaamoFilter = useMemo<VwChaamoCardsFilter>(() => {
     const and: Record<string, unknown>[] = [];
     if (search.categoryId && search.category) {
@@ -232,7 +247,6 @@ export default function ProductListScreen() {
     priceRange.max,
   ]);
 
-  // Keep an eBay filter ref for pagination
   const ebayFilterRef = useRef<EbayPostsFilter>(ebayFilter);
   useEffect(() => {
     ebayFilterRef.current = ebayFilter;
@@ -452,7 +466,7 @@ export default function ProductListScreen() {
                   return (
                     <ListingItem
                       listingType={edge.node?.listing_type ?? ListingType.SELL}
-                      imageUrl={edge.node?.image_url ?? ''}
+                      imageUrls={edge.node?.image_urls ?? ''}
                       title={
                         search.query?.trim()
                           ? renderTitleWithHighlight(edge.node?.name ?? '')
@@ -498,13 +512,13 @@ export default function ProductListScreen() {
                     />
                   );
                 }
-                // ebay item
+
                 const edge = item.edge;
                 return (
                   <ListingItem
                     type="ebay"
                     listingType={ListingType.SELL}
-                    imageUrl={edge.node?.image_url ?? ''}
+                    imageUrls={edge.node?.image_url ?? ''}
                     title={
                       search.query?.trim()
                         ? renderTitleWithHighlight(edge.node?.name ?? '')
@@ -569,12 +583,12 @@ export default function ProductListScreen() {
               />
               <ProductAuctionList
                 loading={firstLoading}
-                cards={[]}
+                cards={auctionCards}
                 onFavoritePress={handleToggleFavorite}
               />
               <ProductFixedList
                 loading={firstLoading}
-                cards={[]}
+                cards={fixedCards}
                 onFavoritePress={handleToggleFavorite}
               />
             </TabView>

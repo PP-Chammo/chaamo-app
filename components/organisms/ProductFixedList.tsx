@@ -49,7 +49,7 @@ const ProductFixedList: React.FC<ProductFixedListProps> = memo(
         renderItem={({ item }) => (
           <ListingItem
             listingType={item.node?.listing_type ?? ListingType.SELL}
-            imageUrl={item.node?.image_url ?? ''}
+            imageUrls={item.node?.image_urls ?? ''}
             title={item.node?.name ?? ''}
             subtitle={item.node?.seller_username ?? ''}
             date={item.node.created_at ?? new Date().toISOString()}

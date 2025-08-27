@@ -1,7 +1,7 @@
 import { CardCondition, ListingType } from '@/generated/graphql';
 
 export interface SellFormStore {
-  imageUrl: string;
+  imageUrls: string[];
   title: string;
   description: string;
   category_id: string;
@@ -24,7 +24,7 @@ export interface SellFormStore {
 }
 
 export const sellFormStore: SellFormStore = {
-  imageUrl: '',
+  imageUrls: [],
   title: '',
   description: '',
   category_id: '',

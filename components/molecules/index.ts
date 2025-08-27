@@ -20,6 +20,7 @@ export { default as FilterTags } from './FilterTags';
 export { default as FollowListItem } from './FollowListItem';
 export { default as Header } from './Header';
 export { default as HeaderSearch } from './HeaderSearch';
+export { default as ImageGallery } from './ImageGallery';
 export { default as Lazy } from './Lazy';
 export {
   default as ListContainer,

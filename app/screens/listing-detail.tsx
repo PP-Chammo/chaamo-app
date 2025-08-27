@@ -1,17 +1,9 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import { clsx } from 'clsx';
-import { Image as ExpoImage } from 'expo-image';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { cssInterop } from 'nativewind';
-import {
-  Alert,
-  Modal as RNModal,
-  ScrollView,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import ImageViewer from 'react-native-image-zoom-viewer';
+import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
 
 import {
   BottomSheetModal,
@@ -27,6 +19,7 @@ import {
   AuctionDetailBottomBar,
   Chart,
   Header,
+  ImageGallery,
   PlaceBidModalContent,
   PlaceOfferModalContent,
   ProductDetailBottomBar,
@@ -42,7 +35,7 @@ import {
   useDeleteUserCardMutation,
   useGetVwChaamoDetailLazyQuery,
   useRemoveFavoritesMutation,
-  useGetEbayPostsLazyQuery,
+  useGetEbayPostDetailLazyQuery,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -66,7 +59,6 @@ export default function ListingDetailScreen() {
   const [isDeletePopupVisible, setIsDeletePopupVisible] = useState(false);
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [showImageZoom, setShowImageZoom] = useState(false);
   const dotsRef = useRef<View>(null);
 
   const [getDetail, { data, refetch: refetchDetail }] =
@@ -74,7 +66,7 @@ export default function ListingDetailScreen() {
       fetchPolicy: 'cache-and-network',
     });
   const [getEbayPost, { data: ebayData, refetch: refetchEbayPost }] =
-    useGetEbayPostsLazyQuery({
+    useGetEbayPostDetailLazyQuery({
       fetchPolicy: 'cache-and-network',
     });
   const [createFavorites] = useCreateFavoritesMutation();
@@ -82,41 +74,49 @@ export default function ListingDetailScreen() {
   const [deleteUserCard, { loading: isDeleting }] = useDeleteUserCardMutation();
   const [deleteEbayPost] = useDeleteEbayPostsMutation();
 
-  const fetchedDetail = useMemo(
+  const chaamoDetail = useMemo(
     () => data?.vw_chaamo_cardsCollection?.edges?.[0]?.node,
     [data],
-  );
-  const ebayNode = useMemo(
-    () => ebayData?.ebay_postsCollection?.edges?.[0]?.node,
-    [ebayData],
   );
   const isEbay = useMemo(() => ebay === 'true', [ebay]);
 
   const detail = useMemo(() => {
-    if (fetchedDetail) return fetchedDetail;
-    if (!ebayNode) return undefined;
-    return {
-      id: ebayNode.id,
-      listing_type: ListingType.SELL,
-      image_url: ebayNode.image_url ?? '',
-      name: ebayNode.name ?? '',
-      currency: ebayNode.currency ?? undefined,
-      start_price: ebayNode.price ?? undefined,
-      created_at: ebayNode.sold_at ?? new Date().toISOString(),
-      seller_id: '',
-      last_sold_currency: undefined,
-      last_sold_price: undefined,
-      last_sold_is_checked: false,
-      description: '',
-      seller_image_url: '',
-      seller_username: '',
-      highest_bid_currency: undefined,
-      highest_bid_price: undefined,
-      reserve_price: undefined,
-      end_time: undefined,
-      user_card_id: undefined,
-    } as const;
-  }, [fetchedDetail, ebayNode]);
+    if (isEbay) {
+      const ebayNode = ebayData?.ebay_postsCollection?.edges?.[0]?.node;
+      if (!ebayNode) return undefined;
+      return {
+        id: ebayNode.id,
+        listing_type: ListingType.SELL,
+        image_url: ebayNode.image_hd_url ?? '',
+        name: ebayNode.name ?? '',
+        currency: ebayNode.currency ?? undefined,
+        start_price: ebayNode.price ?? undefined,
+        created_at: ebayNode.sold_at ?? new Date().toISOString(),
+        seller_id: '',
+        last_sold_currency: undefined,
+        last_sold_price: undefined,
+        last_sold_is_checked: false,
+        description: '',
+        seller_image_url: '',
+        seller_username: '',
+        highest_bid_currency: undefined,
+        highest_bid_price: undefined,
+        reserve_price: undefined,
+        end_time: undefined,
+        user_card_id: undefined,
+      } as const;
+    }
+    return chaamoDetail;
+  }, [chaamoDetail, ebayData, isEbay]);
+
+  const imageUrls = useMemo(() => {
+    if (isEbay) {
+      const ebayDetail = detail as { image_url?: string };
+      return ebayDetail?.image_url || null;
+    }
+    const chaamoDetail = detail as { image_urls?: string | string[] };
+    return chaamoDetail?.image_urls || null;
+  }, [detail, isEbay]);
 
   const isSeller = useMemo(
     () => (isEbay ? false : user?.id === detail?.seller_id),
@@ -277,7 +277,6 @@ export default function ListingDetailScreen() {
             filter: {
               id: { eq: id as string },
             },
-            first: 1,
           },
         });
       } else {
@@ -395,49 +394,13 @@ export default function ListingDetailScreen() {
           rightRef={dotsRef}
         />
         <View className={classes.cardImageWrapper}>
-          {detail?.image_url ? (
-            <TouchableOpacity
-              activeOpacity={0.9}
-              onPress={() => setShowImageZoom(true)}
-            >
-              <ExpoImage
-                source={{ uri: detail.image_url }}
-                className={classes.cardImage}
-                contentFit="cover"
-                transition={200}
-              />
-            </TouchableOpacity>
-          ) : (
-            <View className={classes.cardImage}>
-              <Icon
-                name="cards-outline"
-                size={64}
-                color={getColor('gray-400')}
-              />
-            </View>
-          )}
+          <ImageGallery
+            imageUrls={imageUrls}
+            imageClassName={classes.cardImage}
+            showIndicators={true}
+          />
         </View>
 
-        {detail?.image_url && (
-          <RNModal visible={showImageZoom} transparent={true}>
-            <ImageViewer
-              imageUrls={[{ url: detail.image_url }]}
-              onSwipeDown={() => setShowImageZoom(false)}
-              enableImageZoom={true}
-              enableSwipeDown={true}
-              renderHeader={() => (
-                <TouchableOpacity
-                  onPress={() => setShowImageZoom(false)}
-                  className={classes.closeButton}
-                >
-                  <Icon name="close" size={24} color="white" />
-                </TouchableOpacity>
-              )}
-              backgroundColor="rgba(0,0,0,0.9)"
-              renderIndicator={() => <></>}
-            />
-          </RNModal>
-        )}
         <ProductDetailInfo
           isEbay={isEbay}
           price={formatDisplay(detail?.currency, detail?.start_price ?? 0)}

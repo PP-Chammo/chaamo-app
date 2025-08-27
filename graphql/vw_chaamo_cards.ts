@@ -11,7 +11,7 @@ export const getVwChaamoListings = gql`
         node {
           id
           listing_type
-          image_url
+          image_urls
           name
           currency
           start_price
@@ -32,15 +32,16 @@ export const getVwChaamoListings = gql`
 
 export const getVwChaamoDetail = gql`
   query GetVwChaamoDetail($filter: vw_chaamo_cardsFilter) {
-    vw_chaamo_cardsCollection(filter: $filter, last: 1) {
+    vw_chaamo_cardsCollection(filter: $filter, first: 1) {
       edges {
         node {
           id
           seller_id
           seller_image_url
           seller_username
+          category_id
           listing_type
-          image_url
+          image_urls
           name
           description
           currency

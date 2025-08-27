@@ -8,6 +8,7 @@ import Button from '@/components/atoms/Button';
 import Label from '@/components/atoms/Label';
 import { useGetVwChaamoDetailQuery } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { getFirstImageUrl } from '@/utils/imageUrls';
 
 interface MessageListingDetailProps {
   listingId: string;
@@ -44,9 +45,9 @@ const MessageListingDetail: React.FC<MessageListingDetailProps> = memo(
         className={clsx(classes.container, className)}
       >
         <View className={classes.topRow}>
-          {detail.image_url ? (
+          {getFirstImageUrl(detail.image_urls) ? (
             <Image
-              source={{ uri: detail.image_url }}
+              source={{ uri: getFirstImageUrl(detail.image_urls) }}
               className={clsx(classes.image, imageClassName)}
             />
           ) : (

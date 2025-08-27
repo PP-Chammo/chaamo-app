@@ -126,7 +126,7 @@ export default function PortfolioValueScreen() {
             <ListingCard
               type={item.node.listing_type}
               id={item.node.id}
-              imageUrl={item.node.image_url ?? ''}
+              imageUrls={item.node.image_urls ?? ''}
               title={item.node.name ?? ''}
               currency={item.node?.currency}
               price={item.node?.start_price}

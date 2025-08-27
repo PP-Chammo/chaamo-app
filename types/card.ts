@@ -3,7 +3,7 @@ import { ListingType } from '@/generated/graphql';
 export interface ListingCardType {
   type?: ListingType | null;
   id: string;
-  imageUrl: string;
+  imageUrls: string | string[] | null;
   title: string;
   currency?: string | null;
   price?: string | null;
