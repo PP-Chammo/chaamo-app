@@ -28,7 +28,7 @@ export default function Portfolio() {
 
   const [filter, setFilter] = useState<ListingType | 'all'>('all');
 
-  const { data } = useGetVwChaamoListingsQuery({
+  const { data, loading, refetch } = useGetVwChaamoListingsQuery({
     skip: !userId && !user?.id,
     fetchPolicy: 'cache-and-network',
     variables: {
@@ -126,6 +126,8 @@ export default function Portfolio() {
             </View>
           );
         }}
+        onRefresh={refetch}
+        refreshing={loading}
       />
     </View>
   );
