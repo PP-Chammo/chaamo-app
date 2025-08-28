@@ -1,9 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { ActivityIndicator, FlatList, View, Text } from 'react-native';
+import { ActivityIndicator, FlatList, View } from 'react-native';
 
-import { Button, Loading, Row, ScreenContainer } from '@/components/atoms';
+import {
+  Button,
+  Label,
+  Loading,
+  Row,
+  ScreenContainer,
+} from '@/components/atoms';
 import {
   ListingItem,
   FilterSection,
@@ -26,32 +32,18 @@ import {
   OrderByDirection,
   type EbayPostsFilter,
   type VwChaamoCardsFilter,
-  GetVwChaamoListingsQuery,
-  GetEbayPostsQuery,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useSearchVar } from '@/hooks/useSearchVar';
 import { useUserVar } from '@/hooks/useUserVar';
 import { searchStore } from '@/stores/searchStore';
-import { DeepGet } from '@/types/helper';
-import { escapeRegExp } from '@/utils/escapeRegExp';
+import { MergedItem } from '@/types/card';
 import { formatThousand } from '@/utils/formatThousand';
 import { getColor } from '@/utils/getColor';
 import { getIndicator } from '@/utils/getIndicator';
+import { renderTitleHighlight } from '@/utils/renderTitleHighlight';
 import { structuredClone } from '@/utils/structuredClone';
-
-type ChaamoEdge = DeepGet<
-  GetVwChaamoListingsQuery,
-  ['vw_chaamo_cardsCollection', 'edges', number]
->;
-type EbayEdge = DeepGet<
-  GetEbayPostsQuery,
-  ['ebay_postsCollection', 'edges', number]
->;
-type MergedItem =
-  | { kind: 'chaamo'; edge: ChaamoEdge }
-  | { kind: 'ebay'; edge: EbayEdge };
 
 const LOAD_MORE_SIZE = 30;
 const INITIAL_PAGE_SIZE = 30;
@@ -81,6 +73,8 @@ export default function ProductListScreen() {
   const [createFavorites] = useCreateFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
   const { getIsFavorite } = useFavorites();
+
+  const [activeTab, setActiveTab] = useState(0);
 
   const allCards = useMemo(() => {
     return data?.vw_chaamo_cardsCollection?.edges ?? [];
@@ -247,6 +241,27 @@ export default function ProductListScreen() {
     priceRange.max,
   ]);
 
+  const resultCount = useMemo(() => {
+    const allCount =
+      (ebayData?.ebay_postsCollection?.totalCount ?? 0) + allCards.length;
+    if (mergedList === 'true') {
+      return formatThousand(allCount);
+    } else {
+      return [
+        formatThousand(allCount),
+        formatThousand(auctionCards.length ?? 0),
+        formatThousand(fixedCards.length ?? 0),
+      ][activeTab];
+    }
+  }, [
+    mergedList,
+    ebayData?.ebay_postsCollection?.totalCount,
+    allCards.length,
+    auctionCards.length,
+    fixedCards.length,
+    activeTab,
+  ]);
+
   const ebayFilterRef = useRef<EbayPostsFilter>(ebayFilter);
   useEffect(() => {
     ebayFilterRef.current = ebayFilter;
@@ -299,23 +314,18 @@ export default function ProductListScreen() {
     let cancelled = false;
     const run = async () => {
       try {
-        if (mergedList) {
-          setFirstLoading(true);
-          await Promise.all([
-            getChaamoCards({ variables: { filter: chaamoFilter } }),
-            getEbayPosts({
-              variables: {
-                filter: ebayFilterRef.current,
-                orderBy: [{ sold_at: OrderByDirection.DESCNULLSLAST }],
-                first: INITIAL_PAGE_SIZE,
-              },
-              notifyOnNetworkStatusChange: true,
-            }),
-          ]);
-        } else {
-          setFirstLoading(true);
-          await getChaamoCards({ variables: { filter: chaamoFilter } });
-        }
+        setFirstLoading(true);
+        await Promise.all([
+          getChaamoCards({ variables: { filter: chaamoFilter } }),
+          getEbayPosts({
+            variables: {
+              filter: ebayFilterRef.current,
+              orderBy: [{ sold_at: OrderByDirection.DESCNULLSLAST }],
+              first: INITIAL_PAGE_SIZE,
+            },
+            notifyOnNetworkStatusChange: true,
+          }),
+        ]);
       } finally {
         if (!cancelled) {
           setEbayPaging(false);
@@ -327,7 +337,7 @@ export default function ProductListScreen() {
     return () => {
       cancelled = true;
     };
-  }, [search, getEbayPosts, getChaamoCards, chaamoFilter, mergedList]);
+  }, [search, getEbayPosts, getChaamoCards, chaamoFilter]);
 
   const handleLoadMore = useCallback(async () => {
     if (ebayPaging || ebayLoading) return;
@@ -415,29 +425,6 @@ export default function ProductListScreen() {
     return [...chaamoItems, ...ebayItems];
   }, [allCards, allEbay]);
 
-  const renderTitleWithHighlight = useCallback(
-    (titleText: string) => {
-      const q = (search.query ?? '').trim();
-      if (!q) return titleText;
-      const regex = new RegExp(`(${escapeRegExp(q)})`, 'ig');
-      const parts = titleText.split(regex);
-      return (
-        <>
-          {parts.map((part, idx) =>
-            idx % 2 === 1 ? (
-              <Text key={idx} className={classes.titleHighlight}>
-                {part}
-              </Text>
-            ) : (
-              <Text key={idx}>{part}</Text>
-            ),
-          )}
-        </>
-      );
-    },
-    [search.query],
-  );
-
   return (
     <ScreenContainer classNameTop={classes.containerTop}>
       <HeaderSearch
@@ -448,12 +435,7 @@ export default function ProductListScreen() {
       />
       <FilterSection
         loading={ebayLoading || firstLoading}
-        resultCount={formatThousand(
-          mergedList === 'true'
-            ? (ebayData?.ebay_postsCollection?.totalCount ?? 0) +
-                allCards.length
-            : allCards.length,
-        )}
+        resultCount={resultCount}
       />
       {firstLoading ? (
         <Loading />
@@ -474,7 +456,10 @@ export default function ProductListScreen() {
                       imageUrls={edge.node?.image_urls ?? ''}
                       title={
                         search.query?.trim()
-                          ? renderTitleWithHighlight(edge.node?.name ?? '')
+                          ? renderTitleHighlight(
+                              edge.node?.name ?? '',
+                              search.query,
+                            )
                           : (edge.node?.name ?? '')
                       }
                       subtitle={edge.node?.seller_username ?? ''}
@@ -526,7 +511,10 @@ export default function ProductListScreen() {
                     imageUrls={edge.node?.image_url ?? ''}
                     title={
                       search.query?.trim()
-                        ? renderTitleWithHighlight(edge.node?.name ?? '')
+                        ? renderTitleHighlight(
+                            edge.node?.name ?? '',
+                            search.query,
+                          )
                         : (edge.node?.name ?? '')
                     }
                     subtitle={edge.node?.region ?? ''}
@@ -554,13 +542,15 @@ export default function ProductListScreen() {
                       size="small"
                       color={getColor('primary-500')}
                     />
-                    <Text className={classes.footerText}>
+                    <Label className={classes.footerText}>
                       {ebayLoading ? 'Loading...' : 'Load more...'}
-                    </Text>
+                    </Label>
                   </Row>
                 ) : ebayError && allEbay.length === 0 ? (
                   <View className={classes.errorContainer}>
-                    <Text className={classes.footerText}>Failed to fetch.</Text>
+                    <Label className={classes.footerText}>
+                      Failed to fetch.
+                    </Label>
                     <Button
                       variant="primary-light"
                       size="small"
@@ -578,13 +568,19 @@ export default function ProductListScreen() {
             />
           ) : (
             <TabView
+              initialPage={activeTab}
+              setActivePage={setActiveTab}
               tabs={productListTabs}
               contentClassName={classes.tabViewContainer}
             >
               <ProductAllList
-                loading={firstLoading}
-                cards={allCards}
+                loading={ebayLoading}
+                loadingMore={ebayPaging}
+                isError={!!ebayError}
+                cards={mergedItems}
                 onFavoritePress={handleToggleFavorite}
+                onFetchMore={handleLoadMore}
+                onRetry={handleRetryInitialEbay}
               />
               <ProductAuctionList
                 loading={firstLoading}
@@ -613,5 +609,4 @@ const classes = {
   errorContainer: 'py-4 items-center justify-center gap-10',
   footerText: 'text-gray-500',
   retryButton: '!min-w-28',
-  titleHighlight: 'text-primary-500 font-bold',
 };

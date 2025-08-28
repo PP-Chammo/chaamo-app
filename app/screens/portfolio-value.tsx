@@ -64,8 +64,7 @@ export default function PortfolioValueScreen() {
     const edges = data?.vw_chaamo_cardsCollection?.edges ?? [];
     const withValue = edges.map((edge) => {
       const hasLastSold =
-        typeof edge?.node?.last_sold_price === 'number' &&
-        edge?.node?.last_sold_price > 0;
+        edge?.node?.last_sold_price && edge?.node?.last_sold_price > 0;
       const value = hasLastSold
         ? Number(
             formatPrice(
@@ -80,15 +79,15 @@ export default function PortfolioValueScreen() {
 
     return withValue
       .sort((a, b) => {
-        // First sort by hasLastSold (descending: true first)
         if (a.hasLastSold !== b.hasLastSold) {
           return a.hasLastSold ? -1 : 1;
         }
-        // Then sort by value (descending)
         return b.value - a.value;
       })
       .map((item) => item.edge);
   }, [data?.vw_chaamo_cardsCollection?.edges, formatPrice]);
+
+  console.log(mostValuableList);
 
   const lastSoldValuation = useMemo(() => {
     if (data?.vw_chaamo_cardsCollection?.edges?.length) {
