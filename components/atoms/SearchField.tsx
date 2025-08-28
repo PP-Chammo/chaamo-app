@@ -57,6 +57,7 @@ const SearchField = forwardRef<TextInput, SearchFieldProps>(
           enterKeyHint="search"
           placeholderTextColor={getColor('gray-400')}
           onSubmitEditing={() => onSubmit?.()}
+          onPress={onPress}
           {...props}
         />
         <Pressable

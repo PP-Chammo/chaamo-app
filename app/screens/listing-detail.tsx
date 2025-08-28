@@ -275,14 +275,14 @@ export default function ListingDetailScreen() {
   }, [deleteUserCard, detail?.user_card_id, handleDeletePopup]);
 
   const handleDeleteCard = useCallback(() => {
-    if (id) return handleDeleteEbayCard();
+    if (isEbay) return handleDeleteEbayCard();
     return handleDeleteChaamoCard();
-  }, [handleDeleteChaamoCard, handleDeleteEbayCard, id]);
+  }, [handleDeleteChaamoCard, handleDeleteEbayCard, isEbay]);
 
   useFocusEffect(
     useCallback(() => {
       if (!id) return;
-      if (ebay === 'true') {
+      if (isEbay) {
         getEbayPost({
           variables: {
             filter: {
@@ -299,7 +299,7 @@ export default function ListingDetailScreen() {
           },
         });
       }
-    }, [getDetail, getEbayPost, id, ebay]),
+    }, [id, isEbay, getEbayPost, getDetail]),
   );
 
   const renderBottomBar = useCallback(() => {
@@ -467,15 +467,17 @@ export default function ListingDetailScreen() {
         triggerRef={dotsRef}
         menuHeight={60}
       >
-        <TouchableOpacity
-          onPress={handleBoostPost}
-          className={classes.contextMenu}
-        >
-          <Label className={classes.contextMenuText}>Boost Post</Label>
-        </TouchableOpacity>
+        {!isEbay && (
+          <TouchableOpacity
+            onPress={handleBoostPost}
+            className={classes.contextMenu}
+          >
+            <Label className={classes.contextMenuText}>Boost Post</Label>
+          </TouchableOpacity>
+        )}
         {detail?.listing_type !== ListingType.AUCTION && (
           <>
-            {!ebay && (
+            {!isEbay && (
               <>
                 <Divider position="horizontal" />
                 <TouchableOpacity

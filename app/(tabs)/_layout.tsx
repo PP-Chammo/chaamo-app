@@ -82,9 +82,11 @@ export default function TabLayout() {
             <View className="relative">
               <Icon size={28} name="message-outline" color={color} />
               {!!unreadTotal && (
-                <Label className="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-red-500 rounded-full flex items-center justify-center text-white text-[10px]">
-                  {unreadTotalText}
-                </Label>
+                <View className="absolute -top-1 -right-1 w-6 h-6 px-1 bg-red-500 rounded-full flex items-center justify-center">
+                  <Label className="text-sm text-white">
+                    {unreadTotalText}
+                  </Label>
+                </View>
               )}
             </View>
           ),
