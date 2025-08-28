@@ -275,9 +275,9 @@ export default function ListingDetailScreen() {
   }, [deleteUserCard, detail?.user_card_id, handleDeletePopup]);
 
   const handleDeleteCard = useCallback(() => {
-    if (id) return handleDeleteEbayCard();
+    if (isEbay) return handleDeleteEbayCard();
     return handleDeleteChaamoCard();
-  }, [handleDeleteChaamoCard, handleDeleteEbayCard, id]);
+  }, [handleDeleteChaamoCard, handleDeleteEbayCard, isEbay]);
 
   useFocusEffect(
     useCallback(() => {
@@ -299,7 +299,7 @@ export default function ListingDetailScreen() {
           },
         });
       }
-    }, [getDetail, getEbayPost, id, isEbay]),
+    }, [id, isEbay, getEbayPost, getDetail]),
   );
 
   const renderBottomBar = useCallback(() => {
@@ -467,12 +467,14 @@ export default function ListingDetailScreen() {
         triggerRef={dotsRef}
         menuHeight={60}
       >
-        <TouchableOpacity
-          onPress={handleBoostPost}
-          className={classes.contextMenu}
-        >
-          <Label className={classes.contextMenuText}>Boost Post</Label>
-        </TouchableOpacity>
+        {!isEbay && (
+          <TouchableOpacity
+            onPress={handleBoostPost}
+            className={classes.contextMenu}
+          >
+            <Label className={classes.contextMenuText}>Boost Post</Label>
+          </TouchableOpacity>
+        )}
         {detail?.listing_type !== ListingType.AUCTION && (
           <>
             {!isEbay && (
