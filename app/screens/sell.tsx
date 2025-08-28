@@ -285,31 +285,34 @@ export default function SellScreen() {
         if (userCardData?.insertIntouser_cardsCollection?.records?.length) {
           const userCardId =
             userCardData.insertIntouser_cardsCollection.records[0].id;
-          const [, listingResult] = await Promise.all([
-            fetch(
-              `${process.env.EXPO_PUBLIC_BACKEND_URL}/ebay_scrape?user_card_id=${userCardId}&region=${user?.profile?.currency === 'GBP' ? 'uk' : 'us'}`,
-            ),
-            createListings({
-              variables: {
-                objects: [
-                  {
-                    ...listing,
-                    user_card_id: userCardId,
-                  },
-                ],
-              },
-            }),
-          ]);
+
+          const listingResult = await createListings({
+            variables: {
+              objects: [
+                {
+                  ...listing,
+                  user_card_id: userCardId,
+                },
+              ],
+            },
+          });
+          fetch(
+            `${process.env.EXPO_PUBLIC_BACKEND_URL}/ebay_scrape?max_pages=1&user_card_id=${userCardId}&region=${user?.profile?.currency === 'GBP' ? 'uk' : 'us'}`,
+          ).catch((error) => {
+            console.log('eBay scrape error (non-blocking):', error);
+          });
 
           if (
             listingResult.data?.insertIntolistingsCollection?.records?.length
           ) {
             if (form.listing_type === ListingType.PORTFOLIO) {
+              setLoading(false);
               Alert.alert('Success!', 'Your portfolio has been saved.', [
                 {
                   text: 'OK',
                   onPress: () => {
                     setForm(structuredClone(initialSellFormState));
+                    setLoading(false);
                     router.replace('/(tabs)/home');
                   },
                 },
@@ -364,19 +367,19 @@ export default function SellScreen() {
           userCardData.updateuser_cardsCollection.records[0].id;
 
         try {
-          const [, listingResult] = await Promise.all([
-            fetch(
-              `${process.env.EXPO_PUBLIC_BACKEND_URL}/ebay_scrape?user_card_id=${userCardId}&region=${user?.profile?.currency === 'GBP' ? 'uk' : 'us'}`,
-            ),
-            updateListings({
-              variables: {
-                set: listing,
-                filter: {
-                  user_card_id: { eq: userCardId },
-                },
+          const listingResult = await updateListings({
+            variables: {
+              set: listing,
+              filter: {
+                user_card_id: { eq: userCardId },
               },
-            }),
-          ]);
+            },
+          });
+          fetch(
+            `${process.env.EXPO_PUBLIC_BACKEND_URL}/ebay_scrape?max_pages=1&user_card_id=${userCardId}&region=${user?.profile?.currency === 'GBP' ? 'uk' : 'us'}`,
+          ).catch((error) => {
+            console.log('eBay scrape error (non-blocking):', error);
+          });
 
           if (!listingResult.data?.updatelistingsCollection?.records?.length) {
             setLoading(false);
@@ -394,6 +397,7 @@ export default function SellScreen() {
                 text: 'OK',
                 onPress: () => {
                   setForm(structuredClone(initialSellFormState));
+                  setLoading(false);
                   router.replace('/(tabs)/home');
                 },
               },
@@ -535,6 +539,22 @@ export default function SellScreen() {
   const handleCloseCamera = useCallback(() => {
     setIsCameraOpen(false);
   }, []);
+
+  // don't remove this as it is used to ping the backend to wake it up
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        try {
+          const purifyBackendUrl = (
+            process.env.EXPO_PUBLIC_BACKEND_URL ?? ''
+          ).replace('/api/v1', '');
+          fetch(`${purifyBackendUrl}/docs`);
+        } catch (err: unknown) {
+          console.log('Ping error:', (err as Error).message);
+        }
+      })();
+    }, []),
+  );
 
   if (isCameraOpen) {
     return (

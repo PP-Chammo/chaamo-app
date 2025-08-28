@@ -1,4 +1,10 @@
-import { ListingType } from '@/generated/graphql';
+import {
+  GetEbayPostsQuery,
+  GetVwChaamoListingsQuery,
+  ListingType,
+} from '@/generated/graphql';
+
+import { DeepGet } from './helper';
 
 export interface ListingCardType {
   type?: ListingType | null;
@@ -12,3 +18,16 @@ export interface ListingCardType {
   indicator?: string | null;
   boosted?: boolean;
 }
+
+export type ChaamoEdge = DeepGet<
+  GetVwChaamoListingsQuery,
+  ['vw_chaamo_cardsCollection', 'edges', number]
+>;
+export type EbayEdge = DeepGet<
+  GetEbayPostsQuery,
+  ['ebay_postsCollection', 'edges', number]
+>;
+
+export type MergedItem =
+  | { kind: 'chaamo'; edge: ChaamoEdge }
+  | { kind: 'ebay'; edge: EbayEdge };

@@ -1,4 +1,11 @@
-import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { clsx } from 'clsx';
 import { cssInterop } from 'nativewind';
@@ -19,6 +26,7 @@ interface TabViewProps {
   className?: string;
   contentClassName?: string;
   initialPage?: number;
+  setActivePage?: React.Dispatch<React.SetStateAction<number>>;
   tabs: (string | Tab)[];
   children: React.ReactNode;
 }
@@ -35,6 +43,7 @@ const TabView: React.FC<TabViewProps> = memo(function TabView({
   className,
   contentClassName,
   initialPage = 0,
+  setActivePage,
   tabs,
   children,
 }) {
@@ -67,6 +76,12 @@ const TabView: React.FC<TabViewProps> = memo(function TabView({
       </View>
     ));
   }, [children, mountedTabs]);
+
+  useEffect(() => {
+    if (setActivePage) {
+      setActivePage(activeTab);
+    }
+  }, [activeTab, setActivePage]);
 
   return (
     <View className={classes.container}>

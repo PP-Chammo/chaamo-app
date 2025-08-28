@@ -161,18 +161,18 @@ export default function ListingDetailScreen() {
   }, []);
 
   const rightIconHeader = useMemo(() => {
-    if (ebay || isSeller) {
+    if (isSeller) {
       return 'dots-vertical';
     }
     return getIsFavorite(id as string) ? 'heart' : 'heart-outline';
-  }, [ebay, isSeller, getIsFavorite, id]);
+  }, [isSeller, getIsFavorite, id]);
 
   const rightIconColor = useMemo(() => {
-    if (ebay || isSeller) {
+    if (isSeller) {
       return getColor('gray-600');
     }
     return getColor(getIsFavorite(id as string) ? 'red-500' : 'gray-600');
-  }, [ebay, isSeller, getIsFavorite, id]);
+  }, [isSeller, getIsFavorite, id]);
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -188,12 +188,12 @@ export default function ListingDetailScreen() {
   }, [isEbay, refetchDetail, refetchEbayPost]);
 
   const onRightPress = useCallback(() => {
-    if (ebay || isSeller) {
+    if (isSeller) {
       setIsContextMenuVisible(true);
     } else {
       handleToggleFavorite();
     }
-  }, [ebay, isSeller, handleToggleFavorite]);
+  }, [isSeller, handleToggleFavorite]);
 
   const handleBoostPost = useCallback(() => {
     router.push({
@@ -394,9 +394,9 @@ export default function ListingDetailScreen() {
         onBackPress={() => router.back()}
         className={classes.header}
         rightIcon={rightIconHeader}
-        rightIconColor={rightIconColor}
+        rightIconColor={!isEbay ? rightIconColor : undefined}
         rightIconSize={28}
-        onRightPress={onRightPress}
+        onRightPress={!isEbay ? onRightPress : undefined}
         rightRef={dotsRef}
       />
       <ScrollView
@@ -429,7 +429,7 @@ export default function ListingDetailScreen() {
           indicator={getIndicator(detail?.start_price, detail?.last_sold_price)}
           description={detail?.description ?? ''}
           userCardId={detail?.user_card_id ?? ''}
-          refetch={ebay ? refetchEbayPost : refetchDetail}
+          refetch={isEbay ? refetchEbayPost : refetchDetail}
         />
         <View className={classes.chartWrapper}>
           <Chart data={dummyPortfolioValueData} />

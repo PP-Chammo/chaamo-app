@@ -16,39 +16,56 @@ jest.mock('@/hooks/useCurrencyDisplay', () => ({
 
 describe('ProductCardList', () => {
   const mockCards = dummyFeaturedCardList.map((card, index) => ({
-    node: {
-      id: `card-${index}`,
-      listing_type: ListingType.SELL,
-      image_url: card.imageUrl,
-      name: card.title,
-      seller_username: card.title,
-      currency: 'USD',
-      price: card.price,
-      start_price: card.price,
-      created_at: new Date().toISOString(),
-      is_favorite: false,
+    kind: 'chaamo' as const,
+    edge: {
+      node: {
+        id: `card-${index}`,
+        listing_type: ListingType.SELL,
+        image_urls: card.imageUrl,
+        name: card.title,
+        seller_username: card.title,
+        currency: 'USD',
+        price: card.price,
+        start_price: card.price,
+        created_at: new Date().toISOString(),
+        is_favorite: false,
+        last_sold_currency: null,
+        last_sold_price: null,
+        last_sold_is_checked: false,
+        last_sold_is_correct: false,
+      },
     },
   }));
 
   const mockOnFavoritePress = jest.fn();
+  const mockOnFetchMore = jest.fn();
+  const mockOnRetry = jest.fn();
 
   it('renders correctly', () => {
     const { getByTestId } = render(
       <ProductCardList
         loading={false}
+        loadingMore={false}
+        isError={false}
         cards={mockCards}
         onFavoritePress={mockOnFavoritePress}
+        onFetchMore={mockOnFetchMore}
+        onRetry={mockOnRetry}
       />,
     );
-    expect(getByTestId('product-card-list')).toBeTruthy();
+    expect(getByTestId('merged-product-list')).toBeTruthy();
   });
 
   it('renders all card items', () => {
     const { getAllByTestId } = render(
       <ProductCardList
         loading={false}
+        loadingMore={false}
+        isError={false}
         cards={mockCards}
         onFavoritePress={mockOnFavoritePress}
+        onFetchMore={mockOnFetchMore}
+        onRetry={mockOnRetry}
       />,
     );
     const cardItems = getAllByTestId('card-item');
@@ -59,8 +76,12 @@ describe('ProductCardList', () => {
     const { getAllByTestId } = render(
       <ProductCardList
         loading={false}
+        loadingMore={false}
+        isError={false}
         cards={mockCards}
         onFavoritePress={mockOnFavoritePress}
+        onFetchMore={mockOnFetchMore}
+        onRetry={mockOnRetry}
       />,
     );
     const rightIcons = getAllByTestId('right-icon-button');
