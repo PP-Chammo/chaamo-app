@@ -161,18 +161,21 @@ export default function ListingDetailScreen() {
   }, []);
 
   const rightIconHeader = useMemo(() => {
-    if (isSeller) {
+    if (isEbay && !user?.profile?.is_admin) {
+      return undefined;
+    }
+    if (isEbay || isSeller) {
       return 'dots-vertical';
     }
     return getIsFavorite(id as string) ? 'heart' : 'heart-outline';
-  }, [isSeller, getIsFavorite, id]);
+  }, [isEbay, isSeller, getIsFavorite, id, user?.profile?.is_admin]);
 
   const rightIconColor = useMemo(() => {
-    if (isSeller) {
+    if (isEbay || isSeller) {
       return getColor('gray-600');
     }
     return getColor(getIsFavorite(id as string) ? 'red-500' : 'gray-600');
-  }, [isSeller, getIsFavorite, id]);
+  }, [isEbay, isSeller, getIsFavorite, id]);
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -188,12 +191,12 @@ export default function ListingDetailScreen() {
   }, [isEbay, refetchDetail, refetchEbayPost]);
 
   const onRightPress = useCallback(() => {
-    if (isSeller) {
+    if ((isEbay && user?.profile?.is_admin) || isSeller) {
       setIsContextMenuVisible(true);
     } else {
       handleToggleFavorite();
     }
-  }, [isSeller, handleToggleFavorite]);
+  }, [isEbay, user?.profile?.is_admin, isSeller, handleToggleFavorite]);
 
   const handleBoostPost = useCallback(() => {
     router.push({
@@ -394,9 +397,9 @@ export default function ListingDetailScreen() {
         onBackPress={() => router.back()}
         className={classes.header}
         rightIcon={rightIconHeader}
-        rightIconColor={!isEbay ? rightIconColor : undefined}
+        rightIconColor={rightIconColor}
         rightIconSize={28}
-        onRightPress={!isEbay ? onRightPress : undefined}
+        onRightPress={onRightPress}
         rightRef={dotsRef}
       />
       <ScrollView
