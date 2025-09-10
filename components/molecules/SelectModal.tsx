@@ -107,12 +107,23 @@ const SelectModal: React.FC<SelectModalProps> = memo(function SelectModal({
           >
             {selectedLabel || placeholder}
           </Text>
-          <Icon
-            name={isOpen ? 'chevron-up' : 'chevron-down'}
-            size={24}
-            color={getColor('slate-700')}
-            className={classes.chevronIcon}
-          />
+          {value ? (
+            <TouchableOpacity onPress={() => onChange({ name, value: '' })}>
+              <Icon
+                name="close"
+                size={18}
+                color={getColor('slate-700')}
+                className={classes.chevronIcon}
+              />
+            </TouchableOpacity>
+          ) : (
+            <Icon
+              name={isOpen ? 'chevron-up' : 'chevron-down'}
+              size={24}
+              color={getColor('slate-700')}
+              className={classes.chevronIcon}
+            />
+          )}
         </TouchableOpacity>
       </View>
       {error && <Text className={classes.error}>{error}</Text>}
