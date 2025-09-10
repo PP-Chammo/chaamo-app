@@ -1,8 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
-import * as WebBrowser from 'expo-web-browser';
 import { Alert, FlatList, View } from 'react-native';
 
 import { Button, ScreenContainer } from '@/components/atoms';
@@ -12,8 +10,15 @@ import {
   useGetMembershipPlansQuery,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { useUserVar } from '@/hooks/useUserVar';
+import {
+  payPalSubscriptionCheckout,
+  PayPalCheckoutResult,
+  SubscriptionPlanParams,
+} from '@/utils/paypal';
 
 export default function PlansScreen() {
+  const [user] = useUserVar();
   const { formatDisplay } = useCurrencyDisplay();
 
   const { data } = useGetMembershipPlansQuery({
@@ -26,61 +31,37 @@ export default function PlansScreen() {
   );
 
   const handlePayWithPaypal = useCallback(async () => {
-    const baseUrl = `${process.env.EXPO_PUBLIC_BACKEND_URL}/paypal/checkout`;
-    if (!baseUrl) {
-      Alert.alert('Missing configuration', 'PayPal needs checkout endpoint.');
-      return;
+    const selectedPlan = membershipPlans[0];
+
+    const paypalPlanId = selectedPlan?.node?.paypal_plan_id;
+    const membershipPlanId = selectedPlan?.node?.id;
+
+    if (!paypalPlanId || !membershipPlanId) {
+      return Alert.alert('No plan selected');
     }
 
-    // Build an app-specific redirect URL (must be whitelisted by your backend with PayPal)
-    const redirectUrl = Linking.createURL('paypal-return');
-    const amount = '9.99';
-    const currency = 'USD';
-    const startUrl = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}amount=${encodeURIComponent(
-      amount,
-    )}&currency=${encodeURIComponent(currency)}&redirect=${encodeURIComponent(redirectUrl)}`;
+    const subscriptionParams: SubscriptionPlanParams = {
+      paypalPlanId,
+      membershipPlanId,
+      userId: user.id,
+      subscriberEmail: user.email!,
+      subscriberName: user?.profile?.username,
+    };
 
-    try {
-      const result = await WebBrowser.openAuthSessionAsync(
-        startUrl,
-        redirectUrl,
-      );
+    const result = await payPalSubscriptionCheckout(subscriptionParams, {
+      onSuccess: (result: PayPalCheckoutResult) => {
+        console.log('PayPal subscription successful: ', result);
+        // router.push('/screens/checkout-subscription');
+      },
+      onError: (error: string) => {
+        console.error('PayPal subscription error:', error);
+      },
+    });
 
-      if (result.type === 'success' && result.url) {
-        const { queryParams } = Linking.parse(result.url);
-        const status = String(queryParams?.status ?? '');
-
-        if (status === 'success') {
-          router.push('/screens/checkout-subscription');
-          return;
-        }
-
-        if (status === 'cancel') {
-          Alert.alert(
-            'Payment cancelled',
-            'You cancelled the PayPal checkout.',
-          );
-          return;
-        }
-
-        Alert.alert(
-          'Payment error',
-          'PayPal checkout failed. Please try again.',
-        );
-        return;
-      }
-
-      if (result.type === 'cancel') {
-        Alert.alert('Payment cancelled', 'You cancelled the PayPal checkout.');
-        return;
-      }
-
-      Alert.alert('Payment error', 'Unable to complete PayPal checkout.');
-    } catch (e) {
-      console.error('PayPal checkout error', e);
-      Alert.alert('Payment error', 'Unable to start PayPal checkout.');
+    if (result.status === 'success') {
+      console.log('PayPal subscription successful:', result.transactionId);
     }
-  }, []);
+  }, [membershipPlans, user.id, user.email, user?.profile?.username]);
 
   return (
     <ScreenContainer>

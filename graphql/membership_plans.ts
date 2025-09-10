@@ -13,6 +13,7 @@ export const getMembershipPlans = gql`
           price
           benefits
           subscription_days
+          paypal_plan_id
         }
       }
     }
