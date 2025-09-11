@@ -1,34 +1,43 @@
 import React, { memo } from 'react';
 
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { clsx } from 'clsx';
+import { format } from 'date-fns';
 import { Text, View } from 'react-native';
 
 import { getColor } from '@/utils/getColor';
 
 interface PaymentMethodCardProps {
-  nextBilling?: boolean;
+  name: string;
+  subscriptionInfo: {
+    last4: string;
+    expiry: string;
+  };
+  nextBillingDate?: string;
   className?: string;
 }
 
 const PaymentMethodCard: React.FC<PaymentMethodCardProps> = memo(
-  function Label({ nextBilling, className }) {
+  function Label({ name, subscriptionInfo, nextBillingDate, className }) {
     return (
       <View className={clsx(classes.container, className)}>
         <Text className={classes.label}>Charged from</Text>
         <View className={classes.card}>
           <View className={classes.row}>
-            <MaterialCommunityIcons
-              name="credit-card-outline"
+            <MaterialIcons
+              name={name.toLowerCase() === 'paypal' ? 'paypal' : 'credit-card'}
               size={24}
               color={getColor('slate-500')}
             />
             <View>
-              <Text>**** **** **** 2424</Text>
-              <Text className={classes.expiry}>Expiry 02/26</Text>
-              {nextBilling && (
+              <Text>**** **** **** {subscriptionInfo.last4}</Text>
+              <Text className={classes.expiry}>
+                Expiry {subscriptionInfo.expiry}
+              </Text>
+              {nextBillingDate && (
                 <Text className={classes.nextBilling}>
-                  Next billing date 10/12/2025
+                  Next billing date{' '}
+                  {format(new Date(nextBillingDate), 'dd/MM/yyyy')}
                 </Text>
               )}
             </View>

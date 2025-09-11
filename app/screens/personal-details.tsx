@@ -28,8 +28,10 @@ export default function PersonalDetailsScreen() {
   const [errors, setErrors] = useState<
     ValidationErrors<DeepGet<UserStore, ['profile']>>
   >({});
-  const [updateProfile] = useUpdateProfileMutation();
-  const [updateUserAddress] = useUpdateUserAddressMutation();
+  const [updateProfile, { loading: loadingUpdateProfile }] =
+    useUpdateProfileMutation();
+  const [updateUserAddress, { loading: loadingUpdateUserAddress }] =
+    useUpdateUserAddressMutation();
 
   const [countries, setCountries] = useState<Country[]>([]);
   const [states, setStates] = useState<State[]>([]);
@@ -91,82 +93,83 @@ export default function PersonalDetailsScreen() {
     [form, setForm],
   );
 
-  const handleUpdateProfile = useCallback(
-    () => () => {
-      const requiredFields: (keyof DeepGet<UserStore, ['profile']>)[] = [
-        'city',
-        'state_province',
-        'country',
-        'postal_code',
-      ];
-
-      const validationErrors = validateRequired(
-        form.profile as unknown as Record<string, string>,
-        requiredFields,
-      );
-
-      setErrors(validationErrors);
-
-      if (Object.keys(validationErrors).length === 0) {
-        const {
-          id,
-          username,
-          country_code,
-          phone_number,
-          address_line_1,
-          city,
-          state_province,
-          country,
-          postal_code,
-        } = form.profile ?? {};
-
-        updateProfile({
-          variables: {
-            set: {
-              username,
-              country_code,
-              phone_number,
-            },
-            filter: {
-              id: {
-                eq: id,
-              },
-            },
-          },
-          onCompleted: ({ updateprofilesCollection }) => {
-            if (updateprofilesCollection?.records.length) {
-              updateUserAddress({
-                variables: {
-                  set: {
-                    address_line_1,
-                    city,
-                    state_province,
-                    country,
-                    postal_code,
-                  },
-                  filter: {
-                    user_id: {
-                      eq: id,
-                    },
-                  },
-                },
-                onCompleted: (data) => {
-                  if (data?.updateuser_addressesCollection?.records.length) {
-                    setOriginalForm(structuredClone(form));
-                    Alert.alert(
-                      'Success',
-                      'Personal details updated successfully',
-                    );
-                  }
-                },
-              });
-            }
-          },
-        });
-      }
-    },
-    [form, updateProfile, updateUserAddress],
+  const loadingSave = useMemo(
+    () => loadingUpdateProfile || loadingUpdateUserAddress,
+    [loadingUpdateProfile, loadingUpdateUserAddress],
   );
+
+  const handleUpdateProfile = useCallback(() => {
+    const requiredFields: (keyof DeepGet<UserStore, ['profile']>)[] = [
+      'city',
+      'country',
+      'postal_code',
+    ];
+
+    const validationErrors = validateRequired(
+      form.profile as unknown as Record<string, string>,
+      requiredFields,
+    );
+
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length === 0) {
+      const {
+        id,
+        username,
+        country_code,
+        phone_number,
+        address_line_1,
+        city,
+        state_province,
+        country,
+        postal_code,
+      } = form.profile ?? {};
+
+      updateProfile({
+        variables: {
+          set: {
+            username,
+            country_code,
+            phone_number,
+          },
+          filter: {
+            id: {
+              eq: id,
+            },
+          },
+        },
+        onCompleted: ({ updateprofilesCollection }) => {
+          if (updateprofilesCollection?.records.length) {
+            updateUserAddress({
+              variables: {
+                set: {
+                  address_line_1,
+                  city,
+                  state_province,
+                  country,
+                  postal_code,
+                },
+                filter: {
+                  user_id: {
+                    eq: id,
+                  },
+                },
+              },
+              onCompleted: (data) => {
+                if (data?.updateuser_addressesCollection?.records.length) {
+                  setOriginalForm(structuredClone(form));
+                  Alert.alert(
+                    'Success',
+                    'Personal details updated successfully',
+                  );
+                }
+              },
+            });
+          }
+        },
+      });
+    }
+  }, [form, updateProfile, updateUserAddress]);
 
   const profile = form.profile;
 
@@ -235,7 +238,6 @@ export default function PersonalDetailsScreen() {
           />
           <Row between className={classes.row}>
             <SelectModal
-              required
               name="state_province"
               label="State"
               value={profile?.state_province ?? ''}
@@ -269,7 +271,12 @@ export default function PersonalDetailsScreen() {
           />
         </View>
       </KeyboardView>
-      <Button onPress={handleUpdateProfile} className={classes.button}>
+      <Button
+        loading={loadingSave}
+        disabled={loadingSave}
+        onPress={handleUpdateProfile}
+        className={classes.button}
+      >
         Save Changes
       </Button>
     </ScreenContainer>

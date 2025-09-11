@@ -14,6 +14,7 @@ import { Header, SettingItem } from '@/components/molecules';
 import { currencyMap } from '@/constants/currencies';
 import {
   useGetNotificationsLazyQuery,
+  useGetSubscriptionsQuery,
   useGetUserNotificationSettingsQuery,
 } from '@/generated/graphql';
 import { useBlockedUsers } from '@/hooks/useBlockedUsers';
@@ -31,6 +32,19 @@ export default function SettingsScreen() {
 
   const [isDeleteAccountModalVisible, setIsDeleteAccountModalVisible] =
     useState<boolean>(false);
+
+  const { data: subscriptionsData } = useGetSubscriptionsQuery({
+    variables: {
+      filter: {
+        user_id: {
+          eq: user?.id,
+        },
+        end_date: {
+          gt: new Date().toISOString(),
+        },
+      },
+    },
+  });
 
   const {
     data: userNotificationSettingsData,
@@ -50,6 +64,10 @@ export default function SettingsScreen() {
   });
 
   const [getNotifications] = useGetNotificationsLazyQuery();
+
+  const hasSubscription = useMemo(() => {
+    return subscriptionsData?.subscriptionsCollection?.edges?.length ?? 0 > 0;
+  }, [subscriptionsData?.subscriptionsCollection?.edges?.length]);
 
   const handleDeleteAccountModal = useCallback(() => {
     setIsDeleteAccountModalVisible(!isDeleteAccountModalVisible);
@@ -216,7 +234,11 @@ export default function SettingsScreen() {
             <SettingItem
               iconName="credit-card-outline"
               title="Payment & Subscription"
-              onPress={() => router.push('/screens/plans')}
+              onPress={() =>
+                hasSubscription
+                  ? router.push('/screens/subscription-details')
+                  : router.push('/screens/plans')
+              }
             />
             <Divider position="horizontal" className={classes.divider} />
             <SettingItem

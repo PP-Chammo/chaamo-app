@@ -1,10 +1,14 @@
 import { useEffect } from 'react';
 
+import { Decimal } from 'decimal.js';
+
 import { currencySymbolMap } from '@/constants/currencies';
 import { SupportedCurrency } from '@/types/currency';
 import { createReactiveVar } from '@/utils/reactive';
 
 import { useUserVar } from './useUserVar';
+
+Decimal.set({ precision: 28, rounding: Decimal.ROUND_HALF_EVEN });
 
 type ExchangeRates = Partial<Record<SupportedCurrency, number>>;
 
@@ -37,7 +41,7 @@ export function useCurrencyDisplay() {
     }
 
     fetchRates();
-  }, [exchangeRates]);
+  }, [exchangeRates, baseCurrency]);
 
   function convertCurrencyToSymbol(
     currencyCode?: SupportedCurrency | null,
@@ -88,8 +92,12 @@ export function useCurrencyDisplay() {
       return numericAmount;
     }
 
-    const raw = numericAmount * (toRate / fromRate);
-    return Math.round(raw * 100) / 100;
+    // Match Python's exact calculation approach
+    const rate = new Decimal(toRate).div(fromRate);
+    return new Decimal(numericAmount)
+      .mul(rate)
+      .toDecimalPlaces(2, Decimal.ROUND_HALF_EVEN)
+      .toNumber();
   }
 
   function convertUserToBase(
@@ -121,8 +129,12 @@ export function useCurrencyDisplay() {
       return numericAmount;
     }
 
-    const raw = numericAmount * (toRate / fromRate);
-    const result = Math.round(raw * 100) / 100;
+    // Precise calculation with banker's rounding (matches Python Decimal)
+    const result = new Decimal(numericAmount)
+      .mul(toRate)
+      .div(fromRate)
+      .toDecimalPlaces(2, Decimal.ROUND_HALF_EVEN)
+      .toNumber();
 
     return result;
   }

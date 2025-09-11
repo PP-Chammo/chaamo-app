@@ -17,7 +17,7 @@ export default function CheckoutSuccessScreen() {
 
   return (
     <ScreenContainer>
-      <Header onBackPress={() => router.back()} />
+      <Header />
       <View className={classes.container}>
         <PaymentSuccessIcon />
         <Label className={classes.title} variant="title">
@@ -47,12 +47,13 @@ export default function CheckoutSuccessScreen() {
           Please take a moment to rate & review.
         </Label>
         <Rating className={classes.rating} value={0} size={28} />
-        <TextArea
-          inputClassName={classes.textArea}
-          placeholder="Write your review"
-          name="review"
-          onChange={({ value }) => setReview(value)}
-        />
+        <View className={classes.textAreaContainer}>
+          <TextArea
+            placeholder="Write your review"
+            name="review"
+            onChange={({ value }) => setReview(value)}
+          />
+        </View>
         <Button disabled={!review.length} className={classes.submitButton}>
           Submit
         </Button>
@@ -70,6 +71,6 @@ const classes = {
   modalTitle: 'mt-5 text-slate-800 text-xl font-semibold',
   modalDescription: 'mt-2.5 !text-slate-500',
   rating: 'my-5',
-  textArea: 'w-full',
+  textAreaContainer: 'w-full',
   submitButton: 'mt-5 w-full',
 };
