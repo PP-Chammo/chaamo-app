@@ -60,7 +60,7 @@ export default function ListingDetailScreen() {
   const [user] = useUserVar();
   const { getIsFavorite } = useFavorites();
   const { formatDisplay, formatPrice } = useCurrencyDisplay();
-  const { id, ebay } = useLocalSearchParams<{ id?: string; ebay?: string }>();
+  const { id, ebay, preview } = useLocalSearchParams<{ [k: string]: string }>();
 
   const [isDeletePopupVisible, setIsDeletePopupVisible] = useState(false);
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
@@ -116,10 +116,14 @@ export default function ListingDetailScreen() {
     return chaamoDetail;
   }, [chaamoDetail, ebayData, isEbay]);
 
-  const isSeller = useMemo(
-    () => (isEbay ? false : user?.id === detail?.seller_id),
-    [detail?.seller_id, user?.id, isEbay],
-  );
+  const isSeller = useMemo(() => {
+    if (isEbay) {
+      return false;
+    }
+    return user?.id === detail?.seller_id;
+  }, [detail?.seller_id, user?.id, isEbay]);
+
+  const isPreview = useMemo(() => preview === 'true', [preview]);
 
   const handleToggleFavorite = useCallback(() => {
     if (getIsFavorite(id as string)) {
@@ -153,8 +157,11 @@ export default function ListingDetailScreen() {
   }, [detail?.id, detail?.seller_id]);
 
   const handleBuyNow = useCallback(() => {
-    Alert.alert('Coming soon');
-  }, []);
+    router.push({
+      pathname: '/screens/checkout',
+      params: { id: detail?.id, isDirectBuy: 'true' },
+    });
+  }, [detail?.id]);
 
   const handleShowModal = useCallback(() => {
     setShowModal(true);
@@ -306,7 +313,7 @@ export default function ListingDetailScreen() {
   );
 
   const renderBottomBar = useCallback(() => {
-    if (isSeller) return null;
+    if (isSeller || isPreview) return null;
 
     if (detail?.listing_type === ListingType.AUCTION) {
       return (
@@ -371,18 +378,19 @@ export default function ListingDetailScreen() {
     }
   }, [
     isSeller,
+    isPreview,
     detail?.listing_type,
     detail?.highest_bid_currency,
     detail?.highest_bid_price,
     detail?.reserve_price,
     detail?.end_time,
     detail?.id,
-    detail?.currency,
     detail?.seller_id,
+    detail?.currency,
     showModal,
     formatDisplay,
-    formatPrice,
     handleShowModal,
+    formatPrice,
     handleBuyNow,
   ]);
 
@@ -422,6 +430,7 @@ export default function ListingDetailScreen() {
           price={formatDisplay(detail?.currency, detail?.start_price ?? 0)}
           date={detail?.created_at ?? new Date().toISOString()}
           title={detail?.name ?? ''}
+          listingType={detail?.listing_type ?? ListingType.PORTFOLIO}
           listingId={detail?.id ?? ''}
           sellerId={detail?.seller_id ?? ''}
           lastSoldIsChecked={detail?.last_sold_is_checked ?? false}
@@ -546,7 +555,7 @@ const classes = {
   scrollView: 'gap-4.5 pb-36',
   cardImageWrapper: 'items-center',
   cardImage:
-    'w-56 h-80 rounded-xl border border-gray-200 bg-gray-200 items-center justify-center',
+    'w-56 aspect-[7/10] rounded-xl border border-gray-200 bg-gray-200 items-center justify-center',
   chartWrapper: 'px-4.5 flex-row justify-center items-center',
   priceValueLabel: 'text-sm text-gray-500',
   priceValue: 'text-sm text-gray-700 font-bold',

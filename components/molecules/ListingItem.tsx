@@ -180,12 +180,14 @@ const ListingItem: React.FC<ListingItemProps> = memo(function ListingItem({
                   <Tag title="Highest Bid" />
                 </View>
               )}
-              <Label
-                className={classes.textBidPrice}
-                testID="card-item-market-price"
-              >
-                {priceDisplay}
-              </Label>
+              {listingType === ListingType.SELL && (
+                <Label
+                  className={classes.textBidPrice}
+                  testID="card-item-market-price"
+                >
+                  {priceDisplay}
+                </Label>
+              )}
             </Row>
           </Row>
         )}

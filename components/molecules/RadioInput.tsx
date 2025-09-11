@@ -18,6 +18,8 @@ interface RadioInputProps {
   classNameSublabel?: string;
   reverse?: boolean;
   keyLabel?: string;
+  value?: string;
+  toggle?: boolean;
 }
 
 const RadioInput = memo(function RadioInput({
@@ -31,11 +33,18 @@ const RadioInput = memo(function RadioInput({
   reverse = false,
   name,
   keyLabel,
+  value,
+  toggle = false,
 }: RadioInputProps) {
   const handlePress = useCallback(() => {
-    const value = keyLabel || label;
-    onPress({ name, value });
-  }, [name, label, onPress, keyLabel]);
+    const internalValue = keyLabel || label;
+    if (toggle) {
+      const toggleValue = internalValue === value ? '' : internalValue;
+      onPress({ name, value: toggleValue });
+    } else {
+      onPress({ name, value: internalValue });
+    }
+  }, [keyLabel, label, toggle, value, onPress, name]);
 
   return (
     <TouchableOpacity

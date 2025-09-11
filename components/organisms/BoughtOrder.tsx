@@ -1,5 +1,6 @@
-import { memo, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 
+import { useFocusEffect } from 'expo-router';
 import { FlatList, View } from 'react-native';
 
 import { EmptyOrders } from '@/assets/svg';
@@ -10,7 +11,7 @@ import {
   ListingType,
   OrderByDirection,
   OrderStatus,
-  useGetVwMyOrdersQuery,
+  useGetVwMyOrdersLazyQuery,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useUserVar } from '@/hooks/useUserVar';
@@ -21,16 +22,8 @@ const BoughtOrder = memo(function BoughtOrder() {
 
   const [selectedFilter, setSelectedFilter] = useState<FilterValue>('progress');
 
-  const { data, loading } = useGetVwMyOrdersQuery({
+  const [getBuyOrders, { data, loading }] = useGetVwMyOrdersLazyQuery({
     fetchPolicy: 'cache-and-network',
-    variables: {
-      filter: {
-        buyer_id: { eq: user?.id },
-      },
-      orderBy: {
-        created_at: OrderByDirection.DESCNULLSLAST,
-      },
-    },
   });
 
   const orders = useMemo(
@@ -64,6 +57,7 @@ const BoughtOrder = memo(function BoughtOrder() {
     if (orders.length) {
       return (
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={filteredOrders}
           contentContainerClassName={classes.content}
           keyExtractor={(item) => item.node.id}
@@ -84,7 +78,6 @@ const BoughtOrder = memo(function BoughtOrder() {
         />
       );
     }
-
     return (
       <View className={classes.emptyOrders}>
         <EmptyOrders />
@@ -95,6 +88,22 @@ const BoughtOrder = memo(function BoughtOrder() {
       </View>
     );
   }, [filteredOrders, formatDisplay, orders.length]);
+
+  useFocusEffect(
+    useCallback(() => {
+      getBuyOrders({
+        variables: {
+          filter: {
+            buyer_id: { eq: user?.id },
+          },
+          orderBy: {
+            created_at: OrderByDirection.DESCNULLSLAST,
+          },
+        },
+      });
+    }, [getBuyOrders, user?.id]),
+  );
+
   return (
     <View className={classes.container}>
       <View>
