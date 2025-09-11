@@ -8,7 +8,7 @@ import { View } from 'react-native';
 
 import ChaamoLogo from '@/assets/images/logo.png';
 import { Button, Icon, Label, PriceIndicator, Row } from '@/components/atoms';
-import { useUpdateUserCardMutation } from '@/generated/graphql';
+import { ListingType, useUpdateUserCardMutation } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 
 interface ProductDetailInfoProps {
@@ -16,6 +16,7 @@ interface ProductDetailInfoProps {
   price?: string | number;
   date: string | Date;
   title: string;
+  listingType?: ListingType;
   marketPrice: string | number;
   description: string;
   indicator?: 'up' | 'down';
@@ -31,6 +32,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
   price,
   date,
   title,
+  listingType,
   listingId,
   sellerId,
   marketPrice,
@@ -80,7 +82,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
             </Label>
           )}
           <Label variant="subtitle" className={classes.price}>
-            {price}
+            {listingType === ListingType.PORTFOLIO ? '' : price}
           </Label>
         </Row>
         <Row className={classes.dateRow}>

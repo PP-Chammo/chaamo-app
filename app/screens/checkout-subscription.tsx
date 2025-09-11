@@ -16,8 +16,18 @@ export default function CheckoutSubscriptionScreen() {
       <Header title="Checkout" onBackPress={router.back} />
 
       <View className={classes.container}>
-        <PaymentMethodCard className={classes.paymentMethod} />
-        <BillingInfo />
+        <PaymentMethodCard
+          name="PayPal"
+          subscriptionInfo={{
+            last4: '4242',
+            expiry: '12/25',
+          }}
+          className={classes.paymentMethod}
+        />
+        <BillingInfo
+          name="Chaamo Gold Membership"
+          subscriptionInfo="$12.99/Monthly"
+        />
       </View>
       <View className={classes.footer}>
         <Label className={classes.terms}>

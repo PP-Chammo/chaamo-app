@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 
 import { clsx } from 'clsx';
-import { cssInterop } from 'nativewind';
 import {
   Modal,
   Platform,
@@ -16,12 +15,6 @@ import { Icon } from '@/components/atoms';
 import { TextChangeParams } from '@/domains';
 import { getColor } from '@/utils/getColor';
 
-cssInterop(ScrollView, {
-  contentContainerClassName: {
-    target: 'contentContainerStyle',
-  },
-});
-
 interface SelectProps {
   label?: string;
   placeholder?: string;
@@ -33,6 +26,7 @@ interface SelectProps {
   error?: string;
   inputClassName?: string;
   className?: string;
+  disabled?: boolean;
 }
 
 interface Option {
@@ -51,6 +45,7 @@ const Select: React.FC<SelectProps> = memo(function Select({
   error,
   inputClassName,
   className,
+  disabled,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>(value || '');
@@ -104,9 +99,11 @@ const Select: React.FC<SelectProps> = memo(function Select({
       )}
       <View ref={selectRef} className={classes.selectRefContainer}>
         <TouchableOpacity
+          activeOpacity={0.7}
           testID="select"
           className={clsx(classes.input, inputClassName)}
           onPress={handleToggle}
+          disabled={disabled}
         >
           <Text
             className={clsx(
@@ -147,7 +144,6 @@ const Select: React.FC<SelectProps> = memo(function Select({
                 showsVerticalScrollIndicator={true}
                 bounces={false}
                 keyboardShouldPersistTaps="always"
-                contentContainerClassName={classes.py2}
               >
                 {options.map((option, idx) => (
                   <React.Fragment key={option.value}>
@@ -183,9 +179,9 @@ const classes = {
   required: 'text-red-500',
   inputContainer: 'relative',
   input:
-    'flex flex-row justify-between items-center border border-slate-200 text-gray-700 rounded-lg px-4 bg-white h-[46px]',
+    'flex flex-row justify-between items-center border border-slate-200 text-gray-700 rounded-lg px-4 bg-white h-[46px] disabled:opacity-70',
   error: 'text-red-500 text-sm',
-  inputText: 'text-gray-700',
+  inputText: 'text-gray-700 flex-1',
   inputTextPlaceholder: 'text-gray-400',
   chevronIcon: 'mt-0.5',
   dropdown:
@@ -196,6 +192,5 @@ const classes = {
   selectRefContainer: 'relative z-10',
   backdrop: 'flex-1 bg-black/20',
   modalDropdown:
-    'bg-white border border-slate-200 rounded-lg shadow-lg shadow-black/10',
-  py2: 'py-2',
+    'bg-white py-2 border border-slate-200 rounded-lg shadow-lg shadow-black/10',
 };

@@ -165,10 +165,7 @@ export default function ProductListScreen() {
     if ((search.query ?? '').trim().length > 0) {
       and.push({ name: { ilike: `%${search.query}%` } });
     }
-    return {
-      listing_type: { neq: ListingType.PORTFOLIO },
-      and,
-    } as VwChaamoCardsFilter;
+    return { and } as VwChaamoCardsFilter;
   }, [
     search.categoryId,
     search.category,

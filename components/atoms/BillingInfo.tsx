@@ -3,26 +3,29 @@ import React, { memo } from 'react';
 import { clsx } from 'clsx';
 import { Text, View } from 'react-native';
 
-interface PaymentMethodCardProps {
-  nextBilling?: boolean;
+interface BillingInfoProps {
+  name: string;
+  subscriptionInfo: string;
   className?: string;
 }
 
-const PaymentMethodCard: React.FC<PaymentMethodCardProps> = memo(
-  function Label({ nextBilling, className }) {
-    return (
-      <View className={clsx(classes.container, className)}>
-        <Text className={classes.label}>Billing Info</Text>
-        <View className={classes.card}>
-          <View className={classes.row}>
-            <Text className={classes.title}>Chaamo Gold Membership</Text>
-            <Text className={classes.price}>$12.99/Monthly</Text>
-          </View>
+const BillingInfo: React.FC<BillingInfoProps> = memo(function BillingInfo({
+  name,
+  subscriptionInfo,
+  className,
+}) {
+  return (
+    <View className={clsx(classes.container, className)}>
+      <Text className={classes.label}>Billing Info</Text>
+      <View className={classes.card}>
+        <View className={classes.row}>
+          <Text className={classes.title}>{name}</Text>
+          <Text className={classes.price}>{subscriptionInfo}</Text>
         </View>
       </View>
-    );
-  },
-);
+    </View>
+  );
+});
 
 const classes = {
   container: 'gap-3',
@@ -33,4 +36,4 @@ const classes = {
   title: 'text-sm text-slate-600',
 };
 
-export default PaymentMethodCard;
+export default BillingInfo;

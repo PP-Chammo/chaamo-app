@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
+import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 import { Alert, FlatList, View } from 'react-native';
 
@@ -11,11 +12,7 @@ import {
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useUserVar } from '@/hooks/useUserVar';
-import {
-  payPalSubscriptionCheckout,
-  PayPalCheckoutResult,
-  SubscriptionPlanParams,
-} from '@/utils/paypal';
+import { handlePaypalPayment } from '@/utils/paypal';
 
 export default function PlansScreen() {
   const [user] = useUserVar();
@@ -30,38 +27,29 @@ export default function PlansScreen() {
     [data],
   );
 
+  const firstPlan = useMemo(
+    () => membershipPlans?.[0]?.node,
+    [membershipPlans],
+  );
+
   const handlePayWithPaypal = useCallback(async () => {
-    const selectedPlan = membershipPlans[0];
+    const baseUrl = `${process.env.EXPO_PUBLIC_BACKEND_URL}/paypal/subscription`;
+    const redirectUrl = Linking.createURL('screens/plans');
+    const startUrl = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}user_id=${encodeURIComponent(user?.id)}&plan_id=${encodeURIComponent(firstPlan?.id)}&redirect=${encodeURIComponent(redirectUrl)}`;
 
-    const paypalPlanId = selectedPlan?.node?.paypal_plan_id;
-    const membershipPlanId = selectedPlan?.node?.id;
-
-    if (!paypalPlanId || !membershipPlanId) {
-      return Alert.alert('No plan selected');
+    try {
+      handlePaypalPayment({
+        url: startUrl,
+        redirectUrl,
+        onSuccess: () => {
+          router.replace('/screens/checkout-success');
+        },
+      });
+    } catch (e) {
+      console.error('Subscription error', e);
+      Alert.alert('Payment error', 'Unable to call chaamo subscription.');
     }
-
-    const subscriptionParams: SubscriptionPlanParams = {
-      paypalPlanId,
-      membershipPlanId,
-      userId: user.id,
-      subscriberEmail: user.email!,
-      subscriberName: user?.profile?.username,
-    };
-
-    const result = await payPalSubscriptionCheckout(subscriptionParams, {
-      onSuccess: (result: PayPalCheckoutResult) => {
-        console.log('PayPal subscription successful: ', result);
-        // router.push('/screens/checkout-subscription');
-      },
-      onError: (error: string) => {
-        console.error('PayPal subscription error:', error);
-      },
-    });
-
-    if (result.status === 'success') {
-      console.log('PayPal subscription successful:', result.transactionId);
-    }
-  }, [membershipPlans, user.id, user.email, user?.profile?.username]);
+  }, [firstPlan?.id, user?.id]);
 
   return (
     <ScreenContainer>
@@ -84,7 +72,11 @@ export default function PlansScreen() {
           )}
         />
       </View>
-      <Button className={classes.button} onPress={handlePayWithPaypal}>
+      <Button
+        className={classes.button}
+        onPress={handlePayWithPaypal}
+        disabled={membershipPlans.length === 0}
+      >
         Buy Subscription
       </Button>
     </ScreenContainer>

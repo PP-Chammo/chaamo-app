@@ -16,41 +16,44 @@ jest.mock('@/generated/graphql', () => ({
   },
   ListingType: { AUCTION: 'AUCTION', SELL: 'SELL' },
   CardCondition: { RAW: 'RAW', GRADED: 'GRADED' },
-  useGetVwMyOrdersQuery: jest.fn().mockReturnValue({
-    data: {
-      vw_myordersCollection: {
-        edges: [
-          {
-            node: {
-              id: '1',
-              name: 'Test Product 1',
-              final_price: 99.99,
-              currency: 'USD',
-              image_url: 'https://example.com/image1.jpg',
-              listing_id: 'listing-1',
-              listing_type: 'SELL',
-              status: 'awaiting_payment',
-              created_at: '2023-01-01T00:00:00Z',
+  useGetVwMyOrdersLazyQuery: jest.fn().mockReturnValue([
+    jest.fn(),
+    {
+      data: {
+        vw_myordersCollection: {
+          edges: [
+            {
+              node: {
+                id: '1',
+                name: 'Test Product 1',
+                final_price: 99.99,
+                currency: 'USD',
+                image_url: 'https://example.com/image1.jpg',
+                listing_id: 'listing-1',
+                listing_type: 'SELL',
+                status: 'awaiting_payment',
+                created_at: '2023-01-01T00:00:00Z',
+              },
             },
-          },
-          {
-            node: {
-              id: '2',
-              name: 'Test Product 2',
-              final_price: 149.99,
-              currency: 'USD',
-              image_url: 'https://example.com/image2.jpg',
-              listing_id: 'listing-2',
-              listing_type: 'SELL',
-              status: 'completed',
-              created_at: '2023-01-02T00:00:00Z',
+            {
+              node: {
+                id: '2',
+                name: 'Test Product 2',
+                final_price: 149.99,
+                currency: 'USD',
+                image_url: 'https://example.com/image2.jpg',
+                listing_id: 'listing-2',
+                listing_type: 'SELL',
+                status: 'completed',
+                created_at: '2023-01-02T00:00:00Z',
+              },
             },
-          },
-        ],
+          ],
+        },
       },
+      loading: false,
     },
-    loading: false,
-  }),
+  ]),
 }));
 
 jest.mock('@/constants/dummy', () => ({

@@ -1,6 +1,11 @@
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, useCallback, useMemo, useState } from 'react';
 
-import { Link, router } from 'expo-router';
+import {
+  Link,
+  router,
+  useFocusEffect,
+  useLocalSearchParams,
+} from 'expo-router';
 import { ScrollView, View } from 'react-native';
 
 import { MasterCard } from '@/assets/svg';
@@ -12,12 +17,40 @@ import {
   ScreenContainer,
 } from '@/components/atoms';
 import { Header } from '@/components/molecules';
+import { useGetVwMyOrdersLazyQuery } from '@/generated/graphql';
 
 export default function OrderDetailsScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+
   const [isExpandedOrderDetails, setIsExpandedOrderDetails] =
     useState<boolean>(false);
   const [isExpandedPaymentInfo, setIsExpandedPaymentInfo] =
     useState<boolean>(false);
+
+  const [getOrderDetail, { data }] = useGetVwMyOrdersLazyQuery({
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const detail = useMemo(
+    () => data?.vw_myordersCollection?.edges?.[0]?.node,
+    [data],
+  );
+
+  console.log(detail);
+
+  useFocusEffect(
+    useCallback(() => {
+      getOrderDetail({
+        variables: {
+          filter: {
+            id: {
+              eq: id,
+            },
+          },
+        },
+      });
+    }, [getOrderDetail, id]),
+  );
 
   const _renderOrderDetails = useMemo(() => {
     if (isExpandedOrderDetails)
@@ -25,11 +58,11 @@ export default function OrderDetailsScreen() {
         <Fragment>
           <Row between>
             <Label>Time Placed</Label>
-            <Label>21 March 2025 at 9:29 AM</Label>
+            <Label>-</Label>
           </Row>
           <Row between>
             <Label>Total</Label>
-            <Label>$ 18.31</Label>
+            <Label>{detail?.final_price}</Label>
           </Row>
           <Row between>
             <Label>Sold By</Label>
@@ -41,7 +74,7 @@ export default function OrderDetailsScreen() {
       );
 
     return null;
-  }, [isExpandedOrderDetails]);
+  }, [detail?.final_price, isExpandedOrderDetails]);
 
   const _renderPaymentInfo = useMemo(() => {
     if (isExpandedPaymentInfo)

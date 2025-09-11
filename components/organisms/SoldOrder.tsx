@@ -64,6 +64,7 @@ const SoldOrder = memo(function SoldOrder() {
     if (orders.length) {
       return (
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={filteredOrders}
           className="flex-1"
           contentContainerClassName={classes.content}
