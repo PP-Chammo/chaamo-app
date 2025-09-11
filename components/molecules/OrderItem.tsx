@@ -34,6 +34,8 @@ const OrderItem: React.FC<OrderItemProps> = memo(function OrderItem({
     const iconMap = {
       awaiting_payment: 'timer',
       awaiting_shipment: 'timer',
+      payment_confirmed: 'check',
+      processing: 'timer',
       shipped: 'truck',
       delivered: 'check',
       completed: 'check',
@@ -116,6 +118,8 @@ const classes = {
   status: {
     awaiting_payment: 'bg-yellow-500',
     awaiting_shipment: 'bg-yellow-500',
+    payment_confirmed: 'bg-green-500',
+    processing: 'bg-yellow-500',
     shipped: 'bg-green-500',
     delivered: 'bg-green-500',
     completed: 'bg-green-500',
