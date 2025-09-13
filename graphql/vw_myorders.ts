@@ -12,7 +12,7 @@ export const getVwMyOrders = gql`
           id
           listing_id
           listing_type
-          name
+          title
           status
           currency
           final_price

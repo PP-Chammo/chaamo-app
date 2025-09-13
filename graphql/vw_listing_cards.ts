@@ -1,20 +1,26 @@
 import { gql } from '@apollo/client';
 
-export const getVwChaamoListings = gql`
-  query GetVwChaamoListings(
-    $filter: vw_chaamo_cardsFilter
+export const getVwListingCards = gql`
+  query GetVwListingCards(
+    $filter: vw_listing_cardsFilter
     $last: Int
-    $orderBy: [vw_chaamo_cardsOrderBy!]
+    $orderBy: [vw_listing_cardsOrderBy!]
   ) {
-    vw_chaamo_cardsCollection(filter: $filter, last: $last, orderBy: $orderBy) {
+    vw_listing_cardsCollection(
+      filter: $filter
+      last: $last
+      orderBy: $orderBy
+    ) {
       edges {
         node {
           id
           listing_type
           image_urls
-          name
+          title
           currency
           start_price
+          highest_bid_currency
+          highest_bid_price
           last_sold_currency
           last_sold_price
           last_sold_is_checked
@@ -30,19 +36,28 @@ export const getVwChaamoListings = gql`
   }
 `;
 
-export const getVwChaamoDetail = gql`
-  query GetVwChaamoDetail($filter: vw_chaamo_cardsFilter) {
-    vw_chaamo_cardsCollection(filter: $filter, first: 1) {
+export const getVwListingCardDetail = gql`
+  query GetVwListingCardDetail($filter: vw_listing_cardsFilter) {
+    vw_listing_cardsCollection(filter: $filter, first: 1) {
       edges {
         node {
           id
+          card_id
           seller_id
           seller_image_url
           seller_username
           category_id
+          years
+          card_set
+          name
+          serial_number
+          number
+          condition
+          grading_company
+          grade_number
           listing_type
           image_urls
-          name
+          title
           description
           currency
           start_price
@@ -57,7 +72,6 @@ export const getVwChaamoDetail = gql`
           end_time
           category_id
           condition
-          user_card_id
         }
       }
     }

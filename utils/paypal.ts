@@ -6,7 +6,7 @@ interface OpenPaypalPaymentParams {
   url: string;
   redirectUrl: string;
   onSuccess?: () => void;
-  onCancel?: () => void;
+  onCancel?: (redirect?: boolean) => void;
 }
 
 /**
@@ -57,9 +57,14 @@ export const handlePaypalPayment = async ({
         return;
       }
 
-      if (status === 'cancel') {
+      if (['cancel', 'sold'].includes(status)) {
         onCancel?.();
-        Alert.alert('Payment cancelled', 'You cancelled payment.');
+        if (status === 'cancel') {
+          Alert.alert('Payment cancelled', 'You cancelled payment.');
+        } else if (status === 'sold') {
+          Alert.alert('Card sold', 'Card already sold');
+          onCancel?.(true);
+        }
         return;
       }
 

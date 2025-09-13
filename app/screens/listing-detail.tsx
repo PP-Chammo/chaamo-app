@@ -39,7 +39,7 @@ import {
   useCreateFavoritesMutation,
   useDeleteEbayPostsMutation,
   useDeleteUserCardMutation,
-  useGetVwChaamoDetailLazyQuery,
+  useGetVwListingCardDetailLazyQuery,
   useRemoveFavoritesMutation,
   useGetEbayPostDetailLazyQuery,
 } from '@/generated/graphql';
@@ -69,10 +69,10 @@ export default function ListingDetailScreen() {
   const dotsRef = useRef<View>(null);
 
   const [getDetail, { data, refetch: refetchDetail }] =
-    useGetVwChaamoDetailLazyQuery({
+    useGetVwListingCardDetailLazyQuery({
       fetchPolicy: 'cache-and-network',
     });
-  const [getEbayPost, { data: ebayData, refetch: refetchEbayPost }] =
+  const [getEbayPostDetail, { data: ebayData, refetch: refetchEbayPost }] =
     useGetEbayPostDetailLazyQuery({
       fetchPolicy: 'cache-and-network',
     });
@@ -81,8 +81,8 @@ export default function ListingDetailScreen() {
   const [deleteUserCard, { loading: isDeleting }] = useDeleteUserCardMutation();
   const [deleteEbayPost] = useDeleteEbayPostsMutation();
 
-  const chaamoDetail = useMemo(
-    () => data?.vw_chaamo_cardsCollection?.edges?.[0]?.node,
+  const listingDetail = useMemo(
+    () => data?.vw_listing_cardsCollection?.edges?.[0]?.node,
     [data],
   );
   const isEbay = useMemo(() => ebay === 'true', [ebay]);
@@ -95,7 +95,7 @@ export default function ListingDetailScreen() {
         id: ebayNode.id,
         listing_type: ListingType.SELL,
         image_urls: ebayNode.image_hd_url ? [ebayNode.image_hd_url] : [],
-        name: ebayNode.name ?? '',
+        title: ebayNode.name ?? '',
         currency: ebayNode.currency ?? undefined,
         start_price: ebayNode.price ?? undefined,
         created_at: ebayNode.sold_at ?? new Date().toISOString(),
@@ -110,11 +110,11 @@ export default function ListingDetailScreen() {
         highest_bid_price: undefined,
         reserve_price: undefined,
         end_time: undefined,
-        user_card_id: undefined,
+        card_id: undefined,
       } as const;
     }
-    return chaamoDetail;
-  }, [chaamoDetail, ebayData, isEbay]);
+    return listingDetail;
+  }, [listingDetail, ebayData, isEbay]);
 
   const isSeller = useMemo(() => {
     if (isEbay) {
@@ -208,18 +208,18 @@ export default function ListingDetailScreen() {
   const handleBoostPost = useCallback(() => {
     router.push({
       pathname: '/screens/select-ad-package',
-      params: { listingId: detail?.user_card_id },
+      params: { listingId: detail?.card_id },
     });
     setIsContextMenuVisible(false);
-  }, [detail?.user_card_id]);
+  }, [detail?.card_id]);
 
   const handleEditDetails = useCallback(() => {
     router.push({
       pathname: '/screens/sell',
-      params: { cardId: detail?.user_card_id },
+      params: { cardId: detail?.card_id },
     });
     setIsContextMenuVisible(false);
-  }, [detail?.user_card_id]);
+  }, [detail?.card_id]);
 
   const handleDeletePopup = useCallback(() => {
     setIsContextMenuVisible(false);
@@ -258,11 +258,11 @@ export default function ListingDetailScreen() {
     });
   }, [deleteEbayPost, id, handleDeletePopup]);
 
-  const handleDeleteChaamoCard = useCallback(() => {
+  const handleDeleteListingCard = useCallback(() => {
     deleteUserCard({
       variables: {
         filter: {
-          id: { eq: detail?.user_card_id },
+          id: { eq: detail?.card_id },
         },
       },
       onCompleted: ({ deleteFromuser_cardsCollection }) => {
@@ -282,18 +282,18 @@ export default function ListingDetailScreen() {
         console.log(error);
       },
     });
-  }, [deleteUserCard, detail?.user_card_id, handleDeletePopup]);
+  }, [deleteUserCard, detail?.card_id, handleDeletePopup]);
 
   const handleDeleteCard = useCallback(() => {
     if (isEbay) return handleDeleteEbayCard();
-    return handleDeleteChaamoCard();
-  }, [handleDeleteChaamoCard, handleDeleteEbayCard, isEbay]);
+    return handleDeleteListingCard();
+  }, [handleDeleteListingCard, handleDeleteEbayCard, isEbay]);
 
   useFocusEffect(
     useCallback(() => {
       if (!id) return;
       if (isEbay) {
-        getEbayPost({
+        getEbayPostDetail({
           variables: {
             filter: {
               id: { eq: id as string },
@@ -309,7 +309,7 @@ export default function ListingDetailScreen() {
           },
         });
       }
-    }, [id, isEbay, getEbayPost, getDetail]),
+    }, [id, isEbay, getEbayPostDetail, getDetail]),
   );
 
   const renderBottomBar = useCallback(() => {
@@ -429,7 +429,7 @@ export default function ListingDetailScreen() {
           isEbay={isEbay}
           price={formatDisplay(detail?.currency, detail?.start_price ?? 0)}
           date={detail?.created_at ?? new Date().toISOString()}
-          title={detail?.name ?? ''}
+          title={detail?.title ?? ''}
           listingType={detail?.listing_type ?? ListingType.PORTFOLIO}
           listingId={detail?.id ?? ''}
           sellerId={detail?.seller_id ?? ''}
@@ -440,7 +440,7 @@ export default function ListingDetailScreen() {
           )}
           indicator={getIndicator(detail?.start_price, detail?.last_sold_price)}
           description={detail?.description ?? ''}
-          userCardId={detail?.user_card_id ?? ''}
+          userCardId={detail?.card_id ?? ''}
           refetch={isEbay ? refetchEbayPost : refetchDetail}
         />
         <View className={classes.chartWrapper}>

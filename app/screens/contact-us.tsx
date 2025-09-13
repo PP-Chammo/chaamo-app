@@ -13,7 +13,7 @@ import { Header, TextArea, TextField } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
 import {
   useCreateContactMessagesMutation,
-  useGetVwChaamoDetailLazyQuery,
+  useGetVwListingCardDetailLazyQuery,
 } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 import { sendEmail } from '@/utils/email';
@@ -36,7 +36,7 @@ export default function ContactUs() {
   const [recipient, setRecipient] = useState('support@chaamo.com');
 
   const [getListingDetail, { data: listingDetail }] =
-    useGetVwChaamoDetailLazyQuery({
+    useGetVwListingCardDetailLazyQuery({
       fetchPolicy: 'cache-and-network',
     });
   const [createContactMessages, { loading }] =
@@ -48,8 +48,9 @@ export default function ContactUs() {
 
   const handleSubmit = async () => {
     try {
-      const userCardId = listingDetail?.vw_chaamo_cardsCollection?.edges?.length
-        ? listingDetail?.vw_chaamo_cardsCollection.edges[0].node.user_card_id
+      const userCardId = listingDetail?.vw_listing_cardsCollection?.edges
+        ?.length
+        ? listingDetail?.vw_listing_cardsCollection.edges[0].node.card_id
         : null;
       await createContactMessages({
         variables: {
@@ -107,7 +108,7 @@ export default function ContactUs() {
               },
             });
             const detailEdges =
-              vwChaamoCardsCollection?.vw_chaamo_cardsCollection?.edges;
+              vwChaamoCardsCollection?.vw_listing_cardsCollection?.edges;
 
             if (detailEdges?.length) {
               setForm({

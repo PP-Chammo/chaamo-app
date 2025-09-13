@@ -11,6 +11,7 @@ export const getUserAddresses = gql`
           state_province
           country
           postal_code
+          is_valid
         }
       }
     }

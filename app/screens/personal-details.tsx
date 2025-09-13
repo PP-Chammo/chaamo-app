@@ -103,6 +103,7 @@ export default function PersonalDetailsScreen() {
       'city',
       'country',
       'postal_code',
+      ...(form?.profile?.country === 'UK' ? [] : ['state_province' as const]),
     ];
 
     const validationErrors = validateRequired(
@@ -238,6 +239,7 @@ export default function PersonalDetailsScreen() {
           />
           <Row between className={classes.row}>
             <SelectModal
+              required={profile?.country !== 'UK'}
               name="state_province"
               label="State"
               value={profile?.state_province ?? ''}
@@ -287,5 +289,5 @@ const classes = {
   container: 'flex-1 p-4.5 gap-4',
   button: 'm-4.5',
   input: 'flex-1',
-  row: 'gap-3',
+  row: 'gap-3 !items-start',
 };

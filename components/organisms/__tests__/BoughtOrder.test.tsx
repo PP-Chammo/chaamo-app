@@ -25,10 +25,10 @@ jest.mock('@/generated/graphql', () => ({
             {
               node: {
                 id: '1',
-                name: 'Test Product 1',
+                title: 'Test Product 1',
                 final_price: 99.99,
                 currency: 'USD',
-                image_url: 'https://example.com/image1.jpg',
+                image_urls: 'https://example.com/image1.jpg',
                 listing_id: 'listing-1',
                 listing_type: 'SELL',
                 status: 'awaiting_payment',
@@ -38,10 +38,10 @@ jest.mock('@/generated/graphql', () => ({
             {
               node: {
                 id: '2',
-                name: 'Test Product 2',
+                title: 'Test Product 2',
                 final_price: 149.99,
                 currency: 'USD',
-                image_url: 'https://example.com/image2.jpg',
+                image_urls: 'https://example.com/image2.jpg',
                 listing_id: 'listing-2',
                 listing_type: 'SELL',
                 status: 'completed',

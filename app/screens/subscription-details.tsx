@@ -6,13 +6,14 @@ import { Alert, View } from 'react-native';
 import {
   BillingInfo,
   Button,
-  Label,
   PaymentMethodCard,
-  Row,
   ScreenContainer,
 } from '@/components/atoms';
 import { Header } from '@/components/molecules';
-import { useGetSubscriptionDetailLazyQuery } from '@/generated/graphql';
+import {
+  SubscriptionStatus,
+  useGetSubscriptionDetailLazyQuery,
+} from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useUserVar } from '@/hooks/useUserVar';
 
@@ -27,8 +28,6 @@ export default function SubscriptionDetailsScreen() {
   const detail = useMemo(() => {
     return data?.subscriptionsCollection?.edges?.[0]?.node;
   }, [data]);
-
-  console.log(detail);
 
   const handleCancelSubscription = useCallback(() => {
     Alert.alert(
@@ -63,6 +62,7 @@ export default function SubscriptionDetailsScreen() {
         />
         <BillingInfo
           name={detail?.membership_plans?.name ?? ''}
+          isPending={detail?.status === SubscriptionStatus.PENDING}
           subscriptionInfo={`${formatDisplay(
             detail?.membership_plans?.currency,
             detail?.membership_plans?.price ?? 0,
@@ -70,16 +70,12 @@ export default function SubscriptionDetailsScreen() {
         />
       </View>
       <View className={classes.footer}>
-        <Row between className={classes.row}>
-          <Label>{detail?.membership_plans?.name ?? ''}</Label>
-          <Label className={classes.price}>
-            {formatDisplay(
-              detail?.membership_plans?.currency,
-              detail?.membership_plans?.price ?? 0,
-            )}
-          </Label>
-        </Row>
-        <Button onPress={handleCancelSubscription}>Cancel Subscription</Button>
+        <Button
+          onPress={handleCancelSubscription}
+          disabled={detail?.status === SubscriptionStatus.PENDING}
+        >
+          Cancel Subscription
+        </Button>
       </View>
     </ScreenContainer>
   );

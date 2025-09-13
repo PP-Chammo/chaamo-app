@@ -54,8 +54,8 @@ export default function AdCheckoutScreen() {
     if (!hasPaymentMethods) {
       router.push('/screens/card-details');
       setLoading(false);
-    } else if (form?.listing_id && form?.user_card_id) {
-      if (form?.listing_id) {
+    } else if (form?.listingId && form?.cardId) {
+      if (form?.listingId) {
         createPayment({
           variables: {
             objects: [
@@ -76,7 +76,7 @@ export default function AdCheckoutScreen() {
                 variables: {
                   objects: [
                     {
-                      listing_id: form.listing_id,
+                      listing_id: form.listingId,
                       payment_id: newPaymentId,
                       start_time: formatISO(new Date()),
                       end_time: formatISO(
@@ -137,15 +137,15 @@ export default function AdCheckoutScreen() {
       Alert.alert('Missing Posting, please try again.');
     }
   }, [
-    createBoostedListing,
-    createPayment,
-    form.listing_id,
+    form.listingId,
+    form?.cardId,
     form.selectedPackageDays,
-    form.user_card_id,
+    createPayment,
     user.id,
     selectedPackage?.price,
-    setForm,
+    createBoostedListing,
     updatePayment,
+    setForm,
   ]);
 
   return (

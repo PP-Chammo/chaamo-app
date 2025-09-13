@@ -2,46 +2,63 @@ import { CardCondition, ListingType } from '@/generated/graphql';
 
 export interface SellFormStore {
   imageUrls: string[];
-  title: string;
+
+  cardCategoryId: string;
+  cardYears: string;
+  cardSet: string;
+  cardName: string;
+  cardSerialNumber: string;
+  cardNumber: string;
+  cardCondition: CardCondition;
+  cardGradingCompany: string;
+  cardGradeNumber: string;
+
   description: string;
-  category_id: string;
-  condition: CardCondition;
-  listing_type: ListingType;
-  end_time: string;
+  listingType: ListingType;
   currency: string;
-  start_price: string;
-  reserved_price: string;
 
-  master_card_id: string;
-  grading_company: string;
-  grade: number;
+  //sell
+  startPrice: string;
 
-  listing_id?: string;
-  user_card_id?: string;
-  payment_id: string;
-  start_time: string;
+  // auction
+  reservedPrice: string;
+  endTime: string;
+
+  // ad package
+  listingId?: string;
+  cardId?: string;
+  paymentId: string;
   selectedPackageDays: string;
 }
 
 export const sellFormStore: SellFormStore = {
   imageUrls: [],
-  title: '',
+  cardCategoryId: '',
+
+  // canonical card detail input
+  cardYears: '',
+  cardSet: '',
+  cardName: '',
+  cardSerialNumber: '',
+  cardNumber: '',
+  cardCondition: CardCondition.RAW,
+  cardGradingCompany: '',
+  cardGradeNumber: '',
+
   description: '',
-  category_id: '',
-  condition: CardCondition.RAW,
-  listing_type: ListingType.PORTFOLIO,
+  listingType: ListingType.PORTFOLIO,
   currency: '$',
-  start_price: '',
-  reserved_price: '',
-  //  below input get from autocomplete
-  master_card_id: '',
-  grading_company: '',
-  grade: 0,
-  // below inputs for ad package
-  listing_id: undefined,
-  user_card_id: undefined,
+
+  // sell
+  startPrice: '',
+
+  // auction
+  reservedPrice: '',
+  endTime: '',
+
+  // ad package
+  listingId: undefined,
+  cardId: undefined,
+  paymentId: '',
   selectedPackageDays: '',
-  payment_id: '',
-  start_time: '',
-  end_time: '',
 };

@@ -186,12 +186,12 @@ jest.mock('@/generated/graphql', () => ({
   })),
   useGetRecentlyAddedListingsQuery: jest.fn(() => ({
     data: {
-      chaamo_cardsCollection: {
+      listing_cardsCollection: {
         edges: [
           {
             node: {
               id: '1',
-              name: 'Recent Item 1',
+              title: 'Recent Item 1',
               image_url: 'https://example.com/image1.jpg',
               currency: '$',
               start_price: '200.00',
@@ -330,14 +330,14 @@ jest.mock('@/generated/graphql', () => ({
     jest.fn(),
     { loading: false, error: null, data: null },
   ]),
-  useGetVwChaamoListingsQuery: jest.fn(() => ({
+  useGetVwListingCardsQuery: jest.fn(() => ({
     data: {
-      vw_chaamo_cardsCollection: {
+      vw_listing_cardsCollection: {
         edges: [
           {
             node: {
               id: '1',
-              name: 'Auction Item 1',
+              title: 'Auction Item 1',
               image_url: 'https://example.com/image1.jpg',
               currency: '$',
               start_price: '100',
@@ -389,16 +389,16 @@ jest.mock('@/generated/graphql', () => ({
     loading: false,
     error: null,
   })),
-  useGetVwChaamoListingsLazyQuery: jest.fn(() => [
+  useGetVwListingCardsLazyQuery: jest.fn(() => [
     jest.fn(),
     {
       data: {
-        vw_chaamo_cardsCollection: {
+        vw_listing_cardsCollection: {
           edges: [
             {
               node: {
                 id: '1',
-                name: 'Auction Item 1',
+                title: 'Auction Item 1',
                 image_url: 'https://example.com/image1.jpg',
                 currency: '$',
                 start_price: '100',
