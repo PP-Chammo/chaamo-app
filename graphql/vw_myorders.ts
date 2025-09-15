@@ -17,7 +17,14 @@ export const getVwMyOrders = gql`
           currency
           final_price
           seller_earnings
+          seller_username
+          shipping_fee
+          insurance_fee
           image_urls
+          created_at
+          gateway_account_info
+          shipping_tracking_number
+          shipping_address
         }
       }
     }

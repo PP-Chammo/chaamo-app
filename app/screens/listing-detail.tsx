@@ -208,7 +208,7 @@ export default function ListingDetailScreen() {
   const handleBoostPost = useCallback(() => {
     router.push({
       pathname: '/screens/select-ad-package',
-      params: { listingId: detail?.card_id },
+      params: { listingId: detail?.card_id, hideCancelButton: 'true' },
     });
     setIsContextMenuVisible(false);
   }, [detail?.card_id]);

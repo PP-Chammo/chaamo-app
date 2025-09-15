@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 
+import { Decimal } from 'decimal.js';
 import * as Linking from 'expo-linking';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
@@ -25,6 +26,8 @@ import { useUserVar } from '@/hooks/useUserVar';
 import { fetcher } from '@/utils/fetcher';
 import { getColor } from '@/utils/getColor';
 import { handlePaypalPayment } from '@/utils/paypal';
+
+Decimal.set({ precision: 28, rounding: Decimal.ROUND_HALF_EVEN });
 
 interface Form {
   deliveryRateId: string | null;
@@ -100,16 +103,29 @@ export default function CheckoutScreen() {
     return deliveryRateList.find((rate) => rate.value === form.deliveryRateId);
   }, [deliveryRateList, form.deliveryRateId]);
 
+  const selectedItemPrice = useMemo(() => {
+    if (detail?.listing_type === 'auction') {
+      return Number(detail?.highest_bid_price) > 0
+        ? detail?.highest_bid_price
+        : detail?.start_price;
+    }
+    return detail?.start_price;
+  }, [detail]);
+
+  const insuranceAmount = useMemo(() => {
+    if (form.insurance !== 'insurance') return 0;
+    return new Decimal(selectedItemPrice ?? 0).mul(0.01).toNumber();
+  }, [form.insurance, selectedItemPrice]);
+
   const total = useMemo(() => {
-    const cardPrice = formatPrice(detail?.currency, detail?.start_price);
     const ratePrice = formatPrice(selectedRate?.currency, selectedRate?.amount);
-    return Number(cardPrice) + Number(ratePrice);
+    return Number(selectedItemPrice) + Number(ratePrice) + insuranceAmount;
   }, [
     formatPrice,
-    detail?.currency,
-    detail?.start_price,
     selectedRate?.currency,
     selectedRate?.amount,
+    selectedItemPrice,
+    insuranceAmount,
   ]);
 
   const handleChange = useCallback(({ name, value }: TextChangeParams) => {
@@ -128,7 +144,7 @@ export default function CheckoutScreen() {
         selected_rate_currency: selectedRate?.currency,
         insurance: isUseInsurance,
         insurance_currency: user?.profile?.currency,
-        insurance_amount: 0,
+        insurance_amount: insuranceAmount,
         redirect: Linking.createURL('screens/checkout-success'),
       })) as OrderResponse;
       if (response?.paypal_order_id && response?.paypal_checkout_url) {
@@ -160,7 +176,9 @@ export default function CheckoutScreen() {
     detail?.id,
     form.deliveryRateId,
     form.insurance,
-    selectedRate,
+    insuranceAmount,
+    selectedRate?.amount,
+    selectedRate?.currency,
     user?.id,
     user?.profile?.currency,
   ]);
