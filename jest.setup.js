@@ -886,6 +886,15 @@ jest.mock('d3-shape', () => ({
   }),
 }));
 
+// Mock Supabase client
+jest.mock('@/utils/supabase', () => ({
+  supabase: {
+    functions: {
+      invoke: jest.fn(),
+    },
+  },
+}));
+
 const originalError = console.error;
 beforeAll(() => {
   console.error = (...args) => {

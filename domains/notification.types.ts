@@ -26,3 +26,9 @@ export interface NotificationSetting {
 export type FlatData<T> =
   | { type: 'date'; date: string }
   | { type: 'group'; group: T; date: string };
+
+export interface SendNotificationPayload {
+  user_id: string;
+  template_name: string;
+  data: Record<string, unknown>;
+}

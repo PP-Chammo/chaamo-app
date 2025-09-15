@@ -34,6 +34,7 @@ import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFollows } from '@/hooks/useFollows';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
+import { sendNotification } from '@/utils/notification';
 import { uploadToBucket } from '@/utils/supabase';
 
 export default function ProfileScreen() {
@@ -318,6 +319,15 @@ export default function ProfileScreen() {
               listingData?.vw_chaamo_cardsCollection?.edges?.length?.toString() ??
               '0'
             }
+            onPress={async () => {
+              await sendNotification({
+                user_id: user?.id,
+                template_name: 'winning_bid_confirmation',
+                data: {
+                  itemName: '2024 Topps Chrome UEFA EURO 7 Cristiano Ronaldo',
+                },
+              });
+            }}
           />
           <Divider />
           <ProfileStat

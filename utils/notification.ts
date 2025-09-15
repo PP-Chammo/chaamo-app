@@ -1,6 +1,8 @@
 import { format } from 'date-fns';
 
-import { BaseNotification } from '@/domains';
+import { BaseNotification, SendNotificationPayload } from '@/domains';
+
+import { supabase } from './supabase';
 
 export interface DateGroupedNotifications {
   date: string;
@@ -31,4 +33,24 @@ export const groupNotificationsByDate = (
   );
 
   return result;
+};
+
+export const sendNotification = async (
+  payload: SendNotificationPayload,
+): Promise<unknown> => {
+  try {
+    const res = await supabase.functions.invoke('send-notification', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+
+    if (res.error) {
+      throw res.error;
+    }
+
+    return res.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };

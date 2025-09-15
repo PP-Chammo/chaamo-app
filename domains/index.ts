@@ -5,5 +5,6 @@ export {
   BaseNotification,
   BaseNotificationSetting,
   FlatData,
+  SendNotificationPayload,
 } from './notification.types';
 export { BaseProfile, BaseUserAddress, BlockedUsers } from './user.types';
