@@ -10,9 +10,9 @@ jest.mock('@/generated/graphql', () => ({
   ListingType: { AUCTION: 'AUCTION', SELL: 'SELL' },
   ListingStatus: { SOLD: 'SOLD' },
   CardCondition: { RAW: 'RAW', GRADED: 'GRADED' },
-  useGetVwChaamoListingsQuery: jest.fn().mockReturnValue({
+  useGetVwListingCardsQuery: jest.fn().mockReturnValue({
     data: {
-      vw_chaamo_cardsCollection: {
+      vw_listing_cardsCollection: {
         edges: [
           {
             node: {

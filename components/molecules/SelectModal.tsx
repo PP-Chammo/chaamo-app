@@ -206,7 +206,7 @@ const classes = {
   modalContentTop: 'bg-white',
   modalContent: 'flex-1 bg-slate-50',
   searchContainer: 'gap-2 m-4.5 bg-white border border-slate-200 rounded-lg',
-  searchInput: 'text-gray-700 pr-4 h-[46px]',
+  searchInput: 'text-gray-700 pr-4 h-[46px] flex-1',
   searchIcon: 'ml-3',
   listContainer: 'flex-1',
   listItem: 'p-4.5 bg-white',

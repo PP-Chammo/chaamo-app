@@ -7,7 +7,7 @@ import {
   ListingType,
   useCreateFavoritesMutation,
   useRemoveFavoritesMutation,
-  useGetVwChaamoListingsLazyQuery,
+  useGetVwListingCardsLazyQuery,
 } from '@/generated/graphql';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useUserVar } from '@/hooks/useUserVar';
@@ -19,7 +19,7 @@ const FeaturedList = memo(function FeaturedList() {
   const { getIsFavorite } = useFavorites();
 
   const [getFeaturedListings, { data, loading }] =
-    useGetVwChaamoListingsLazyQuery({
+    useGetVwListingCardsLazyQuery({
       fetchPolicy: 'cache-and-network',
     });
 
@@ -27,8 +27,8 @@ const FeaturedList = memo(function FeaturedList() {
   const [removeFavorites] = useRemoveFavoritesMutation();
 
   const cards = useMemo(
-    () => data?.vw_chaamo_cardsCollection?.edges ?? [],
-    [data?.vw_chaamo_cardsCollection?.edges],
+    () => data?.vw_listing_cardsCollection?.edges ?? [],
+    [data?.vw_listing_cardsCollection?.edges],
   );
 
   const handleToggleFavorite = useCallback(
@@ -93,7 +93,7 @@ const FeaturedList = memo(function FeaturedList() {
           type={card.node.listing_type}
           id={card.node.id}
           imageUrls={card.node?.image_urls ?? ''}
-          title={card.node?.name ?? ''}
+          title={card.node?.title ?? ''}
           currency={card.node?.currency}
           price={card.node?.start_price}
           marketCurrency={card.node?.last_sold_currency}

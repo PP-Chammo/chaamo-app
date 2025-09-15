@@ -57,13 +57,15 @@ const ProductAllList: React.FC<ProductAllListProps> = memo(function AllCards({
               imageUrls={edge.node?.image_urls ?? ''}
               title={
                 search.query?.trim()
-                  ? renderTitleHighlight(edge.node?.name ?? '', search.query)
-                  : (edge.node?.name ?? '')
+                  ? renderTitleHighlight(edge.node?.title ?? '', search.query)
+                  : (edge.node?.title ?? '')
               }
               subtitle={edge.node?.seller_username ?? ''}
               date={edge.node.created_at ?? new Date().toISOString()}
               currency={edge.node?.currency}
               price={edge.node?.start_price}
+              highestBidCurrency={edge.node?.highest_bid_currency}
+              highestBidPrice={edge.node?.highest_bid_price}
               marketCurrency={edge.node?.last_sold_currency}
               marketPrice={edge.node?.last_sold_price}
               lastSoldIsChecked={edge.node?.last_sold_is_checked ?? false}

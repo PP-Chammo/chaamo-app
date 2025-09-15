@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 
 import { clsx } from 'clsx';
-import { formatDistanceToNow } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 import { Image } from 'expo-image';
 import { Modal, TouchableOpacity, View } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
@@ -21,6 +21,8 @@ type ListingItemProps = {
   date: string;
   currency?: string | null;
   price?: string;
+  highestBidCurrency?: string | null;
+  highestBidPrice?: string | null;
   marketCurrency?: string | null;
   marketPrice?: string | null;
   indicator: string;
@@ -46,6 +48,8 @@ const ListingItem: React.FC<ListingItemProps> = memo(function ListingItem({
   date,
   currency,
   price,
+  highestBidCurrency,
+  highestBidPrice,
   marketCurrency,
   marketPrice,
   indicator,
@@ -64,10 +68,22 @@ const ListingItem: React.FC<ListingItemProps> = memo(function ListingItem({
 
   const [showImageZoom, setShowImageZoom] = useState(false);
 
-  const priceDisplay = useMemo(
-    () => formatDisplay(currency, price ?? 0),
-    [currency, formatDisplay, price],
-  );
+  const priceDisplay = useMemo(() => {
+    if (listingType === ListingType.AUCTION) {
+      return formatDisplay(
+        highestBidCurrency,
+        (highestBidPrice ?? 0) > (price ?? 0) ? highestBidPrice : price,
+      );
+    }
+    return formatDisplay(currency, price);
+  }, [
+    currency,
+    formatDisplay,
+    price,
+    highestBidCurrency,
+    highestBidPrice,
+    listingType,
+  ]);
 
   const renderMarketPrice = useCallback(() => {
     return (
@@ -151,7 +167,9 @@ const ListingItem: React.FC<ListingItemProps> = memo(function ListingItem({
             <Row className={classes.rowDate}>
               <Icon name="calendar" variant="SimpleLineIcons" size={14} />
               <Label className={classes.text} testID="card-item-date">
-                {formatDistanceToNow(new Date(date), { addSuffix: true })}
+                {type === 'ebay'
+                  ? format(new Date(date), 'dd/MM/yyyy')
+                  : formatDistanceToNow(new Date(date), { addSuffix: true })}
               </Label>
             </Row>
             {type === 'ebay' && (
@@ -180,14 +198,12 @@ const ListingItem: React.FC<ListingItemProps> = memo(function ListingItem({
                   <Tag title="Highest Bid" />
                 </View>
               )}
-              {listingType === ListingType.SELL && (
-                <Label
-                  className={classes.textBidPrice}
-                  testID="card-item-market-price"
-                >
-                  {priceDisplay}
-                </Label>
-              )}
+              <Label
+                className={classes.textBidPrice}
+                testID="card-item-market-price"
+              >
+                {priceDisplay}
+              </Label>
             </Row>
           </Row>
         )}
@@ -229,7 +245,7 @@ const classes = {
   dateContainer: 'flex flex-col gap-0.5 pb-1',
   text: 'text-sm !text-gray-700',
   textBold: 'text-sm font-semibold',
-  rowDate: 'gap-2',
+  rowDate: 'gap-2 !items-center',
   bidContainer: 'flex items-center justify-end gap-1.5',
   textBid: 'text-sm !text-gray-700',
   textBidPrice: 'text-base text-right font-semibold text-primary-500 pr-1',
