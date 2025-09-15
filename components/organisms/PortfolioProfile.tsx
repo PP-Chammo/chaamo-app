@@ -12,7 +12,7 @@ import {
   ListingStatus,
   ListingType,
   OrderByDirection,
-  useGetVwChaamoListingsQuery,
+  useGetVwListingCardsQuery,
 } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
@@ -28,7 +28,7 @@ export default function Portfolio() {
 
   const [filter, setFilter] = useState<ListingType | 'all'>('all');
 
-  const { data, loading, refetch } = useGetVwChaamoListingsQuery({
+  const { data, loading, refetch } = useGetVwListingCardsQuery({
     skip: !userId && !user?.id,
     fetchPolicy: 'cache-and-network',
     variables: {
@@ -43,8 +43,8 @@ export default function Portfolio() {
   });
 
   const portfolios = useMemo(
-    () => data?.vw_chaamo_cardsCollection?.edges ?? [],
-    [data?.vw_chaamo_cardsCollection?.edges],
+    () => data?.vw_listing_cardsCollection?.edges ?? [],
+    [data?.vw_listing_cardsCollection?.edges],
   );
 
   const filteredPortfolios = useMemo(() => {
@@ -100,7 +100,7 @@ export default function Portfolio() {
                 type={item.node.listing_type}
                 id={item.node.id}
                 imageUrls={item.node.image_urls ?? ''}
-                title={item.node.name ?? ''}
+                title={item.node.title ?? ''}
                 currency={item.node?.currency}
                 price={item.node?.start_price}
                 marketCurrency={item.node?.last_sold_currency}

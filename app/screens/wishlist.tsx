@@ -1,13 +1,13 @@
 import React, { useCallback, useMemo } from 'react';
 
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { FlatList, View } from 'react-native';
 
 import { Label, ScreenContainer } from '@/components/atoms';
 import { ListingItem, Header } from '@/components/molecules';
 import {
   ListingType,
-  useGetVwMyFavoritesQuery,
+  useGetVwMyFavoritesLazyQuery,
   useRemoveFavoritesMutation,
 } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
@@ -17,9 +17,8 @@ import { getIndicator } from '@/utils/getIndicator';
 export default function WishlistScreen() {
   const [user] = useUserVar();
 
-  const { data, refetch } = useGetVwMyFavoritesQuery({
+  const [getFavorites, { data, refetch }] = useGetVwMyFavoritesLazyQuery({
     fetchPolicy: 'cache-and-network',
-    skip: !user?.id,
   });
   const [removeFavorites] = useRemoveFavoritesMutation();
 
@@ -57,6 +56,12 @@ export default function WishlistScreen() {
     [],
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      getFavorites();
+    }, [getFavorites]),
+  );
+
   return (
     <ScreenContainer>
       <Header title="Wishlist" onBackPress={() => router.back()} />
@@ -73,11 +78,13 @@ export default function WishlistScreen() {
             <ListingItem
               listingType={item.node?.listing_type ?? ListingType.SELL}
               imageUrls={item.node?.image_urls ?? ''}
-              title={item.node?.name ?? ''}
+              title={item.node?.title ?? ''}
               subtitle={item.node?.seller_username ?? ''}
               date={item.node?.created_at ?? ''}
               currency={item.node?.currency}
               price={item.node?.start_price}
+              highestBidCurrency={item.node?.highest_bid_currency}
+              highestBidPrice={item.node?.highest_bid_price}
               marketCurrency={item.node?.last_sold_currency}
               marketPrice={item.node?.last_sold_price}
               lastSoldIsChecked={item.node?.last_sold_is_checked ?? false}

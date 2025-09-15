@@ -171,7 +171,11 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
                 autoComplete="off"
                 autoCorrect={false}
                 placeholder={placeholder}
-                className={clsx(classes.input, inputClassName)}
+                className={clsx(
+                  classes.input,
+                  inputClassName,
+                  !!error && classes.errorBorder,
+                )}
                 style={{
                   paddingLeft:
                     leftLabelWidth || (leftIcon || leftComponent ? 36 : 12),
@@ -277,6 +281,7 @@ const classes = {
   inputWithLeftIcon: 'px-12 py-4',
   eyeIcon: 'ml-2',
   error: 'text-red-500 text-sm',
+  errorBorder: '!border-red-500',
   leftLabel: 'text-slate-500 text-base',
   leftLabelContainer: 'absolute left-3 top-1/2 -translate-y-1/2 z-10',
   leftIconContainer: 'absolute left-3 top-1/2 -translate-y-1/2 z-10',

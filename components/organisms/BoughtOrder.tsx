@@ -66,7 +66,7 @@ const BoughtOrder = memo(function BoughtOrder() {
               id={item.node.id}
               listingId={item.node?.listing_id ?? ''}
               listingType={item.node?.listing_type ?? ListingType.SELL}
-              title={item.node?.name ?? ''}
+              title={item.node?.title ?? ''}
               price={formatDisplay(
                 item.node?.currency,
                 item.node?.final_price ?? 0,

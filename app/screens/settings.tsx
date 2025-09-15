@@ -14,7 +14,7 @@ import { Header, SettingItem } from '@/components/molecules';
 import { currencyMap } from '@/constants/currencies';
 import {
   useGetNotificationsLazyQuery,
-  useGetSubscriptionsQuery,
+  useGetSubscriptionsLazyQuery,
   useGetUserNotificationSettingsQuery,
 } from '@/generated/graphql';
 import { useBlockedUsers } from '@/hooks/useBlockedUsers';
@@ -33,18 +33,10 @@ export default function SettingsScreen() {
   const [isDeleteAccountModalVisible, setIsDeleteAccountModalVisible] =
     useState<boolean>(false);
 
-  const { data: subscriptionsData } = useGetSubscriptionsQuery({
-    variables: {
-      filter: {
-        user_id: {
-          eq: user?.id,
-        },
-        end_date: {
-          gt: new Date().toISOString(),
-        },
-      },
-    },
-  });
+  const [getSubscriptions, { data: subscriptionsData }] =
+    useGetSubscriptionsLazyQuery({
+      fetchPolicy: 'cache-and-network',
+    });
 
   const {
     data: userNotificationSettingsData,
@@ -143,12 +135,6 @@ export default function SettingsScreen() {
     userNotificationSettingsData?.user_notification_settingsCollection?.edges,
   ]);
 
-  useFocusEffect(
-    useCallback(() => {
-      refetchUserNotificationSettings();
-    }, [refetchUserNotificationSettings]),
-  );
-
   const currencyLabel = useMemo(() => {
     return currencyMap?.[user?.profile?.currency ?? 'USD'];
   }, [user?.profile?.currency]);
@@ -176,6 +162,29 @@ export default function SettingsScreen() {
       },
     ]);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetchUserNotificationSettings();
+    }, [refetchUserNotificationSettings]),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      getSubscriptions({
+        variables: {
+          filter: {
+            user_id: {
+              eq: user?.id,
+            },
+            end_date: {
+              gt: new Date().toISOString(),
+            },
+          },
+        },
+      });
+    }, [getSubscriptions, user?.id]),
+  );
 
   return (
     <Fragment>

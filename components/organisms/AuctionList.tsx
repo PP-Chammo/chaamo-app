@@ -7,7 +7,7 @@ import {
   ListingType,
   useCreateFavoritesMutation,
   useRemoveFavoritesMutation,
-  useGetVwChaamoListingsLazyQuery,
+  useGetVwListingCardsLazyQuery,
 } from '@/generated/graphql';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useUserVar } from '@/hooks/useUserVar';
@@ -18,17 +18,18 @@ const AuctionList = memo(function AuctionList() {
   const [user] = useUserVar();
   const { getIsFavorite } = useFavorites();
 
-  const [getAuctionListings, { data, loading }] =
-    useGetVwChaamoListingsLazyQuery({
+  const [getAuctionListings, { data, loading }] = useGetVwListingCardsLazyQuery(
+    {
       fetchPolicy: 'cache-and-network',
-    });
+    },
+  );
 
   const [createFavorites] = useCreateFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
 
   const cards = useMemo(
-    () => data?.vw_chaamo_cardsCollection?.edges ?? [],
-    [data?.vw_chaamo_cardsCollection?.edges],
+    () => data?.vw_listing_cardsCollection?.edges ?? [],
+    [data?.vw_listing_cardsCollection?.edges],
   );
 
   const handleToggleFavorite = useCallback(
@@ -78,7 +79,7 @@ const AuctionList = memo(function AuctionList() {
   return (
     <ListContainer
       title="Auction"
-      onViewAllHref="/screens/product-list"
+      onViewAllHref="/screens/product-list?chaamoOnly=true&firstTab=auctionTab"
       icon="access-point"
       iconColor={getColor('red-500')}
       className={classes.container}
@@ -91,7 +92,7 @@ const AuctionList = memo(function AuctionList() {
           id={card.node.id}
           type={card.node.listing_type}
           imageUrls={card.node?.image_urls ?? ''}
-          title={card.node?.name ?? ''}
+          title={card.node?.title ?? ''}
           currency={card.node?.currency}
           price={card.node?.start_price}
           marketCurrency={card.node?.last_sold_currency}

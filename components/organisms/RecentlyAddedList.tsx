@@ -8,7 +8,7 @@ import {
   useCreateFavoritesMutation,
   useRemoveFavoritesMutation,
   OrderByDirection,
-  useGetVwChaamoListingsLazyQuery,
+  useGetVwListingCardsLazyQuery,
 } from '@/generated/graphql';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useUserVar } from '@/hooks/useUserVar';
@@ -20,7 +20,7 @@ const RecentlyAddedList = memo(function RecentlyAddedList() {
   const { getIsFavorite } = useFavorites();
 
   const [getRecentlyAddedListings, { data, loading }] =
-    useGetVwChaamoListingsLazyQuery({
+    useGetVwListingCardsLazyQuery({
       fetchPolicy: 'cache-and-network',
     });
 
@@ -28,8 +28,8 @@ const RecentlyAddedList = memo(function RecentlyAddedList() {
   const [removeFavorites] = useRemoveFavoritesMutation();
 
   const cards = useMemo(
-    () => data?.vw_chaamo_cardsCollection?.edges ?? [],
-    [data?.vw_chaamo_cardsCollection?.edges],
+    () => data?.vw_listing_cardsCollection?.edges ?? [],
+    [data?.vw_listing_cardsCollection?.edges],
   );
 
   const handleToggleFavorite = useCallback(
@@ -64,10 +64,7 @@ const RecentlyAddedList = memo(function RecentlyAddedList() {
       getRecentlyAddedListings({
         variables: {
           filter: {
-            or: [
-              { listing_type: { eq: ListingType.SELL } },
-              { listing_type: { eq: ListingType.AUCTION } },
-            ],
+            listing_type: { eq: ListingType.SELL },
           },
           orderBy: { created_at: OrderByDirection.DESCNULLSLAST },
           last: 10,
@@ -83,7 +80,7 @@ const RecentlyAddedList = memo(function RecentlyAddedList() {
   return (
     <ListContainer
       title="Recently Added"
-      onViewAllHref="/screens/product-list"
+      onViewAllHref="/screens/product-list?chaamoOnly=true&firstTab=fixedTab"
       data={cards}
     >
       {(card) => (
@@ -92,7 +89,7 @@ const RecentlyAddedList = memo(function RecentlyAddedList() {
           type={card.node.listing_type}
           id={card.node.id}
           imageUrls={card.node?.image_urls ?? ''}
-          title={card.node?.name ?? ''}
+          title={card.node?.title ?? ''}
           currency={card.node?.currency}
           price={card.node?.start_price}
           marketCurrency={card.node?.last_sold_currency}

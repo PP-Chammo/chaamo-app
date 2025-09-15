@@ -1,8 +1,9 @@
 import { useCallback, useMemo, useState } from 'react';
 
+import { Decimal } from 'decimal.js';
 import * as Linking from 'expo-linking';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
 
 import {
   Button,
@@ -19,12 +20,14 @@ import {
   Select,
 } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
-import { useGetVwChaamoDetailQuery } from '@/generated/graphql';
+import { useGetVwListingCardDetailQuery } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useUserVar } from '@/hooks/useUserVar';
 import { fetcher } from '@/utils/fetcher';
 import { getColor } from '@/utils/getColor';
 import { handlePaypalPayment } from '@/utils/paypal';
+
+Decimal.set({ precision: 28, rounding: Decimal.ROUND_HALF_EVEN });
 
 interface Form {
   deliveryRateId: string | null;
@@ -56,8 +59,9 @@ type DeliveryRateOption = {
 };
 
 type OrderResponse = {
-  paypal_order_id: string;
-  paypal_checkout_url: string;
+  status?: string;
+  paypal_order_id?: string;
+  paypal_checkout_url?: string;
 };
 
 type ParamList = {
@@ -82,7 +86,7 @@ export default function CheckoutScreen() {
     DeliveryRateOption[]
   >([]);
 
-  const { data } = useGetVwChaamoDetailQuery({
+  const { data } = useGetVwListingCardDetailQuery({
     variables: {
       filter: {
         id: { eq: id },
@@ -91,7 +95,7 @@ export default function CheckoutScreen() {
   });
 
   const detail = useMemo(() => {
-    return data?.vw_chaamo_cardsCollection?.edges?.[0]?.node;
+    return data?.vw_listing_cardsCollection?.edges?.[0]?.node;
   }, [data]);
 
   const selectedRate = useMemo(() => {
@@ -99,14 +103,29 @@ export default function CheckoutScreen() {
     return deliveryRateList.find((rate) => rate.value === form.deliveryRateId);
   }, [deliveryRateList, form.deliveryRateId]);
 
+  const selectedItemPrice = useMemo(() => {
+    if (detail?.listing_type === 'auction') {
+      return Number(detail?.highest_bid_price) > 0
+        ? detail?.highest_bid_price
+        : detail?.start_price;
+    }
+    return detail?.start_price;
+  }, [detail]);
+
+  const insuranceAmount = useMemo(() => {
+    if (form.insurance !== 'insurance') return 0;
+    return new Decimal(selectedItemPrice ?? 0).mul(0.01).toNumber();
+  }, [form.insurance, selectedItemPrice]);
+
   const total = useMemo(() => {
-    const cardPrice = formatPrice(detail?.currency, detail?.start_price);
-    return Number(cardPrice) + Number(selectedRate?.amount ?? 0);
+    const ratePrice = formatPrice(selectedRate?.currency, selectedRate?.amount);
+    return Number(selectedItemPrice) + Number(ratePrice) + insuranceAmount;
   }, [
     formatPrice,
-    detail?.currency,
-    detail?.start_price,
+    selectedRate?.currency,
     selectedRate?.amount,
+    selectedItemPrice,
+    insuranceAmount,
   ]);
 
   const handleChange = useCallback(({ name, value }: TextChangeParams) => {
@@ -125,20 +144,29 @@ export default function CheckoutScreen() {
         selected_rate_currency: selectedRate?.currency,
         insurance: isUseInsurance,
         insurance_currency: user?.profile?.currency,
-        insurance_amount: 0,
+        insurance_amount: insuranceAmount,
         redirect: Linking.createURL('screens/checkout-success'),
       })) as OrderResponse;
-      if (response?.paypal_order_id) {
+      if (response?.paypal_order_id && response?.paypal_checkout_url) {
         handlePaypalPayment({
           url: response.paypal_checkout_url,
           redirectUrl: Linking.createURL('screens/checkout'),
           onSuccess: () => {
             setLoading(false);
           },
-          onCancel: () => {
+          onCancel: (isBack) => {
             setLoading(false);
+            if (isBack) {
+              router.back();
+            }
           },
         });
+      } else {
+        if (!!response?.status) {
+          Alert.alert('Payment failed', 'This card already sold.');
+          setLoading(false);
+          router.back();
+        }
       }
     } catch (e: unknown) {
       setLoading(false);
@@ -148,7 +176,9 @@ export default function CheckoutScreen() {
     detail?.id,
     form.deliveryRateId,
     form.insurance,
-    selectedRate,
+    insuranceAmount,
+    selectedRate?.amount,
+    selectedRate?.currency,
     user?.id,
     user?.profile?.currency,
   ]);
@@ -186,6 +216,31 @@ export default function CheckoutScreen() {
     }, []),
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      if (
+        !user?.profile?.country ||
+        !user?.profile?.city ||
+        !user?.profile?.postal_code
+      ) {
+        Alert.alert(
+          'Incomplete Address',
+          'Please complete your destination address.',
+          [
+            {
+              text: 'OK',
+              onPress: () => router.push('/screens/personal-details'),
+            },
+          ],
+        );
+      }
+    }, [
+      user?.profile?.city,
+      user?.profile?.country,
+      user?.profile?.postal_code,
+    ]),
+  );
+
   return (
     <ScreenContainer>
       <Header title="Payment" onBackPress={router.back} />
@@ -206,24 +261,26 @@ export default function CheckoutScreen() {
                 {formatDisplay(detail?.currency, detail?.start_price)}
               </Label>
             </Row>
-            <Row between>
+            <Row between className={classes.row}>
               <Label>Delivery Fee</Label>
-              <Select
-                name="deliveryRateId"
-                required
-                placeholder={
-                  deliveryRateList.length === 0
-                    ? deliveryLoading
-                      ? 'Loading...'
-                      : 'No Delivery available'
-                    : 'Select Delivery'
-                }
-                value={form.deliveryRateId || ''}
-                onChange={handleChange}
-                options={deliveryRateList}
-                inputClassName={classes.input}
-                disabled={deliveryRateList.length === 0}
-              />
+              <View className={classes.selectContainer}>
+                <Select
+                  name="deliveryRateId"
+                  required
+                  placeholder={
+                    deliveryRateList.length === 0
+                      ? deliveryLoading
+                        ? 'Loading...'
+                        : 'Check your address, delivery unavailable'
+                      : 'Select Delivery'
+                  }
+                  value={form.deliveryRateId || ''}
+                  onChange={handleChange}
+                  options={deliveryRateList}
+                  inputClassName={classes.input}
+                  disabled={deliveryRateList.length === 0}
+                />
+              </View>
             </Row>
             <Divider position="horizontal" className={classes.divider} />
             <Row between>
@@ -282,7 +339,9 @@ export default function CheckoutScreen() {
           <Button
             className={classes.buttonPay}
             onPress={handlePay}
-            disabled={form.deliveryRateId === null || loading}
+            disabled={
+              !form.deliveryRateId || form.deliveryRateId === null || loading
+            }
             loading={loading}
           >
             Pay {formatDisplay(user?.profile?.currency, total)}
@@ -302,5 +361,7 @@ const classes = {
   divider: '!bg-primary-100 my-2',
   buttonPay: 'mb-12 mx-4.5',
   securePayment: 'text-slate-500',
-  input: 'bg-white leading-5 w-72',
+  row: 'gap-5',
+  input: 'bg-white leading-5 w-full',
+  selectContainer: 'flex-1',
 };

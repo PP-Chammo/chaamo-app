@@ -24,7 +24,7 @@ import {
   useCreateBlockedUsersMutation,
   useCreateFollowsMutation,
   useGetProfilesQuery,
-  useGetVwChaamoListingsQuery,
+  useGetVwListingCardsQuery,
   useRemoveBlockedUsersMutation,
   useRemoveFollowsMutation,
   useUpdateProfileMutation,
@@ -60,7 +60,7 @@ export default function ProfileScreen() {
     },
   });
 
-  const { data: listingData } = useGetVwChaamoListingsQuery({
+  const { data: listingData } = useGetVwListingCardsQuery({
     skip: !userId && !user?.id,
     fetchPolicy: 'cache-and-network',
     variables: {
@@ -74,9 +74,9 @@ export default function ProfileScreen() {
   });
 
   const lastSoldValuation = useMemo(() => {
-    if (listingData?.vw_chaamo_cardsCollection?.edges?.length) {
+    if (listingData?.vw_listing_cardsCollection?.edges?.length) {
       const lastSoldTotal =
-        listingData?.vw_chaamo_cardsCollection?.edges?.reduce((acc, edge) => {
+        listingData?.vw_listing_cardsCollection?.edges?.reduce((acc, edge) => {
           const value =
             (edge?.node?.last_sold_price ?? 0) > 0
               ? formatPrice(
@@ -92,7 +92,7 @@ export default function ProfileScreen() {
   }, [
     formatDisplay,
     formatPrice,
-    listingData?.vw_chaamo_cardsCollection?.edges,
+    listingData?.vw_listing_cardsCollection?.edges,
     user?.profile?.currency,
   ]);
 
@@ -315,7 +315,7 @@ export default function ProfileScreen() {
           <ProfileStat
             title="Listing"
             value={
-              listingData?.vw_chaamo_cardsCollection?.edges?.length?.toString() ??
+              listingData?.vw_listing_cardsCollection?.edges?.length?.toString() ??
               '0'
             }
           />

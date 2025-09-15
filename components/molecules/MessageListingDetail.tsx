@@ -6,7 +6,7 @@ import { View } from 'react-native';
 
 import Button from '@/components/atoms/Button';
 import Label from '@/components/atoms/Label';
-import { useGetVwChaamoDetailQuery } from '@/generated/graphql';
+import { useGetVwListingCardDetailQuery } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { getFirstImageUrl } from '@/utils/imageUrls';
 
@@ -24,12 +24,12 @@ const MessageListingDetail: React.FC<MessageListingDetailProps> = memo(
     className,
     imageClassName,
   }) {
-    const { data } = useGetVwChaamoDetailQuery({
+    const { data } = useGetVwListingCardDetailQuery({
       skip: !listingId,
       variables: { filter: { id: { eq: listingId } } },
     });
 
-    const detail = data?.vw_chaamo_cardsCollection?.edges?.[0]?.node;
+    const detail = data?.vw_listing_cardsCollection?.edges?.[0]?.node;
     const { formatDisplay } = useCurrencyDisplay();
 
     const priceDisplay = useMemo(
