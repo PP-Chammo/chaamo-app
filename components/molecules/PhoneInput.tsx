@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useRef } from 'react';
 
 import { StyleSheet, View } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
@@ -13,9 +13,20 @@ interface PhoneNumberInputProps {
   name: string;
   value: string;
   countryCode?: string;
-  onChange: ({ name, value }: TextChangeParams) => void;
+  onChange: (
+    { name, value }: TextChangeParams,
+    callingCode: string,
+    countryCode: string,
+  ) => void;
   required?: boolean;
   error?: string;
+}
+
+interface PhoneInputMethods {
+  getNumber: () => string | undefined;
+  getCallingCode: () => string | undefined;
+  getCountryCode: () => string | undefined;
+  // bisa tambah method lain jika perlu
 }
 
 const PhoneNumberInput: React.FC<PhoneNumberInputProps> = memo(
@@ -27,7 +38,25 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = memo(
     required,
     error,
   }) {
-    const handleChange = (text: string) => onChange({ name, value: text });
+    const phoneInput = useRef<PhoneInputMethods>(null);
+    const handleChange = (text: string) => {
+      const callingCode = phoneInput.current?.getCallingCode();
+      const countryCode = phoneInput.current?.getCountryCode();
+      const safeCalling = callingCode ? `+${callingCode}` : '';
+      const safeCountry = countryCode ?? '';
+      onChange({ name, value: text }, safeCalling, safeCountry);
+    };
+
+    const handleChangeCountry = (country: {
+      callingCode: string[];
+      cca2: string;
+    }) => {
+      const safeCalling = country.callingCode?.[0]
+        ? `+${country.callingCode[0]}`
+        : '';
+      const safeCountry = country.cca2 ?? '';
+      onChange({ name, value }, safeCalling, safeCountry);
+    };
 
     return (
       <View testID="phone-input-container" className={classes.container}>
@@ -36,11 +65,13 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = memo(
           {required && <Label className={classes.required}>*</Label>}
         </Label>
         <PhoneInputLocal
+          ref={phoneInput}
           testID="phone-input-field"
-          defaultCode={countryCode || 'GB'}
+          defaultCode={countryCode}
           layout="second"
           value={value}
           onChangeText={handleChange}
+          onChangeCountry={handleChangeCountry}
           autoFocus={false}
           containerStyle={styles.container}
           textContainerStyle={styles.textContainer}

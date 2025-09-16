@@ -106,7 +106,6 @@ export default function SellScreen() {
       'cardCategoryId',
       'cardSet',
       'cardName',
-      'cardSerialNumber',
       'cardNumber',
       'cardCondition',
       ...(form.cardCondition === CardCondition.GRADED
@@ -349,7 +348,7 @@ export default function SellScreen() {
         category_id: Number(form.cardCategoryId),
         card_set: startCase(toLower(form.cardSet.trim())),
         name: startCase(toLower(form.cardName.trim())),
-        serial_number: `/${form.cardSerialNumber.trim()}`,
+        serial_number: `/${(form.cardSerialNumber ?? '').trim()}`,
         number: `#${form.cardNumber.trim()}`,
         condition: form.cardCondition,
         grading_company: form.cardGradingCompany.trim(),
@@ -504,6 +503,16 @@ export default function SellScreen() {
               </View>
             ) : null}
           </View>
+          <TextField
+            name="cardYears"
+            label="Year(s)"
+            placeholder="E.g: 2020 or 2020-21 or 2020-2021"
+            value={form.cardYears}
+            onChange={handleChange}
+            required
+            inputClassName={classes.input}
+            error={errors.cardYears}
+          />
           <Select
             name="cardCategoryId"
             label="Category"
@@ -514,16 +523,6 @@ export default function SellScreen() {
             options={categories}
             inputClassName={classes.input}
             error={errors.cardCategoryId}
-          />
-          <TextField
-            name="cardYears"
-            label="Year(s)"
-            placeholder="E.g: 2020 or 2020-21 or 2020-2021"
-            value={form.cardYears}
-            onChange={handleChange}
-            required
-            inputClassName={classes.input}
-            error={errors.cardYears}
           />
           <TextField
             name="cardSet"
@@ -551,7 +550,6 @@ export default function SellScreen() {
             placeholder='E.g: 50 (automatically add prefix "/")'
             value={form.cardSerialNumber}
             onChange={handleChange}
-            required
             leftLabel="/"
             inputClassName={classes.input}
             error={errors.cardSerialNumber}

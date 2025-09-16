@@ -8,7 +8,9 @@ export const getProfiles = gql`
           id
           username
           profile_image_url
+          calling_code
           phone_number
+          country_name
           country_code
           currency
           created_at

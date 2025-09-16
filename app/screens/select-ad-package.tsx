@@ -8,7 +8,7 @@ import { Alert, View } from 'react-native';
 import { Button, Icon, Label, Row, ScreenContainer } from '@/components/atoms';
 import { Header, RadioInput } from '@/components/molecules';
 import { adFeatures } from '@/constants/adProperties';
-import { useGetBoostPlansQuery } from '@/generated/graphql';
+import { OrderByDirection, useGetBoostPlansQuery } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { initialSellFormState, useSellFormVar } from '@/hooks/useSellFormVar';
 import { useUserVar } from '@/hooks/useUserVar';
@@ -26,6 +26,11 @@ export default function SelectAdPackageScreen() {
 
   const { data } = useGetBoostPlansQuery({
     fetchPolicy: 'cache-and-network',
+    variables: {
+      orderBy: {
+        order: OrderByDirection.ASCNULLSLAST,
+      },
+    },
   });
 
   const boostPlans = useMemo(
@@ -40,15 +45,13 @@ export default function SelectAdPackageScreen() {
     [setForm],
   );
 
-  console.log(form);
-
   const handleBoostNow = useCallback(async () => {
     if (listingId) {
       const baseUrl = `${process.env.EXPO_PUBLIC_BACKEND_URL}/paypal/boost-post`;
       const redirectUrl = Linking.createURL(
         `screens/listing-detail?id=${listingId}`,
       );
-      const startUrl = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}user_id=${encodeURIComponent(user?.id)}&listing_id=${encodeURIComponent(listingId)}&redirect=${encodeURIComponent(redirectUrl)}`;
+      const startUrl = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}user_id=${encodeURIComponent(user?.id)}&plan_id=${encodeURIComponent(form?.selectedPackageDays)}&listing_id=${encodeURIComponent(listingId)}&redirect=${encodeURIComponent(redirectUrl)}`;
 
       try {
         handlePaypalPayment({
@@ -63,7 +66,7 @@ export default function SelectAdPackageScreen() {
         Alert.alert('Payment error', 'Unable to call chaamo boost post.');
       }
     }
-  }, [listingId, user?.id]);
+  }, [form?.selectedPackageDays, listingId, user?.id]);
 
   const handleUnboostPackage = useCallback(() => {
     setForm(structuredClone(initialSellFormState));

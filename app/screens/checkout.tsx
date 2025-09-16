@@ -6,6 +6,7 @@ import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
 
 import {
+  AddressLine,
   Button,
   Divider,
   Icon,
@@ -206,39 +207,19 @@ export default function CheckoutScreen() {
             setDeliveryRateList(deliveryRateList);
           }
           setDeliveryLoading(false);
-        } catch (error) {
+        } catch (error: unknown) {
           setDeliveryLoading(false);
+          const rawMessage = (error as Error)?.message;
+          const message = rawMessage?.includes('{')
+            ? JSON.parse(rawMessage.match(/{.*}/)?.[0] ?? '{}')?.detail
+            : rawMessage;
+          Alert.alert('Failed get shipper', message ?? '');
           console.error(error);
         }
       })();
       /* keep this empty dependency array to prevent infinite loop */
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []),
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      if (
-        !user?.profile?.country ||
-        !user?.profile?.city ||
-        !user?.profile?.postal_code
-      ) {
-        Alert.alert(
-          'Incomplete Address',
-          'Please complete your destination address.',
-          [
-            {
-              text: 'OK',
-              onPress: () => router.push('/screens/personal-details'),
-            },
-          ],
-        );
-      }
-    }, [
-      user?.profile?.city,
-      user?.profile?.country,
-      user?.profile?.postal_code,
-    ]),
   );
 
   return (
@@ -262,7 +243,7 @@ export default function CheckoutScreen() {
               </Label>
             </Row>
             <Row between className={classes.row}>
-              <Label>Delivery Fee</Label>
+              <Label>Shipper</Label>
               <View className={classes.selectContainer}>
                 <Select
                   name="deliveryRateId"
@@ -271,7 +252,7 @@ export default function CheckoutScreen() {
                     deliveryRateList.length === 0
                       ? deliveryLoading
                         ? 'Loading...'
-                        : 'Check your address, delivery unavailable'
+                        : 'Check address, shipper unavailable'
                       : 'Select Delivery'
                   }
                   value={form.deliveryRateId || ''}
@@ -316,17 +297,15 @@ export default function CheckoutScreen() {
               </TouchableOpacity>
             </Row>
             <View>
-              <Label>
-                {user?.profile?.username} / {user?.profile?.phone_number}
-              </Label>
-              <Label>{user?.profile?.address_line_1}</Label>
-              <Label>
-                {user?.profile?.country}, {user?.profile?.city + ','}{' '}
-                {user?.profile?.country === 'GB'
-                  ? ''
-                  : user?.profile?.state_province}{' '}
-                {user?.profile?.postal_code}
-              </Label>
+              <AddressLine
+                personName={user?.profile?.username}
+                addressLine1={user?.profile?.address_line_1}
+                city={user?.profile?.city}
+                stateProvince={user?.profile?.state_province}
+                postalCode={user?.profile?.postal_code}
+                country={user?.profile?.country}
+                phoneNumber={`${user?.profile?.calling_code} ${user?.profile?.phone_number}`}
+              />
             </View>
           </View>
 

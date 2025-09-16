@@ -72,6 +72,7 @@ export const getVwListingCardDetail = gql`
           end_time
           category_id
           condition
+          is_boosted
         }
       }
     }

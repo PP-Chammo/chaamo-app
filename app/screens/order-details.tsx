@@ -8,7 +8,8 @@ import {
   useFocusEffect,
   useLocalSearchParams,
 } from 'expo-router';
-import { ScrollView, View } from 'react-native';
+import { toLower, upperFirst } from 'lodash';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 
 import {
   Button,
@@ -41,7 +42,22 @@ export default function OrderDetailsScreen() {
     [data],
   );
 
-  console.log(detail);
+  const isSeller = useMemo(() => {
+    return detail?.seller_id === user?.id;
+  }, [detail?.seller_id, user?.id]);
+
+  const gateway_info = useMemo(() => {
+    return JSON.parse(detail?.gateway_account_info ?? '{}');
+  }, [detail?.gateway_account_info]);
+
+  const handleRedirectSellerProfile = useCallback(() => {
+    router.push({
+      pathname: '/screens/profile',
+      params: {
+        userId: isSeller ? detail?.buyer_id : detail?.seller_id,
+      },
+    });
+  }, [detail?.buyer_id, detail?.seller_id, isSeller]);
 
   useFocusEffect(
     useCallback(() => {
@@ -62,34 +78,39 @@ export default function OrderDetailsScreen() {
       return (
         <Fragment>
           <Row between>
-            <Label>Time Placed</Label>
+            <Label>Time placed</Label>
             <Label>
               {format(new Date(detail?.created_at), 'dd/MM/yyyy HH:mm')}
             </Label>
           </Row>
           <Row between>
-            <Label>Total</Label>
+            <Label>Item</Label>
             <Label>
-              {formatDisplay(detail?.currency, detail?.final_price)}
+              {formatDisplay(detail?.currency, detail?.seller_earnings)}
             </Label>
           </Row>
           <Row between>
-            <Label>Sold By</Label>
-            <Link href="/" className={classes.link}>
-              {detail?.seller_username}
-            </Link>
+            <Label>{isSeller ? 'Sold to' : 'Sold by'}</Label>
+            <TouchableOpacity onPress={handleRedirectSellerProfile}>
+              <Label className={classes.linkText}>
+                {isSeller ? detail?.buyer_username : detail?.seller_username}
+              </Label>
+            </TouchableOpacity>
           </Row>
         </Fragment>
       );
 
     return null;
   }, [
+    detail?.buyer_username,
     detail?.created_at,
     detail?.currency,
-    detail?.final_price,
+    detail?.seller_earnings,
     detail?.seller_username,
     formatDisplay,
+    handleRedirectSellerProfile,
     isExpandedOrderDetails,
+    isSeller,
   ]);
 
   const _renderPaymentInfo = useMemo(() => {
@@ -103,7 +124,7 @@ export default function OrderDetailsScreen() {
             </Label>
           </Row>
           <Row between>
-            <Label>Postage</Label>
+            <Label>Shipping</Label>
             <Label>
               {formatDisplay(detail?.currency, detail?.shipping_fee)}
             </Label>
@@ -138,6 +159,12 @@ export default function OrderDetailsScreen() {
               <Label>Order number</Label>
               <Label>{detail?.id}</Label>
             </Row>
+            <Row between>
+              <Label>Status</Label>
+              <Label>
+                {upperFirst(toLower(detail?.status?.replace(/_/g, ' ') ?? ''))}
+              </Label>
+            </Row>
             {_renderOrderDetails}
             <Divider position="horizontal" className={classes.divider} />
 
@@ -158,7 +185,7 @@ export default function OrderDetailsScreen() {
                 <Row>
                   <MaterialIcons name="paypal" size={24} color="black" />
                 </Row>
-                <Label>{detail?.gateway_account_info?.email}</Label>
+                <Label>{gateway_info?.email}</Label>
               </Row>
               <Label variant="subtitle">
                 {formatDisplay(detail?.currency, detail?.final_price)}
@@ -189,7 +216,7 @@ export default function OrderDetailsScreen() {
               <Label className={classes.headerTitle}>Track Package</Label>
               <Row between>
                 <Label>Tracking Number</Label>
-                <Link href="/" className={classes.link}>
+                <Link href="/" className={classes.linkText}>
                   {detail?.shipping_tracking_number}
                 </Link>
               </Row>
@@ -221,7 +248,7 @@ const classes = {
   headerTitle: 'text-md font-bold',
   divider: '!bg-primary-100',
   buttonText: '!text-primary-600 font-medium',
-  link: 'underline font-medium',
+  linkText: 'underline font-medium',
   container: 'gap-4',
   addressLabel: 'self-start',
   addressValue: 'w-40 text-right',

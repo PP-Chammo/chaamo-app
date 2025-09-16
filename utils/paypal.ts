@@ -44,15 +44,17 @@ export const handlePaypalPayment = async ({
 
     // open auth session
     const result = await WebBrowser.openAuthSessionAsync(url, redirectUrl);
-    console.log('handlePaypalPayment result', result);
 
     // If we already captured redirect via Linking listener, parse that first (preferred)
     if (capturedRedirectUrl) {
-      console.log('Captured redirect via Linking:', capturedRedirectUrl);
       const { queryParams } = Linking.parse(capturedRedirectUrl);
       const status = String(queryParams?.status ?? '');
+      const message = String(queryParams?.message ?? '');
 
       if (status === 'success') {
+        if (message) {
+          Alert.alert('Success', message);
+        }
         onSuccess?.();
         return;
       }
@@ -60,7 +62,7 @@ export const handlePaypalPayment = async ({
       if (['cancel', 'sold'].includes(status)) {
         onCancel?.();
         if (status === 'cancel') {
-          Alert.alert('Payment cancelled', 'You cancelled payment.');
+          Alert.alert('Payment cancelled', 'You cancelled your payment.');
         } else if (status === 'sold') {
           Alert.alert('Card sold', 'Card already sold');
           onCancel?.(true);
@@ -69,7 +71,7 @@ export const handlePaypalPayment = async ({
       }
 
       onCancel?.();
-      Alert.alert('Payment error', 'Payment failed. Please try again.');
+      Alert.alert('Payment failed', message);
       return;
     }
 
@@ -77,8 +79,6 @@ export const handlePaypalPayment = async ({
     if (result.type === 'success' && result.url) {
       const { queryParams } = Linking.parse(result.url);
       const status = String(queryParams?.status ?? '');
-
-      console.log('paypal status from result.url:', status);
 
       if (status === 'success') {
         onSuccess?.();
