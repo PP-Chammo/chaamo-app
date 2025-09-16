@@ -12,12 +12,22 @@ export const getVwMyOrders = gql`
           id
           listing_id
           listing_type
-          name
+          title
           status
           currency
           final_price
           seller_earnings
+          seller_id
+          seller_username
+          buyer_id
+          buyer_username
+          shipping_fee
+          insurance_fee
           image_urls
+          created_at
+          gateway_account_info
+          shipping_tracking_number
+          shipping_address
         }
       }
     }

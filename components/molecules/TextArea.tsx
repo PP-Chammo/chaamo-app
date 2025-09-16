@@ -13,6 +13,7 @@ interface TextAreaProps extends Omit<TextInputProps, 'onChange'> {
   inputClassName?: string;
   required?: boolean;
   rows?: number;
+  error?: string;
 }
 
 const TextArea: React.FC<TextAreaProps> = memo(function TextArea({
@@ -23,6 +24,7 @@ const TextArea: React.FC<TextAreaProps> = memo(function TextArea({
   name,
   inputClassName,
   required,
+  error,
   ...props
 }) {
   const handleChange = (value: string) => {
@@ -41,13 +43,18 @@ const TextArea: React.FC<TextAreaProps> = memo(function TextArea({
         multiline
         placeholder={placeholder}
         textAlignVertical="top"
-        className={clsx(classes.input, inputClassName)}
+        className={clsx(
+          classes.input,
+          inputClassName,
+          !!error && classes.errorBorder,
+        )}
         value={value}
         autoComplete="off"
         onChangeText={handleChange}
         placeholderTextColor={getColor('gray-400')}
         {...props}
       />
+      {error && <Text className={classes.error}>{error}</Text>}
     </View>
   );
 });
@@ -60,4 +67,6 @@ const classes = {
   required: 'text-red-500',
   input:
     'rounded-lg border border-slate-200 rounded-md p-4 bg-white min-h-24 max-h-56',
+  error: 'text-red-500 text-sm',
+  errorBorder: '!border-red-500',
 };

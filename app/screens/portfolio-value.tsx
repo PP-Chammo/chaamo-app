@@ -13,9 +13,10 @@ import {
 } from '@/components/molecules';
 import { dummyPortfolioValueData } from '@/constants/dummy';
 import {
+  ListingType,
   OrderByDirection,
   OrderStatus,
-  useGetVwChaamoListingsQuery,
+  useGetVwListingCardsQuery,
   useGetVwMyOrdersQuery,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
@@ -36,12 +37,13 @@ export default function PortfolioValueScreen() {
   const [user] = useUserVar();
   const { formatDisplay, formatPrice } = useCurrencyDisplay();
 
-  const { data } = useGetVwChaamoListingsQuery({
+  const { data } = useGetVwListingCardsQuery({
     skip: !user?.id,
     fetchPolicy: 'cache-and-network',
     variables: {
       filter: {
         seller_id: { eq: user?.id },
+        listing_type: { neq: ListingType.PORTFOLIO },
       },
       orderBy: [
         { last_sold_price: OrderByDirection.DESCNULLSLAST },
@@ -61,7 +63,7 @@ export default function PortfolioValueScreen() {
   });
 
   const mostValuableList = useMemo(() => {
-    const edges = data?.vw_chaamo_cardsCollection?.edges ?? [];
+    const edges = data?.vw_listing_cardsCollection?.edges ?? [];
     const withValue = edges.map((edge) => {
       const hasLastSold =
         edge?.node?.last_sold_price && edge?.node?.last_sold_price > 0;
@@ -85,13 +87,13 @@ export default function PortfolioValueScreen() {
         return b.value - a.value;
       })
       .map((item) => item.edge);
-  }, [data?.vw_chaamo_cardsCollection?.edges, formatPrice]);
+  }, [data?.vw_listing_cardsCollection?.edges, formatPrice]);
 
   console.log(mostValuableList);
 
   const lastSoldValuation = useMemo(() => {
-    if (data?.vw_chaamo_cardsCollection?.edges?.length) {
-      const lastSoldTotal = data?.vw_chaamo_cardsCollection?.edges?.reduce(
+    if (data?.vw_listing_cardsCollection?.edges?.length) {
+      const lastSoldTotal = data?.vw_listing_cardsCollection?.edges?.reduce(
         (acc, edge) => {
           const value =
             (edge?.node?.last_sold_price ?? 0) > 0
@@ -108,7 +110,7 @@ export default function PortfolioValueScreen() {
     }
     return 0;
   }, [
-    data?.vw_chaamo_cardsCollection?.edges,
+    data?.vw_listing_cardsCollection?.edges,
     formatDisplay,
     formatPrice,
     user?.profile?.currency,
@@ -208,7 +210,7 @@ export default function PortfolioValueScreen() {
               type={item.node.listing_type}
               id={item.node.id}
               imageUrls={item.node.image_urls ?? ''}
-              title={item.node.name ?? ''}
+              title={item.node.title ?? ''}
               currency={item.node?.currency}
               price={item.node?.start_price}
               marketCurrency={item.node?.last_sold_currency}

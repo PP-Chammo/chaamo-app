@@ -5,7 +5,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { ListContainer, ListingCard } from '@/components/molecules';
 import {
   ListingType,
-  useGetVwChaamoListingsLazyQuery,
+  useGetVwListingCardsLazyQuery,
 } from '@/generated/graphql';
 import { getIndicator } from '@/utils/getIndicator';
 
@@ -17,13 +17,13 @@ interface SimilarAdListProps {
 const SimilarAdList: React.FC<SimilarAdListProps> = memo(
   function SimilarAdList({ ignoreId, listingType }) {
     const [getRecentlyAddedListings, { data, loading }] =
-      useGetVwChaamoListingsLazyQuery({
+      useGetVwListingCardsLazyQuery({
         fetchPolicy: 'cache-and-network',
       });
 
     const cards = useMemo(
-      () => data?.vw_chaamo_cardsCollection?.edges ?? [],
-      [data?.vw_chaamo_cardsCollection?.edges],
+      () => data?.vw_listing_cardsCollection?.edges ?? [],
+      [data?.vw_listing_cardsCollection?.edges],
     );
 
     useFocusEffect(
@@ -55,7 +55,7 @@ const SimilarAdList: React.FC<SimilarAdListProps> = memo(
             id={card.node.id}
             type={card.node.listing_type}
             imageUrls={card.node?.image_urls ?? ''}
-            title={card.node?.name ?? ''}
+            title={card.node?.title ?? ''}
             currency={card.node?.currency}
             price={card.node?.start_price}
             marketCurrency={card.node?.last_sold_currency}

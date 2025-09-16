@@ -69,6 +69,7 @@ const getPersonalInfo = async (user: UserStore): Promise<PersonalInfo> => {
       state_province: user?.profile?.state_province ?? '',
       country: user?.profile?.country ?? '',
       postal_code: user?.profile?.postal_code ?? '',
+      is_valid: user?.profile?.is_valid ?? false,
     },
   };
 };

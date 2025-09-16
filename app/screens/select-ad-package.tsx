@@ -1,26 +1,72 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { Image } from 'expo-image';
+import * as Linking from 'expo-linking';
 import { router, useLocalSearchParams } from 'expo-router';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 
 import { Button, Icon, Label, Row, ScreenContainer } from '@/components/atoms';
 import { Header, RadioInput } from '@/components/molecules';
-import { adFeatures, adPackages } from '@/constants/adProperties';
+import { adFeatures } from '@/constants/adProperties';
+import { OrderByDirection, useGetBoostPlansQuery } from '@/generated/graphql';
+import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { initialSellFormState, useSellFormVar } from '@/hooks/useSellFormVar';
+import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
+import { handlePaypalPayment } from '@/utils/paypal';
 import { structuredClone } from '@/utils/structuredClone';
 
 export default function SelectAdPackageScreen() {
+  const [user] = useUserVar();
   const [form, setForm] = useSellFormVar();
-  const { listingId } = useLocalSearchParams();
+  const { formatDisplay } = useCurrencyDisplay();
+  const { listingId, hideCancelButton } = useLocalSearchParams<{
+    [k: string]: string;
+  }>();
+
+  const { data } = useGetBoostPlansQuery({
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      orderBy: {
+        order: OrderByDirection.ASCNULLSLAST,
+      },
+    },
+  });
+
+  const boostPlans = useMemo(
+    () => data?.boost_plansCollection?.edges ?? [],
+    [data],
+  );
 
   const handleSelectPackage = useCallback(
-    (adPackage: { value: string }) => () => {
-      setForm({ selectedPackageDays: adPackage.value });
+    (selectedBoostId: string) => () => {
+      setForm({ selectedPackageDays: selectedBoostId });
     },
     [setForm],
   );
+
+  const handleBoostNow = useCallback(async () => {
+    if (listingId) {
+      const baseUrl = `${process.env.EXPO_PUBLIC_BACKEND_URL}/paypal/boost-post`;
+      const redirectUrl = Linking.createURL(
+        `screens/listing-detail?id=${listingId}`,
+      );
+      const startUrl = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}user_id=${encodeURIComponent(user?.id)}&plan_id=${encodeURIComponent(form?.selectedPackageDays)}&listing_id=${encodeURIComponent(listingId)}&redirect=${encodeURIComponent(redirectUrl)}`;
+
+      try {
+        handlePaypalPayment({
+          url: startUrl,
+          redirectUrl,
+          onSuccess: () => {
+            router.replace('/screens/checkout-success');
+          },
+        });
+      } catch (e) {
+        console.error('Subscription error', e);
+        Alert.alert('Payment error', 'Unable to call chaamo boost post.');
+      }
+    }
+  }, [form?.selectedPackageDays, listingId, user?.id]);
 
   const handleUnboostPackage = useCallback(() => {
     setForm(structuredClone(initialSellFormState));
@@ -59,14 +105,17 @@ export default function SelectAdPackageScreen() {
               />
             </Row>
             <View className={classes.adPackageContainer}>
-              {adPackages.map((adPackage) => (
+              {boostPlans.map((boostPlan) => (
                 <RadioInput
                   name="adPackage"
-                  key={adPackage.label}
-                  label={adPackage.label}
-                  sublabel={`${adPackage.price[0].currency} ${adPackage.price[0].value}`}
-                  selected={form.selectedPackageDays === adPackage.value}
-                  onPress={handleSelectPackage(adPackage)}
+                  key={boostPlan.node.name}
+                  label={boostPlan.node.name ?? ''}
+                  sublabel={formatDisplay(
+                    boostPlan.node.currency,
+                    boostPlan.node.price,
+                  )}
+                  selected={form.selectedPackageDays === boostPlan.node.id}
+                  onPress={handleSelectPackage(boostPlan.node.id)}
                   className={classes.adPackage}
                   classNameLabel={classes.adPackageText}
                 />
@@ -75,15 +124,14 @@ export default function SelectAdPackageScreen() {
           </View>
         </View>
         <View className={classes.buttonContainer}>
-          <Button
-            onPress={() => router.push('/screens/ad-checkout')}
-            disabled={!form.selectedPackageDays}
-          >
-            Proceed to Checkout
+          <Button onPress={handleBoostNow} disabled={!form.selectedPackageDays}>
+            Boost Now
           </Button>
-          <Button variant="primary-light" onPress={handleUnboostPackage}>
-            No, I don&apos;t want to feature now
-          </Button>
+          {hideCancelButton !== 'true' && (
+            <Button variant="primary-light" onPress={handleUnboostPackage}>
+              No, I don&apos;t want to feature now
+            </Button>
+          )}
         </View>
       </View>
     </ScreenContainer>

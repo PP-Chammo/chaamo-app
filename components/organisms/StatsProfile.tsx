@@ -10,7 +10,7 @@ import {
   ListingType,
   useGetProfilesQuery,
   useGetUserAddressesQuery,
-  useGetVwChaamoListingsQuery,
+  useGetVwListingCardsQuery,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useUserVar } from '@/hooks/useUserVar';
@@ -38,7 +38,7 @@ export default function StatsProfile() {
     },
   });
 
-  const { data: listingsData } = useGetVwChaamoListingsQuery({
+  const { data: listingsData } = useGetVwListingCardsQuery({
     fetchPolicy: 'cache-and-network',
     variables: {
       filter: {
@@ -58,41 +58,41 @@ export default function StatsProfile() {
 
   const portfolioCount = useMemo(() => {
     return (
-      listingsData?.vw_chaamo_cardsCollection?.edges
+      listingsData?.vw_listing_cardsCollection?.edges
         ?.filter(
           (listing) => listing.node.listing_type === ListingType.PORTFOLIO,
         )
         .length?.toString() ?? '0'
     );
-  }, [listingsData?.vw_chaamo_cardsCollection?.edges]);
+  }, [listingsData?.vw_listing_cardsCollection?.edges]);
 
   const soldCount = useMemo(() => {
     return (
-      listingsData?.vw_chaamo_cardsCollection?.edges
+      listingsData?.vw_listing_cardsCollection?.edges
         ?.filter((listing) => listing.node.status === ListingStatus.SOLD)
         .length?.toString() ?? '0'
     );
-  }, [listingsData?.vw_chaamo_cardsCollection?.edges]);
+  }, [listingsData?.vw_listing_cardsCollection?.edges]);
 
   const auctionCount = useMemo(() => {
     return (
-      listingsData?.vw_chaamo_cardsCollection?.edges
+      listingsData?.vw_listing_cardsCollection?.edges
         ?.filter((listing) => listing.node.listing_type === ListingType.AUCTION)
         .length?.toString() ?? '0'
     );
-  }, [listingsData?.vw_chaamo_cardsCollection?.edges]);
+  }, [listingsData?.vw_listing_cardsCollection?.edges]);
 
   const sellCount = useMemo(() => {
     return (
-      listingsData?.vw_chaamo_cardsCollection?.edges
+      listingsData?.vw_listing_cardsCollection?.edges
         ?.filter((listing) => listing.node.listing_type === ListingType.SELL)
         .length?.toString() ?? '0'
     );
-  }, [listingsData?.vw_chaamo_cardsCollection?.edges]);
+  }, [listingsData?.vw_listing_cardsCollection?.edges]);
 
   const totalEarnings = useMemo(() => {
     return (
-      listingsData?.vw_chaamo_cardsCollection?.edges
+      listingsData?.vw_listing_cardsCollection?.edges
         ?.filter((listing) => listing.node.status === ListingStatus.SOLD)
         ?.reduce(
           (acc, listing) =>
@@ -110,7 +110,7 @@ export default function StatsProfile() {
   }, [
     convertSymbolToCurrency,
     formatPrice,
-    listingsData?.vw_chaamo_cardsCollection?.edges,
+    listingsData?.vw_listing_cardsCollection?.edges,
   ]);
 
   return (

@@ -6,7 +6,7 @@ import { ActivityIndicator, FlatList, View } from 'react-native';
 
 import { Label } from '@/components/atoms';
 import { ListingItem } from '@/components/molecules';
-import { GetVwChaamoListingsQuery, ListingType } from '@/generated/graphql';
+import { GetVwListingCardsQuery, ListingType } from '@/generated/graphql';
 import { useFavorites } from '@/hooks/useFavorites';
 import { DeepGet } from '@/types/helper';
 import { getColor } from '@/utils/getColor';
@@ -21,8 +21,8 @@ cssInterop(FlatList, {
 interface ProductFixedListProps {
   loading: boolean;
   cards: DeepGet<
-    GetVwChaamoListingsQuery,
-    ['vw_chaamo_cardsCollection', 'edges']
+    GetVwListingCardsQuery,
+    ['vw_listing_cardsCollection', 'edges']
   >;
   onFavoritePress: (listingId: string, isFavorite: boolean) => void;
 }
@@ -50,11 +50,13 @@ const ProductFixedList: React.FC<ProductFixedListProps> = memo(
           <ListingItem
             listingType={item.node?.listing_type ?? ListingType.SELL}
             imageUrls={item.node?.image_urls ?? ''}
-            title={item.node?.name ?? ''}
+            title={item.node?.title ?? ''}
             subtitle={item.node?.seller_username ?? ''}
             date={item.node.created_at ?? new Date().toISOString()}
             currency={item.node?.currency}
             price={item.node?.start_price}
+            highestBidCurrency={item.node?.highest_bid_currency}
+            highestBidPrice={item.node?.highest_bid_price}
             marketCurrency={item.node?.last_sold_currency}
             marketPrice={item.node?.last_sold_price}
             lastSoldIsChecked={item.node?.last_sold_is_checked ?? false}

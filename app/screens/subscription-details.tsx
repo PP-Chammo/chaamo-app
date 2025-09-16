@@ -1,20 +1,23 @@
 import { useCallback, useMemo } from 'react';
 
+import * as Linking from 'expo-linking';
 import { router, useFocusEffect } from 'expo-router';
 import { Alert, View } from 'react-native';
 
 import {
   BillingInfo,
   Button,
-  Label,
   PaymentMethodCard,
-  Row,
   ScreenContainer,
 } from '@/components/atoms';
 import { Header } from '@/components/molecules';
-import { useGetSubscriptionDetailLazyQuery } from '@/generated/graphql';
+import {
+  SubscriptionStatus,
+  useGetSubscriptionDetailLazyQuery,
+} from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useUserVar } from '@/hooks/useUserVar';
+import { handlePaypalPayment } from '@/utils/paypal';
 
 export default function SubscriptionDetailsScreen() {
   const [user] = useUserVar();
@@ -28,23 +31,46 @@ export default function SubscriptionDetailsScreen() {
     return data?.subscriptionsCollection?.edges?.[0]?.node;
   }, [data]);
 
-  console.log(detail);
+  const gatewayAccountInfo = useMemo(() => {
+    return JSON.parse(detail?.payments?.gateway_account_info ?? '{}');
+  }, [detail]);
+
+  const fnCancelSubscription = useCallback(async () => {
+    try {
+      const redirect = Linking.createURL('screens/settings');
+      const planId = detail?.plan_id;
+      const subscriptionId = detail?.paypal_subscription_id;
+      const params = `redirect=${redirect}&user_id=${user?.id}&plan_id=${planId}&paypal_subscription_id=${subscriptionId}`;
+      handlePaypalPayment({
+        url: `${process.env.EXPO_PUBLIC_BACKEND_URL}/paypal/subscription/cancel?${params}`,
+        redirectUrl: redirect,
+        onSuccess: () => {
+          Alert.alert('Success', 'Your subscription has been cancelled.');
+        },
+      });
+    } catch (e) {
+      console.error('Subscription error', e);
+      Alert.alert('Payment error', 'Unable to cancel your subscription.');
+    }
+  }, [detail?.paypal_subscription_id, detail?.plan_id, user?.id]);
 
   const handleCancelSubscription = useCallback(() => {
     Alert.alert(
       'Cancel Subscription',
       'Are you sure you want to cancel your subscription?',
-      [
-        { text: 'Cancel' },
-        { text: 'OK', onPress: () => Alert.alert('Coming soon') },
-      ],
+      [{ text: 'Cancel' }, { text: 'OK', onPress: fnCancelSubscription }],
     );
-  }, []);
+  }, [fnCancelSubscription]);
 
   useFocusEffect(
     useCallback(() => {
       getSubscriptionDetail({
-        variables: { filter: { user_id: { eq: user?.id } } },
+        variables: {
+          filter: {
+            user_id: { eq: user?.id },
+            status: { eq: SubscriptionStatus.ACTIVE },
+          },
+        },
       });
     }, [getSubscriptionDetail, user?.id]),
   );
@@ -54,15 +80,17 @@ export default function SubscriptionDetailsScreen() {
       <Header title="Payment and Subscription" onBackPress={router.back} />
       <View className={classes.container}>
         <PaymentMethodCard
-          name="Visa"
+          name={gatewayAccountInfo?.paypal_email ? 'paypal' : 'credit-card'}
           subscriptionInfo={{
-            last4: '4242',
-            expiry: '12/25',
+            email: gatewayAccountInfo?.paypal_email,
+            last4: gatewayAccountInfo?.credit_card_last4,
+            expiry: gatewayAccountInfo?.credit_card_expiry,
           }}
           nextBillingDate={detail?.end_date}
         />
         <BillingInfo
           name={detail?.membership_plans?.name ?? ''}
+          isPending={detail?.status === SubscriptionStatus.PENDING}
           subscriptionInfo={`${formatDisplay(
             detail?.membership_plans?.currency,
             detail?.membership_plans?.price ?? 0,
@@ -70,16 +98,12 @@ export default function SubscriptionDetailsScreen() {
         />
       </View>
       <View className={classes.footer}>
-        <Row between className={classes.row}>
-          <Label>{detail?.membership_plans?.name ?? ''}</Label>
-          <Label className={classes.price}>
-            {formatDisplay(
-              detail?.membership_plans?.currency,
-              detail?.membership_plans?.price ?? 0,
-            )}
-          </Label>
-        </Row>
-        <Button onPress={handleCancelSubscription}>Cancel Subscription</Button>
+        <Button
+          onPress={handleCancelSubscription}
+          disabled={detail?.status === SubscriptionStatus.PENDING}
+        >
+          Cancel Subscription
+        </Button>
       </View>
     </ScreenContainer>
   );

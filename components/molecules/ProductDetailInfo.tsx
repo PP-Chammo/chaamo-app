@@ -8,7 +8,7 @@ import { View } from 'react-native';
 
 import ChaamoLogo from '@/assets/images/logo.png';
 import { Button, Icon, Label, PriceIndicator, Row } from '@/components/atoms';
-import { ListingType, useUpdateUserCardMutation } from '@/generated/graphql';
+import { ListingType, useUpdateCardMutation } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 
 interface ProductDetailInfoProps {
@@ -44,7 +44,7 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
 }) => {
   const [user] = useUserVar();
 
-  const [updateUserCard, { loading }] = useUpdateUserCardMutation();
+  const [updateUserCard, { loading }] = useUpdateCardMutation();
 
   const handleConfirmIncorrect = useCallback(() => {
     router.push({
@@ -64,8 +64,8 @@ const ProductDetailInfo: React.FC<ProductDetailInfoProps> = ({
           id: { eq: userCardId },
         },
       },
-      onCompleted: ({ updateuser_cardsCollection }) => {
-        if (updateuser_cardsCollection?.records?.length) {
+      onCompleted: ({ updatecardsCollection }) => {
+        if (updatecardsCollection?.records?.length) {
           refetch?.();
         }
       },

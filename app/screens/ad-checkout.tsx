@@ -11,7 +11,7 @@ import { adPackages } from '@/constants/adProperties';
 import {
   BoostStatus,
   PaymentStatus,
-  useCreateBoostedListingsMutation,
+  useCreateBoostListingsMutation,
   useCreatePaymentsMutation,
   useUpdatePaymentsMutation,
 } from '@/generated/graphql';
@@ -36,7 +36,7 @@ export default function AdCheckoutScreen() {
   const [loading, setLoading] = useState(false);
 
   const [createPayment] = useCreatePaymentsMutation();
-  const [createBoostedListing] = useCreateBoostedListingsMutation();
+  const [createBoostListings] = useCreateBoostListingsMutation();
   const [updatePayment] = useUpdatePaymentsMutation();
 
   const selectedPackage = useMemo(() => {
@@ -54,8 +54,8 @@ export default function AdCheckoutScreen() {
     if (!hasPaymentMethods) {
       router.push('/screens/card-details');
       setLoading(false);
-    } else if (form?.listing_id && form?.user_card_id) {
-      if (form?.listing_id) {
+    } else if (form?.listingId && form?.cardId) {
+      if (form?.listingId) {
         createPayment({
           variables: {
             objects: [
@@ -72,11 +72,11 @@ export default function AdCheckoutScreen() {
             if (insertIntopaymentsCollection?.records?.length) {
               const newPaymentId = insertIntopaymentsCollection.records[0].id;
               // NOTE: this process createBoostedListing should call after payment success
-              createBoostedListing({
+              createBoostListings({
                 variables: {
                   objects: [
                     {
-                      listing_id: form.listing_id,
+                      listing_id: form.listingId,
                       payment_id: newPaymentId,
                       start_time: formatISO(new Date()),
                       end_time: formatISO(
@@ -86,8 +86,8 @@ export default function AdCheckoutScreen() {
                     },
                   ],
                 },
-                onCompleted: ({ insertIntoboosted_listingsCollection }) => {
-                  if (insertIntoboosted_listingsCollection?.records?.length) {
+                onCompleted: ({ insertIntoboost_listingsCollection }) => {
+                  if (insertIntoboost_listingsCollection?.records?.length) {
                     updatePayment({
                       variables: {
                         set: {
@@ -137,15 +137,15 @@ export default function AdCheckoutScreen() {
       Alert.alert('Missing Posting, please try again.');
     }
   }, [
-    createBoostedListing,
-    createPayment,
-    form.listing_id,
+    form.listingId,
+    form?.cardId,
     form.selectedPackageDays,
-    form.user_card_id,
+    createPayment,
     user.id,
     selectedPackage?.price,
-    setForm,
+    createBoostListings,
     updatePayment,
+    setForm,
   ]);
 
   return (

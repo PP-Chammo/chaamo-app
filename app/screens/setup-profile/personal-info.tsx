@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import * as ImagePicker from 'expo-image-picker';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Alert, View } from 'react-native';
 
 import {
@@ -16,7 +16,7 @@ import {
   SetupProfileTabs,
   TextField,
 } from '@/components/molecules';
-import { TextChangeParams } from '@/domains';
+import { Country, TextChangeParams } from '@/domains';
 import { useUpdateProfileMutation } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 import { UserStore } from '@/stores/userStore';
@@ -33,24 +33,43 @@ export default function PersonalInfoScreen() {
 
   const profile = form?.profile;
 
+  const [countries, setCountries] = useState<Country[]>([]);
+
   const [updateProfile, { loading }] = useUpdateProfileMutation();
 
   const handleChange = useCallback(
-    ({ name, value }: TextChangeParams) => {
+    (
+      { name, value }: TextChangeParams,
+      callingCode?: string,
+      countryCode?: string,
+    ) => {
       setErrors((prev) => {
         delete prev[name as keyof typeof prev];
         return prev;
       });
 
-      setForm({
-        ...form,
-        profile: { ...form.profile, [name]: value } as DeepGet<
-          UserStore,
-          ['profile']
-        >,
-      });
+      if (name === 'phone_number' && !!callingCode) {
+        const country = countries.find(
+          (country) => country.iso2 === countryCode,
+        );
+        setForm({
+          ...form,
+          profile: {
+            ...form.profile,
+            phone_number: value,
+            calling_code: callingCode,
+            country_name: country?.name,
+            country_code: country?.iso2,
+          },
+        });
+      } else {
+        setForm({
+          ...form,
+          profile: { ...form.profile, [name]: value },
+        });
+      }
     },
-    [form, setForm],
+    [countries, form, setForm],
   );
 
   const handleSubmit = useCallback(async () => {
@@ -134,6 +153,18 @@ export default function PersonalInfoScreen() {
     }
   };
 
+  const lazyLoad = useCallback(async () => {
+    const countriesData = await import('@/assets/data/countries.json');
+
+    setCountries(countriesData.default);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      lazyLoad();
+    }, [lazyLoad]),
+  );
+
   return (
     <ScreenContainer>
       <Header title="Setting Up Profile" onBackPress={logout} />
@@ -171,7 +202,7 @@ export default function PersonalInfoScreen() {
           <PhoneInput
             name="phone_number"
             value={profile?.phone_number ?? ''}
-            countryCode={profile?.country_code ?? ''}
+            countryCode={profile?.country_code ?? 'GB'}
             onChange={handleChange}
             error={errors.phone_number}
             required

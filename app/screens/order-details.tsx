@@ -1,14 +1,16 @@
-import { Fragment, useCallback, useMemo, useState } from 'react';
+import React, { Fragment, useCallback, useMemo, useState } from 'react';
 
+import { MaterialIcons } from '@expo/vector-icons';
+import { format } from 'date-fns';
 import {
   Link,
   router,
   useFocusEffect,
   useLocalSearchParams,
 } from 'expo-router';
-import { ScrollView, View } from 'react-native';
+import { toLower, upperFirst } from 'lodash';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 
-import { MasterCard } from '@/assets/svg';
 import {
   Button,
   Divider,
@@ -18,9 +20,13 @@ import {
 } from '@/components/atoms';
 import { Header } from '@/components/molecules';
 import { useGetVwMyOrdersLazyQuery } from '@/generated/graphql';
+import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
+import { useUserVar } from '@/hooks/useUserVar';
 
 export default function OrderDetailsScreen() {
+  const [user] = useUserVar();
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { formatDisplay } = useCurrencyDisplay();
 
   const [isExpandedOrderDetails, setIsExpandedOrderDetails] =
     useState<boolean>(false);
@@ -36,7 +42,22 @@ export default function OrderDetailsScreen() {
     [data],
   );
 
-  console.log(detail);
+  const isSeller = useMemo(() => {
+    return detail?.seller_id === user?.id;
+  }, [detail?.seller_id, user?.id]);
+
+  const gateway_info = useMemo(() => {
+    return JSON.parse(detail?.gateway_account_info ?? '{}');
+  }, [detail?.gateway_account_info]);
+
+  const handleRedirectSellerProfile = useCallback(() => {
+    router.push({
+      pathname: '/screens/profile',
+      params: {
+        userId: isSeller ? detail?.buyer_id : detail?.seller_id,
+      },
+    });
+  }, [detail?.buyer_id, detail?.seller_id, isSeller]);
 
   useFocusEffect(
     useCallback(() => {
@@ -57,24 +78,40 @@ export default function OrderDetailsScreen() {
       return (
         <Fragment>
           <Row between>
-            <Label>Time Placed</Label>
-            <Label>-</Label>
+            <Label>Time placed</Label>
+            <Label>
+              {format(new Date(detail?.created_at), 'dd/MM/yyyy HH:mm')}
+            </Label>
           </Row>
           <Row between>
-            <Label>Total</Label>
-            <Label>{detail?.final_price}</Label>
+            <Label>Item</Label>
+            <Label>
+              {formatDisplay(detail?.currency, detail?.seller_earnings)}
+            </Label>
           </Row>
           <Row between>
-            <Label>Sold By</Label>
-            <Link href="/" className={classes.link}>
-              John Doe
-            </Link>
+            <Label>{isSeller ? 'Sold to' : 'Sold by'}</Label>
+            <TouchableOpacity onPress={handleRedirectSellerProfile}>
+              <Label className={classes.linkText}>
+                {isSeller ? detail?.buyer_username : detail?.seller_username}
+              </Label>
+            </TouchableOpacity>
           </Row>
         </Fragment>
       );
 
     return null;
-  }, [detail?.final_price, isExpandedOrderDetails]);
+  }, [
+    detail?.buyer_username,
+    detail?.created_at,
+    detail?.currency,
+    detail?.seller_earnings,
+    detail?.seller_username,
+    formatDisplay,
+    handleRedirectSellerProfile,
+    isExpandedOrderDetails,
+    isSeller,
+  ]);
 
   const _renderPaymentInfo = useMemo(() => {
     if (isExpandedPaymentInfo)
@@ -82,21 +119,34 @@ export default function OrderDetailsScreen() {
         <Fragment>
           <Row between>
             <Label>Item</Label>
-            <Label>$ 18.31</Label>
+            <Label>
+              {formatDisplay(detail?.currency, detail?.seller_earnings)}
+            </Label>
           </Row>
           <Row between>
-            <Label>Postage</Label>
-            <Label>$ 4.50</Label>
+            <Label>Shipping</Label>
+            <Label>
+              {formatDisplay(detail?.currency, detail?.shipping_fee)}
+            </Label>
           </Row>
           <Row between>
             <Label>Insurance</Label>
-            <Label>$ 3.50</Label>
+            <Label>
+              {formatDisplay(detail?.currency, detail?.insurance_fee)}
+            </Label>
           </Row>
         </Fragment>
       );
 
     return null;
-  }, [isExpandedPaymentInfo]);
+  }, [
+    detail?.currency,
+    detail?.insurance_fee,
+    detail?.seller_earnings,
+    detail?.shipping_fee,
+    formatDisplay,
+    isExpandedPaymentInfo,
+  ]);
 
   return (
     <ScreenContainer>
@@ -107,7 +157,13 @@ export default function OrderDetailsScreen() {
             <Label className={classes.headerTitle}>Order Info.</Label>
             <Row between>
               <Label>Order number</Label>
-              <Label>25-12836-90024</Label>
+              <Label>{detail?.id}</Label>
+            </Row>
+            <Row between>
+              <Label>Status</Label>
+              <Label>
+                {upperFirst(toLower(detail?.status?.replace(/_/g, ' ') ?? ''))}
+              </Label>
             </Row>
             {_renderOrderDetails}
             <Divider position="horizontal" className={classes.divider} />
@@ -126,17 +182,23 @@ export default function OrderDetailsScreen() {
             <Label className={classes.headerTitle}>Payment Info.</Label>
             <Row between>
               <Row>
-                <MasterCard />
-                <Label> **** **** **** 2424</Label>
+                <Row>
+                  <MaterialIcons name="paypal" size={24} color="black" />
+                </Row>
+                <Label>{gateway_info?.email}</Label>
               </Row>
-              <Label variant="subtitle">$21.00</Label>
+              <Label variant="subtitle">
+                {formatDisplay(detail?.currency, detail?.final_price)}
+              </Label>
             </Row>
             {_renderPaymentInfo}
             <Divider position="horizontal" className={classes.divider} />
             {isExpandedPaymentInfo && (
               <Row between>
                 <Label variant="subtitle">Total</Label>
-                <Label variant="subtitle">$ 21.00</Label>
+                <Label variant="subtitle">
+                  {formatDisplay(detail?.currency, detail?.final_price)}
+                </Label>
               </Row>
             )}
             <Button
@@ -149,28 +211,32 @@ export default function OrderDetailsScreen() {
                 : 'View Payment Info'}
             </Button>
           </View>
-          <View className={classes.section}>
-            <Label className={classes.headerTitle}>Track Package</Label>
-            <Row between>
-              <Label>Tracking Number</Label>
-              <Link href="/" className={classes.link}>
-                25-12836-90024
-              </Link>
-            </Row>
-          </View>
-          <View className={classes.section}>
-            <Label className={classes.headerTitle}>Delivery Info</Label>
-            <Row between>
-              <Label>Name</Label>
-              <Label>Azhar Ali</Label>
-            </Row>
-            <Row between>
-              <Label className={classes.addressLabel}>Address</Label>
-              <Label className={classes.addressValue}>
-                287a fleet Road Fleet, Hampshire GU513BZ United Kingdom
-              </Label>
-            </Row>
-          </View>
+          {detail?.status === 'shipped' && (
+            <View className={classes.section}>
+              <Label className={classes.headerTitle}>Track Package</Label>
+              <Row between>
+                <Label>Tracking Number</Label>
+                <Link href="/" className={classes.linkText}>
+                  {detail?.shipping_tracking_number}
+                </Link>
+              </Row>
+            </View>
+          )}
+          {detail?.status === 'delivered' && (
+            <View className={classes.section}>
+              <Label className={classes.headerTitle}>Delivery Info</Label>
+              <Row between>
+                <Label>Name</Label>
+                <Label>{user?.profile?.username}</Label>
+              </Row>
+              <Row between>
+                <Label className={classes.addressLabel}>Address</Label>
+                <Label className={classes.addressValue}>
+                  {JSON.parse(detail?.shipping_address)}
+                </Label>
+              </Row>
+            </View>
+          )}
         </View>
       </ScrollView>
     </ScreenContainer>
@@ -182,7 +248,7 @@ const classes = {
   headerTitle: 'text-md font-bold',
   divider: '!bg-primary-100',
   buttonText: '!text-primary-600 font-medium',
-  link: 'underline font-medium',
+  linkText: 'underline font-medium',
   container: 'gap-4',
   addressLabel: 'self-start',
   addressValue: 'w-40 text-right',

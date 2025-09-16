@@ -1,12 +1,19 @@
 import { memo, useMemo } from 'react';
 
 import { router } from 'expo-router';
+import { cssInterop } from 'nativewind';
 import { ScrollView, View } from 'react-native';
 
 import { Button, Label, Row } from '@/components/atoms';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useSearchVar } from '@/hooks/useSearchVar';
 import { useUserVar } from '@/hooks/useUserVar';
+
+cssInterop(ScrollView, {
+  contentContainerClassName: {
+    target: 'contentContainerStyle',
+  },
+});
 
 interface FilterSectionProps {
   loading?: boolean;

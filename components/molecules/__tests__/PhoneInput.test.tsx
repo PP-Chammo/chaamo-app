@@ -61,9 +61,13 @@ describe('PhoneNumberInput', () => {
     const phoneInput = getByTestId('phone-input-field');
     // Simulate a change
     phoneInput.props.onChangeText('234567890');
-    expect(onChange).toHaveBeenCalledWith({
-      name: 'phone',
-      value: '234567890',
-    });
+    expect(onChange).toHaveBeenCalledWith(
+      {
+        name: 'phone',
+        value: '234567890',
+      },
+      expect.any(String),
+      expect.any(String),
+    );
   });
 });

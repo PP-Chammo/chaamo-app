@@ -13,8 +13,9 @@ import {
 import { Header, SettingItem } from '@/components/molecules';
 import { currencyMap } from '@/constants/currencies';
 import {
+  SubscriptionStatus,
   useGetNotificationsLazyQuery,
-  useGetSubscriptionsQuery,
+  useGetSubscriptionsLazyQuery,
   useGetUserNotificationSettingsQuery,
 } from '@/generated/graphql';
 import { useBlockedUsers } from '@/hooks/useBlockedUsers';
@@ -33,18 +34,10 @@ export default function SettingsScreen() {
   const [isDeleteAccountModalVisible, setIsDeleteAccountModalVisible] =
     useState<boolean>(false);
 
-  const { data: subscriptionsData } = useGetSubscriptionsQuery({
-    variables: {
-      filter: {
-        user_id: {
-          eq: user?.id,
-        },
-        end_date: {
-          gt: new Date().toISOString(),
-        },
-      },
-    },
-  });
+  const [getSubscriptions, { data: subscriptionsData }] =
+    useGetSubscriptionsLazyQuery({
+      fetchPolicy: 'cache-and-network',
+    });
 
   const {
     data: userNotificationSettingsData,
@@ -65,9 +58,9 @@ export default function SettingsScreen() {
 
   const [getNotifications] = useGetNotificationsLazyQuery();
 
-  const hasSubscription = useMemo(() => {
-    return subscriptionsData?.subscriptionsCollection?.edges?.length ?? 0 > 0;
-  }, [subscriptionsData?.subscriptionsCollection?.edges?.length]);
+  const subscription = useMemo(() => {
+    return subscriptionsData?.subscriptionsCollection?.edges?.[0]?.node;
+  }, [subscriptionsData?.subscriptionsCollection?.edges]);
 
   const handleDeleteAccountModal = useCallback(() => {
     setIsDeleteAccountModalVisible(!isDeleteAccountModalVisible);
@@ -143,12 +136,6 @@ export default function SettingsScreen() {
     userNotificationSettingsData?.user_notification_settingsCollection?.edges,
   ]);
 
-  useFocusEffect(
-    useCallback(() => {
-      refetchUserNotificationSettings();
-    }, [refetchUserNotificationSettings]),
-  );
-
   const currencyLabel = useMemo(() => {
     return currencyMap?.[user?.profile?.currency ?? 'USD'];
   }, [user?.profile?.currency]);
@@ -176,6 +163,41 @@ export default function SettingsScreen() {
       },
     ]);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetchUserNotificationSettings();
+    }, [refetchUserNotificationSettings]),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      getSubscriptions({
+        variables: {
+          filter: {
+            user_id: {
+              eq: user?.id,
+            },
+            or: [
+              {
+                status: {
+                  eq: SubscriptionStatus.ACTIVE,
+                },
+              },
+              {
+                status: {
+                  eq: SubscriptionStatus.PENDING,
+                },
+              },
+            ],
+            end_date: {
+              gt: new Date().toISOString(),
+            },
+          },
+        },
+      });
+    }, [getSubscriptions, user?.id]),
+  );
 
   return (
     <Fragment>
@@ -235,9 +257,12 @@ export default function SettingsScreen() {
               iconName="credit-card-outline"
               title="Payment & Subscription"
               onPress={() =>
-                hasSubscription
+                !!subscription?.user_id &&
+                subscription?.status === SubscriptionStatus.ACTIVE
                   ? router.push('/screens/subscription-details')
-                  : router.push('/screens/plans')
+                  : router.push(
+                      `/screens/plans?pending=${subscription?.status === SubscriptionStatus.PENDING}`,
+                    )
               }
             />
             <Divider position="horizontal" className={classes.divider} />

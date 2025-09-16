@@ -13,6 +13,7 @@ import {
 } from '@/components/molecules';
 import { Country, State, TextChangeParams } from '@/domains';
 import {
+  useCreateUserAddressMutation,
   useUpdateProfileMutation,
   useUpdateUserAddressMutation,
 } from '@/generated/graphql';
@@ -30,6 +31,8 @@ export default function PersonalDetailsScreen() {
   >({});
   const [updateProfile, { loading: loadingUpdateProfile }] =
     useUpdateProfileMutation();
+  const [insertUserAddress, { loading: loadingInsertUserAddress }] =
+    useCreateUserAddressMutation();
   const [updateUserAddress, { loading: loadingUpdateUserAddress }] =
     useUpdateUserAddressMutation();
 
@@ -76,26 +79,46 @@ export default function PersonalDetailsScreen() {
   }, [form, originalForm, revertForm]);
 
   const handleChange = useCallback(
-    ({ name, value }: TextChangeParams) => {
+    (
+      { name, value }: TextChangeParams,
+      callingCode?: string,
+      countryCode?: string,
+    ) => {
       setErrors((prev) => {
         delete prev[name as keyof typeof prev];
         return prev;
       });
 
-      setForm({
-        ...form,
-        profile: { ...form.profile, [name]: value } as DeepGet<
-          UserStore,
-          ['profile']
-        >,
-      });
+      if (name === 'phone_number' && !!callingCode) {
+        const country = countries.find(
+          (country) => country.iso2 === countryCode,
+        );
+        setForm({
+          ...form,
+          profile: {
+            ...form.profile,
+            phone_number: value,
+            calling_code: callingCode,
+            country_name: country?.name,
+            country_code: country?.iso2,
+          },
+        });
+      } else {
+        setForm({
+          ...form,
+          profile: { ...form.profile, [name]: value },
+        });
+      }
     },
-    [form, setForm],
+    [countries, form, setForm],
   );
 
   const loadingSave = useMemo(
-    () => loadingUpdateProfile || loadingUpdateUserAddress,
-    [loadingUpdateProfile, loadingUpdateUserAddress],
+    () =>
+      loadingUpdateProfile ||
+      loadingInsertUserAddress ||
+      loadingUpdateUserAddress,
+    [loadingInsertUserAddress, loadingUpdateProfile, loadingUpdateUserAddress],
   );
 
   const handleUpdateProfile = useCallback(() => {
@@ -103,6 +126,9 @@ export default function PersonalDetailsScreen() {
       'city',
       'country',
       'postal_code',
+      ...(['GB', 'UK'].includes(form?.profile?.country_code ?? '')
+        ? []
+        : ['state_province' as const]),
     ];
 
     const validationErrors = validateRequired(
@@ -113,32 +139,33 @@ export default function PersonalDetailsScreen() {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      const {
-        id,
-        username,
-        country_code,
-        phone_number,
-        address_line_1,
-        city,
-        state_province,
-        country,
-        postal_code,
-      } = form.profile ?? {};
-
+      const country = countries.find(
+        (country) => country.iso2 === form?.profile?.country_code,
+      );
       updateProfile({
         variables: {
           set: {
-            username,
-            country_code,
-            phone_number,
+            username: form?.profile?.username,
+            calling_code: form?.profile?.calling_code,
+            phone_number: form?.profile?.phone_number,
+            country_name: country?.name,
+            country_code: country?.iso2,
           },
           filter: {
             id: {
-              eq: id,
+              eq: form?.profile?.id,
             },
           },
         },
         onCompleted: ({ updateprofilesCollection }) => {
+          const {
+            id,
+            address_line_1,
+            city,
+            state_province,
+            country,
+            postal_code,
+          } = form.profile ?? {};
           if (updateprofilesCollection?.records.length) {
             updateUserAddress({
               variables: {
@@ -156,12 +183,58 @@ export default function PersonalDetailsScreen() {
                 },
               },
               onCompleted: (data) => {
-                if (data?.updateuser_addressesCollection?.records.length) {
+                if (
+                  data?.updateuser_addressesCollection?.records?.length &&
+                  data?.updateuser_addressesCollection?.records?.length > 0
+                ) {
                   setOriginalForm(structuredClone(form));
                   Alert.alert(
                     'Success',
                     'Personal details updated successfully',
+                    [
+                      {
+                        text: 'OK',
+                        onPress: () => {
+                          router.back();
+                        },
+                      },
+                    ],
                   );
+                } else {
+                  // fallback to insert if user does not have address yet
+                  insertUserAddress({
+                    variables: {
+                      objects: [
+                        {
+                          user_id: id,
+                          address_line_1,
+                          city,
+                          state_province,
+                          country,
+                          postal_code,
+                        },
+                      ],
+                    },
+                    onCompleted: (data) => {
+                      if (
+                        data?.insertIntouser_addressesCollection?.records.length
+                      ) {
+                        setOriginalForm(structuredClone(form));
+                        Alert.alert(
+                          'Success',
+                          'Personal details updated successfully',
+                          [
+                            {
+                              text: 'OK',
+                              onPress: () => {
+                                router.back();
+                              },
+                            },
+                          ],
+                        );
+                      }
+                    },
+                  });
                 }
               },
             });
@@ -169,7 +242,7 @@ export default function PersonalDetailsScreen() {
         },
       });
     }
-  }, [form, updateProfile, updateUserAddress]);
+  }, [countries, form, insertUserAddress, updateProfile, updateUserAddress]);
 
   const profile = form.profile;
 
@@ -186,9 +259,11 @@ export default function PersonalDetailsScreen() {
     setCountries(countriesData.default);
   }, []);
 
-  useFocusEffect(() => {
-    lazyLoad();
-  });
+  useFocusEffect(
+    useCallback(() => {
+      lazyLoad();
+    }, [lazyLoad]),
+  );
 
   return (
     <ScreenContainer>
@@ -205,7 +280,7 @@ export default function PersonalDetailsScreen() {
           <PhoneInput
             name="phone_number"
             value={profile?.phone_number ?? ''}
-            countryCode={profile?.country_code ?? ''}
+            countryCode={profile?.country_code ?? 'GB'}
             onChange={handleChange}
           />
           <TextField
@@ -237,20 +312,23 @@ export default function PersonalDetailsScreen() {
             className={classes.input}
           />
           <Row between className={classes.row}>
-            <SelectModal
-              name="state_province"
-              label="State"
-              value={profile?.state_province ?? ''}
-              onChange={handleChange}
-              options={{
-                data: filteredStates,
-                label: 'name',
-                value: 'iso2',
-              }}
-              error={errors.state_province}
-              placeholder="--Select State--"
-              className={classes.input}
-            />
+            {!['GB', 'UK'].includes(profile?.country ?? '') && (
+              <SelectModal
+                required
+                name="state_province"
+                label="State"
+                value={profile?.state_province ?? ''}
+                onChange={handleChange}
+                options={{
+                  data: filteredStates,
+                  label: 'name',
+                  value: 'iso2',
+                }}
+                error={errors.state_province}
+                placeholder="--Select State--"
+                className={classes.input}
+              />
+            )}
             <TextField
               label="City"
               value={profile?.city}
@@ -287,5 +365,5 @@ const classes = {
   container: 'flex-1 p-4.5 gap-4',
   button: 'm-4.5',
   input: 'flex-1',
-  row: 'gap-3',
+  row: 'gap-3 !items-start',
 };

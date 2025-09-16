@@ -11,7 +11,7 @@ import { listingTypes } from '@/constants/listingTypes';
 import {
   ListingStatus,
   ListingType,
-  useGetVwChaamoListingsQuery,
+  useGetVwListingCardsQuery,
   useCreateFavoritesMutation,
   useRemoveFavoritesMutation,
 } from '@/generated/graphql';
@@ -28,7 +28,7 @@ export default function SoldItems() {
 
   const [filter, setFilter] = useState<ListingType | 'all'>('all');
 
-  const { data, refetch } = useGetVwChaamoListingsQuery({
+  const { data, refetch } = useGetVwListingCardsQuery({
     fetchPolicy: 'cache-and-network',
     variables: {
       filter: {
@@ -41,8 +41,8 @@ export default function SoldItems() {
   const [removeFavorites] = useRemoveFavoritesMutation();
 
   const soldItems = useMemo(
-    () => data?.vw_chaamo_cardsCollection?.edges ?? [],
-    [data?.vw_chaamo_cardsCollection?.edges],
+    () => data?.vw_listing_cardsCollection?.edges ?? [],
+    [data?.vw_listing_cardsCollection?.edges],
   );
 
   const filteredSoldItems = useMemo(() => {
@@ -131,7 +131,7 @@ export default function SoldItems() {
                 id={item.node.id}
                 type={item.node.listing_type}
                 imageUrls={item.node.image_urls ?? ''}
-                title={item.node.name ?? ''}
+                title={item.node.title ?? ''}
                 currency={item.node?.currency}
                 price={item.node?.start_price}
                 marketCurrency={item.node?.last_sold_currency}

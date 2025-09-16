@@ -1,6 +1,6 @@
 import {
   GetEbayPostsQuery,
-  GetVwChaamoListingsQuery,
+  GetVwListingCardsQuery,
   ListingType,
 } from '@/generated/graphql';
 
@@ -20,8 +20,8 @@ export interface ListingCardType {
 }
 
 export type ChaamoEdge = DeepGet<
-  GetVwChaamoListingsQuery,
-  ['vw_chaamo_cardsCollection', 'edges', number]
+  GetVwListingCardsQuery,
+  ['vw_listing_cardsCollection', 'edges', number]
 >;
 export type EbayEdge = DeepGet<
   GetEbayPostsQuery,
