@@ -13,6 +13,7 @@ import {
 } from '@/components/molecules';
 import { Country, State, TextChangeParams } from '@/domains';
 import {
+  useCreateUserAddressMutation,
   useUpdateProfileMutation,
   useUpdateUserAddressMutation,
 } from '@/generated/graphql';
@@ -30,6 +31,8 @@ export default function PersonalDetailsScreen() {
   >({});
   const [updateProfile, { loading: loadingUpdateProfile }] =
     useUpdateProfileMutation();
+  const [insertUserAddress, { loading: loadingInsertUserAddress }] =
+    useCreateUserAddressMutation();
   const [updateUserAddress, { loading: loadingUpdateUserAddress }] =
     useUpdateUserAddressMutation();
 
@@ -94,8 +97,11 @@ export default function PersonalDetailsScreen() {
   );
 
   const loadingSave = useMemo(
-    () => loadingUpdateProfile || loadingUpdateUserAddress,
-    [loadingUpdateProfile, loadingUpdateUserAddress],
+    () =>
+      loadingUpdateProfile ||
+      loadingInsertUserAddress ||
+      loadingUpdateUserAddress,
+    [loadingInsertUserAddress, loadingUpdateProfile, loadingUpdateUserAddress],
   );
 
   const handleUpdateProfile = useCallback(() => {
@@ -157,12 +163,58 @@ export default function PersonalDetailsScreen() {
                 },
               },
               onCompleted: (data) => {
-                if (data?.updateuser_addressesCollection?.records.length) {
+                if (
+                  data?.updateuser_addressesCollection?.records?.length &&
+                  data?.updateuser_addressesCollection?.records?.length > 0
+                ) {
                   setOriginalForm(structuredClone(form));
                   Alert.alert(
                     'Success',
                     'Personal details updated successfully',
+                    [
+                      {
+                        text: 'OK',
+                        onPress: () => {
+                          router.back();
+                        },
+                      },
+                    ],
                   );
+                } else {
+                  // fallback to insert if user does not have address yet
+                  insertUserAddress({
+                    variables: {
+                      objects: [
+                        {
+                          user_id: id,
+                          address_line_1,
+                          city,
+                          state_province,
+                          country,
+                          postal_code,
+                        },
+                      ],
+                    },
+                    onCompleted: (data) => {
+                      if (
+                        data?.insertIntouser_addressesCollection?.records.length
+                      ) {
+                        setOriginalForm(structuredClone(form));
+                        Alert.alert(
+                          'Success',
+                          'Personal details updated successfully',
+                          [
+                            {
+                              text: 'OK',
+                              onPress: () => {
+                                router.back();
+                              },
+                            },
+                          ],
+                        );
+                      }
+                    },
+                  });
                 }
               },
             });
@@ -170,7 +222,7 @@ export default function PersonalDetailsScreen() {
         },
       });
     }
-  }, [form, updateProfile, updateUserAddress]);
+  }, [form, insertUserAddress, updateProfile, updateUserAddress]);
 
   const profile = form.profile;
 

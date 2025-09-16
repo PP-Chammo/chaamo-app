@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
 import * as Linking from 'expo-linking';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Alert, FlatList, View } from 'react-native';
 
 import { Button, ScreenContainer } from '@/components/atoms';
@@ -17,6 +17,7 @@ import { handlePaypalPayment } from '@/utils/paypal';
 export default function PlansScreen() {
   const [user] = useUserVar();
   const { formatDisplay } = useCurrencyDisplay();
+  const { pending } = useLocalSearchParams<{ pending: string }>();
 
   const { data } = useGetMembershipPlansQuery({
     fetchPolicy: 'cache-and-network',
@@ -75,9 +76,11 @@ export default function PlansScreen() {
       <Button
         className={classes.button}
         onPress={handlePayWithPaypal}
-        disabled={membershipPlans.length === 0}
+        disabled={membershipPlans.length === 0 || pending === 'true'}
       >
-        Buy Subscription
+        {pending === 'true'
+          ? 'Your subscription is active soon, please wait'
+          : 'Buy Subscription'}
       </Button>
     </ScreenContainer>
   );

@@ -106,7 +106,6 @@ export default function SellScreen() {
       'cardCategoryId',
       'cardSet',
       'cardName',
-      'cardSerialNumber',
       'cardNumber',
       'cardCondition',
       ...(form.cardCondition === CardCondition.GRADED
@@ -349,7 +348,7 @@ export default function SellScreen() {
         category_id: Number(form.cardCategoryId),
         card_set: startCase(toLower(form.cardSet.trim())),
         name: startCase(toLower(form.cardName.trim())),
-        serial_number: `/${form.cardSerialNumber.trim()}`,
+        serial_number: `/${(form.cardSerialNumber ?? '').trim()}`,
         number: `#${form.cardNumber.trim()}`,
         condition: form.cardCondition,
         grading_company: form.cardGradingCompany.trim(),
@@ -551,7 +550,6 @@ export default function SellScreen() {
             placeholder='E.g: 50 (automatically add prefix "/")'
             value={form.cardSerialNumber}
             onChange={handleChange}
-            required
             leftLabel="/"
             inputClassName={classes.input}
             error={errors.cardSerialNumber}

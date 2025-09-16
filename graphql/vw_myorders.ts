@@ -17,7 +17,10 @@ export const getVwMyOrders = gql`
           currency
           final_price
           seller_earnings
+          seller_id
           seller_username
+          buyer_id
+          buyer_username
           shipping_fee
           insurance_fee
           image_urls
