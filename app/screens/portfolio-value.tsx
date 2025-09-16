@@ -13,6 +13,7 @@ import {
 } from '@/components/molecules';
 import { dummyPortfolioValueData } from '@/constants/dummy';
 import {
+  ListingType,
   OrderByDirection,
   OrderStatus,
   useGetVwListingCardsQuery,
@@ -42,6 +43,7 @@ export default function PortfolioValueScreen() {
     variables: {
       filter: {
         seller_id: { eq: user?.id },
+        listing_type: { neq: ListingType.PORTFOLIO },
       },
       orderBy: [
         { last_sold_price: OrderByDirection.DESCNULLSLAST },
