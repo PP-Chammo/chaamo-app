@@ -51,7 +51,8 @@ const INITIAL_PAGE_SIZE = 30;
 export default function ProductListScreen() {
   const [user] = useUserVar();
   const [search, setSearch] = useSearchVar();
-  const { mergedList, chaamoOnly, firstTab } = useLocalSearchParams();
+  const { mergedList, chaamoOnly, firstTab, featuredOnly } =
+    useLocalSearchParams();
   const { convertUserToBase } = useCurrencyDisplay();
 
   const [searchText, setSearchText] = useState('');
@@ -130,6 +131,9 @@ export default function ProductListScreen() {
 
   const chaamoFilter = useMemo<VwListingCardsFilter>(() => {
     const and: Record<string, unknown>[] = [];
+    if (featuredOnly === 'true') {
+      and.push({ is_boosted: { eq: true } });
+    }
     if (search.categoryId && search.category) {
       and.push({ category_id: { eq: Number(search.categoryId) } });
     }
@@ -184,6 +188,7 @@ export default function ProductListScreen() {
       and,
     } as VwListingCardsFilter;
   }, [
+    featuredOnly,
     search.categoryId,
     search.category,
     search.location,

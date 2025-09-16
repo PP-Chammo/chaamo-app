@@ -84,7 +84,7 @@ const FeaturedList = memo(function FeaturedList() {
   return (
     <ListContainer
       title="Featured"
-      onViewAllHref="/screens/product-list"
+      onViewAllHref="/screens/product-list?chaamoOnly=true&firstTab=fixedTab&featuredOnly=true"
       data={cards}
     >
       {(card) => (

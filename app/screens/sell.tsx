@@ -46,12 +46,12 @@ import { imageCapturedStore } from '@/stores/imageCapturedStore';
 import { SellFormStore } from '@/stores/sellFormStore';
 import { SupportedCurrency } from '@/types/currency';
 import { getColor } from '@/utils/getColor';
-import {
-  parseCanonicalTitle,
-  parseTitleCardYear,
-} from '@/utils/parseTitleCard';
 import { structuredClone } from '@/utils/structuredClone';
 import { uploadToBucket } from '@/utils/supabase';
+import {
+  buildCanonicalTitle,
+  parseTitleCardYear,
+} from '@/utils/titleCardHelpers';
 import { validateRequired, ValidationErrors } from '@/utils/validate';
 
 cssInterop(FlatList, {
@@ -344,17 +344,18 @@ export default function SellScreen() {
       const imageUrls = uploadedUrls.map((u) => String(u));
       const cardPayload = {
         image_urls: JSON.stringify(imageUrls),
-        years: JSON.stringify(parseTitleCardYear(form.cardYears)),
+        years: JSON.stringify(parseTitleCardYear(form.cardYears.trim())),
         category_id: Number(form.cardCategoryId),
         card_set: startCase(toLower(form.cardSet.trim())),
         name: startCase(toLower(form.cardName.trim())),
-        serial_number: `/${(form.cardSerialNumber ?? '').trim()}`,
-        number: `#${form.cardNumber.trim()}`,
+        variation: startCase(toLower(form.cardVariation.trim())),
+        serial_number: (form.cardSerialNumber ?? '').trim(),
+        number: form.cardNumber.trim(),
         condition: form.cardCondition,
         grading_company: form.cardGradingCompany.trim(),
         grade_number: form.cardGradeNumber.trim(),
         description: form.description.trim(),
-        canonical_title: parseCanonicalTitle(form),
+        canonical_title: buildCanonicalTitle(form),
       };
       const listingPayload = {
         seller_id: user.id,
@@ -434,9 +435,9 @@ export default function SellScreen() {
               cardYears,
               cardSet: listingDetail.card_set ?? '',
               cardName: listingDetail.name ?? '',
-              cardSerialNumber:
-                listingDetail.serial_number?.replace(/^\//g, '') ?? '',
-              cardNumber: listingDetail.number?.replace(/^#/g, '') ?? '',
+              cardVariation: listingDetail.variation ?? '',
+              cardSerialNumber: listingDetail.serial_number ?? '',
+              cardNumber: listingDetail.number ?? '',
               cardCondition: listingDetail.condition ?? CardCondition.RAW,
               cardGradingCompany: listingDetail.grading_company ?? '',
               cardGradeNumber: listingDetail.grade_number ?? '',
@@ -543,6 +544,15 @@ export default function SellScreen() {
             required
             inputClassName={classes.input}
             error={errors.cardName}
+          />
+          <TextField
+            name="cardVariation"
+            label="Variation"
+            placeholder="E.g: Gold Logofractor"
+            value={form.cardVariation}
+            onChange={handleChange}
+            inputClassName={classes.input}
+            error={errors.cardVariation}
           />
           <TextField
             name="cardSerialNumber"
