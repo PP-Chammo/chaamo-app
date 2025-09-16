@@ -7,6 +7,7 @@ export interface SellFormStore {
   cardYears: string;
   cardSet: string;
   cardName: string;
+  cardVariation: string;
   cardSerialNumber: string;
   cardNumber: string;
   cardCondition: CardCondition;
@@ -39,6 +40,7 @@ export const sellFormStore: SellFormStore = {
   cardYears: '',
   cardSet: '',
   cardName: '',
+  cardVariation: '',
   cardSerialNumber: '',
   cardNumber: '',
   cardCondition: CardCondition.RAW,
