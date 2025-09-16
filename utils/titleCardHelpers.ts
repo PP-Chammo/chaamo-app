@@ -13,7 +13,7 @@ export function parseTitleCardYear(input: string) {
   }
 
   if (parts.length !== 2) {
-    throw new Error('Input tidak valid');
+    throw new Error('Invalid input');
   }
 
   const [startStr, endStr] = parts;
