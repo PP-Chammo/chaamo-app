@@ -503,6 +503,16 @@ export default function SellScreen() {
               </View>
             ) : null}
           </View>
+          <TextField
+            name="cardYears"
+            label="Year(s)"
+            placeholder="E.g: 2020 or 2020-21 or 2020-2021"
+            value={form.cardYears}
+            onChange={handleChange}
+            required
+            inputClassName={classes.input}
+            error={errors.cardYears}
+          />
           <Select
             name="cardCategoryId"
             label="Category"
@@ -513,16 +523,6 @@ export default function SellScreen() {
             options={categories}
             inputClassName={classes.input}
             error={errors.cardCategoryId}
-          />
-          <TextField
-            name="cardYears"
-            label="Year(s)"
-            placeholder="E.g: 2020 or 2020-21 or 2020-2021"
-            value={form.cardYears}
-            onChange={handleChange}
-            required
-            inputClassName={classes.input}
-            error={errors.cardYears}
           />
           <TextField
             name="cardSet"

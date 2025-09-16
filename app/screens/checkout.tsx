@@ -302,9 +302,9 @@ export default function CheckoutScreen() {
               <Label>{user?.profile?.address_line_1}</Label>
               <Label>
                 {user?.profile?.country}, {user?.profile?.city + ','}{' '}
-                {user?.profile?.country === 'GB'
+                {user?.profile?.country === 'UK'
                   ? ''
-                  : user?.profile?.state_province}{' '}
+                  : user?.profile?.state_province + ' '}
                 {user?.profile?.postal_code}
               </Label>
             </View>

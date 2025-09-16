@@ -290,21 +290,23 @@ export default function PersonalDetailsScreen() {
             className={classes.input}
           />
           <Row between className={classes.row}>
-            <SelectModal
-              required={profile?.country !== 'UK'}
-              name="state_province"
-              label="State"
-              value={profile?.state_province ?? ''}
-              onChange={handleChange}
-              options={{
-                data: filteredStates,
-                label: 'name',
-                value: 'iso2',
-              }}
-              error={errors.state_province}
-              placeholder="--Select State--"
-              className={classes.input}
-            />
+            {profile?.country !== 'UK' && (
+              <SelectModal
+                required={profile?.country !== 'UK'}
+                name="state_province"
+                label="State"
+                value={profile?.state_province ?? ''}
+                onChange={handleChange}
+                options={{
+                  data: filteredStates,
+                  label: 'name',
+                  value: 'iso2',
+                }}
+                error={errors.state_province}
+                placeholder="--Select State--"
+                className={classes.input}
+              />
+            )}
             <TextField
               label="City"
               value={profile?.city}
