@@ -79,21 +79,38 @@ export default function PersonalDetailsScreen() {
   }, [form, originalForm, revertForm]);
 
   const handleChange = useCallback(
-    ({ name, value }: TextChangeParams) => {
+    (
+      { name, value }: TextChangeParams,
+      callingCode?: string,
+      countryCode?: string,
+    ) => {
       setErrors((prev) => {
         delete prev[name as keyof typeof prev];
         return prev;
       });
 
-      setForm({
-        ...form,
-        profile: { ...form.profile, [name]: value } as DeepGet<
-          UserStore,
-          ['profile']
-        >,
-      });
+      if (name === 'phone_number' && !!callingCode) {
+        const country = countries.find(
+          (country) => country.iso2 === countryCode,
+        );
+        setForm({
+          ...form,
+          profile: {
+            ...form.profile,
+            phone_number: value,
+            calling_code: callingCode,
+            country_name: country?.name,
+            country_code: country?.iso2,
+          },
+        });
+      } else {
+        setForm({
+          ...form,
+          profile: { ...form.profile, [name]: value },
+        });
+      }
     },
-    [form, setForm],
+    [countries, form, setForm],
   );
 
   const loadingSave = useMemo(
@@ -109,7 +126,9 @@ export default function PersonalDetailsScreen() {
       'city',
       'country',
       'postal_code',
-      ...(form?.profile?.country === 'UK' ? [] : ['state_province' as const]),
+      ...(['GB', 'UK'].includes(form?.profile?.country_code ?? '')
+        ? []
+        : ['state_province' as const]),
     ];
 
     const validationErrors = validateRequired(
@@ -120,32 +139,33 @@ export default function PersonalDetailsScreen() {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      const {
-        id,
-        username,
-        country_code,
-        phone_number,
-        address_line_1,
-        city,
-        state_province,
-        country,
-        postal_code,
-      } = form.profile ?? {};
-
+      const country = countries.find(
+        (country) => country.iso2 === form?.profile?.country_code,
+      );
       updateProfile({
         variables: {
           set: {
-            username,
-            country_code,
-            phone_number,
+            username: form?.profile?.username,
+            calling_code: form?.profile?.calling_code,
+            phone_number: form?.profile?.phone_number,
+            country_name: country?.name,
+            country_code: country?.iso2,
           },
           filter: {
             id: {
-              eq: id,
+              eq: form?.profile?.id,
             },
           },
         },
         onCompleted: ({ updateprofilesCollection }) => {
+          const {
+            id,
+            address_line_1,
+            city,
+            state_province,
+            country,
+            postal_code,
+          } = form.profile ?? {};
           if (updateprofilesCollection?.records.length) {
             updateUserAddress({
               variables: {
@@ -222,7 +242,7 @@ export default function PersonalDetailsScreen() {
         },
       });
     }
-  }, [form, insertUserAddress, updateProfile, updateUserAddress]);
+  }, [countries, form, insertUserAddress, updateProfile, updateUserAddress]);
 
   const profile = form.profile;
 
@@ -239,9 +259,11 @@ export default function PersonalDetailsScreen() {
     setCountries(countriesData.default);
   }, []);
 
-  useFocusEffect(() => {
-    lazyLoad();
-  });
+  useFocusEffect(
+    useCallback(() => {
+      lazyLoad();
+    }, [lazyLoad]),
+  );
 
   return (
     <ScreenContainer>
@@ -258,7 +280,7 @@ export default function PersonalDetailsScreen() {
           <PhoneInput
             name="phone_number"
             value={profile?.phone_number ?? ''}
-            countryCode={profile?.country_code ?? ''}
+            countryCode={profile?.country_code ?? 'GB'}
             onChange={handleChange}
           />
           <TextField
@@ -290,9 +312,9 @@ export default function PersonalDetailsScreen() {
             className={classes.input}
           />
           <Row between className={classes.row}>
-            {profile?.country !== 'UK' && (
+            {!['GB', 'UK'].includes(profile?.country ?? '') && (
               <SelectModal
-                required={profile?.country !== 'UK'}
+                required
                 name="state_province"
                 label="State"
                 value={profile?.state_province ?? ''}
