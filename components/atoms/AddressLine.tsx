@@ -53,7 +53,7 @@ const AddressLine: React.FC<AddressLineProps> = memo(function AddressLine({
   return (
     <View className={clsx(classes.container)}>
       {buildingName && <Text className={classes.text}>{buildingName}</Text>}
-      {personName && <Text className={classes.text}>{personName}</Text>}
+      {personName && <Text className={classes.textBold}>{personName}</Text>}
       <Text className={classes.text}>{addressLine1}</Text>
       {addressLine2 && <Text className={classes.text}>{addressLine2}</Text>}
       {city && <Text className={classes.text}>{city}</Text>}
@@ -72,6 +72,7 @@ const AddressLine: React.FC<AddressLineProps> = memo(function AddressLine({
 const classes = {
   container: 'flex flex-col',
   text: 'text-sm text-slate-600',
+  textBold: 'text-sm font-bold text-slate-600',
 };
 
 export default AddressLine;
