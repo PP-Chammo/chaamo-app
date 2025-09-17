@@ -20,12 +20,14 @@ import {
   RadioInput,
   Select,
 } from '@/components/molecules';
+import { notificationTemplatesMap } from '@/constants/notificationTemplates';
 import { TextChangeParams } from '@/domains';
 import { useGetVwListingCardDetailQuery } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useUserVar } from '@/hooks/useUserVar';
 import { fetcher } from '@/utils/fetcher';
 import { getColor } from '@/utils/getColor';
+import { sendNotification } from '@/utils/notification';
 import { handlePaypalPayment } from '@/utils/paypal';
 
 Decimal.set({ precision: 28, rounding: Decimal.ROUND_HALF_EVEN });
@@ -152,7 +154,11 @@ export default function CheckoutScreen() {
         handlePaypalPayment({
           url: response.paypal_checkout_url,
           redirectUrl: Linking.createURL('screens/checkout'),
-          onSuccess: () => {
+          onSuccess: async () => {
+            await sendNotification({
+              user_id: user?.id,
+              template_name: notificationTemplatesMap.PAYMENT_SUCCESS,
+            });
             setLoading(false);
           },
           onCancel: (isBack) => {

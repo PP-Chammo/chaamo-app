@@ -15,6 +15,7 @@ describe('groupNotificationsByDate', () => {
         content: 'Shipped!',
         created_at: '2024-06-01T10:00:00Z',
         type: NotificationType.ITEM_SHIPPED,
+        actions: '[]',
       },
     ];
     const result = groupNotificationsByDate(notifications);
@@ -29,18 +30,21 @@ describe('groupNotificationsByDate', () => {
         content: 'Shipped!',
         created_at: '2024-06-01T10:00:00Z',
         type: NotificationType.ITEM_SHIPPED,
+        actions: '[]',
       },
       {
         id: 2,
         content: 'You have a new bid on your listing!',
         created_at: '2024-06-01T12:00:00Z',
         type: NotificationType.NEW_OFFER,
+        actions: '[]',
       },
       {
         id: 3,
         content: 'You have won the auction!',
         created_at: '2024-06-02T09:00:00Z',
         type: NotificationType.AUCTION_WON,
+        actions: '[]',
       },
     ];
     const result = groupNotificationsByDate(notifications);
@@ -56,12 +60,14 @@ describe('groupNotificationsByDate', () => {
         content: 'Item delivered!',
         created_at: '2024-06-01T10:00:00Z',
         type: NotificationType.ITEM_DELIVERED,
+        actions: '[]',
       },
       {
         id: 2,
         content: 'You have won the auction!',
         created_at: '2024-06-02T09:00:00Z',
         type: NotificationType.AUCTION_WON,
+        actions: '[]',
       },
     ];
     const result = groupNotificationsByDate(notifications);

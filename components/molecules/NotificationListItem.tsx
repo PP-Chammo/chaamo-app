@@ -3,7 +3,8 @@ import { memo } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { TouchableOpacity, View } from 'react-native';
 
-import { Icon, Label } from '@/components/atoms';
+import { Icon, Label, NotificationAction } from '@/components/atoms';
+import { NotificationActionType } from '@/domains';
 import { getColor } from '@/utils/getColor';
 
 export interface NotificationCardProps {
@@ -12,10 +13,18 @@ export interface NotificationCardProps {
   date: string;
   onPress: () => void;
   onLongPress: () => void;
+  actions?: NotificationActionType[];
 }
 
 const NotificationCard: React.FC<NotificationCardProps> = memo(
-  function NotificationCard({ category, message, date, onPress, onLongPress }) {
+  function NotificationCard({
+    category,
+    message,
+    date,
+    onPress,
+    onLongPress,
+    actions,
+  }) {
     let time = formatDistanceToNow(new Date(date), {
       addSuffix: true,
       includeSeconds: true,
@@ -53,6 +62,15 @@ const NotificationCard: React.FC<NotificationCardProps> = memo(
             <Label className={classes.time}>{time}</Label>
           </View>
           <Label className={classes.message}>{message}</Label>
+          <View className="flex-row gap-4 mt-3">
+            {actions?.map((action) => (
+              <NotificationAction
+                key={action?.label}
+                label={action?.label}
+                actionKey={action?.action_key}
+              />
+            ))}
+          </View>
         </View>
       </TouchableOpacity>
     );
@@ -61,7 +79,7 @@ const NotificationCard: React.FC<NotificationCardProps> = memo(
 
 const classes = {
   container: 'flex-row items-center gap-3',
-  iconContainer: 'bg-primary-100/30 rounded-full p-2',
+  iconContainer: 'bg-primary-100/30 rounded-full p-2 self-start',
   contentContainer: 'flex-1',
   categoryContainer: 'flex flex-row justify-between',
   time: 'text-slate-400',

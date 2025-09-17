@@ -9,6 +9,7 @@ describe('PlaceOfferModalContent', () => {
     id: 'test-id',
     sellerId: 'seller-id',
     onDismiss: jest.fn(),
+    title: 'test-title',
   };
 
   it('renders all labels and input', () => {

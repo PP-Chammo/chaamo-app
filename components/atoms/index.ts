@@ -26,3 +26,4 @@ export { default as Skeleton } from './Skeleton';
 export { default as SubscriptionCard } from './SubscriptionCard';
 export { default as Tag } from './Tag';
 export { default as UploadInstruction } from './UploadInstruction';
+export { default as NotificationAction } from './NotificationAction';

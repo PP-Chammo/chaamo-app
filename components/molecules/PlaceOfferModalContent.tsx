@@ -4,17 +4,21 @@ import { Alert, TextInput, View } from 'react-native';
 
 import { Button, Label, Row } from '@/components/atoms';
 import { currencySymbolMap } from '@/constants/currencies';
+import { notificationTemplatesMap } from '@/constants/notificationTemplates';
 import { useCreateOffersMutation } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
+import { sendNotification } from '@/utils/notification';
 
 interface PlaceOfferModalContentProps {
   id: string;
+  title: string;
   sellerId: string;
   onDismiss: () => void;
 }
 
 const PlaceOfferModalContent: React.FC<PlaceOfferModalContentProps> = ({
   id,
+  title,
   sellerId,
   onDismiss,
 }) => {
@@ -41,7 +45,8 @@ const PlaceOfferModalContent: React.FC<PlaceOfferModalContentProps> = ({
           },
         ],
       },
-      onCompleted: () => {
+      onCompleted: async ({ insertIntooffersCollection }) => {
+        if (!insertIntooffersCollection?.records?.length) return;
         Alert.alert('Success', 'Your offer has been sent successfully', [
           {
             text: 'OK',
@@ -49,6 +54,15 @@ const PlaceOfferModalContent: React.FC<PlaceOfferModalContentProps> = ({
           },
         ]);
         onDismiss();
+        const offerId = insertIntooffersCollection?.records?.[0]?.id;
+        await sendNotification({
+          user_id: sellerId,
+          template_name: notificationTemplatesMap.NEW_OFFER,
+          data: {
+            itemName: title,
+            offerId,
+          },
+        });
       },
       onError: (e) => {
         Alert.alert('Failed', e.message, [
@@ -65,6 +79,7 @@ const PlaceOfferModalContent: React.FC<PlaceOfferModalContentProps> = ({
     offer,
     onDismiss,
     sellerId,
+    title,
     user.id,
     user.profile?.currency,
   ]);

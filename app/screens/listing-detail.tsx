@@ -370,6 +370,7 @@ export default function ListingDetailScreen() {
           >
             <PlaceOfferModalContent
               id={detail?.id ?? ''}
+              title={detail?.title ?? ''}
               sellerId={detail?.seller_id ?? ''}
               onDismiss={() => setShowModal(false)}
             />
@@ -388,6 +389,7 @@ export default function ListingDetailScreen() {
     detail?.id,
     detail?.seller_id,
     detail?.currency,
+    detail?.title,
     showModal,
     formatDisplay,
     handleShowModal,

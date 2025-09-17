@@ -7,6 +7,7 @@ export const getNotifications = gql`
         node {
           id
           type
+          actions
           content
           created_at
         }

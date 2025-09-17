@@ -34,6 +34,9 @@ const NotificationList: React.FC<NotificationListProps> = memo(
             );
           }
           const group = item.group;
+          const actions = JSON.parse(group.actions);
+          console.log({ actions });
+
           return (
             <NotificationListItem
               category={getNotificationCategory(group)}
@@ -41,6 +44,7 @@ const NotificationList: React.FC<NotificationListProps> = memo(
               date={group.created_at}
               onPress={onPress}
               onLongPress={onLongPress}
+              actions={actions}
             />
           );
         }}

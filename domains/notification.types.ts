@@ -1,3 +1,4 @@
+import { notificationTemplatesMap } from '@/constants/notificationTemplates';
 import {
   GetNotificationsQuery,
   GetUserNotificationSettingsQuery,
@@ -30,5 +31,12 @@ export type FlatData<T> =
 export interface SendNotificationPayload {
   user_id: string;
   template_name: string;
-  data: Record<string, unknown>;
+  data?: Record<string, unknown>;
+}
+
+export interface NotificationActionType {
+  label: string;
+  type: string;
+  action_key: (typeof notificationTemplatesMap)[keyof typeof notificationTemplatesMap];
+  payload: Record<string, string>;
 }

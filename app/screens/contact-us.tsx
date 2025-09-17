@@ -66,14 +66,16 @@ export default function ContactUs() {
             },
           ],
         },
-        onCompleted({ insertIntocontact_messagesCollection }) {
+        async onCompleted({ insertIntocontact_messagesCollection }) {
+          console.log(insertIntocontact_messagesCollection);
           if (insertIntocontact_messagesCollection?.records?.length) {
             if (listingId && userCardId) {
-              sendEmail({
+              const res = await sendEmail({
                 to: recipient,
                 subject: form.subject,
                 html: `<p>${form.message}</p>`,
               });
+              console.log({ res });
               Alert.alert('Sent', 'Form sent to support team');
             } else {
               Alert.alert('Success', 'Form submitted successfully');
