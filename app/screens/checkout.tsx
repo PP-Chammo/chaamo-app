@@ -193,7 +193,7 @@ export default function CheckoutScreen() {
               seller_id: detail?.seller_id,
               buyer_id: user?.id,
               insurance: form.insurance === 'insurance',
-              insurance_amount: 10,
+              insurance_amount: insuranceAmount,
             })) as DeliveryRateResponse;
             if (response) {
               const deliveryRateList = (response.rates as DeliveryRate[]).map(
