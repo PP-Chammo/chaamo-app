@@ -95,7 +95,7 @@ export default function ListingDetailScreen() {
         id: ebayNode.id,
         listing_type: ListingType.SELL,
         image_urls: ebayNode.image_hd_url ? [ebayNode.image_hd_url] : [],
-        title: ebayNode.name ?? '',
+        title: ebayNode.title ?? '',
         currency: ebayNode.currency ?? undefined,
         start_price: ebayNode.price ?? undefined,
         created_at: ebayNode.sold_at ?? new Date().toISOString(),
@@ -160,7 +160,7 @@ export default function ListingDetailScreen() {
   const handleBuyNow = useCallback(() => {
     router.push({
       pathname: '/screens/checkout',
-      params: { id: detail?.id, isDirectBuy: 'true' },
+      params: { id: detail?.id },
     });
   }, [detail?.id]);
 

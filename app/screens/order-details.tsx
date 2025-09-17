@@ -18,7 +18,7 @@ import {
   Row,
   ScreenContainer,
 } from '@/components/atoms';
-import { Header } from '@/components/molecules';
+import { Header, ImageGallery } from '@/components/molecules';
 import { useGetVwMyOrdersLazyQuery } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useUserVar } from '@/hooks/useUserVar';
@@ -41,6 +41,11 @@ export default function OrderDetailsScreen() {
     () => data?.vw_myordersCollection?.edges?.[0]?.node,
     [data],
   );
+
+  const orderStatus = useMemo(() => {
+    if (detail?.payment_status === 'pending') return 'Payment processing';
+    return detail?.status ?? 'Unknown';
+  }, [detail?.payment_status, detail?.status]);
 
   const isSeller = useMemo(() => {
     return detail?.seller_id === user?.id;
@@ -84,7 +89,7 @@ export default function OrderDetailsScreen() {
             </Label>
           </Row>
           <Row between>
-            <Label>Item</Label>
+            <Label>Item price</Label>
             <Label>
               {formatDisplay(detail?.currency, detail?.seller_earnings)}
             </Label>
@@ -92,7 +97,7 @@ export default function OrderDetailsScreen() {
           <Row between>
             <Label>{isSeller ? 'Sold to' : 'Sold by'}</Label>
             <TouchableOpacity onPress={handleRedirectSellerProfile}>
-              <Label className={classes.linkText}>
+              <Label className={classes.linkPrimaryText}>
                 {isSeller ? detail?.buyer_username : detail?.seller_username}
               </Label>
             </TouchableOpacity>
@@ -118,13 +123,13 @@ export default function OrderDetailsScreen() {
       return (
         <Fragment>
           <Row between>
-            <Label>Item</Label>
+            <Label>Item price</Label>
             <Label>
               {formatDisplay(detail?.currency, detail?.seller_earnings)}
             </Label>
           </Row>
           <Row between>
-            <Label>Shipping</Label>
+            <Label>Shipping fee</Label>
             <Label>
               {formatDisplay(detail?.currency, detail?.shipping_fee)}
             </Label>
@@ -153,6 +158,14 @@ export default function OrderDetailsScreen() {
       <Header title="Order Details" onBackPress={router.back} />
       <ScrollView contentContainerClassName="pb-12">
         <View className={classes.container}>
+          <View className={classes.itemContainer}>
+            <ImageGallery
+              imageUrls={detail?.image_urls}
+              imageClassName={classes.image}
+              showIndicators={true}
+            />
+            <Label className={classes.itemTitle}>{detail?.title}</Label>
+          </View>
           <View className={classes.section}>
             <Label className={classes.headerTitle}>Order Info.</Label>
             <Row between>
@@ -162,14 +175,14 @@ export default function OrderDetailsScreen() {
             <Row between>
               <Label>Status</Label>
               <Label>
-                {upperFirst(toLower(detail?.status?.replace(/_/g, ' ') ?? ''))}
+                {upperFirst(toLower(orderStatus?.replace(/_/g, ' ') ?? ''))}
               </Label>
             </Row>
             {_renderOrderDetails}
             <Divider position="horizontal" className={classes.divider} />
 
             <Button
-              variant="link"
+              variant="ghost"
               textClassName={classes.buttonText}
               onPress={() => setIsExpandedOrderDetails(!isExpandedOrderDetails)}
             >
@@ -178,40 +191,42 @@ export default function OrderDetailsScreen() {
                 : 'View Order Details'}
             </Button>
           </View>
-          <View className={classes.section}>
-            <Label className={classes.headerTitle}>Payment Info.</Label>
-            <Row between>
-              <Row>
-                <Row>
-                  <MaterialIcons name="paypal" size={24} color="black" />
-                </Row>
-                <Label>{gateway_info?.email}</Label>
-              </Row>
-              <Label variant="subtitle">
-                {formatDisplay(detail?.currency, detail?.final_price)}
-              </Label>
-            </Row>
-            {_renderPaymentInfo}
-            <Divider position="horizontal" className={classes.divider} />
-            {isExpandedPaymentInfo && (
+          {orderStatus !== 'awaiting_payment' && (
+            <View className={classes.section}>
+              <Label className={classes.headerTitle}>Payment Info.</Label>
               <Row between>
-                <Label variant="subtitle">Total</Label>
+                <Row>
+                  <Row>
+                    <MaterialIcons name="paypal" size={24} color="black" />
+                  </Row>
+                  <Label>{gateway_info?.email}</Label>
+                </Row>
                 <Label variant="subtitle">
                   {formatDisplay(detail?.currency, detail?.final_price)}
                 </Label>
               </Row>
-            )}
-            <Button
-              variant="link"
-              textClassName={classes.buttonText}
-              onPress={() => setIsExpandedPaymentInfo(!isExpandedPaymentInfo)}
-            >
-              {isExpandedPaymentInfo
-                ? 'Hide Payment Info'
-                : 'View Payment Info'}
-            </Button>
-          </View>
-          {detail?.status === 'shipped' && (
+              {_renderPaymentInfo}
+              <Divider position="horizontal" className={classes.divider} />
+              {isExpandedPaymentInfo && (
+                <Row between>
+                  <Label variant="subtitle">Total</Label>
+                  <Label variant="subtitle">
+                    {formatDisplay(detail?.currency, detail?.final_price)}
+                  </Label>
+                </Row>
+              )}
+              <Button
+                variant="ghost"
+                textClassName={classes.buttonText}
+                onPress={() => setIsExpandedPaymentInfo(!isExpandedPaymentInfo)}
+              >
+                {isExpandedPaymentInfo
+                  ? 'Hide Payment Info'
+                  : 'View Payment Info'}
+              </Button>
+            </View>
+          )}
+          {orderStatus === 'shipped' && (
             <View className={classes.section}>
               <Label className={classes.headerTitle}>Track Package</Label>
               <Row between>
@@ -222,7 +237,7 @@ export default function OrderDetailsScreen() {
               </Row>
             </View>
           )}
-          {detail?.status === 'delivered' && (
+          {orderStatus === 'delivered' && (
             <View className={classes.section}>
               <Label className={classes.headerTitle}>Delivery Info</Label>
               <Row between>
@@ -239,6 +254,20 @@ export default function OrderDetailsScreen() {
           )}
         </View>
       </ScrollView>
+      {orderStatus === 'awaiting_payment' && user?.id === detail?.buyer_id && (
+        <View className={classes.buttonContainer}>
+          <Button
+            onPress={() =>
+              router.push({
+                pathname: '/screens/checkout',
+                params: { id: detail?.listing_id },
+              })
+            }
+          >
+            Pay Now
+          </Button>
+        </View>
+      )}
     </ScreenContainer>
   );
 }
@@ -248,8 +277,14 @@ const classes = {
   headerTitle: 'text-md font-bold',
   divider: '!bg-primary-100',
   buttonText: '!text-primary-600 font-medium',
+  linkPrimaryText: 'underline font-medium text-primary-600',
   linkText: 'underline font-medium',
   container: 'gap-4',
   addressLabel: 'self-start',
   addressValue: 'w-40 text-right',
+  itemContainer: 'flex gap-2',
+  itemTitle: 'text-left text-lg font-medium py-5 px-4.5 bg-white',
+  image:
+    'w-56 aspect-[7/10] rounded-xl border border-gray-200 bg-gray-200 items-center justify-center',
+  buttonContainer: 'p-4.5',
 };

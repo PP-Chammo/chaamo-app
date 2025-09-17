@@ -1,5 +1,4 @@
 import { Label } from '@/components/atoms';
-import { escapeRegExp } from '@/utils/escapeRegExp';
 
 export const renderTitleHighlight = (
   titleText: string,
@@ -7,19 +6,33 @@ export const renderTitleHighlight = (
 ) => {
   const q = (searchQuery ?? '').trim();
   if (!q) return titleText;
-  const regex = new RegExp(`(${escapeRegExp(q)})`, 'ig');
-  const parts = titleText.split(regex);
+  // Split the search query into tokens (per word) and compare against each word in the title
+  const qTokens = q
+    .split(' ')
+    .map((t) => t.trim().toLowerCase())
+    .filter(Boolean);
+
+  // Iterate from titleText.split(' ') to highlight per word
+  const words = titleText.split(' ');
+
   return (
     <>
-      {parts.map((part, idx) =>
-        idx % 2 === 1 ? (
+      {words.map((word, idx) => {
+        const isMatch = qTokens.some((token) =>
+          word.toLowerCase().includes(token),
+        );
+        return isMatch ? (
           <Label key={idx} className={classes.titleHighlight}>
-            {part}
+            {word}
+            {idx < words.length - 1 ? ' ' : ''}
           </Label>
         ) : (
-          <Label key={idx}>{part}</Label>
-        ),
-      )}
+          <Label key={idx}>
+            {word}
+            {idx < words.length - 1 ? ' ' : ''}
+          </Label>
+        );
+      })}
     </>
   );
 };

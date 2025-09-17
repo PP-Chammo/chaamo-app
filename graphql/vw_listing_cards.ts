@@ -50,6 +50,7 @@ export const getVwListingCardDetail = gql`
           years
           card_set
           name
+          variation
           serial_number
           number
           condition

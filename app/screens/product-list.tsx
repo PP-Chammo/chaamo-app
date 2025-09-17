@@ -51,14 +51,15 @@ const INITIAL_PAGE_SIZE = 30;
 export default function ProductListScreen() {
   const [user] = useUserVar();
   const [search, setSearch] = useSearchVar();
-  const { mergedList, chaamoOnly, firstTab } = useLocalSearchParams();
+  const { mergedList, chaamoOnly, firstTab, featuredOnly } =
+    useLocalSearchParams();
   const { convertUserToBase } = useCurrencyDisplay();
 
   const [searchText, setSearchText] = useState('');
   const [ebayPaging, setEbayPaging] = useState(false);
   const [firstLoading, setFirstLoading] = useState(false);
 
-  const [getChaamoCards, { data }] = useGetVwListingCardsLazyQuery({
+  const [getListingCards, { data }] = useGetVwListingCardsLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
   const [
@@ -130,6 +131,9 @@ export default function ProductListScreen() {
 
   const chaamoFilter = useMemo<VwListingCardsFilter>(() => {
     const and: Record<string, unknown>[] = [];
+    if (featuredOnly === 'true') {
+      and.push({ is_boosted: { eq: true } });
+    }
     if (search.categoryId && search.category) {
       and.push({ category_id: { eq: Number(search.categoryId) } });
     }
@@ -147,28 +151,28 @@ export default function ProductListScreen() {
     if (search.condition === 'graded') {
       and.push({
         or: [
-          { name: { ilike: `%PSA%` } },
-          { name: { ilike: `%BGS%` } },
-          { name: { ilike: `%SGC%` } },
-          { name: { ilike: `%CGC%` } },
-          { name: { ilike: `%CSG%` } },
-          { name: { ilike: `%HGA%` } },
-          { name: { ilike: `%GMA%` } },
-          { name: { ilike: `%Beckett%` } },
+          { title: { ilike: `%PSA%` } },
+          { title: { ilike: `%BGS%` } },
+          { title: { ilike: `%SGC%` } },
+          { title: { ilike: `%CGC%` } },
+          { title: { ilike: `%CSG%` } },
+          { title: { ilike: `%HGA%` } },
+          { title: { ilike: `%GMA%` } },
+          { title: { ilike: `%Beckett%` } },
         ],
       });
     } else if (search.condition === 'raw') {
       and.push({
         not: {
           or: [
-            { name: { ilike: `%PSA%` } },
-            { name: { ilike: `%BGS%` } },
-            { name: { ilike: `%SGC%` } },
-            { name: { ilike: `%CGC%` } },
-            { name: { ilike: `%CSG%` } },
-            { name: { ilike: `%HGA%` } },
-            { name: { ilike: `%GMA%` } },
-            { name: { ilike: `%Beckett%` } },
+            { title: { ilike: `%PSA%` } },
+            { title: { ilike: `%BGS%` } },
+            { title: { ilike: `%SGC%` } },
+            { title: { ilike: `%CGC%` } },
+            { title: { ilike: `%CSG%` } },
+            { title: { ilike: `%HGA%` } },
+            { title: { ilike: `%GMA%` } },
+            { title: { ilike: `%Beckett%` } },
           ],
         },
       });
@@ -177,13 +181,14 @@ export default function ProductListScreen() {
       and.push({ is_boosted: { eq: true } });
     }
     if ((search.query ?? '').trim().length > 0) {
-      and.push({ name: { ilike: `%${search.query}%` } });
+      and.push({ title: { ilike: `%${search.query}%` } });
     }
     return {
       listing_type: { neq: ListingType.PORTFOLIO },
       and,
     } as VwListingCardsFilter;
   }, [
+    featuredOnly,
     search.categoryId,
     search.category,
     search.location,
@@ -214,34 +219,39 @@ export default function ProductListScreen() {
     if (search.condition === 'graded') {
       and.push({
         or: [
-          { name: { ilike: `%PSA%` } },
-          { name: { ilike: `%BGS%` } },
-          { name: { ilike: `%SGC%` } },
-          { name: { ilike: `%CGC%` } },
-          { name: { ilike: `%CSG%` } },
-          { name: { ilike: `%HGA%` } },
-          { name: { ilike: `%GMA%` } },
-          { name: { ilike: `%Beckett%` } },
+          { title: { ilike: `%PSA%` } },
+          { title: { ilike: `%BGS%` } },
+          { title: { ilike: `%SGC%` } },
+          { title: { ilike: `%CGC%` } },
+          { title: { ilike: `%CSG%` } },
+          { title: { ilike: `%HGA%` } },
+          { title: { ilike: `%GMA%` } },
+          { title: { ilike: `%Beckett%` } },
         ],
       });
     } else if (search.condition === 'raw') {
       and.push({
         not: {
           or: [
-            { name: { ilike: `%PSA%` } },
-            { name: { ilike: `%BGS%` } },
-            { name: { ilike: `%SGC%` } },
-            { name: { ilike: `%CGC%` } },
-            { name: { ilike: `%CSG%` } },
-            { name: { ilike: `%HGA%` } },
-            { name: { ilike: `%GMA%` } },
-            { name: { ilike: `%Beckett%` } },
+            { title: { ilike: `%PSA%` } },
+            { title: { ilike: `%BGS%` } },
+            { title: { ilike: `%SGC%` } },
+            { title: { ilike: `%CGC%` } },
+            { title: { ilike: `%CSG%` } },
+            { title: { ilike: `%HGA%` } },
+            { title: { ilike: `%GMA%` } },
+            { title: { ilike: `%Beckett%` } },
           ],
         },
       });
     }
     if ((search.query ?? '').trim().length > 0) {
-      and.push({ name: { ilike: `%${search.query}%` } });
+      const splittedQuery = search.query
+        .split(' ')
+        .filter((q) => q.trim().length > 0);
+      and.push({
+        or: splittedQuery.map((q) => ({ title: { ilike: `%${q.trim()}%` } })),
+      });
     }
     return { and } as EbayPostsFilter;
   }, [
@@ -331,7 +341,7 @@ export default function ProductListScreen() {
         try {
           setFirstLoading(true);
           await Promise.all([
-            getChaamoCards({ variables: { filter: chaamoFilter } }),
+            getListingCards({ variables: { filter: chaamoFilter } }),
             ...(!isChaamoOnly
               ? [
                   getEbayPosts({
@@ -357,7 +367,7 @@ export default function ProductListScreen() {
       return () => {
         cancelled = true;
       };
-    }, [getEbayPosts, getChaamoCards, chaamoFilter, isChaamoOnly]),
+    }, [getEbayPosts, getListingCards, chaamoFilter, isChaamoOnly]),
   );
 
   const handleLoadMore = useCallback(async () => {
@@ -424,10 +434,10 @@ export default function ProductListScreen() {
     setEbayPaging(true);
     try {
       if (isChaamoOnly) {
-        await getChaamoCards({ variables: { filter: chaamoFilter } });
+        await getListingCards({ variables: { filter: chaamoFilter } });
       } else {
         if (Number(resultCount) < allCards.length) {
-          await getChaamoCards({ variables: { filter: chaamoFilter } });
+          await getListingCards({ variables: { filter: chaamoFilter } });
         } else {
           await getEbayPosts({ variables });
         }
@@ -441,7 +451,7 @@ export default function ProductListScreen() {
     ebayFilter,
     ebayLoading,
     ebayPaging,
-    getChaamoCards,
+    getListingCards,
     getEbayPosts,
     isChaamoOnly,
     resultCount,
@@ -553,10 +563,10 @@ export default function ProductListScreen() {
                     title={
                       search.query?.trim()
                         ? renderTitleHighlight(
-                            edge.node?.name ?? '',
+                            edge.node?.title ?? '',
                             search.query,
                           )
-                        : (edge.node?.name ?? '')
+                        : (edge.node?.title ?? '')
                     }
                     subtitle={edge.node?.region ?? ''}
                     date={edge.node.sold_at ?? new Date().toISOString()}
