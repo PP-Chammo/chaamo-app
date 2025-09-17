@@ -14,6 +14,7 @@ export const getVwMyOrders = gql`
           listing_type
           title
           status
+          payment_status
           currency
           final_price
           seller_earnings

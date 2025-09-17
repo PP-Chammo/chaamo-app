@@ -67,7 +67,6 @@ type OrderResponse = {
 
 type ParamList = {
   id: string;
-  isDirectBuy: string;
 };
 
 const initialForm = {
@@ -78,7 +77,7 @@ const initialForm = {
 export default function CheckoutScreen() {
   const [user] = useUserVar();
   const { formatDisplay, formatPrice } = useCurrencyDisplay();
-  const { id, isDirectBuy } = useLocalSearchParams<ParamList>();
+  const { id } = useLocalSearchParams<ParamList>();
 
   const [form, setForm] = useState<Form>(initialForm);
   const [deliveryLoading, setDeliveryLoading] = useState(false);
@@ -188,25 +187,27 @@ export default function CheckoutScreen() {
     useCallback(() => {
       (async () => {
         try {
-          setDeliveryLoading(true);
-          const response = (await fetcher.get('/shippo/rates', {
-            seller_id: detail?.seller_id,
-            buyer_id: user?.id,
-            insurance: form.insurance === 'insurance',
-            insurance_amount: 10,
-          })) as DeliveryRateResponse;
-          if (response) {
-            const deliveryRateList = (response.rates as DeliveryRate[]).map(
-              (res: DeliveryRate) => ({
-                value: res.id,
-                label: `${formatDisplay(res.currency, res.amount)} - ${res.service}`,
-                currency: res.currency,
-                amount: res.amount,
-              }),
-            );
-            setDeliveryRateList(deliveryRateList);
+          if (detail) {
+            setDeliveryLoading(true);
+            const response = (await fetcher.get('/shippo/rates', {
+              seller_id: detail?.seller_id,
+              buyer_id: user?.id,
+              insurance: form.insurance === 'insurance',
+              insurance_amount: 10,
+            })) as DeliveryRateResponse;
+            if (response) {
+              const deliveryRateList = (response.rates as DeliveryRate[]).map(
+                (res: DeliveryRate) => ({
+                  value: res.id,
+                  label: `${formatDisplay(res.currency, res.amount)} - ${res.service}`,
+                  currency: res.currency,
+                  amount: res.amount,
+                }),
+              );
+              setDeliveryRateList(deliveryRateList);
+            }
+            setDeliveryLoading(false);
           }
-          setDeliveryLoading(false);
         } catch (error: unknown) {
           setDeliveryLoading(false);
           const rawMessage = (error as Error)?.message;
@@ -217,9 +218,9 @@ export default function CheckoutScreen() {
           console.error(error);
         }
       })();
-      /* keep this empty dependency array to prevent infinite loop */
+      /* keep this dependency array to prevent infinite loop */
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []),
+    }, [detail]),
   );
 
   return (
@@ -237,7 +238,7 @@ export default function CheckoutScreen() {
           <View className={classes.section}>
             <Label variant="subtitle">{detail?.name}</Label>
             <Row between>
-              <Label>{isDirectBuy === 'true' ? 'Price' : 'Offer'}</Label>
+              <Label>Price</Label>
               <Label>
                 {formatDisplay(detail?.currency, detail?.start_price)}
               </Label>
@@ -263,6 +264,14 @@ export default function CheckoutScreen() {
                 />
               </View>
             </Row>
+            {form.insurance === 'insurance' && (
+              <Row between>
+                <Label>Insurance</Label>
+                <Label>
+                  {formatDisplay(detail?.currency, insuranceAmount)}
+                </Label>
+              </Row>
+            )}
             <Divider position="horizontal" className={classes.divider} />
             <Row between>
               <Label variant="subtitle">Total</Label>
