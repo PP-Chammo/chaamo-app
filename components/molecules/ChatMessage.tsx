@@ -51,7 +51,6 @@ const ChatMessage: React.FC<ChatMessageProps> = memo(function ChatMessage({
   sellerId,
 }) {
   const [user] = useUserVar();
-  console.log(user?.id, sellerId, message);
   const { formatDisplay } = useCurrencyDisplay();
   const handleAccept = useCallback(() => {
     onAccept?.();

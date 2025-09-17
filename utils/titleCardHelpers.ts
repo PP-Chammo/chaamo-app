@@ -116,10 +116,10 @@ export function buildCanonicalTitle(input: SellFormStore): string {
   let title = '';
   if (frontParts) {
     title = middleParts.length
-      ? `${frontParts} - ${middleParts.join(' - ')}`
+      ? `${frontParts} ${middleParts.join(' ')}`
       : frontParts;
   } else {
-    title = middleParts.join(' - ');
+    title = middleParts.join(' ');
   }
 
   const numSerial = [numberPart, serialPart].filter(Boolean).join(' ');
@@ -128,7 +128,7 @@ export function buildCanonicalTitle(input: SellFormStore): string {
   }
 
   if (gradingPart) {
-    title = title ? `${title} (${gradingPart})` : `(${gradingPart})`;
+    title = title ? `${title} ${gradingPart}` : `${gradingPart}`;
   }
 
   return normalizeSpace(title);
