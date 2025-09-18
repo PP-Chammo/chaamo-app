@@ -2,13 +2,7 @@ import { SendEmailProps } from '@/domains';
 
 import { supabase } from './supabase';
 
-export async function sendEmail({
-  to,
-  subject,
-  html,
-  from,
-  replyTo,
-}: SendEmailProps) {
+export async function sendEmail({ to, subject, html, from }: SendEmailProps) {
   const res = await supabase.functions.invoke('resend-email', {
     method: 'POST',
     body: JSON.stringify({
@@ -16,10 +10,9 @@ export async function sendEmail({
       subject,
       html,
       from,
-      replyTo,
     }),
   });
-  return res;
+  return res.data;
 }
 
 export async function sendAccountDeletionEmail(to: string, username?: string) {

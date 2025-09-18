@@ -11,10 +11,7 @@ import {
 } from '@/components/atoms';
 import { Header, TextArea, TextField } from '@/components/molecules';
 import { TextChangeParams } from '@/domains';
-import {
-  useCreateContactMessagesMutation,
-  useGetVwListingCardDetailLazyQuery,
-} from '@/generated/graphql';
+import { useGetVwListingCardDetailLazyQuery } from '@/generated/graphql';
 import { useUserVar } from '@/hooks/useUserVar';
 import { sendEmail } from '@/utils/email';
 import { areFieldsEmpty, ValidationValues } from '@/utils/validate';
@@ -34,13 +31,11 @@ export default function ContactUs() {
   const { listingId } = useLocalSearchParams();
   const [form, setForm] = useState<Form>(initialForm);
   const [recipient, setRecipient] = useState('support@chaamo.com');
+  const [loading, setLoading] = useState(false);
 
-  const [getListingDetail, { data: listingDetail }] =
-    useGetVwListingCardDetailLazyQuery({
-      fetchPolicy: 'cache-and-network',
-    });
-  const [createContactMessages, { loading }] =
-    useCreateContactMessagesMutation();
+  const [getListingDetail] = useGetVwListingCardDetailLazyQuery({
+    fetchPolicy: 'cache-and-network',
+  });
 
   const handleChange = ({ name, value }: TextChangeParams) => {
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -48,46 +43,30 @@ export default function ContactUs() {
 
   const handleSubmit = async () => {
     try {
-      const userCardId = listingDetail?.vw_listing_cardsCollection?.edges
-        ?.length
-        ? listingDetail?.vw_listing_cardsCollection.edges[0].node.card_id
-        : null;
-      await createContactMessages({
-        variables: {
-          objects: [
-            {
-              ...form,
-              user_id: user?.id,
-              ...(listingId && userCardId
-                ? {
-                    user_card_id: userCardId,
-                  }
-                : {}),
-            },
-          ],
-        },
-        onCompleted({ insertIntocontact_messagesCollection }) {
-          if (insertIntocontact_messagesCollection?.records?.length) {
-            if (listingId && userCardId) {
-              sendEmail({
-                to: recipient,
-                subject: form.subject,
-                html: `<p>${form.message}</p>`,
-              });
-              Alert.alert('Sent', 'Form sent to support team');
-            } else {
-              Alert.alert('Success', 'Form submitted successfully');
-              setForm(initialForm);
-              router.back();
-            }
-          } else {
-            Alert.alert('Error', 'Failed to submit form');
-          }
-        },
+      setLoading(true);
+      const sendEmailResult = await sendEmail({
+        to: recipient,
+        subject: form.subject,
+        html: `
+        <p>${form.message}</p>
+        <br/>
+        <p>Best regards,</p>
+        <p>${user?.profile?.username} - (${user?.email})</p>`,
       });
+
+      if (sendEmailResult.id) {
+        const sentTo =
+          recipient === 'support@chaamo.com'
+            ? 'support team'
+            : 'technical team';
+        Alert.alert('Success', `Form sent to ${sentTo}`);
+        setForm(initialForm);
+      }
     } catch (error) {
       console.error(error);
       Alert.alert('Error', 'Failed to submit form');
+    } finally {
+      setLoading(false);
     }
   };
 
