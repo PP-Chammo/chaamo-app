@@ -13,7 +13,6 @@ import {
 } from '@/components/molecules';
 import { dummyPortfolioValueData } from '@/constants/dummy';
 import {
-  ListingType,
   OrderByDirection,
   OrderStatus,
   useGetVwListingCardsQuery,
@@ -43,12 +42,8 @@ export default function PortfolioValueScreen() {
     variables: {
       filter: {
         seller_id: { eq: user?.id },
-        listing_type: { neq: ListingType.PORTFOLIO },
       },
-      orderBy: [
-        { last_sold_price: OrderByDirection.DESCNULLSLAST },
-        { start_price: OrderByDirection.DESCNULLSLAST },
-      ],
+      orderBy: [{ last_sold_price: OrderByDirection.DESCNULLSLAST }],
     },
   });
 
@@ -74,7 +69,7 @@ export default function PortfolioValueScreen() {
               edge?.node?.last_sold_price,
             ),
           )
-        : Number(formatPrice(edge?.node?.currency, edge?.node?.start_price));
+        : Number(formatPrice(edge?.node?.currency, 0));
 
       return { edge, value, hasLastSold };
     });
@@ -88,8 +83,6 @@ export default function PortfolioValueScreen() {
       })
       .map((item) => item.edge);
   }, [data?.vw_listing_cardsCollection?.edges, formatPrice]);
-
-  console.log(mostValuableList);
 
   const lastSoldValuation = useMemo(() => {
     if (data?.vw_listing_cardsCollection?.edges?.length) {
@@ -207,6 +200,7 @@ export default function PortfolioValueScreen() {
         >
           {(item) => (
             <ListingCard
+              auctionShowLastSold
               type={item.node.listing_type}
               id={item.node.id}
               imageUrls={item.node.image_urls ?? ''}

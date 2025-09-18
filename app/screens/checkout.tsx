@@ -313,7 +313,7 @@ export default function CheckoutScreen() {
                 stateProvince={user?.profile?.state_province}
                 postalCode={user?.profile?.postal_code}
                 country={user?.profile?.country}
-                phoneNumber={`${user?.profile?.calling_code} ${user?.profile?.phone_number}`}
+                phoneNumber={`${user?.profile?.calling_code ? user?.profile?.calling_code + ' ' : ''}${user?.profile?.phone_number}`}
               />
             </View>
           </View>
