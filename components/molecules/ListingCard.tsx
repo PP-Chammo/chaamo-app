@@ -24,6 +24,7 @@ interface ListingCardProps extends ListingCardType {
   imageClassName?: string;
   lastSoldIsChecked?: boolean;
   lastSoldIsCorrect?: boolean;
+  auctionShowLastSold?: boolean;
 }
 
 const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
@@ -43,6 +44,7 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
   rightComponent,
   className,
   imageClassName,
+  auctionShowLastSold,
 }) {
   const imageUrl = getFirstImageUrl(imageUrls);
   const { formatDisplay } = useCurrencyDisplay();
@@ -129,10 +131,12 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
               {priceDisplay}
             </Label>
           </View>
-          <View className={classes.marketContainer}>
-            <Image source={ChaamoLogo} className={classes.chaamoLogo} />
-            {renderMarketPrice()}
-          </View>
+          {auctionShowLastSold && (
+            <View className={classes.marketContainer}>
+              <Image source={ChaamoLogo} className={classes.chaamoLogo} />
+              {renderMarketPrice()}
+            </View>
+          )}
         </View>
       ) : (
         <View className={classes.contentContainer}>

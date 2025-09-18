@@ -200,6 +200,7 @@ export default function PortfolioValueScreen() {
         >
           {(item) => (
             <ListingCard
+              auctionShowLastSold
               type={item.node.listing_type}
               id={item.node.id}
               imageUrls={item.node.image_urls ?? ''}
