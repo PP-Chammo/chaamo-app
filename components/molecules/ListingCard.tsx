@@ -129,6 +129,10 @@ const ListingCard: React.FC<ListingCardProps> = memo(function CategoryItem({
               {priceDisplay}
             </Label>
           </View>
+          <View className={classes.marketContainer}>
+            <Image source={ChaamoLogo} className={classes.chaamoLogo} />
+            {renderMarketPrice()}
+          </View>
         </View>
       ) : (
         <View className={classes.contentContainer}>
