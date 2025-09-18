@@ -6,6 +6,7 @@ import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
 
 import {
+  AddressLine,
   Button,
   Divider,
   Icon,
@@ -66,7 +67,6 @@ type OrderResponse = {
 
 type ParamList = {
   id: string;
-  isDirectBuy: string;
 };
 
 const initialForm = {
@@ -77,7 +77,7 @@ const initialForm = {
 export default function CheckoutScreen() {
   const [user] = useUserVar();
   const { formatDisplay, formatPrice } = useCurrencyDisplay();
-  const { id, isDirectBuy } = useLocalSearchParams<ParamList>();
+  const { id } = useLocalSearchParams<ParamList>();
 
   const [form, setForm] = useState<Form>(initialForm);
   const [deliveryLoading, setDeliveryLoading] = useState(false);
@@ -187,58 +187,40 @@ export default function CheckoutScreen() {
     useCallback(() => {
       (async () => {
         try {
-          setDeliveryLoading(true);
-          const response = (await fetcher.get('/shippo/rates', {
-            seller_id: detail?.seller_id,
-            buyer_id: user?.id,
-            insurance: form.insurance === 'insurance',
-            insurance_amount: 10,
-          })) as DeliveryRateResponse;
-          if (response) {
-            const deliveryRateList = (response.rates as DeliveryRate[]).map(
-              (res: DeliveryRate) => ({
-                value: res.id,
-                label: `${formatDisplay(res.currency, res.amount)} - ${res.service}`,
-                currency: res.currency,
-                amount: res.amount,
-              }),
-            );
-            setDeliveryRateList(deliveryRateList);
+          if (detail) {
+            setDeliveryLoading(true);
+            const response = (await fetcher.get('/shippo/rates', {
+              seller_id: detail?.seller_id,
+              buyer_id: user?.id,
+              insurance: form.insurance === 'insurance',
+              insurance_amount: insuranceAmount,
+            })) as DeliveryRateResponse;
+            if (response) {
+              const deliveryRateList = (response.rates as DeliveryRate[]).map(
+                (res: DeliveryRate) => ({
+                  value: res.id,
+                  label: `${formatDisplay(res.currency, res.amount)} - ${res.service}`,
+                  currency: res.currency,
+                  amount: res.amount,
+                }),
+              );
+              setDeliveryRateList(deliveryRateList);
+            }
+            setDeliveryLoading(false);
           }
+        } catch (error: unknown) {
           setDeliveryLoading(false);
-        } catch (error) {
-          setDeliveryLoading(false);
+          const rawMessage = (error as Error)?.message;
+          const message = rawMessage?.includes('{')
+            ? JSON.parse(rawMessage.match(/{.*}/)?.[0] ?? '{}')?.detail
+            : rawMessage;
+          Alert.alert('Failed get shipper', message ?? '');
           console.error(error);
         }
       })();
-      /* keep this empty dependency array to prevent infinite loop */
+      /* keep this dependency array to prevent infinite loop */
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []),
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      if (
-        !user?.profile?.country ||
-        !user?.profile?.city ||
-        !user?.profile?.postal_code
-      ) {
-        Alert.alert(
-          'Incomplete Address',
-          'Please complete your destination address.',
-          [
-            {
-              text: 'OK',
-              onPress: () => router.push('/screens/personal-details'),
-            },
-          ],
-        );
-      }
-    }, [
-      user?.profile?.city,
-      user?.profile?.country,
-      user?.profile?.postal_code,
-    ]),
+    }, [detail]),
   );
 
   return (
@@ -256,13 +238,13 @@ export default function CheckoutScreen() {
           <View className={classes.section}>
             <Label variant="subtitle">{detail?.name}</Label>
             <Row between>
-              <Label>{isDirectBuy === 'true' ? 'Price' : 'Offer'}</Label>
+              <Label>Price</Label>
               <Label>
                 {formatDisplay(detail?.currency, detail?.start_price)}
               </Label>
             </Row>
             <Row between className={classes.row}>
-              <Label>Delivery Fee</Label>
+              <Label>Shipper</Label>
               <View className={classes.selectContainer}>
                 <Select
                   name="deliveryRateId"
@@ -271,7 +253,7 @@ export default function CheckoutScreen() {
                     deliveryRateList.length === 0
                       ? deliveryLoading
                         ? 'Loading...'
-                        : 'Check your address, delivery unavailable'
+                        : 'Check address, shipper unavailable'
                       : 'Select Delivery'
                   }
                   value={form.deliveryRateId || ''}
@@ -282,6 +264,14 @@ export default function CheckoutScreen() {
                 />
               </View>
             </Row>
+            {form.insurance === 'insurance' && (
+              <Row between>
+                <Label>Insurance</Label>
+                <Label>
+                  {formatDisplay(detail?.currency, insuranceAmount)}
+                </Label>
+              </Row>
+            )}
             <Divider position="horizontal" className={classes.divider} />
             <Row between>
               <Label variant="subtitle">Total</Label>
@@ -316,17 +306,15 @@ export default function CheckoutScreen() {
               </TouchableOpacity>
             </Row>
             <View>
-              <Label>
-                {user?.profile?.username} / {user?.profile?.phone_number}
-              </Label>
-              <Label>{user?.profile?.address_line_1}</Label>
-              <Label>
-                {user?.profile?.country}, {user?.profile?.city + ','}{' '}
-                {user?.profile?.country === 'GB'
-                  ? ''
-                  : user?.profile?.state_province}{' '}
-                {user?.profile?.postal_code}
-              </Label>
+              <AddressLine
+                personName={user?.profile?.username}
+                addressLine1={user?.profile?.address_line_1}
+                city={user?.profile?.city}
+                stateProvince={user?.profile?.state_province}
+                postalCode={user?.profile?.postal_code}
+                country={user?.profile?.country}
+                phoneNumber={`${user?.profile?.calling_code} ${user?.profile?.phone_number}`}
+              />
             </View>
           </View>
 

@@ -66,7 +66,7 @@ const classes = {
   label: 'text-slate-500 font-medium text-md ml-4',
   required: 'text-red-500',
   input:
-    'rounded-lg border border-slate-200 rounded-md p-4 bg-white min-h-24 max-h-56',
+    'rounded-lg border border-slate-200 rounded-md p-4 bg-white text-gray-700 min-h-24 max-h-56',
   error: 'text-red-500 text-sm',
   errorBorder: '!border-red-500',
 };

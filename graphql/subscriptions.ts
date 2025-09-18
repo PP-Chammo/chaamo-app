@@ -6,6 +6,7 @@ export const getSubscriptions = gql`
       edges {
         node {
           user_id
+          status
         }
       }
     }
@@ -21,6 +22,11 @@ export const getSubscriptionDetail = gql`
           start_date
           end_date
           status
+          plan_id
+          paypal_subscription_id
+          payments {
+            gateway_account_info
+          }
           membership_plans {
             name
             description

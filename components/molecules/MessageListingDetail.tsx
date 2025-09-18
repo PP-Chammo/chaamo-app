@@ -56,7 +56,7 @@ const MessageListingDetail: React.FC<MessageListingDetailProps> = memo(
 
           <View className={classes.textContainer}>
             <Label className={classes.title} numberOfLines={3}>
-              {detail.name}
+              {detail.title}
             </Label>
             <Label className={classes.price}>{priceDisplay}</Label>
           </View>

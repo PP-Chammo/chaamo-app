@@ -10,8 +10,9 @@ import { getColor } from '@/utils/getColor';
 interface PaymentMethodCardProps {
   name: string;
   subscriptionInfo: {
-    last4: string;
-    expiry: string;
+    email?: string;
+    last4?: string;
+    expiry?: string;
   };
   nextBillingDate?: string;
   className?: string;
@@ -25,15 +26,21 @@ const PaymentMethodCard: React.FC<PaymentMethodCardProps> = memo(
         <View className={classes.card}>
           <View className={classes.row}>
             <MaterialIcons
-              name={name.toLowerCase() === 'paypal' ? 'paypal' : 'credit-card'}
+              name={name === 'paypal' ? 'paypal' : 'credit-card'}
               size={24}
               color={getColor('slate-500')}
             />
-            <View>
-              <Text>**** **** **** {subscriptionInfo.last4}</Text>
-              <Text className={classes.expiry}>
-                Expiry {subscriptionInfo.expiry}
-              </Text>
+            <View className={classes.infoContainer}>
+              {name === 'paypal' ? (
+                <Text>{subscriptionInfo?.email ?? ''}</Text>
+              ) : (
+                <Text>**** **** **** {subscriptionInfo?.last4 ?? ''}</Text>
+              )}
+              {name !== 'paypal' && (
+                <Text className={classes.expiry}>
+                  Expiry {subscriptionInfo?.expiry ?? ''}
+                </Text>
+              )}
               {nextBillingDate && (
                 <Text className={classes.nextBilling}>
                   Next billing date{' '}
@@ -53,8 +60,9 @@ const classes = {
   label: 'text-sm font-bold text-gray-800',
   row: 'flex-row items-center gap-4',
   expiry: 'text-sm text-gray-500',
-  nextBilling: 'text-sm text-green-600 mt-4',
+  nextBilling: 'text-sm text-green-600',
   container: 'gap-3',
+  infoContainer: 'py-2 flex flex-col gap-2',
 };
 
 export default PaymentMethodCard;

@@ -102,8 +102,8 @@ const ProductAllList: React.FC<ProductAllListProps> = memo(function AllCards({
             imageUrls={edge.node?.image_url ?? ''}
             title={
               search.query?.trim()
-                ? renderTitleHighlight(edge.node?.name ?? '', search.query)
-                : (edge.node?.name ?? '')
+                ? renderTitleHighlight(edge.node?.title ?? '', search.query)
+                : (edge.node?.title ?? '')
             }
             subtitle={edge.node?.region ?? ''}
             date={edge.node.sold_at ?? new Date().toISOString()}

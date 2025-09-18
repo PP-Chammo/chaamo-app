@@ -16,7 +16,7 @@ export const getEbayPosts = gql`
       edges {
         node {
           id
-          name
+          title
           normalised_name
           image_url
           currency
@@ -44,7 +44,7 @@ export const ebayPostDetail = gql`
       edges {
         node {
           id
-          name
+          title
           normalised_name
           image_hd_url
           currency

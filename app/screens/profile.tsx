@@ -20,6 +20,7 @@ import {
 import { Header, Lazy, TabView } from '@/components/molecules';
 import { profileTabs } from '@/constants/tabs';
 import {
+  ListingType,
   OrderByDirection,
   useCreateBlockedUsersMutation,
   useCreateFollowsMutation,
@@ -75,8 +76,9 @@ export default function ProfileScreen() {
 
   const lastSoldValuation = useMemo(() => {
     if (listingData?.vw_listing_cardsCollection?.edges?.length) {
-      const lastSoldTotal =
-        listingData?.vw_listing_cardsCollection?.edges?.reduce((acc, edge) => {
+      const lastSoldTotal = listingData?.vw_listing_cardsCollection?.edges
+        ?.filter((edge) => edge?.node?.listing_type !== ListingType.PORTFOLIO)
+        .reduce((acc, edge) => {
           const value =
             (edge?.node?.last_sold_price ?? 0) > 0
               ? formatPrice(

@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const getBoostPlans = gql`
-  query GetBoostPlans {
-    boost_plansCollection {
+  query GetBoostPlans($orderBy: [boost_plansOrderBy!]) {
+    boost_plansCollection(orderBy: $orderBy) {
       edges {
         node {
           id

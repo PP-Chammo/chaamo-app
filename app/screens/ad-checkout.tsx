@@ -11,7 +11,7 @@ import { adPackages } from '@/constants/adProperties';
 import {
   BoostStatus,
   PaymentStatus,
-  useCreateBoostedListingsMutation,
+  useCreateBoostListingsMutation,
   useCreatePaymentsMutation,
   useUpdatePaymentsMutation,
 } from '@/generated/graphql';
@@ -36,7 +36,7 @@ export default function AdCheckoutScreen() {
   const [loading, setLoading] = useState(false);
 
   const [createPayment] = useCreatePaymentsMutation();
-  const [createBoostedListing] = useCreateBoostedListingsMutation();
+  const [createBoostListings] = useCreateBoostListingsMutation();
   const [updatePayment] = useUpdatePaymentsMutation();
 
   const selectedPackage = useMemo(() => {
@@ -72,7 +72,7 @@ export default function AdCheckoutScreen() {
             if (insertIntopaymentsCollection?.records?.length) {
               const newPaymentId = insertIntopaymentsCollection.records[0].id;
               // NOTE: this process createBoostedListing should call after payment success
-              createBoostedListing({
+              createBoostListings({
                 variables: {
                   objects: [
                     {
@@ -86,8 +86,8 @@ export default function AdCheckoutScreen() {
                     },
                   ],
                 },
-                onCompleted: ({ insertIntoboosted_listingsCollection }) => {
-                  if (insertIntoboosted_listingsCollection?.records?.length) {
+                onCompleted: ({ insertIntoboost_listingsCollection }) => {
+                  if (insertIntoboost_listingsCollection?.records?.length) {
                     updatePayment({
                       variables: {
                         set: {
@@ -143,7 +143,7 @@ export default function AdCheckoutScreen() {
     createPayment,
     user.id,
     selectedPackage?.price,
-    createBoostedListing,
+    createBoostListings,
     updatePayment,
     setForm,
   ]);

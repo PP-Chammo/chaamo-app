@@ -50,6 +50,7 @@ export const getVwListingCardDetail = gql`
           years
           card_set
           name
+          variation
           serial_number
           number
           condition
@@ -72,6 +73,7 @@ export const getVwListingCardDetail = gql`
           end_time
           category_id
           condition
+          is_boosted
         }
       }
     }

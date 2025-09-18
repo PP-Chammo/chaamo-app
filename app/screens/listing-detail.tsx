@@ -38,7 +38,7 @@ import {
   ListingType,
   useCreateFavoritesMutation,
   useDeleteEbayPostsMutation,
-  useDeleteUserCardMutation,
+  useDeleteCardMutation,
   useGetVwListingCardDetailLazyQuery,
   useRemoveFavoritesMutation,
   useGetEbayPostDetailLazyQuery,
@@ -78,7 +78,7 @@ export default function ListingDetailScreen() {
     });
   const [createFavorites] = useCreateFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
-  const [deleteUserCard, { loading: isDeleting }] = useDeleteUserCardMutation();
+  const [deleteCard, { loading: isDeleting }] = useDeleteCardMutation();
   const [deleteEbayPost] = useDeleteEbayPostsMutation();
 
   const listingDetail = useMemo(
@@ -95,7 +95,7 @@ export default function ListingDetailScreen() {
         id: ebayNode.id,
         listing_type: ListingType.SELL,
         image_urls: ebayNode.image_hd_url ? [ebayNode.image_hd_url] : [],
-        title: ebayNode.name ?? '',
+        title: ebayNode.title ?? '',
         currency: ebayNode.currency ?? undefined,
         start_price: ebayNode.price ?? undefined,
         created_at: ebayNode.sold_at ?? new Date().toISOString(),
@@ -111,6 +111,7 @@ export default function ListingDetailScreen() {
         reserve_price: undefined,
         end_time: undefined,
         card_id: undefined,
+        is_boosted: undefined,
       } as const;
     }
     return listingDetail;
@@ -159,7 +160,7 @@ export default function ListingDetailScreen() {
   const handleBuyNow = useCallback(() => {
     router.push({
       pathname: '/screens/checkout',
-      params: { id: detail?.id, isDirectBuy: 'true' },
+      params: { id: detail?.id },
     });
   }, [detail?.id]);
 
@@ -208,10 +209,10 @@ export default function ListingDetailScreen() {
   const handleBoostPost = useCallback(() => {
     router.push({
       pathname: '/screens/select-ad-package',
-      params: { listingId: detail?.card_id, hideCancelButton: 'true' },
+      params: { listingId: id, hideCancelButton: 'true' },
     });
     setIsContextMenuVisible(false);
-  }, [detail?.card_id]);
+  }, [id]);
 
   const handleEditDetails = useCallback(() => {
     router.push({
@@ -259,14 +260,14 @@ export default function ListingDetailScreen() {
   }, [deleteEbayPost, id, handleDeletePopup]);
 
   const handleDeleteListingCard = useCallback(() => {
-    deleteUserCard({
+    deleteCard({
       variables: {
         filter: {
           id: { eq: detail?.card_id },
         },
       },
-      onCompleted: ({ deleteFromuser_cardsCollection }) => {
-        if (deleteFromuser_cardsCollection?.records?.length) {
+      onCompleted: ({ deleteFromcardsCollection }) => {
+        if (deleteFromcardsCollection?.records?.length) {
           Alert.alert('Success', 'Your post has been deleted', [
             {
               text: 'OK',
@@ -282,7 +283,7 @@ export default function ListingDetailScreen() {
         console.log(error);
       },
     });
-  }, [deleteUserCard, detail?.card_id, handleDeletePopup]);
+  }, [deleteCard, detail?.card_id, handleDeletePopup]);
 
   const handleDeleteCard = useCallback(() => {
     if (isEbay) return handleDeleteEbayCard();
@@ -479,7 +480,7 @@ export default function ListingDetailScreen() {
         triggerRef={dotsRef}
         menuHeight={60}
       >
-        {!isEbay && (
+        {!isEbay && !detail?.is_boosted && (
           <TouchableOpacity
             onPress={handleBoostPost}
             className={classes.contextMenu}
