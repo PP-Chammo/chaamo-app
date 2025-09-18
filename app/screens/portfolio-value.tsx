@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { Decimal } from 'decimal.js';
 import { router } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { ScrollView, View } from 'react-native';
@@ -22,6 +23,8 @@ import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
 import { getIndicator } from '@/utils/getIndicator';
+
+Decimal.set({ precision: 28, rounding: Decimal.ROUND_HALF_EVEN });
 
 cssInterop(ScrollView, {
   className: {
@@ -86,20 +89,30 @@ export default function PortfolioValueScreen() {
 
   const lastSoldValuation = useMemo(() => {
     if (data?.vw_listing_cardsCollection?.edges?.length) {
-      const lastSoldTotal = data?.vw_listing_cardsCollection?.edges?.reduce(
+      const lastSoldTotal = data.vw_listing_cardsCollection.edges.reduce(
         (acc, edge) => {
-          const value =
-            (edge?.node?.last_sold_price ?? 0) > 0
-              ? formatPrice(
-                  edge.node.last_sold_currency,
-                  edge.node.last_sold_price,
-                )
-              : formatPrice(edge.node.currency, edge.node.start_price);
-          return acc + Number(value);
+          const price = new Decimal(edge?.node?.last_sold_price ?? 0);
+          const hasLastSold = price.gt(0);
+
+          if (hasLastSold && edge?.node?.last_sold_currency) {
+            const formattedPrice = formatPrice(
+              edge.node.last_sold_currency,
+              price.toNumber(),
+            );
+            return acc.plus(new Decimal(formattedPrice));
+          } else {
+            const startPrice = new Decimal(edge?.node?.start_price ?? 0);
+            const formattedPrice = formatPrice(
+              edge?.node?.currency ?? 'USD',
+              startPrice.toNumber(),
+            );
+            return acc.plus(new Decimal(formattedPrice));
+          }
         },
-        0,
+        new Decimal(0),
       );
-      return formatDisplay(user?.profile?.currency, lastSoldTotal);
+
+      return formatDisplay(user?.profile?.currency, lastSoldTotal.toNumber());
     }
     return 0;
   }, [
@@ -115,26 +128,30 @@ export default function PortfolioValueScreen() {
   );
 
   const soldItemsRevenue = useMemo(() => {
-    return myOrders.reduce((sum, edge) => {
-      const status = edge?.node?.status;
-      const isCompleted =
-        status === OrderStatus.COMPLETED || status === OrderStatus.DELIVERED;
-      const amount = Number(edge?.node?.seller_earnings ?? 0);
-      return isCompleted ? sum + amount : sum;
-    }, 0);
+    return myOrders
+      .reduce((sum, edge) => {
+        const status = edge?.node?.status;
+        const isCompleted =
+          status === OrderStatus.COMPLETED || status === OrderStatus.DELIVERED;
+        const amount = new Decimal(edge?.node?.seller_earnings ?? 0);
+        return isCompleted ? sum.plus(amount) : sum;
+      }, new Decimal(0))
+      .toNumber();
   }, [myOrders]);
 
   const pendingRevenue = useMemo(() => {
-    return myOrders.reduce((sum, edge) => {
-      const status = edge?.node?.status;
-      const isPending =
-        status === OrderStatus.AWAITING_PAYMENT ||
-        status === OrderStatus.AWAITING_SHIPMENT ||
-        status === OrderStatus.SHIPPED ||
-        status === OrderStatus.REFUND_REQUESTED;
-      const amount = Number(edge?.node?.seller_earnings ?? 0);
-      return isPending ? sum + amount : sum;
-    }, 0);
+    return myOrders
+      .reduce((sum, edge) => {
+        const status = edge?.node?.status;
+        const isPending =
+          status === OrderStatus.AWAITING_PAYMENT ||
+          status === OrderStatus.AWAITING_SHIPMENT ||
+          status === OrderStatus.SHIPPED ||
+          status === OrderStatus.REFUND_REQUESTED;
+        const amount = new Decimal(edge?.node?.seller_earnings ?? 0);
+        return isPending ? sum.plus(amount) : sum;
+      }, new Decimal(0))
+      .toNumber();
   }, [myOrders]);
 
   return (
