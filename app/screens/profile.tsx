@@ -85,7 +85,7 @@ export default function ProfileScreen() {
                   edge.node.last_sold_currency,
                   edge.node.last_sold_price,
                 )
-              : formatPrice(edge.node.currency, edge.node.start_price);
+              : formatPrice(edge.node.currency, 0);
           return acc + Number(value);
         }, 0);
       return formatDisplay(user?.profile?.currency, lastSoldTotal);
