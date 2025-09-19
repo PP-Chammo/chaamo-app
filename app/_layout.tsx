@@ -1,15 +1,11 @@
 import 'react-native-url-polyfill/auto'; // this needed for supabase to be worked on react-native , dont remove it
 
-import { useEffect } from 'react';
-
 import { ApolloProvider } from '@apollo/client';
 import * as Sentry from '@sentry/react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 
-import { OrderByDirection } from '@/generated/graphql';
-import { getEbayPosts } from '@/graphql/ebay_posts';
 import { default as client } from '@/utils/apollo';
 import { getColor } from '@/utils/getColor';
 
@@ -27,7 +23,7 @@ Sentry.init({
 function RootLayout() {
   return (
     <ApolloProvider client={client}>
-      <Warmup />
+      {/* <Warmup /> */}
       <KeyboardProvider>
         <Stack
           screenOptions={{
@@ -45,20 +41,20 @@ function RootLayout() {
 
 export default Sentry.wrap(RootLayout);
 
-function Warmup() {
-  useEffect(() => {
-    client
-      .query({
-        query: getEbayPosts,
-        variables: {
-          orderBy: [{ sold_at: OrderByDirection.DESCNULLSLAST }],
-          first: 1,
-        },
-        fetchPolicy: 'network-only',
-      })
-      .catch(() => {
-        // ignore errors; this is a silent warmup
-      });
-  }, []);
-  return null;
-}
+// function Warmup() {
+//   useEffect(() => {
+//     client
+//       .query({
+//         query: getEbayPosts,
+//         variables: {
+//           orderBy: [{ sold_at: OrderByDirection.DESCNULLSLAST }],
+//           first: 1,
+//         },
+//         fetchPolicy: 'network-only',
+//       })
+//       .catch(() => {
+//         // ignore errors; this is a silent warmup
+//       });
+//   }, []);
+//   return null;
+// }

@@ -45,8 +45,8 @@ import { getIndicator } from '@/utils/getIndicator';
 import { renderTitleHighlight } from '@/utils/renderTitleHighlight';
 import { structuredClone } from '@/utils/structuredClone';
 
-const LOAD_MORE_SIZE = 30;
-const INITIAL_PAGE_SIZE = 30;
+const LOAD_MORE_SIZE = 50;
+const INITIAL_PAGE_SIZE = 50;
 
 export default function ProductListScreen() {
   const [user] = useUserVar();
@@ -70,7 +70,7 @@ export default function ProductListScreen() {
       error: ebayError,
       fetchMore: fetchMoreEbay,
     },
-  ] = useGetEbayPostsLazyQuery({ fetchPolicy: 'cache-and-network' });
+  ] = useGetEbayPostsLazyQuery({ fetchPolicy: 'cache-first' });
   const [createFavorites] = useCreateFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
   const { getIsFavorite } = useFavorites();
@@ -473,6 +473,8 @@ export default function ProductListScreen() {
     }));
     return [...chaamoItems, ...ebayItems];
   }, [allCards, allEbay]);
+
+  console.log(mergedItems);
 
   return (
     <ScreenContainer classNameTop={classes.containerTop}>

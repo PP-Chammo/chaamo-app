@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 
+import { Decimal } from 'decimal.js';
 import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
 import pluralize from 'pluralize';
@@ -20,7 +21,6 @@ import {
 import { Header, Lazy, TabView } from '@/components/molecules';
 import { profileTabs } from '@/constants/tabs';
 import {
-  ListingType,
   OrderByDirection,
   useCreateBlockedUsersMutation,
   useCreateFollowsMutation,
@@ -36,6 +36,8 @@ import { useFollows } from '@/hooks/useFollows';
 import { useUserVar } from '@/hooks/useUserVar';
 import { getColor } from '@/utils/getColor';
 import { uploadToBucket } from '@/utils/supabase';
+
+Decimal.set({ precision: 28, rounding: Decimal.ROUND_HALF_EVEN });
 
 export default function ProfileScreen() {
   const [user] = useUserVar();
@@ -76,18 +78,18 @@ export default function ProfileScreen() {
 
   const lastSoldValuation = useMemo(() => {
     if (listingData?.vw_listing_cardsCollection?.edges?.length) {
-      const lastSoldTotal = listingData?.vw_listing_cardsCollection?.edges
-        ?.filter((edge) => edge?.node?.listing_type !== ListingType.PORTFOLIO)
+      const lastSoldTotal = listingData.vw_listing_cardsCollection.edges
         .reduce((acc, edge) => {
-          const value =
-            (edge?.node?.last_sold_price ?? 0) > 0
-              ? formatPrice(
-                  edge.node.last_sold_currency,
-                  edge.node.last_sold_price,
-                )
-              : formatPrice(edge.node.currency, 0);
-          return acc + Number(value);
-        }, 0);
+          const price = new Decimal(edge?.node?.last_sold_price ?? 0);
+          const currency = edge?.node?.last_sold_currency;
+
+          if (price.gt(0) && currency) {
+            const formattedPrice = formatPrice(currency, price.toNumber());
+            return acc.plus(new Decimal(formattedPrice));
+          }
+          return acc;
+        }, new Decimal(0))
+        .toNumber();
       return formatDisplay(user?.profile?.currency, lastSoldTotal);
     }
     return 0;
