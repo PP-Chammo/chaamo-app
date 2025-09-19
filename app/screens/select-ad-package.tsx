@@ -20,9 +20,10 @@ export default function SelectAdPackageScreen() {
   const [user] = useUserVar();
   const [form, setForm] = useSellFormVar();
   const { formatDisplay } = useCurrencyDisplay();
-  const { listingId, hideCancelButton } = useLocalSearchParams<{
-    [k: string]: string;
-  }>();
+  const { listingId, hideCancelButton, disableBackButton } =
+    useLocalSearchParams<{
+      [k: string]: string;
+    }>();
 
   const { data } = useGetBoostPlansQuery({
     fetchPolicy: 'cache-and-network',
@@ -75,7 +76,12 @@ export default function SelectAdPackageScreen() {
 
   return (
     <ScreenContainer>
-      <Header title="Select Ad Package" onBackPress={() => router.back()} />
+      <Header
+        title="Select Ad Package"
+        onBackPress={
+          disableBackButton === 'true' ? undefined : () => router.back()
+        }
+      />
       <View className={classes.container}>
         {!listingId && (
           <View className={classes.successMessage}>

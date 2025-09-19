@@ -1,21 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { ActivityIndicator, FlatList, View } from 'react-native';
+import { View } from 'react-native';
 
-import {
-  Button,
-  Label,
-  Loading,
-  Row,
-  ScreenContainer,
-} from '@/components/atoms';
-import {
-  ListingItem,
-  FilterSection,
-  HeaderSearch,
-  TabView,
-} from '@/components/molecules';
+import { Loading, ScreenContainer } from '@/components/atoms';
+import { FilterSection, HeaderSearch, TabView } from '@/components/molecules';
 import {
   ProductAllList,
   ProductAuctionList,
@@ -34,15 +23,11 @@ import {
   type VwListingCardsFilter,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
-import { useFavorites } from '@/hooks/useFavorites';
 import { useSearchVar } from '@/hooks/useSearchVar';
 import { useUserVar } from '@/hooks/useUserVar';
 import { searchStore } from '@/stores/searchStore';
 import { MergedItem } from '@/types/card';
 import { formatThousand } from '@/utils/formatThousand';
-import { getColor } from '@/utils/getColor';
-import { getIndicator } from '@/utils/getIndicator';
-import { renderTitleHighlight } from '@/utils/renderTitleHighlight';
 import { structuredClone } from '@/utils/structuredClone';
 
 const LOAD_MORE_SIZE = 50;
@@ -73,7 +58,6 @@ export default function ProductListScreen() {
   ] = useGetEbayPostsLazyQuery({ fetchPolicy: 'cache-first' });
   const [createFavorites] = useCreateFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
-  const { getIsFavorite } = useFavorites();
 
   const [activeTab, setActiveTab] = useState(0);
 
@@ -474,8 +458,6 @@ export default function ProductListScreen() {
     return [...chaamoItems, ...ebayItems];
   }, [allCards, allEbay]);
 
-  console.log(mergedItems);
-
   return (
     <ScreenContainer classNameTop={classes.containerTop}>
       <HeaderSearch
@@ -492,172 +474,43 @@ export default function ProductListScreen() {
         <Loading />
       ) : (
         <View className={classes.tabViewContainer}>
-          {mergedList === 'true' ? (
-            <FlatList
-              testID="merged-product-list"
-              showsVerticalScrollIndicator={false}
-              data={mergedItems}
-              keyExtractor={(item) => item.edge.node.id}
-              renderItem={({ item }) => {
-                if (item.kind === 'chaamo') {
-                  const edge = item.edge;
-                  return (
-                    <ListingItem
-                      listingType={edge.node?.listing_type ?? ListingType.SELL}
-                      imageUrls={edge.node?.image_urls ?? ''}
-                      title={
-                        search.query?.trim()
-                          ? renderTitleHighlight(
-                              edge.node?.title ?? '',
-                              search.query,
-                            )
-                          : (edge.node?.title ?? '')
-                      }
-                      subtitle={edge.node?.seller_username ?? ''}
-                      date={edge.node.created_at ?? new Date().toISOString()}
-                      currency={edge.node?.currency}
-                      price={edge.node?.start_price}
-                      highestBidCurrency={edge.node?.highest_bid_currency}
-                      highestBidPrice={edge.node?.highest_bid_price}
-                      marketCurrency={edge.node?.last_sold_currency}
-                      marketPrice={edge.node?.last_sold_price}
-                      lastSoldIsChecked={
-                        edge.node?.last_sold_is_checked ?? false
-                      }
-                      lastSoldIsCorrect={
-                        edge.node?.last_sold_is_correct ?? false
-                      }
-                      indicator={getIndicator(
-                        edge.node?.start_price,
-                        edge.node?.last_sold_price,
-                      )}
-                      onPress={() =>
-                        router.push({
-                          pathname: '/screens/listing-detail',
-                          params: { id: edge.node?.id },
-                        })
-                      }
-                      rightIcon={
-                        getIsFavorite(edge.node?.id) ? 'heart' : 'heart-outline'
-                      }
-                      rightIconColor={
-                        getIsFavorite(edge.node?.id)
-                          ? getColor('red-600')
-                          : undefined
-                      }
-                      rightIconSize={22}
-                      onRightIconPress={() => {
-                        handleToggleFavorite(
-                          edge.node?.id,
-                          getIsFavorite(edge.node?.id),
-                        );
-                      }}
-                    />
-                  );
-                }
-
-                const edge = item.edge;
-                return (
-                  <ListingItem
-                    type="ebay"
-                    listingType={ListingType.SELL}
-                    imageUrls={edge.node?.image_url ?? ''}
-                    title={
-                      search.query?.trim()
-                        ? renderTitleHighlight(
-                            edge.node?.title ?? '',
-                            search.query,
-                          )
-                        : (edge.node?.title ?? '')
-                    }
-                    subtitle={edge.node?.region ?? ''}
-                    date={edge.node.sold_at ?? new Date().toISOString()}
-                    currency={edge.node?.currency}
-                    price={edge.node?.price}
-                    marketCurrency={edge.node?.currency}
-                    marketPrice={edge.node?.price}
-                    indicator={getIndicator(edge.node?.price, edge.node?.price)}
-                    rightIcon={undefined}
-                    onPress={() =>
-                      router.push({
-                        pathname: '/screens/listing-detail',
-                        params: { id: edge.node?.id, ebay: 'true' },
-                      })
-                    }
-                  />
-                );
-              }}
-              contentContainerClassName={classes.listContentContainer}
-              ListFooterComponent={
-                ebayLoading || ebayPaging ? (
-                  <Row className={classes.loadingRow}>
-                    <ActivityIndicator
-                      size="small"
-                      color={getColor('primary-500')}
-                    />
-                    <Label className={classes.footerText}>
-                      {ebayLoading ? 'Loading...' : 'Load more...'}
-                    </Label>
-                  </Row>
-                ) : ebayError && allEbay.length === 0 ? (
-                  <View className={classes.errorContainer}>
-                    <Label className={classes.footerText}>
-                      Failed to fetch.
-                    </Label>
-                    <Button
-                      variant="primary-light"
-                      size="small"
-                      disabled={ebayLoading || ebayPaging}
-                      onPress={handleRetryInitialEbay}
-                      className={classes.retryButton}
-                    >
-                      Retry
-                    </Button>
-                  </View>
-                ) : null
-              }
-              onEndReached={handleLoadMore}
-              onEndReachedThreshold={3}
-            />
-          ) : (
-            <TabView
-              initialPage={activeTab}
-              setActivePage={setActiveTab}
-              tabs={productTabs}
-              contentClassName={classes.tabViewContainer}
-            >
-              {isRecentlyAdded && (
-                <ProductFixedList
-                  loading={firstLoading}
-                  cards={fixedCards}
-                  onFavoritePress={handleToggleFavorite}
-                />
-              )}
-              {!isRecentlyAdded && !isAuction && (
-                <ProductAllList
-                  loading={ebayLoading}
-                  loadingMore={ebayPaging}
-                  isError={!!ebayError}
-                  cards={mergedItems}
-                  onFavoritePress={handleToggleFavorite}
-                  onFetchMore={handleLoadMore}
-                  onRetry={handleRetryInitialEbay}
-                />
-              )}
-              <ProductAuctionList
+          <TabView
+            initialPage={activeTab}
+            setActivePage={setActiveTab}
+            tabs={productTabs}
+            contentClassName={classes.tabViewContainer}
+          >
+            {isRecentlyAdded && (
+              <ProductFixedList
                 loading={firstLoading}
-                cards={auctionCards}
+                cards={fixedCards}
                 onFavoritePress={handleToggleFavorite}
               />
-              {!isRecentlyAdded && (
-                <ProductFixedList
-                  loading={firstLoading}
-                  cards={fixedCards}
-                  onFavoritePress={handleToggleFavorite}
-                />
-              )}
-            </TabView>
-          )}
+            )}
+            {!isRecentlyAdded && !isAuction && (
+              <ProductAllList
+                loading={ebayLoading}
+                loadingMore={ebayPaging}
+                isError={!!ebayError}
+                cards={mergedItems}
+                onFavoritePress={handleToggleFavorite}
+                onFetchMore={handleLoadMore}
+                onRetry={handleRetryInitialEbay}
+              />
+            )}
+            <ProductAuctionList
+              loading={firstLoading}
+              cards={auctionCards}
+              onFavoritePress={handleToggleFavorite}
+            />
+            {!isRecentlyAdded && (
+              <ProductFixedList
+                loading={firstLoading}
+                cards={fixedCards}
+                onFavoritePress={handleToggleFavorite}
+              />
+            )}
+          </TabView>
         </View>
       )}
     </ScreenContainer>

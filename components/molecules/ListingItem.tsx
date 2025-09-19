@@ -188,7 +188,7 @@ const ListingItem: React.FC<ListingItemProps> = memo(function ListingItem({
         {type === 'chaamo' && (
           <Row between className={classes.priceContainer}>
             <Row>
-              <Image source={ChaamoLogo} className={classes.chaamoLogo} />
+              <Image source={ChaamoLogo} className={classes.chaamoLogoSmall} />
               <Label className={classes.text}>Price Value:</Label>
               {renderMarketPrice()}
             </Row>
@@ -198,12 +198,18 @@ const ListingItem: React.FC<ListingItemProps> = memo(function ListingItem({
                   <Tag title="Highest Bid" />
                 </View>
               )}
-              <Label
-                className={classes.textBidPrice}
-                testID="card-item-market-price"
-              >
-                {priceDisplay}
-              </Label>
+              <Row className={classes.rightCornerContainer}>
+                <Label
+                  className={classes.textBidPrice}
+                  testID="card-item-market-price"
+                >
+                  {priceDisplay}
+                </Label>
+                <Image
+                  source={ChaamoLogo}
+                  className={classes.chaamoLogoLarge}
+                />
+              </Row>
             </Row>
           </Row>
         )}
@@ -240,8 +246,9 @@ const classes = {
   titleContainer: 'gap-2 !items-start',
   title: 'flex-1 text-base font-bold !text-gray-800 truncate pr-10',
   rightIconButton:
-    'absolute top-2 right-2 z-10 w-8 h-8 bg-white rounded-full items-center justify-center',
-  chaamoLogo: 'w-5 h-5 mr-px',
+    'absolute top-0 right-0 z-10 w-8 h-8 bg-white rounded-full items-center justify-center',
+  chaamoLogoSmall: 'w-5 h-5 mr-px',
+  chaamoLogoLarge: 'w-8 h-8 -mr-px',
   dateContainer: 'flex flex-col gap-0.5 pb-1',
   text: 'text-sm !text-gray-700',
   textBold: 'text-sm font-semibold',
@@ -251,9 +258,10 @@ const classes = {
   textBidPrice: 'text-base text-right font-semibold text-primary-500 pr-1',
   priceContainer: '!items-end',
   logoImage: 'w-6 h-6',
-  tagContainer: 'absolute bottom-7 right-0',
+  tagContainer: 'absolute bottom-10 right-0',
   textProcessing: 'text-sm !text-primary-500/70 font-normal',
   closeButton: 'absolute top-10 right-5 z-10 bg-black/50 rounded-full p-2',
+  rightCornerContainer: 'flex justify-end gap-1 -mb-1.5',
 };
 
 export default ListingItem;
