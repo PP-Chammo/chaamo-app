@@ -92,7 +92,7 @@ const ProductFixedList: React.FC<ProductFixedListProps> = memo(
 const classes = {
   loadingContainer: 'flex-1 flex-row items-center justify-center gap-2',
   loadingText: 'text-center',
-  contentContainer: 'gap-4 p-4.5',
+  contentContainer: 'gap-4 py-4.5',
 };
 
 export default ProductFixedList;

@@ -272,7 +272,7 @@ export default function ListingDetailScreen() {
             {
               text: 'OK',
               onPress: () => {
-                router.back();
+                router.replace('/(tabs)/profile');
                 handleDeletePopup();
               },
             },
