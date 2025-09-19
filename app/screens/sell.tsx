@@ -182,7 +182,7 @@ export default function SellScreen() {
           },
         });
         const ebayScrapeUrl = `ebay_scrape`;
-        const ebayScrapeParams = `?max_pages=1&card_id=${cardId}&region=${user?.profile?.currency === 'GBP' ? 'uk' : 'us'}`;
+        const ebayScrapeParams = `?card_id=${cardId}&region=${user?.profile?.currency === 'GBP' ? 'uk' : 'us'}`;
         await fetch(
           `${process.env.EXPO_PUBLIC_BACKEND_URL}/${ebayScrapeUrl}${ebayScrapeParams}`,
         );
@@ -205,7 +205,14 @@ export default function SellScreen() {
               listingId: listingData.insertIntolistingsCollection.records[0].id,
             });
             setLoading(false);
-            router.push('/screens/select-ad-package');
+            router.push({
+              pathname: '/screens/select-ad-package',
+              params: {
+                listingId:
+                  listingData.insertIntolistingsCollection.records[0].id,
+                disableBackButton: 'true',
+              },
+            });
           }
         }
       } catch (e: unknown) {
@@ -264,7 +271,7 @@ export default function SellScreen() {
           },
         });
         const ebayScrapeUrl = `ebay_scrape`;
-        const ebayScrapeParams = `?max_pages=1&card_id=${cardId}&region=${user?.profile?.currency === 'GBP' ? 'uk' : 'us'}`;
+        const ebayScrapeParams = `?card_id=${cardId}&region=${user?.profile?.currency === 'GBP' ? 'uk' : 'us'}`;
         await fetch(
           `${process.env.EXPO_PUBLIC_BACKEND_URL}/${ebayScrapeUrl}${ebayScrapeParams}`,
         );

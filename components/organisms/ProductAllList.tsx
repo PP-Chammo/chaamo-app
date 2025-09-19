@@ -155,7 +155,7 @@ const ProductAllList: React.FC<ProductAllListProps> = memo(function AllCards({
 const classes = {
   loadingContainer: 'flex-1 flex-row items-center justify-center gap-2',
   loadingText: 'text-center',
-  listContentContainer: 'gap-4 py-4.5 mt-2 mx-4.5',
+  listContentContainer: 'gap-4 p-4.5',
   errorContainer: 'py-4 items-center justify-center gap-10',
   loadingRow: 'py-4 items-center justify-center gap-2',
   footerText: 'text-gray-500',
