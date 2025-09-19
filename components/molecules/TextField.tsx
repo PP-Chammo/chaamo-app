@@ -245,6 +245,7 @@ const TextField: React.FC<TextFieldProps> = memo(function TextField({
                 value={selectedDate}
                 mode="date"
                 display="spinner"
+                textColor="black"
                 onChange={handleDateChange}
                 minimumDate={new Date()}
                 style={{ width: '100%' }}
