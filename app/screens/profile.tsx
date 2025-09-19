@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { Decimal } from 'decimal.js';
 import * as ImagePicker from 'expo-image-picker';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import pluralize from 'pluralize';
 import { Alert, TouchableOpacity, View } from 'react-native';
 
@@ -25,7 +25,7 @@ import {
   useCreateBlockedUsersMutation,
   useCreateFollowsMutation,
   useGetProfilesQuery,
-  useGetVwListingCardsQuery,
+  useGetVwListingCardsLazyQuery,
   useRemoveBlockedUsersMutation,
   useRemoveFollowsMutation,
   useUpdateProfileMutation,
@@ -63,18 +63,10 @@ export default function ProfileScreen() {
     },
   });
 
-  const { data: listingData } = useGetVwListingCardsQuery({
-    skip: !userId && !user?.id,
-    fetchPolicy: 'cache-and-network',
-    variables: {
-      filter: {
-        seller_id: { eq: currentUser },
-      },
-      orderBy: {
-        created_at: OrderByDirection.DESCNULLSLAST,
-      },
-    },
-  });
+  const [getListingCards, { data: listingData }] =
+    useGetVwListingCardsLazyQuery({
+      fetchPolicy: 'cache-and-network',
+    });
 
   const lastSoldValuation = useMemo(() => {
     if (listingData?.vw_listing_cardsCollection?.edges?.length) {
@@ -260,6 +252,23 @@ export default function ProfileScreen() {
       });
     }
   }, [updateProfile, user?.id, refetch]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (userId || user?.id) {
+        getListingCards({
+          variables: {
+            filter: {
+              seller_id: { eq: currentUser },
+            },
+            orderBy: {
+              created_at: OrderByDirection.DESCNULLSLAST,
+            },
+          },
+        });
+      }
+    }, [userId, user?.id, getListingCards, currentUser]),
+  );
 
   return (
     <>
