@@ -173,6 +173,9 @@ export default function SellScreen() {
             objects: [
               {
                 ...listing,
+                highest_bid_currency: user?.profile?.currency,
+                highest_bid_price: listing.start_price,
+                highest_bidder_id: user?.id,
                 card_id: cardId,
               },
             ],
@@ -210,7 +213,13 @@ export default function SellScreen() {
         console.log('createListing failed:', e);
       }
     },
-    [createListing, form.listingType, setForm, user?.profile?.currency],
+    [
+      createListing,
+      form.listingType,
+      setForm,
+      user?.id,
+      user?.profile?.currency,
+    ],
   );
 
   const fnCreatePost = useCallback(
