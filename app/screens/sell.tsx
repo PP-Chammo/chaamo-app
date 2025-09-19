@@ -200,7 +200,6 @@ export default function SellScreen() {
               },
             ]);
           } else {
-            console.log({ listingData });
             setForm({
               cardId: cardId,
               listingId: listingData.insertIntolistingsCollection.records[0].id,
