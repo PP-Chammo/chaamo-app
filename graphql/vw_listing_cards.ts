@@ -69,6 +69,9 @@ export const getVwListingCardDetail = gql`
           last_sold_price
           last_sold_is_checked
           last_sold_is_correct
+          last_sold_id
+          last_sold_candidate_ids
+          last_sold_debug
           created_at
           end_time
           category_id

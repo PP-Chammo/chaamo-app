@@ -19,6 +19,7 @@ export const getEbayPosts = gql`
           title
           normalised_name
           image_url
+          image_hd_url
           currency
           price
           sold_at
@@ -33,7 +34,6 @@ export const getEbayPosts = gql`
         endCursor
         hasNextPage
       }
-      totalCount
     }
   }
 `;

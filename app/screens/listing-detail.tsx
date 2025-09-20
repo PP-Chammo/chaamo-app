@@ -42,6 +42,7 @@ import {
   useGetVwListingCardDetailLazyQuery,
   useRemoveFavoritesMutation,
   useGetEbayPostDetailLazyQuery,
+  useGetEbayPostsLazyQuery,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -72,10 +73,12 @@ export default function ListingDetailScreen() {
     useGetVwListingCardDetailLazyQuery({
       fetchPolicy: 'cache-and-network',
     });
+  const [getEbayLastSolds, { data: lastSoldList }] = useGetEbayPostsLazyQuery();
   const [getEbayPostDetail, { data: ebayData, refetch: refetchEbayPost }] =
     useGetEbayPostDetailLazyQuery({
       fetchPolicy: 'cache-and-network',
     });
+
   const [createFavorites] = useCreateFavoritesMutation();
   const [removeFavorites] = useRemoveFavoritesMutation();
   const [deleteCard, { loading: isDeleting }] = useDeleteCardMutation();
@@ -84,6 +87,10 @@ export default function ListingDetailScreen() {
   const listingDetail = useMemo(
     () => data?.vw_listing_cardsCollection?.edges?.[0]?.node,
     [data],
+  );
+  const isAdmin = useMemo(
+    () => user?.profile?.is_admin ?? false,
+    [user?.profile?.is_admin],
   );
   const isEbay = useMemo(() => ebay === 'true', [ebay]);
 
@@ -169,14 +176,14 @@ export default function ListingDetailScreen() {
   }, []);
 
   const rightIconHeader = useMemo(() => {
-    if (isEbay && !user?.profile?.is_admin) {
+    if (isEbay && !isAdmin) {
       return undefined;
     }
     if (isEbay || isSeller) {
       return 'dots-vertical';
     }
     return getIsFavorite(id as string) ? 'heart' : 'heart-outline';
-  }, [isEbay, isSeller, getIsFavorite, id, user?.profile?.is_admin]);
+  }, [isEbay, isAdmin, isSeller, getIsFavorite, id]);
 
   const rightIconColor = useMemo(() => {
     if (isEbay || isSeller) {
@@ -199,12 +206,12 @@ export default function ListingDetailScreen() {
   }, [isEbay, refetchDetail, refetchEbayPost]);
 
   const onRightPress = useCallback(() => {
-    if ((isEbay && user?.profile?.is_admin) || isSeller) {
+    if ((isEbay && isAdmin) || isSeller) {
       setIsContextMenuVisible(true);
     } else {
       handleToggleFavorite();
     }
-  }, [isEbay, user?.profile?.is_admin, isSeller, handleToggleFavorite]);
+  }, [isEbay, isAdmin, isSeller, handleToggleFavorite]);
 
   const handleBoostPost = useCallback(() => {
     router.push({
@@ -311,6 +318,25 @@ export default function ListingDetailScreen() {
         });
       }
     }, [id, isEbay, getEbayPostDetail, getDetail]),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (listingDetail && isAdmin) {
+        const lastSoldCandidateIds = JSON.parse(
+          listingDetail?.last_sold_candidate_ids ?? '[]',
+        );
+        if (lastSoldCandidateIds.length > 0) {
+          getEbayLastSolds({
+            variables: {
+              filter: {
+                id: { in: lastSoldCandidateIds },
+              },
+            },
+          });
+        }
+      }
+    }, [getEbayLastSolds, listingDetail, isAdmin]),
   );
 
   const renderBottomBar = useCallback(() => {
@@ -443,6 +469,9 @@ export default function ListingDetailScreen() {
           description={detail?.description ?? ''}
           userCardId={detail?.card_id ?? ''}
           refetch={isEbay ? refetchEbayPost : refetchDetail}
+          isCorrect={listingDetail?.last_sold_is_correct ?? false}
+          lastSoldList={lastSoldList?.ebay_postsCollection?.edges ?? []}
+          reason={listingDetail?.last_sold_debug ?? ''}
         />
         <View className={classes.chartWrapper}>
           <Chart data={dummyPortfolioValueData} />

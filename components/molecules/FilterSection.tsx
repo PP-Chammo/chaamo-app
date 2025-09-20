@@ -21,7 +21,7 @@ interface FilterSectionProps {
 }
 
 const FilterSection: React.FC<FilterSectionProps> = memo(
-  function FilterSection({ loading, resultCount = 0 }) {
+  function FilterSection({ loading, resultCount }) {
     const [user] = useUserVar();
     const [search, setSearch] = useSearchVar();
     const { formatDisplay } = useCurrencyDisplay();
@@ -139,7 +139,7 @@ const FilterSection: React.FC<FilterSectionProps> = memo(
           <Row className={classes.filterTextContainer}>
             <Label className={classes.filterPlaceholder}>Showing:</Label>
             <Label className={classes.resultText} testID="filter-result-text">
-              {!loading && resultCount} results for{' '}
+              {!loading && !!resultCount && resultCount} results for{' '}
               {search?.query && search?.category
                 ? `"${search?.query}" in "${search?.category}"`
                 : `"${search?.query || search?.category}"`}

@@ -21,6 +21,8 @@ import {
   OrderByDirection,
   type EbayPostsFilter,
   type VwListingCardsFilter,
+  useMonitorLazyQuery,
+  Monitor,
 } from '@/generated/graphql';
 import { useCurrencyDisplay } from '@/hooks/useCurrencyDisplay';
 import { useSearchVar } from '@/hooks/useSearchVar';
@@ -31,7 +33,7 @@ import { formatThousand } from '@/utils/formatThousand';
 import { structuredClone } from '@/utils/structuredClone';
 
 const LOAD_MORE_SIZE = 50;
-const INITIAL_PAGE_SIZE = 50;
+const INITIAL_PAGE_SIZE = 100;
 
 export default function ProductListScreen() {
   const [user] = useUserVar();
@@ -40,10 +42,15 @@ export default function ProductListScreen() {
     useLocalSearchParams();
   const { convertUserToBase } = useCurrencyDisplay();
 
+  console.log(search);
+
   const [searchText, setSearchText] = useState('');
   const [ebayPaging, setEbayPaging] = useState(false);
   const [firstLoading, setFirstLoading] = useState(false);
 
+  const [getMonitor, { data: countData }] = useMonitorLazyQuery({
+    fetchPolicy: 'cache-and-network',
+  });
   const [getListingCards, { data }] = useGetVwListingCardsLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
@@ -250,8 +257,12 @@ export default function ProductListScreen() {
   ]);
 
   const resultCount = useMemo(() => {
-    const allCount =
-      (ebayData?.ebay_postsCollection?.totalCount ?? 0) + allCards.length;
+    const ebayCountKey = `ebay_posts_category_${search?.categoryId ?? 1}_count`;
+    const ebayCount =
+      countData?.monitorCollection?.edges[0]?.node?.[
+        ebayCountKey as keyof Pick<Monitor, 'ebay_posts_category_1_count'>
+      ] ?? 0;
+    const allCount = Number(ebayCount) + allCards.length;
     if (mergedList === 'true') {
       return formatThousand(allCount);
     } else {
@@ -262,7 +273,8 @@ export default function ProductListScreen() {
       ][activeTab];
     }
   }, [
-    ebayData?.ebay_postsCollection?.totalCount,
+    countData?.monitorCollection?.edges,
+    search.categoryId,
     allCards.length,
     mergedList,
     auctionCards.length,
@@ -316,6 +328,12 @@ export default function ProductListScreen() {
         setSearchText('');
       };
     }, [search.query]),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      getMonitor({ variables: { filter: { id: { eq: 1 } } } });
+    }, [getMonitor]),
   );
 
   useFocusEffect(
@@ -382,7 +400,6 @@ export default function ProductListScreen() {
                 prevCol?.__typename ??
                 nextCol?.__typename ??
                 'ebay_postsConnection',
-              totalCount: nextCol?.totalCount ?? prevCol?.totalCount ?? 0,
               edges: [...(prevCol?.edges ?? []), ...(nextCol?.edges ?? [])],
               pageInfo: nextCol?.pageInfo ??
                 prevCol?.pageInfo ?? {
@@ -468,7 +485,7 @@ export default function ProductListScreen() {
       />
       <FilterSection
         loading={ebayLoading || firstLoading}
-        resultCount={resultCount}
+        resultCount={searchText?.length > 0 ? undefined : resultCount}
       />
       {firstLoading ? (
         <Loading />

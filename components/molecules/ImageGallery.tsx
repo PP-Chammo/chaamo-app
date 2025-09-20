@@ -26,7 +26,9 @@ const ImageGallery: React.FC<ImageGalleryProps> = memo(function ImageGallery({
   const [showImageZoom, setShowImageZoom] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const images = parseImageUrls(imageUrls);
+  const images = Array.isArray(imageUrls)
+    ? imageUrls
+    : parseImageUrls(imageUrls);
 
   const handleImagePress = (index: number) => {
     setCurrentIndex(index);
